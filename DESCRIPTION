@@ -1,0 +1,8 @@
+Package: FAMS
+Title: Fisheries Analysis and Modeling Simulator
+Version: 0.0.0.0000
+Authors@R: 
+    person("Rebecca", "Krogman", , "rebecca.krogman@gmail.com", role = c("aut", "cre"))
+Description: Fisheries equilibrium and dynamic pool modeling, and length regulation scenario modeling.
+License: use_mit_license()
+Encoding: UTF-8

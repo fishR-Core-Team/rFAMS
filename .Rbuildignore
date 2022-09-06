@@ -1,0 +1,5 @@
+# Comments to the CRAN approvers
+cran-comments.md
+^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$

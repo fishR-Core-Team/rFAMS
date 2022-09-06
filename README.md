@@ -10,3 +10,8 @@ Just starting to code!
 2. Determine whether any steps need updating in analytical approach to be current with fisheries science.
 3. Determine whether any steps need expanding upon to better incorporate current fisheries science.
 4. Begin coding, concurrently documenting and establishing error and validation tests.
+### RShiny Development
+1. Determine which variables should be allowed to vary in interface.
+2. Build a Shiny app for testing different length regulation scenarios.
+### Dynamic Pool Modeling
+1. Not there yet.
