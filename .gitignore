@@ -41,3 +41,6 @@ vignettes/*.pdf
 .Rproj.user
 .Rdata
 .DS_Store
+
+# Local programming and notes not relevant to others
+development-commands.R
