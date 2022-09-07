@@ -1,11 +1,20 @@
 Package: FAMS
 Title: Fisheries Analysis and Modeling Simulator
 Version: 0.0.0.9000
-Authors@R: 
-    person("Rebecca", "Krogman", , "rebecca.krogman@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+Authors@R: c(person("Rebecca", "Krogman", , "rebecca.krogman@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-1244-1490")),
+    person("Jason", "Doll", email = "jason.doll@fmarion.edu", role = "aut", 
+          comment = c(ORCID = "0000-0001-9024-2561")))
 Description: Good stuff. Great stuff. The best stuff you've ever seen.
-License: GNU General Public License v2.0
+License: GPL-2 file LICENSE
+URL: https://github.com/fishR-Core-Team/FAMS
+BugReports: https://github.com/fishR-Core-Team/FAMS/issues
+Depends:
+  FSA
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
+Suggests: 
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3
