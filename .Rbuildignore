@@ -3,3 +3,5 @@ cran-comments.md
 ^LICENSE\.md$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README\.Rmd$
+^FAMS\.Rproj$
