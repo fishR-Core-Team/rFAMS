@@ -1,7 +1,3 @@
-
-
-#Need to save input parameters so we have MLL for plotting...
-
 library(ggplot2)
 library(tidyverse)
 library(metR)  #needed for contour plots
@@ -21,7 +17,7 @@ source("ypr_func.R")
 #             LWbeta=3.10,
 #             Mage=15)
 
-#Calculate yield based on one minimum length limit
+#Calculate yield based on a range of cf, cm and minimum length limit
 Res_1<-ypr(cfmin = 0.05,
          cfmax = 0.95,
          cfinc = 0.05,
@@ -41,8 +37,11 @@ Res_1<-ypr(cfmin = 0.05,
 
 
 #Extract exploitation and yield for cm = 0.40 with MLL = 400
-exploitation <- Res_1[[3]][[1]][,8]
-yield <- Res_1[[3]][[2]][,8]
+#Which index has cm = 0.40
+
+targetcm = 0.40
+exploitation<-Res_1[[3]]$exploitation[,which(Res_1[[3]]$cmvect==targetcm)]
+yield <- Res_1[[3]]$yield[,which(Res_1[[3]]$cmvect==targetcm)]
 
 ggplot() +
   theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
@@ -60,13 +59,16 @@ ggplot() +
 
 #Extract exploitation and yield from each MLL and CF with cm = 0.40
 #into a dataframe with one column of yield for each row is length limit and each column is exploitation
-minlength <- seq(from=200, to=700, by=10)
 
-exploitation <- Res_1[[3]][[1]][,8]
+targetcm = 0.40
+
+minlength <- Res_1[[1]]$MLvect
+
+exploitation <- Res_1[[3]]$exploitation[,which(Res_1[[3]]$cmvect==targetcm)]
 
 yield_df <- matrix(nrow=length(Res_1),ncol=length(exploitation))
 for(x in 1:length(Res_1)){
-  yield_df[x,] <- Res_1[[x]][[2]][,8]
+  yield_df[x,] <- Res_1[[x]]$yield[,which(Res_1[[3]]$cmvect==targetcm)]
 }
 
 #Convert to long format

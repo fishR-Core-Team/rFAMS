@@ -2,15 +2,14 @@ citHeader("To cite FAMS in publications use:")
 
 citEntry(
   title        = "Fisheries Analysis and Modeling Simulator in R",
-  author       = personList(as.person("Rebecca Krogman"),
-                   as.person("Jason Doll")),
+  author       = personList(as.person("Jason Doll"),
   organization      = "American Fisheries Society, Fisheries Information and Technology Section",
-  year         = "2022",
+  year         = "2024",
   address = {Bethesda, Maryland},
   url          = "https://github.com/fishR-Core-Team/FAMS",
 
   textVersion  =
-  paste("Krogman, R. M., and J. Doll. 2022.",
+  paste("Doll, JC. 2022.",
         "Fisheries Analysis and Modeling Simulator in R.",
         "American Fisheries Society, Fisheries Information and Technology Section.",
         "URL https://github.com/fishR-Core-Team/FAMS.")

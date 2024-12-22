@@ -1,7 +1,7 @@
 ---
 title: "CRAN Comments"
-author: "R. M. Krogman"
-date: "9/6/2022"
+author: "Jason Doll"
+date: "12/22/2024"
 output: html_document
 ---
 

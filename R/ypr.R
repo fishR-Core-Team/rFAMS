@@ -76,7 +76,8 @@ ypr<-function(cfmin = 0.05,
         S[y,x] = Res_1$S
       }
     }
-    res_out[[z]] <-list(exploitation,yield,Nharvest,Ndie,wt,avgl,Nt,Fmort,Mmort,Zmort,S)
+    res_out[[z]] <-list(exploitation,yield,Nharvest,Ndie,wt,avgl,Nt,Fmort,Mmort,Zmort,S,cfvect,cmvect,MLvect)
+    names(res_out[[z]]) <- c("exploitation","yield","Nharvest","Ndie","wt","avgl","Nt","Fmort","Mmort","Zmort","S","cfvect","cmvect","MLvect")
   }
 
   #Create a list of lists. Each main list is the Minimum Length.
