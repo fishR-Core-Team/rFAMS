@@ -4,10 +4,10 @@
 #'
 #' @param cf A numeric representing conditional fishing mortality
 #' @param cm A numeric representing conditional natural mortality
-#' @param minlenth A numeric representing the minimum length limit for harvest in mm
+#' @param minlength A numeric representing the minimum length limit for harvest in mm
 #' @param initialN A numeric representing the initial number of new recruits entering the fishery
 #' @param linf A numeric representing the point estimate of Linf from the LVB model in mm
-#' @param k A numeric representing the point estimate of k from the LVB model
+#' @param K A numeric representing the point estimate of k from the LVB model
 #' @param t0 A numeric representing the point estimate of t0 from the LVB model
 #' @param LWalpha A numeric representing the point estimate of alpha from the length-weight regression
 #' @param LWbeta A numeric representing the point estimate of beta from the length-weight regression
@@ -105,8 +105,8 @@ ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
 
   #time in years to recruit to the fishery (tr - to)
 
-  if(TL<linf){ tr <- (log(1-TL/linf))/-K + t0
-  } else{ tr <- (log(1-TL/(TL+.1)))/-K + t0
+  if(TL<linf){ tr <- ((log(1-TL/linf))/-K) + t0
+  } else{ tr <- ((log(1-TL/(TL+.1)))/-K) + t0
   }
 
   r <- tr - t0

@@ -46,6 +46,8 @@ ypr(
 
 \item{linf}{Point estimate of Linf from the LVB model in mm}
 
+\item{K}{Point estimate of k from the LVB model}
+
 \item{t0}{Point estimate of t0 from the LVB model}
 
 \item{LWalpha}{Point estimate of alpha from the length-weight regression}
@@ -53,8 +55,6 @@ ypr(
 \item{LWbeta}{Point estimate of beta from the length-weight regression}
 
 \item{Mage}{integer of maximum age in the population in years}
-
-\item{k}{Point estimate of k from the LVB model}
 }
 \description{
 Main wrapper function to estimate yield using the Beverton-Holt YPR model. This main function accepts a range of values for cf, cm, and minlength (lengthmin, lengthmax, and lengthinc).
@@ -168,6 +168,46 @@ ggplot(data = yield_df) +
         panel.border = element_blank(),
         axis.line = element_line(colour = "black")
         )
+
+#Plot isopleth of number harvested/caught for a range of exploitation and cm = 0.40
+#This code extracts output into a dataframe.
+
+#Set target cm
+targetcm = 0.40
+
+#Extract range of minimum length limits
+minlength <- Res_1[[1]]$MLvect
+
+#Extract range of exploitation rates
+exploitation <- Res_1[[3]]$exploitation[,which(Res_1[[3]]$cmvect==targetcm)]
+
+Catch_df <- matrix(nrow=length(Res_1),ncol=length(exploitation))
+for(x in 1:length(Res_1)){
+  Catch_df[x,] <- Res_1[[x]]$Nharvest[,which(Res_1[[3]]$cmvect==targetcm)]
+}
+
+#Convert to long format
+Catch_df <- data.frame(Catch_df)
+names(Catch_df) <- exploitation
+
+Catch_df <- Catch_df \%>\% pivot_longer(cols = names(Catch_df)[1]:names(Catch_df)[ncol(Catch_df)]) \%>\%
+  mutate(MLL = sort(rep(minlength,ncol(Catch_df)))) \%>\%
+  mutate_at(c('name'), as.numeric)
+
+#Yield isopleth
+ggplot(data = Catch_df) +
+   theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
+   geom_contour(aes(x=as.numeric(name),y=MLL,z=value))+
+   metR::geom_text_contour(aes(x=as.numeric(name),y=MLL,z = value),stroke = 0.15)+
+   xlab("Exploitation")+
+   ylab("Minimum length limit (mm)")+
+   theme(axis.text.x=element_text(size=20),
+         axis.text.y=element_text(size=20),
+         axis.title.x=element_text(size=22),
+         axis.title.y=element_text(size=22,angle=90),
+         panel.border = element_blank(),
+         axis.line = element_line(colour = "black")
+         )
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}
