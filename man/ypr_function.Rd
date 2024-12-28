@@ -11,9 +11,13 @@ ypr_func(cf, cm, minlength, initialN, linf, K, t0, LWalpha, LWbeta, Mage)
 
 \item{cm}{A numeric representing conditional natural mortality}
 
+\item{minlength}{A numeric representing the minimum length limit for harvest in mm}
+
 \item{initialN}{A numeric representing the initial number of new recruits entering the fishery}
 
 \item{linf}{A numeric representing the point estimate of Linf from the LVB model in mm}
+
+\item{K}{A numeric representing the point estimate of k from the LVB model}
 
 \item{t0}{A numeric representing the point estimate of t0 from the LVB model}
 
@@ -22,10 +26,6 @@ ypr_func(cf, cm, minlength, initialN, linf, K, t0, LWalpha, LWbeta, Mage)
 \item{LWbeta}{A numeric representing the point estimate of beta from the length-weight regression}
 
 \item{Mage}{An integer representing of maximum age in the population in years}
-
-\item{minlenth}{A numeric representing the minimum length limit for harvest in mm}
-
-\item{k}{A numeric representing the point estimate of k from the LVB model}
 }
 \value{
 the following values in a list
