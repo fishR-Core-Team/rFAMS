@@ -1,34 +1,62 @@
+#' @title Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for single input parameters
+#'
+#' @description Function to estimate yield using the Beverton-Holt YPR model. This main function accepts only single values for cf, cm, and minlength. Use the wrapper ypr() function for specifying range of cf, cm, and minlength
+#'
+#' @param cf A numeric representing conditional fishing mortality
+#' @param cm A numeric representing conditional natural mortality
+#' @param minlenth A numeric representing the minimum length limit for harvest in mm
+#' @param initialN A numeric representing the initial number of new recruits entering the fishery
+#' @param linf A numeric representing the point estimate of Linf from the LVB model in mm
+#' @param k A numeric representing the point estimate of k from the LVB model
+#' @param t0 A numeric representing the point estimate of t0 from the LVB model
+#' @param LWalpha A numeric representing the point estimate of alpha from the length-weight regression
+#' @param LWbeta A numeric representing the point estimate of beta from the length-weight regression
+#' @param Mage An integer representing of maximum age in the population in years
+#'
+#' @details Details will be filled out later
+#'
+#' @return the following values in a list
+#' \itemize{
+#' \item exploitation is the exploitation rate
+#' \item yield is the calculated yield
+#' \item Nharvest is the number of harvested fish
+#' \item Ndie is the number of fish that die of natural deaths.
+#' \item wt is the average weight of fish harvested
+#' \item avgl is the average length of fish harvested
+#' \item Nt is the number of fish at time t (time they become harvestable size)
+#' \item Fmort is the estimated instantaneous rate of fishing mortality
+#' \item Mmort is the estimated  instantaneous rate of natural mortality
+#' \item Zmort is the estimated  instantaneous rate of total mortality
+#' \item S is the estimated total survival
+#' }
+#'
+#' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
+#'
+#' @examples
+#' #Estimate yield with fixed parameters
+#' Res_1<-ypr_func(cf = 0.45,
+#'                 cm = 0.25,
+#'                 minlength = 355,
+#'                 initialN = 100,
+#'                 linf = 2000,
+#'                 K = 0.50,
+#'                 t0 = -0.616,
+#'                 LWalpha = -5.453,
+#'                 LWbeta = 3.10,
+#'                 Mage = 15)
+#'
+#' @rdname ypr_function
+#' @export
 
-#Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model
-#' @param cf Single value, conditional fishing mortality
-#' @param cm Single value, conditional natural mortality
-#' @param minlenth The minimum length limit for harvest
-#' @param initialN The initial number of new recruits entering the fishery
-#' @param linf Point estimate of Linf from the LVB model
-#' @param k Point estimate of k from the LVB model
-#' @param t0 Point estimate of t0 from the LVB model
-#' @param LWalpha Point estimate of alpha from the length-weight regression
-#' @param LWbeta Point estimate of beta from the length-weight regression
-#' @param Mage integer of maximum age in the population
-
-
-#Returns the following values in a list
-# exploitation is the exploitation rate
-# yield is the calculated yield
-# Nharvest is the number of harvested fish
-# Ndie is the number of fish that die of natural deaths.
-# wt is the average weight of fish harvested
-# avgl is the average length of fish harvested
-# Nt is the number of fish at time t (time they become harvestable size)
-# Fmort is the estimated instantaneous rate of fishing mortality
-# Mmort is the estimated  instantaneous rate of natural mortality
-# Zmort is the estimated  instantaneous rate of total mortality
-# S is the estimated total survival
-
-
-ypr_func<-function(cf=0.60,cm=0.10,minlength,initialN=100,linf,K,t0,LWalpha,LWbeta,Mage){
+ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
+  if (missing(cf))
+    stop("Need to specify cf.")
+  if (missing(cm))
+    stop("Need to specify cm.")
   if (missing(minlength))
     stop("Need to specify minimum length.")
+  if (missing(initialN))
+    stop("Need to specify initialN")
   if (missing(linf))
     stop("Need to specify Linf.")
   if (missing(K))

@@ -1,5 +1,5 @@
 ---
-title: "FAMS"
+title: "rFAMS"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{FAMS}
@@ -15,5 +15,5 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(FAMS)
+#library(FAMS)
 ```
