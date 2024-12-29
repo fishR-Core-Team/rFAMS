@@ -5,13 +5,13 @@
 #' @param cf A numeric representing conditional fishing mortality
 #' @param cm A numeric representing conditional natural mortality
 #' @param minlength A numeric representing the minimum length limit for harvest in mm
-#' @param initialN A numeric representing the initial number of new recruits entering the fishery
+#' @param N0 A numeric representing the initial number of new recruits entering the fishery
 #' @param linf A numeric representing the point estimate of Linf from the LVB model in mm
 #' @param K A numeric representing the point estimate of k from the LVB model
 #' @param t0 A numeric representing the point estimate of t0 from the LVB model
-#' @param LWalpha A numeric representing the point estimate of alpha from the length-weight regression
-#' @param LWbeta A numeric representing the point estimate of beta from the length-weight regression
-#' @param Mage An integer representing of maximum age in the population in years
+#' @param LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
+#' @param LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
+#' @param maxage An integer representing of maximum age in the population in years
 #'
 #' @details Details will be filled out later
 #'
@@ -31,13 +31,13 @@
 #' \item cf A numeric representing conditional fishing mortality
 #' \item cm A numeric representing conditional natural mortality
 #' \item minlength A numeric representing the minimum length limit for harvest in mm
-#' \item initialN A numeric representing the initial number of new recruits entering the fishery
+#' \item N0 A numeric representing the initial number of new recruits entering the fishery
 #' \item linf A numeric representing the point estimate of Linf from the LVB model in mm
 #' \item K A numeric representing the point estimate of k from the LVB model
 #' \item t0 A numeric representing the point estimate of t0 from the LVB model
-#' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression
-#' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression
-#' \item Mage An integer representing of maximum age in the population in years
+#' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
+#' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
+#' \item maxage An integer representing of maximum age in the population in years
 #' }
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
@@ -47,13 +47,13 @@
 #' Res_1<-ypr_func(cf = 0.45,
 #'                 cm = 0.25,
 #'                 minlength = 355,
-#'                 initialN = 100,
+#'                 N0 = 100,
 #'                 linf = 2000,
 #'                 K = 0.50,
 #'                 t0 = -0.616,
 #'                 LWalpha = -5.453,
 #'                 LWbeta = 3.10,
-#'                 Mage = 15)
+#'                 maxage = 15)
 #'
 #' @rdname ypr_function
 #' @export
@@ -62,15 +62,15 @@
 #' @import metR
 #' @import tidyverse
 
-ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
+ypr_func<-function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
   if (missing(cf))
     stop("Need to specify cf.")
   if (missing(cm))
     stop("Need to specify cm.")
   if (missing(minlength))
     stop("Need to specify minimum length.")
-  if (missing(initialN))
-    stop("Need to specify initialN")
+  if (missing(N0))
+    stop("Need to specify N0")
   if (missing(linf))
     stop("Need to specify Linf.")
   if (missing(K))
@@ -81,28 +81,14 @@ ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
     stop("Need to specify Length-weight intercept, alpha.")
   if (missing(LWbeta))
     stop("Need to specify Length-weight slope, beta.")
-  if (missing(Mage))
+  if (missing(maxage))
     stop("Need to specify a maximum age.")
-
-  exploitation <- c()
-
-
-  #time of initial age used for estimates of natural mortality
-  ti <- 1
-
-  #time for fish to recruit to a minimum length limit
-  TL <- minlength  #Minimum length limit
 
   #maximum theoretical weight derived from L-inf and weight to length regression
   #log10 transformation to linearize it
   Winf <-  10^(LWalpha + log10(linf) * LWbeta)
 
-  #Value for incomplete beta functions and other calculations
-  # t0 <- rnorm(1, mean = t0vec[1], sd = t0vec[2])
-
-  maxage <- Mage  #maximum age
   #slope of the weight-length relation + 1
-  #distribution comes from LW Bayes model
   Q <- LWbeta + 1
 
 
@@ -113,14 +99,10 @@ ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
 
   exploitation <-(Fmort*(1-S))/Zmort
 
-
-  #Number of recruits entering the population
-  N0 <- initialN
-
   #time in years to recruit to the fishery (tr - to)
 
-  if(TL<linf){ tr <- ((log(1-TL/linf))/-K) + t0
-  } else{ tr <- ((log(1-TL/(TL+.1)))/-K) + t0
+  if(minlength<linf){ tr <- ((log(1-minlength/linf))/-K) + t0
+  } else{ tr <- ((log(1-minlength/(minlength+.1)))/-K) + t0
   }
 
   r <- tr - t0
@@ -128,9 +110,9 @@ ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
   #Number of recruits entering the fishery at some minimum length at time (t):
   Nt <- N0 * exp(-Mmort * tr)
 
-  if (Nt<0) {Nt=0
-  } else if (Nt>N0){Nt=N0
-  } else {Nt=Nt}
+  if (Nt<0) {Nt<-0
+  } else if (Nt>N0){Nt<-N0
+  } else {Nt<-Nt}
 
   Y <- ((Fmort*Nt*exp(Zmort*r) * Winf) / K) *
     (beta(Zmort/K, Q)  * pbeta(exp(-K*r), Zmort/K, Q) -
@@ -139,57 +121,53 @@ ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
   #Uses Ibeta function from zipfR pacakge - only for testing
   #Y <- ((Fmort*Nt*exp(Z*r) * Winf) / K) * (Ibeta(exp(-K*r), Z/K, Q) - Ibeta(exp(-K*(maxage-t0)), Z/K, Q))
 
-  if (is.na(Y)==T) {Y=NA
-  } else if (is.infinite(Y)==T) {Y=NA
-  } else if (Y<0){Y=0
-  } else {Y=Y}
+  if (is.na(Y)) {Y <- NA
+  } else if (is.infinite(Y)) {Y <- NA
+  } else if (Y<0){Y < -0
+  } else {Y <- Y}
 
 
   #number of fish harvested
   Nharv<-(Nt*Fmort)/Zmort
 
   if (Nharv<1){
-    Nharv=0
-    wt=NA
-    avgl=NA
-    Y=0
+    Nharv <- 0
+    wt <- NA
+    avgl <- NA
+    Y <- 0
   } else if (Nharv>Nt) {
-    Nharv=Nt
+    Nharv <- Nt
     wt <- Y/Nharv
     avgl <- 10^((log10(wt) - LWalpha)/LWbeta)
   } else {
-    Nharv=Nharv
+    Nharv <- Nharv
     wt <- Y/Nharv
     avgl <- 10^((log10(wt) - LWalpha)/LWbeta)
   }
 
-  if (is.na(wt)==F)
+  if (!is.na(wt))
   { if (wt<1)
-  {wt=NA}
+  {wt <- NA}
     else
-    {wt=wt}
+    {wt <- wt}
   }
 
-  if (is.na(avgl)==F)
+  if (!is.na(avgl))
   { if (avgl<1)
-  {avgl=NA}
+    {avgl <- NA}
     else if (avgl<minlength)
-    {avgl=minlength}
+    {avgl <- minlength}
     else
-    {avgl=avgl}
+    {avgl <-avgl}
   }
 
 
-  Ndie<-(Nt*Mmort)/Zmort
+  Ndie <- (Nt*Mmort)/Zmort
 
   if (Ndie<0)
-  {Ndie=0
-  } else if (Ndie>Nt){Ndie=Nt
-  } else {Ndie=Ndie}
-
-
-
-  yield<-Y
+  {Ndie <- 0
+  } else if (Ndie>Nt){Ndie <- Nt
+  } else {Ndie <- Ndie}
 
   #create dataframe to store and return output with input parameters
   Res<-data.frame(exploitation=exploitation,
@@ -206,13 +184,13 @@ ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
                   cf=cf,
                   cm=cm,
                   minlength=minlength,
-                  initialN=initialN,
+                  N0=N0,
                   linf=linf,
                   K=K,
                   t0=t0,
                   LWalpha=LWalpha,
                   LWbeta=LWbeta,
-                  Mage=Mage
+                  maxage=maxage
   )
 
 

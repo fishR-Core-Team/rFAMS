@@ -1,7 +1,15 @@
-# Comments to the CRAN approvers
+## Comments to the CRAN approvers
 cran-comments.md
 ^LICENSE\.md$
+^README\.Rmd$
+^rFAMS\.Rproj$
+
+## Project files
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^README\.Rmd$
-^FAMS\.Rproj$
+
+## Tests for building functions and plotting
+^tests/FunctionTesting/
+
+## Misecellaneous files
+^Misc/
