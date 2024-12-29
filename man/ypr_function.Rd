@@ -28,7 +28,7 @@ ypr_func(cf, cm, minlength, initialN, linf, K, t0, LWalpha, LWbeta, Mage)
 \item{Mage}{An integer representing of maximum age in the population in years}
 }
 \value{
-the following values in a list
+the following calculated and input values in a dataframe
 \itemize{
 \item exploitation is the exploitation rate
 \item yield is the calculated yield
@@ -41,6 +41,16 @@ the following values in a list
 \item Mmort is the estimated  instantaneous rate of natural mortality
 \item Zmort is the estimated  instantaneous rate of total mortality
 \item S is the estimated total survival
+\item cf A numeric representing conditional fishing mortality
+\item cm A numeric representing conditional natural mortality
+\item minlength A numeric representing the minimum length limit for harvest in mm
+\item initialN A numeric representing the initial number of new recruits entering the fishery
+\item linf A numeric representing the point estimate of Linf from the LVB model in mm
+\item K A numeric representing the point estimate of k from the LVB model
+\item t0 A numeric representing the point estimate of t0 from the LVB model
+\item LWalpha A numeric representing the point estimate of alpha from the length-weight regression
+\item LWbeta A numeric representing the point estimate of beta from the length-weight regression
+\item Mage An integer representing of maximum age in the population in years
 }
 }
 \description{

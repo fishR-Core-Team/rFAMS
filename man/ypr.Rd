@@ -56,29 +56,37 @@ ypr(
 
 \item{Mage}{integer of maximum age in the population in years}
 }
+\value{
+the following values in a dataframe for each cf, cm, and minimum length limit specified.
+\itemize{
+\item exploitation is the exploitation rate
+\item yield is the calculated yield
+\item Nharvest is the number of harvested fish
+\item Ndie is the number of fish that die of natural deaths.
+\item wt is the average weight of fish harvested
+\item avgl is the average length of fish harvested
+\item Nt is the number of fish at time t (time they become harvestable size)
+\item Fmort is the estimated instantaneous rate of fishing mortality
+\item Mmort is the estimated  instantaneous rate of natural mortality
+\item Zmort is the estimated  instantaneous rate of total mortality
+\item S is the estimated total survival
+\item cf A numeric representing conditional fishing mortality
+\item cm A numeric representing conditional natural mortality
+\item minlength A numeric representing the minimum length limit for harvest in mm
+\item initialN A numeric representing the initial number of new recruits entering the fishery
+\item linf A numeric representing the point estimate of Linf from the LVB model in mm
+\item K A numeric representing the point estimate of k from the LVB model
+\item t0 A numeric representing the point estimate of t0 from the LVB model
+\item LWalpha A numeric representing the point estimate of alpha from the length-weight regression
+\item LWbeta A numeric representing the point estimate of beta from the length-weight regression
+\item Mage An integer representing of maximum age in the population in years
+}
+}
 \description{
 Main wrapper function to estimate yield using the Beverton-Holt YPR model. This main function accepts a range of values for cf, cm, and minlength (lengthmin, lengthmax, and lengthinc).
 }
 \details{
 Details will be filled out later
-
-#' @return the following values in a list of length equal to the number of minimum length limit values. The first element is the smallest minimum length and the last element is the largest minimum length.
-\itemize{
-\item exploitation is a matrix of exploitation rate with rows = number of cf values and columns = number of cm values
-\item yield is a matrix of yield with rows = number of cf values and columns = number of cm values
-\item Nharvest is a matrix of the number of harvested fish with rows = number of cf values and columns = number of cm values
-\item Ndie is a matrix of the number of fish that die of natural deaths with rows = number of cf values and columns = number of cm values
-\item wt is a matrix of the average weight of fish harvested with rows = number of cf values and columns = number of cm values
-\item avgl is a matrix of the average length of fish harvested with rows = number of cf values and columns = number of cm values
-\item Nt is a matrix of the number of fish at time t (time they become harvestable size) with rows = number of cf values and columns = number of cm values
-\item Fmort is a matrix of the estimated instantaneous rate of fishing mortality with rows = number of cf values and columns = number of cm values
-\item Mmort is a matrix of the estimated  instantaneous rate of natural mortality with rows = number of cf values and columns = number of cm values
-\item Zmort is a matrix of the estimated  instantaneous rate of total mortality with rows = number of cf values and columns = number of cm values
-\item S is a matrix of the estimated total survival with rows = number of cf values and columns = number of cm values
-\item cfvect is a vector of cf values used to calculate yield
-\item cmvect is a vector of cm values used to calculate yield
-\item MLvect is a vector of minimum length limits used to calculate yield
-}
 }
 \examples{
 #Load other required packages for organizing output and plotting
@@ -105,22 +113,19 @@ Res_1<-ypr(cfmin = 0.05,
            Mage=15)
 
 #Extract exploitation and yield for cm = 0.40 with minimum length limit = 400
-#MLL of 400mm is the 9th element in the output list
 
-#Set target cm = 0.40
-targetcm = 0.40
-#Extract exploitation and yield from the list element with output from minimum length limit = 400
-exploitation<-Res_1[[9]]$exploitation[,which(Res_1[[9]]$cmvect==targetcm)]
-yield <- Res_1[[9]]$yield[,which(Res_1[[9]]$cmvect==targetcm)]
+#Subset output dataframe to plot results
+plot_dat <- Res_1 \%>\%
+  filter(cm == 0.40, minlength ==400)
 
 #Plot yield curve
-ggplot() +
- theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
- geom_point(aes(x=exploitation, y= yield)) +
- geom_line(aes(x=exploitation, y= yield)) +
- xlab("Exploitation")+
- ylab("Yield (g)")+
- theme(axis.text.x=element_text(size=20),
+ggplot(data = plot_dat, aes(x=exploitation,y=yield)) +
+  theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
+  geom_point() +
+  geom_line() +
+  xlab("Exploitation")+
+  ylab("Yield (g)")+
+  theme(axis.text.x=element_text(size=20),
        axis.text.y=element_text(size=20),
        axis.title.x=element_text(size=22),
        axis.title.y=element_text(size=22,angle=90),
@@ -129,36 +134,16 @@ ggplot() +
        )
 
 #Plot isopleth of yield for a range of exploitation and cm = 0.40
-#This code extracts output into a dataframe.
 
-#Set target cm
-targetcm = 0.40
-
-#Extract range of minimum length limits
-minlength <- Res_1[[1]]$MLvect
-
-#Extract range of exploitation rates
-exploitation <- Res_1[[3]]$exploitation[,which(Res_1[[3]]$cmvect==targetcm)]
-
-#Build yield dataframe
-yield_df <- matrix(nrow=length(Res_1),ncol=length(exploitation))
-for(x in 1:length(Res_1)){
-    yield_df[x,] <- Res_1[[x]]$yield[,which(Res_1[[3]]$cmvect==targetcm)]
-    }
-
-#Assign column anmes and convert from wide to long
-yield_df <- data.frame(yield_df)
-names(yield_df) <- exploitation
-
-yield_df <- yield_df \%>\% pivot_longer(cols = names(yield_df)[1]:names(yield_df)[ncol(yield_df)]) \%>\%
-            mutate(MLL = sort(rep(minlength,ncol(yield_df)))) \%>\%
-            mutate_at(c('name'), as.numeric)
+#Subset output dataframe
+plot_dat <- Res_1 \%>\%
+  filter(cm == 0.40)
 
 #Plot isopleth
-ggplot(data = yield_df) +
+ggplot(data = plot_dat) +
   theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
-  geom_contour(aes(x=as.numeric(name),y=MLL,z=value))+
-  metR::geom_text_contour(aes(x=as.numeric(name),y=MLL,z = value),stroke = 0.15)+
+  geom_contour(aes(x=exploitation,y=minlength,z=yield))+
+  metR::geom_text_contour(aes(x=exploitation,y=minlength,z = yield),stroke = 0.15)+
   xlab("Exploitation")+
   ylab("Minimum length limit (mm)")+
   theme(axis.text.x=element_text(size=20),
@@ -170,44 +155,24 @@ ggplot(data = yield_df) +
         )
 
 #Plot isopleth of number harvested/caught for a range of exploitation and cm = 0.40
-#This code extracts output into a dataframe.
 
-#Set target cm
-targetcm = 0.40
+#Subset output dataframe
+plot_dat <- Res_1 \%>\%
+  filter(cm == 0.40)
 
-#Extract range of minimum length limits
-minlength <- Res_1[[1]]$MLvect
-
-#Extract range of exploitation rates
-exploitation <- Res_1[[3]]$exploitation[,which(Res_1[[3]]$cmvect==targetcm)]
-
-Catch_df <- matrix(nrow=length(Res_1),ncol=length(exploitation))
-for(x in 1:length(Res_1)){
-  Catch_df[x,] <- Res_1[[x]]$Nharvest[,which(Res_1[[3]]$cmvect==targetcm)]
-}
-
-#Convert to long format
-Catch_df <- data.frame(Catch_df)
-names(Catch_df) <- exploitation
-
-Catch_df <- Catch_df \%>\% pivot_longer(cols = names(Catch_df)[1]:names(Catch_df)[ncol(Catch_df)]) \%>\%
-  mutate(MLL = sort(rep(minlength,ncol(Catch_df)))) \%>\%
-  mutate_at(c('name'), as.numeric)
-
-#Yield isopleth
-ggplot(data = Catch_df) +
-   theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
-   geom_contour(aes(x=as.numeric(name),y=MLL,z=value))+
-   metR::geom_text_contour(aes(x=as.numeric(name),y=MLL,z = value),stroke = 0.15)+
-   xlab("Exploitation")+
-   ylab("Minimum length limit (mm)")+
-   theme(axis.text.x=element_text(size=20),
-         axis.text.y=element_text(size=20),
-         axis.title.x=element_text(size=22),
-         axis.title.y=element_text(size=22,angle=90),
-         panel.border = element_blank(),
-         axis.line = element_line(colour = "black")
-         )
+ggplot(data = plot_dat) +
+theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
+geom_contour(aes(x=exploitation,y=minlength,z=Nharvest))+
+metR::geom_text_contour(aes(x=exploitation,y=minlength,z = Nharvest),stroke = 0.15)+
+xlab("Exploitation")+
+ylab("Minimum length limit (mm)")+
+theme(axis.text.x=element_text(size=20),
+      axis.text.y=element_text(size=20),
+      axis.title.x=element_text(size=22),
+      axis.title.y=element_text(size=22,angle=90),
+      panel.border = element_blank(),
+      axis.line = element_line(colour = "black")
+      )
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}
