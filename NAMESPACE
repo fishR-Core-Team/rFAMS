@@ -2,3 +2,7 @@
 
 export(ypr)
 export(ypr_func)
+import(FSA)
+import(metR)
+import(tidyverse)
+importFrom(stats,pbeta)

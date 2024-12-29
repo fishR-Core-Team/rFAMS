@@ -15,7 +15,7 @@
 #'
 #' @details Details will be filled out later
 #'
-#' @return the following values in a list
+#' @return the following calculated and input values in a dataframe
 #' \itemize{
 #' \item exploitation is the exploitation rate
 #' \item yield is the calculated yield
@@ -28,6 +28,16 @@
 #' \item Mmort is the estimated  instantaneous rate of natural mortality
 #' \item Zmort is the estimated  instantaneous rate of total mortality
 #' \item S is the estimated total survival
+#' \item cf A numeric representing conditional fishing mortality
+#' \item cm A numeric representing conditional natural mortality
+#' \item minlength A numeric representing the minimum length limit for harvest in mm
+#' \item initialN A numeric representing the initial number of new recruits entering the fishery
+#' \item linf A numeric representing the point estimate of Linf from the LVB model in mm
+#' \item K A numeric representing the point estimate of k from the LVB model
+#' \item t0 A numeric representing the point estimate of t0 from the LVB model
+#' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression
+#' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression
+#' \item Mage An integer representing of maximum age in the population in years
 #' }
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
@@ -47,6 +57,10 @@
 #'
 #' @rdname ypr_function
 #' @export
+#' @importFrom stats pbeta
+#' @import FSA
+#' @import metR
+#' @import tidyverse
 
 ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
   if (missing(cf))
@@ -177,18 +191,31 @@ ypr_func<-function(cf,cm,minlength,initialN,linf,K,t0,LWalpha,LWbeta,Mage){
 
   yield<-Y
 
-  Res<-list(exploitation=exploitation,
-            yield=Y,
-            Nharvest=Nharv,
-            Ndie=Ndie,
-            wt=wt,
-            avgl=avgl,
-            Nt= Nt,
-            Fmort=Fmort,
-            Mmort=Mmort,
-            Zmort=Zmort,
-            S=S)
-  #class(Res) <- "ypr_res"
+  #create dataframe to store and return output with input parameters
+  Res<-data.frame(exploitation=exploitation,
+                  yield=Y,
+                  Nharvest=Nharv,
+                  Ndie=Ndie,
+                  wt=wt,
+                  avgl=avgl,
+                  Nt= Nt,
+                  Fmort=Fmort,
+                  Mmort=Mmort,
+                  Zmort=Zmort,
+                  S=S,
+                  cf=cf,
+                  cm=cm,
+                  minlength=minlength,
+                  initialN=initialN,
+                  linf=linf,
+                  K=K,
+                  t0=t0,
+                  LWalpha=LWalpha,
+                  LWbeta=LWbeta,
+                  Mage=Mage
+  )
+
+
   return(Res)
 }
 
