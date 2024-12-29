@@ -2,20 +2,49 @@ library(ggplot2)
 library(tidyverse)
 library(metR)  #needed for contour plots
 
+source("ypr_var_MinTL.R")
 source("ypr_fixed_MinTL.R")
 source("ypr_func.R")
 
 #Estimate yield based on a fixed minimum length and range of exploitation with the ypr1 function
-# Res_1<-ypr(cfmin=0.05,cfmax=0.60,cfinc=0.05,
-#             cm=0.10,
-#             minlength=355,
-#             initialN=100,
-#             linf=2000,
-#             K=0.50,
-#             t0=-0.616,
-#             LWalpha=-5.453,
-#             LWbeta=3.10,
-#             Mage=15)
+
+#Calculate yield based on a range of cf, cm and fixed minimum length limit
+Res_1<-ypr_fixed_MinTL(cfmin = 0.05,
+                       cfmax = 0.95,
+                       cfinc = 0.05,
+                       cmmin = 0.05,
+                       cmmax = 0.95,
+                       cminc = 0.05,
+                       minlength = 400,
+                       N0=100,
+                       linf=2000,
+                       K=0.50,
+                       t0=-0.616,
+                       LWalpha=-5.453,
+                       LWbeta=3.10,
+                       maxage=15)
+
+
+#Extract exploitation and yield for cm = 0.40
+#Which index has cm = 0.40
+
+plot_dat <- Res_1 %>%
+  filter(cm == 0.40)
+
+ggplot(data = plot_dat, aes(x=exploitation,y=yield)) +
+  theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
+  geom_point() +
+  geom_line() +
+  xlab("Exploitation")+
+  ylab("Yield (g)")+
+  theme(axis.text.x=element_text(size=20),
+        axis.text.y=element_text(size=20),
+        axis.title.x=element_text(size=22),
+        axis.title.y=element_text(size=22,angle=90),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black")
+  )
+
 
 #Calculate yield based on a range of cf, cm and minimum length limit
 Res_1<-ypr_fixed_MinTL(cfmin = 0.05,
