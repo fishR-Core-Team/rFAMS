@@ -11,13 +11,13 @@
 #' @param lengthmin The lower limit of minimum length limit for harvest in mm
 #' @param lengthmax The upper limit of minimum length limit for harvest in mm
 #' @param lengthinc The increment to cycle from lower to upper minimum length limit for harvest in mm
-#' @param initialN The initial number of new recruits entering the fishery
+#' @param N0 The initial number of new recruits entering the fishery
 #' @param linf Point estimate of Linf from the LVB model in mm
 #' @param K Point estimate of k from the LVB model
 #' @param t0 Point estimate of t0 from the LVB model
-#' @param LWalpha Point estimate of alpha from the length-weight regression
-#' @param LWbeta Point estimate of beta from the length-weight regression
-#' @param Mage integer of maximum age in the population in years
+#' @param LWalpha Point estimate of alpha from the length-weight regression on the log10 scale.
+#' @param LWbeta Point estimate of beta from the length-weight regression on the log10 scale.
+#' @param maxage integer of maximum age in the population in years
 #'
 #' @details Details will be filled out later
 #'
@@ -37,13 +37,13 @@
 #' \item cf A numeric representing conditional fishing mortality
 #' \item cm A numeric representing conditional natural mortality
 #' \item minlength A numeric representing the minimum length limit for harvest in mm
-#' \item initialN A numeric representing the initial number of new recruits entering the fishery
+#' \item N0 A numeric representing the initial number of new recruits entering the fishery
 #' \item linf A numeric representing the point estimate of Linf from the LVB model in mm
 #' \item K A numeric representing the point estimate of k from the LVB model
 #' \item t0 A numeric representing the point estimate of t0 from the LVB model
-#' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression
-#' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression
-#' \item Mage An integer representing of maximum age in the population in years
+#' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
+#' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
+#' \item maxage An integer representing of maximum age in the population in years
 #' }
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
@@ -55,22 +55,22 @@
 #' library(metR)
 #'
 #' #Estimate yield
-#' Res_1<-ypr(cfmin = 0.05,
-#'            cfmax = 0.95,
-#'            cfinc = 0.05,
-#'            cmmin = 0.05,
-#'            cmmax = 0.95,
-#'            cminc = 0.05,
-#'            lengthmin = 200,
-#'            lengthmax = 600,
-#'            lengthinc= 25,
-#'            initialN=100,
-#'            linf=2000,
-#'            K=0.50,
-#'            t0=-0.616,
-#'            LWalpha=-5.453,
-#'            LWbeta=3.10,
-#'            Mage=15)
+#' Res_1<-ypr_var_MinTL(cfmin = 0.05,
+#'                         cfmax = 0.95,
+#'                         cfinc = 0.05,
+#'                         cmmin = 0.05,
+#'                         cmmax = 0.95,
+#'                         cminc = 0.05,
+#'                         lengthmin = 200,
+#'                         lengthmax = 600,
+#'                         lengthinc= 25,
+#'                         N0=100,
+#'                         linf=2000,
+#'                         K=0.50,
+#'                         t0=-0.616,
+#'                         LWalpha=-5.453,
+#'                         LWbeta=3.10,
+#'                         maxage=15)
 #'
 #' #Extract exploitation and yield for cm = 0.40 with minimum length limit = 400
 #'
@@ -133,10 +133,10 @@
 #'       panel.border = element_blank(),
 #'       axis.line = element_line(colour = "black")
 #'       )
-#' @rdname ypr
+#' @rdname ypr_var_MinTL
 #' @export
-ypr<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,lengthmin,lengthmax,lengthinc=1,
-              initialN,linf,K,t0,LWalpha,LWbeta,Mage){
+ypr_var_MinTL<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,lengthmin,lengthmax,lengthinc=1,
+              N0,linf,K,t0,LWalpha,LWbeta,maxage){
 
   if (missing(cfmin))
     stop("Need to specify cfmin.")
@@ -156,8 +156,8 @@ ypr<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,lengthmin,lengthmax,le
     stop("Need to specify minimum lengthmax")
   if (missing(lengthinc))
     stop("Need to specify minimum lengthinc")
-  if (missing(initialN))
-    stop("Need to specify initialN")
+  if (missing(N0))
+    stop("Need to specify N0")
   if (missing(linf))
     stop("Need to specify Linf.")
   if (missing(K))
@@ -168,7 +168,7 @@ ypr<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,lengthmin,lengthmax,le
     stop("Need to specify Length-weight intercept, alpha.")
   if (missing(LWbeta))
     stop("Need to specify Length-weight slope, beta.")
-  if (missing(Mage))
+  if (missing(maxage))
     stop("Need to specify a maximum age.")
 
   if(cfmin>cfmax)
@@ -203,13 +203,13 @@ ypr<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,lengthmin,lengthmax,le
                         cf=numeric(),
                         cm=numeric(),
                         minlength=numeric(),
-                        initialN=integer(),
+                        N0=integer(),
                         linf=numeric(),
                         K=numeric(),
                         t0=numeric(),
                         LWalpha=numeric(),
                         LWbeta=numeric(),
-                        Mage=numeric()
+                        maxage=numeric()
                         )
 
   for(z in 1:length(MLvect)){
@@ -221,13 +221,13 @@ ypr<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,lengthmin,lengthmax,le
                          ypr_func(cf=cfvect[y],
                                   cm=cmvect[x],
                                   minlength=MLvect[z],
-                                  initialN=initialN,
+                                  N0=N0,
                                   linf=linf,
                                   K=K,
                                   t0=t0,
                                   LWalpha=LWalpha,
                                   LWbeta=LWbeta,
-                                  Mage=Mage))
+                                  maxage=maxage))
       }
     }
   }

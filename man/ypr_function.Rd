@@ -4,7 +4,7 @@
 \alias{ypr_func}
 \title{Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for single input parameters}
 \usage{
-ypr_func(cf, cm, minlength, initialN, linf, K, t0, LWalpha, LWbeta, Mage)
+ypr_func(cf, cm, minlength, N0, linf, K, t0, LWalpha, LWbeta, maxage)
 }
 \arguments{
 \item{cf}{A numeric representing conditional fishing mortality}
@@ -13,7 +13,7 @@ ypr_func(cf, cm, minlength, initialN, linf, K, t0, LWalpha, LWbeta, Mage)
 
 \item{minlength}{A numeric representing the minimum length limit for harvest in mm}
 
-\item{initialN}{A numeric representing the initial number of new recruits entering the fishery}
+\item{N0}{A numeric representing the initial number of new recruits entering the fishery}
 
 \item{linf}{A numeric representing the point estimate of Linf from the LVB model in mm}
 
@@ -21,11 +21,11 @@ ypr_func(cf, cm, minlength, initialN, linf, K, t0, LWalpha, LWbeta, Mage)
 
 \item{t0}{A numeric representing the point estimate of t0 from the LVB model}
 
-\item{LWalpha}{A numeric representing the point estimate of alpha from the length-weight regression}
+\item{LWalpha}{A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.}
 
-\item{LWbeta}{A numeric representing the point estimate of beta from the length-weight regression}
+\item{LWbeta}{A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.}
 
-\item{Mage}{An integer representing of maximum age in the population in years}
+\item{maxage}{An integer representing of maximum age in the population in years}
 }
 \value{
 the following calculated and input values in a dataframe
@@ -44,13 +44,13 @@ the following calculated and input values in a dataframe
 \item cf A numeric representing conditional fishing mortality
 \item cm A numeric representing conditional natural mortality
 \item minlength A numeric representing the minimum length limit for harvest in mm
-\item initialN A numeric representing the initial number of new recruits entering the fishery
+\item N0 A numeric representing the initial number of new recruits entering the fishery
 \item linf A numeric representing the point estimate of Linf from the LVB model in mm
 \item K A numeric representing the point estimate of k from the LVB model
 \item t0 A numeric representing the point estimate of t0 from the LVB model
-\item LWalpha A numeric representing the point estimate of alpha from the length-weight regression
-\item LWbeta A numeric representing the point estimate of beta from the length-weight regression
-\item Mage An integer representing of maximum age in the population in years
+\item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
+\item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
+\item maxage An integer representing of maximum age in the population in years
 }
 }
 \description{
@@ -64,13 +64,13 @@ Details will be filled out later
 Res_1<-ypr_func(cf = 0.45,
                 cm = 0.25,
                 minlength = 355,
-                initialN = 100,
+                N0 = 100,
                 linf = 2000,
                 K = 0.50,
                 t0 = -0.616,
                 LWalpha = -5.453,
                 LWbeta = 3.10,
-                Mage = 15)
+                maxage = 15)
 
 }
 \author{
