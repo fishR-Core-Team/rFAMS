@@ -4,14 +4,14 @@
 \alias{ypr_func}
 \title{Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for single input parameters}
 \usage{
-ypr_func(cf, cm, minlength, N0, linf, K, t0, LWalpha, LWbeta, maxage)
+ypr_func(minlength, cf, cm, N0, linf, K, t0, LWalpha, LWbeta, maxage)
 }
 \arguments{
+\item{minlength}{A numeric representing the minimum length limit for harvest in mm}
+
 \item{cf}{A numeric representing conditional fishing mortality}
 
 \item{cm}{A numeric representing conditional natural mortality}
-
-\item{minlength}{A numeric representing the minimum length limit for harvest in mm}
 
 \item{N0}{A numeric representing the initial number of new recruits entering the fishery}
 
@@ -37,6 +37,7 @@ the following calculated and input values in a data.frame
 \item wt is the average weight of fish harvested
 \item avgl is the average length of fish harvested
 \item Nt is the number of fish at time t (time they become harvestable size)
+\item tr is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 \item Fmort is the estimated instantaneous rate of fishing mortality
 \item Mmort is the estimated  instantaneous rate of natural mortality
 \item Zmort is the estimated  instantaneous rate of total mortality

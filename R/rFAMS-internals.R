@@ -70,7 +70,7 @@ iCheckMLH <- function(x) {
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (x<200) WARN("A minimum length limit of harvest of ",x," mm seems too small,\n",
+  if (x<100) WARN("A minimum length limit of harvest of ",x," mm seems too small,\n",
                   "please check value in ",nm,".")
   if (x>1600) WARN("A minimum length limit of harvest of ",x," mm seems too large,\n",
                    "  please check value in ",nm,".")

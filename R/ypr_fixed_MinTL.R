@@ -2,13 +2,13 @@
 #'
 #' @description Main wrapper function to estimate yield using the Beverton-Holt YPR model. This main function accepts a range of values for cf, cm, and single fixed minlength.
 #'
+#' @param minlength The minimum length limit for harvest in mm
 #' @param cfmin Single value, minimum conditional fishing mortality
 #' @param cfmax Single value, maximum conditional fishing mortality
 #' @param cfinc Single value, increment to cycle from minimum to maximum conditional fishing mortality
 #' @param cmmin Single value, minimum conditional natural mortality
 #' @param cmmax Single value, maximum conditional natural mortality
 #' @param cminc Single value, increment to cycle from minimum to maximum conditional natural mortality
-#' @param minlength The minimum length limit for harvest in mm
 #' @param N0 The initial number of new recruits entering the fishery
 #' @param linf Point estimate of Linf from the LVB model in mm
 #' @param K Point estimate of k from the LVB model
@@ -19,7 +19,7 @@
 #'
 #' @details Details will be filled out later
 #'
-#' @return the following values in a dataframe for each cf, cm, and minimum length limit specified.
+#' @return the following values in a data.frame for each cf, cm, and minimum length limit specified.
 #' \itemize{
 #' \item exploitation is the exploitation rate
 #' \item yield is the calculated yield
@@ -28,13 +28,14 @@
 #' \item wt is the average weight of fish harvested
 #' \item avgl is the average length of fish harvested
 #' \item Nt is the number of fish at time t (time they become harvestable size)
+#' \item tr is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 #' \item Fmort is the estimated instantaneous rate of fishing mortality
 #' \item Mmort is the estimated  instantaneous rate of natural mortality
 #' \item Zmort is the estimated  instantaneous rate of total mortality
 #' \item S is the estimated total survival
+#' \item minlength A numeric representing the minimum length limit for harvest in mm
 #' \item cf A numeric representing conditional fishing mortality
 #' \item cm A numeric representing conditional natural mortality
-#' \item minlength A numeric representing the minimum length limit for harvest in mm
 #' \item N0 A numeric representing the initial number of new recruits entering the fishery
 #' \item linf A numeric representing the point estimate of Linf from the LVB model in mm
 #' \item K A numeric representing the point estimate of k from the LVB model
@@ -53,20 +54,20 @@
 #' library(metR)
 #'
 #' #Estimate yield
-#' Res_1<-ypr_fixed_MinTL(cfmin = 0.05,
-#'                         cfmax = 0.95,
-#'                         cfinc = 0.05,
-#'                         cmmin = 0.05,
-#'                         cmmax = 0.95,
-#'                         cminc = 0.05,
-#'                         minlength = 200,
-#'                         N0=100,
-#'                         linf=2000,
-#'                         K=0.50,
-#'                         t0=-0.616,
-#'                         LWalpha=-5.453,
-#'                         LWbeta=3.10,
-#'                         maxage=15)
+#' Res_1<-ypr_MinTL_fixed(minlength = 200,
+#'                        cfmin = 0.05,
+#'                        cfmax = 0.95,
+#'                        cfinc = 0.05,
+#'                        cmmin = 0.05,
+#'                        cmmax = 0.95,
+#'                        cminc = 0.05,
+#'                        N0=100,
+#'                        linf=2000,
+#'                        K=0.50,
+#'                        t0=-0.616,
+#'                        LWalpha=-5.453,
+#'                        LWbeta=3.10,
+#'                        maxage=15)
 #'
 #' #Extract exploitation and yield for cm = 0.40 with minimum length limit
 #'
@@ -90,9 +91,9 @@
 #'        )
 #'
 
-#' @rdname ypr_fixed_MinTL
+#' @rdname ypr_MinTL_fixed
 #' @export
-ypr_fixed_MinTL<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,minlength,
+ypr_MinTL_fixed<-function(minlength,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
                           N0,linf,K,t0,LWalpha,LWbeta,maxage){
 
   if (missing(cfmin))
@@ -122,57 +123,13 @@ ypr_fixed_MinTL<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,minlength,
     stop("cmmin must be equal to or less than cmmax")
 
 
-  #Note to calculate yield with one cf, one cm, or one minimum length limit
-  #Set cfmin=cfmax, cmmin=cmmax, or lengthmin=lengthmax. Increment is defaulted to 0.1 and 1
-
-  #Set up cfvector
-  cfvect <- seq(from=cfmin,to=cfmax,by=cfinc)
-  #Set up cm vector
-  cmvect <- seq(from=cmmin,to=cmmax,by=cminc)
-
-  #Create a dataframe to hold output
-  res_out <- data.frame(exploitation=numeric(),
-                        yield=numeric(),
-                        Nharvest=numeric(),
-                        Ndie=numeric(),
-                        wt=numeric(),
-                        avgl=numeric(),
-                        Nt=numeric(),
-                        Fmort=numeric(),
-                        Mmort=numeric(),
-                        Zmort=numeric(),
-                        S=numeric(),
-                        cf=numeric(),
-                        cm=numeric(),
-                        minlength=numeric(),
-                        N0=integer(),
-                        linf=numeric(),
-                        K=numeric(),
-                        t0=numeric(),
-                        LWalpha=numeric(),
-                        LWbeta=numeric(),
-                        maxage=numeric()
-  )
-
-    for(y in 1:length(cfvect)){ #Row
-      for(x in 1:length(cmvect)){ #Column
-
-        #
-        res_out <- rbind(res_out,
-                         ypr_func(cf=cfvect[y],
-                                  cm=cmvect[x],
-                                  minlength=minlength,
-                                  N0=N0,
-                                  linf=linf,
-                                  K=K,
-                                  t0=t0,
-                                  LWalpha=LWalpha,
-                                  LWbeta=LWbeta,
-                                  maxage=maxage))
-      }
-    }
-
-
-  return(res_out)
+  # Setup data.frame of input values (varying cf and cm, the rest constant)
+  res <- expand.grid(minlength=minlength,cf=seq(cfmin,cfmax,cfinc),cm=seq(cmmin,cmmax,cminc),
+                     N0=N0,linf=linf,K=K,t0=t0,
+                     LWalpha=LWalpha,LWbeta=LWbeta,maxage=maxage)
+  # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
+  res <- purrr::pmap_df(res,ypr_func)
+  # Return result
+  return(res)
 
 }

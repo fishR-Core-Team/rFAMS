@@ -5,11 +5,12 @@ library(metR)  #needed for contour plots
 source("ypr_var_MinTL.R")
 source("ypr_fixed_MinTL.R")
 source("ypr_func.R")
+source("rFAMS-internals.R")
 
 #Estimate yield based on a fixed minimum length and range of exploitation with the ypr1 function
 
 #Calculate yield based on a range of cf, cm and fixed minimum length limit
-Res_1<-ypr_fixed_MinTL(cfmin = 0.05,
+Res_1<-ypr_MinTL_fixed(cfmin = 0.05,
                        cfmax = 0.95,
                        cfinc = 0.05,
                        cmmin = 0.05,
@@ -46,22 +47,39 @@ ggplot(data = plot_dat, aes(x=exploitation,y=yield)) +
   )
 
 
+Res_1<-ypr_MinTL_var( lengthmin = 200,
+                      lengthmax = 550,
+                      lengthinc= 50,
+                      cfmin = 0.05,
+                      cfmax = 0.95,
+                      cfinc = 0.05,
+                      cmmin = 0.05,
+                      cmmax = 0.95,
+                      cminc = 0.05,
+                      N0=100,
+                      linf=2000,
+                      K=0.50,
+                      t0=-0.616,
+                      LWalpha=-5.453,
+                      LWbeta=3.10,
+                      maxage=15)
+
 #Calculate yield based on a range of cf, cm and minimum length limit
-Res_1<-ypr_fixed_MinTL(cfmin = 0.05,
+Res_1<-ypr_MinTL_var(cfmin = 0.40,
                        cfmax = 0.95,
                        cfinc = 0.05,
                        cmmin = 0.05,
                        cmmax = 0.95,
                        cminc = 0.05,
-                       lengthmin = 100,
-                       lengthmax = 600,
+                       lengthmin = 200,
+                       lengthmax = 550,
                        lengthinc= 50,
                        N0=100,
-                       linf=2000,
-                       K=0.50,
-                       t0=-0.616,
-                       LWalpha=-5.453,
-                       LWbeta=3.10,
+                       linf=592,
+                       K=0.2,
+                       t0=-0.3,
+                       LWalpha=-5.528,
+                       LWbeta=3.273,
                        maxage=15)
 
 
