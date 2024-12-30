@@ -24,6 +24,7 @@
 #' \item wt is the average weight of fish harvested
 #' \item avgl is the average length of fish harvested
 #' \item Nt is the number of fish at time t (time they become harvestable size)
+#' \item tr is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 #' \item Fmort is the estimated instantaneous rate of fishing mortality
 #' \item Mmort is the estimated  instantaneous rate of natural mortality
 #' \item Zmort is the estimated  instantaneous rate of total mortality
@@ -59,7 +60,7 @@
 #' @rdname ypr_function
 #' @export
 
-ypr_func <- function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
+ypr_func <- function(minlength,cf,cm,N0,linf,K,t0,LWalpha,LWbeta,maxage){
   # Check inputs
   iCheckcf(cf)
   iCheckcm(cm)
@@ -92,7 +93,7 @@ ypr_func <- function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
     tr <- ((log(1-minlength/(minlength+.1)))/-K)+t0
   }
 
-  r <- tr-t0  # DHO NOTE ... IS THIS USED EVER????
+  r <- tr-t0  # DHO NOTE ... IS THIS USED EVER???? - used in yield equation
 
   # Number of recruits entering the fishery at some minimum length at time (t):
   Nt <- N0*exp(-Mmort*tr)
@@ -114,7 +115,7 @@ ypr_func <- function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
        beta(Zmort/K,Q)*stats::pbeta(exp(-K*(maxage-t0)),Zmort/K,Q))
 
   #Uses Ibeta function from zipfR pacakge - only for testing
-  #Y <- ((Fmort*Nt*exp(Z*r)*Winf)/K)*(Ibeta(exp(-K*r),Z/K,Q)-Ibeta(exp(-K*(maxage-t0)),Z/K,Q))
+  #Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*(Ibeta(exp(-K*r),Zmort/K,Q)-Ibeta(exp(-K*(maxage-t0)),Zmort/K,Q))
 
   # Adjust Y if less than 0 (to 0) or infinite (to NA) or keep as is
   if (is.na(Y)) {
@@ -188,6 +189,7 @@ ypr_func <- function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
                   wt=wt,
                   avgl=avgl,
                   Nt= Nt,
+                  tr=tr,
                   Fmort=Fmort,
                   Mmort=Mmort,
                   Zmort=Zmort,

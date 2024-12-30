@@ -13,7 +13,8 @@ License: file LICENSE
 Depends:
   R (>= 3.5.0)
 Imports:
-  stats
+  stats,
+  purrr
 Suggests: 
   dplyr,
   ggplot2,
