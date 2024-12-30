@@ -25,10 +25,10 @@ ypr_func(cf, cm, minlength, N0, linf, K, t0, LWalpha, LWbeta, maxage)
 
 \item{LWbeta}{A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.}
 
-\item{maxage}{An integer representing of maximum age in the population in years}
+\item{maxage}{An integer representing maximum age in the population in years}
 }
 \value{
-the following calculated and input values in a dataframe
+the following calculated and input values in a data.frame
 \itemize{
 \item exploitation is the exploitation rate
 \item yield is the calculated yield
@@ -60,17 +60,18 @@ Function to estimate yield using the Beverton-Holt YPR model. This main function
 Details will be filled out later
 }
 \examples{
-#Estimate yield with fixed parameters
-Res_1<-ypr_func(cf = 0.45,
-                cm = 0.25,
-                minlength = 355,
-                N0 = 100,
-                linf = 2000,
-                K = 0.50,
-                t0 = -0.616,
-                LWalpha = -5.453,
-                LWbeta = 3.10,
-                maxage = 15)
+# Estimate yield with fixed parameters
+Res_1 <- ypr_func(cf = 0.45,
+                  cm = 0.25,
+                  minlength = 355,
+                  N0 = 100,
+                  linf = 2000,
+                  K = 0.50,
+                  t0 = -0.616,
+                  LWalpha = -5.453,
+                  LWbeta = 3.10,
+                  maxage = 15)
+Res_1
 
 }
 \author{
