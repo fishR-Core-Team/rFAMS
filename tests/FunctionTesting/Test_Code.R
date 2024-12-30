@@ -2,8 +2,8 @@ library(ggplot2)
 library(tidyverse)
 library(metR)  #needed for contour plots
 
-source("ypr_var_MinTL.R")
-source("ypr_fixed_MinTL.R")
+source("ypr_MinTL_fixed.R")
+source("ypr_MinTL_var.R")
 source("ypr_func.R")
 source("rFAMS-internals.R")
 
@@ -67,13 +67,13 @@ Res_1<-ypr_MinTL_var( lengthmin = 200,
 #Calculate yield based on a range of cf, cm and minimum length limit
 Res_1<-ypr_MinTL_var(cfmin = 0.05,
                        cfmax = 0.95,
-                       cfinc = 0.05,
-                       cmmin = 0.05,
-                       cmmax = 0.95,
+                       cfinc = 0.01,
+                       cmmin = 0.30,
+                       cmmax = 0.60,
                        cminc = 0.05,
                        lengthmin = 200,
                        lengthmax = 550,
-                       lengthinc= 50,
+                       lengthinc= 5,
                        N0=100,
                        linf=592,
                        K=0.2,
@@ -82,7 +82,7 @@ Res_1<-ypr_MinTL_var(cfmin = 0.05,
                        LWbeta=3.273,
                        maxage=15)
 
-
+#write.csv(Res_1,"LMB_2.csv")
 #Extract exploitation and yield for cm = 0.40 with MLL = 400
 #Which index has cm = 0.40
 
