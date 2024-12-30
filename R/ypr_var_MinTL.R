@@ -51,7 +51,7 @@
 #' @examples
 #' #Load other required packages for organizing output and plotting
 #' library(ggplot2)
-#' library(tidyverse)
+#' library(dplyr)
 #' library(metR)
 #'
 #' #Estimate yield
@@ -135,6 +135,7 @@
 #'       )
 #' @rdname ypr_var_MinTL
 #' @export
+
 ypr_var_MinTL<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,lengthmin,lengthmax,lengthinc=1,
               N0,linf,K,t0,LWalpha,LWbeta,maxage){
 

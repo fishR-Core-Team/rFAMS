@@ -49,7 +49,7 @@
 #' @examples
 #' #Load other required packages for organizing output and plotting
 #' library(ggplot2)
-#' library(tidyverse)
+#' library(dplyr)
 #' library(metR)
 #'
 #' #Estimate yield

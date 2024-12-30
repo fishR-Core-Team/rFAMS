@@ -3,7 +3,3 @@
 export(ypr_fixed_MinTL)
 export(ypr_func)
 export(ypr_var_MinTL)
-import(FSA)
-import(metR)
-import(tidyverse)
-importFrom(stats,pbeta)
