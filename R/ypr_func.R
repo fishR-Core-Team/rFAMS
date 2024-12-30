@@ -131,14 +131,9 @@ ypr_func <- function(minlength,cf,cm,N0,linf,K,t0,LWalpha,LWbeta,maxage){
   # Number of fish harvested
   Nharv <- (Nt*Fmort)/Zmort
 
-  # Adjust Nharv (and wt, avgl, and Y) if Nharv is less than 1 or greater than Nt
-  #   If Nharvt is good (last else) compute wt and avgl
-  if (Nharv<1) {
-    Nharv <- 0
-    wt <- NA
-    avgl <- NA
-    Y <- 0
-  } else if (Nharv>Nt) {
+  # Adjust Nharv (and wt and avgl) if Nharv is greater than Nt
+  # If Nharvt is good (last else) compute wt and avgl
+  if (Nharv>Nt) {
     Nharv <- Nt
     wt <- Y/Nharv
     avgl <- 10^((log10(wt) - LWalpha)/LWbeta)
@@ -148,21 +143,10 @@ ypr_func <- function(minlength,cf,cm,N0,linf,K,t0,LWalpha,LWbeta,maxage){
     avgl <- 10^((log10(wt) - LWalpha)/LWbeta)
   }
 
-  # If wt is not NA but <1 then set to NA, otherwise keep as is
-  if (!is.na(wt)) {
-    if (wt<1) {
-      wt <- NA
-    } else {
-      wt <- wt
-    }
-  }
-
-  # If avgl is not NA but <1 then set to NA, but if >1 and <minlength then set
+  # If avgl is not NA but <minlength then set
   #   to minlength, otherwise keep as is
   if (!is.na(avgl)) {
-    if (avgl<1) {
-      avgl <- NA
-    } else if (avgl<minlength) {
+      if (avgl<minlength) {
       avgl <- minlength
     } else {
       avgl <- avgl
