@@ -65,7 +65,7 @@ Res_1<-ypr_MinTL_var( lengthmin = 200,
                       maxage=15)
 
 #Calculate yield based on a range of cf, cm and minimum length limit
-Res_1<-ypr_MinTL_var(cfmin = 0.40,
+Res_1<-ypr_MinTL_var(cfmin = 0.05,
                        cfmax = 0.95,
                        cfinc = 0.05,
                        cmmin = 0.05,
