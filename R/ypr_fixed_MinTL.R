@@ -93,7 +93,7 @@
 #' @rdname ypr_fixed_MinTL
 #' @export
 ypr_fixed_MinTL<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,minlength,
-                        N0,linf,K,t0,LWalpha,LWbeta,maxage){
+                          N0,linf,K,t0,LWalpha,LWbeta,maxage){
 
   if (missing(cfmin))
     stop("Need to specify cfmin.")
@@ -107,22 +107,14 @@ ypr_fixed_MinTL<-function(cfmin,cfmax,cfinc=0.1,cmmin,cmmax,cminc=0.1,minlength,
     stop("Need to specify cmmax")
   if (missing(cminc))
     stop("Need to specify cminc")
-  if (missing(minlength))
-    stop("Need to specify minimum length limit")
-  if (missing(N0))
-    stop("Need to specify N0")
-  if (missing(linf))
-    stop("Need to specify Linf.")
-  if (missing(K))
-    stop("Need to specify K.")
-  if (missing(t0))
-    stop("Need to specify t0.")
-  if (missing(LWalpha))
-    stop("Need to specify Length-weight intercept, alpha.")
-  if (missing(LWbeta))
-    stop("Need to specify Length-weight slope, beta.")
-  if (missing(maxage))
-    stop("Need to specify a maximum age.")
+  iCheckMLH(minlength)
+  iCheckN0(N0)
+  iCheckLinf(linf)
+  iCheckK(K)
+  iCheckt0(t0)
+  iCheckLWa(LWalpha)
+  iCheckLWb(LWbeta)
+  iCheckMaxAge(maxage)
 
   if(cfmin>cfmax)
     stop("cfmin must be equal to or less than cfmax")

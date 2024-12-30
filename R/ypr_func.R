@@ -11,11 +11,11 @@
 #' @param t0 A numeric representing the point estimate of t0 from the LVB model
 #' @param LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 #' @param LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
-#' @param maxage An integer representing of maximum age in the population in years
+#' @param maxage An integer representing maximum age in the population in years
 #'
 #' @details Details will be filled out later
 #'
-#' @return the following calculated and input values in a dataframe
+#' @return the following calculated and input values in a data.frame
 #' \itemize{
 #' \item exploitation is the exploitation rate
 #' \item yield is the calculated yield
@@ -43,91 +43,96 @@
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #' @examples
-#' #Estimate yield with fixed parameters
-#' Res_1<-ypr_func(cf = 0.45,
-#'                 cm = 0.25,
-#'                 minlength = 355,
-#'                 N0 = 100,
-#'                 linf = 2000,
-#'                 K = 0.50,
-#'                 t0 = -0.616,
-#'                 LWalpha = -5.453,
-#'                 LWbeta = 3.10,
-#'                 maxage = 15)
+#' # Estimate yield with fixed parameters
+#' Res_1 <- ypr_func(cf = 0.45,
+#'                   cm = 0.25,
+#'                   minlength = 355,
+#'                   N0 = 100,
+#'                   linf = 2000,
+#'                   K = 0.50,
+#'                   t0 = -0.616,
+#'                   LWalpha = -5.453,
+#'                   LWbeta = 3.10,
+#'                   maxage = 15)
+#' Res_1
 #'
 #' @rdname ypr_function
 #' @export
 
+ypr_func <- function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
+  # Check inputs
+  iCheckcf(cf)
+  iCheckcm(cm)
+  iCheckMLH(minlength)
+  iCheckN0(N0)
+  iCheckLinf(linf)
+  iCheckK(K)
+  iCheckt0(t0)
+  iCheckLWa(LWalpha)
+  iCheckLWb(LWbeta)
+  iCheckMaxAge(maxage)
 
-ypr_func<-function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
-  if (missing(cf))
-    stop("Need to specify cf.")
-  if (missing(cm))
-    stop("Need to specify cm.")
-  if (missing(minlength))
-    stop("Need to specify minimum length.")
-  if (missing(N0))
-    stop("Need to specify N0")
-  if (missing(linf))
-    stop("Need to specify Linf.")
-  if (missing(K))
-    stop("Need to specify K.")
-  if (missing(t0))
-    stop("Need to specify t0.")
-  if (missing(LWalpha))
-    stop("Need to specify Length-weight intercept, alpha.")
-  if (missing(LWbeta))
-    stop("Need to specify Length-weight slope, beta.")
-  if (missing(maxage))
-    stop("Need to specify a maximum age.")
+  # Maximum theoretical weight derived from L-inf and weight to length regression
+  # log10 transformation to linearize it
+  Winf <- 10^(LWalpha+log10(linf)*LWbeta)
 
-  #maximum theoretical weight derived from L-inf and weight to length regression
-  #log10 transformation to linearize it
-  Winf <-  10^(LWalpha + log10(linf) * LWbeta)
-
-  #slope of the weight-length relation + 1
-  Q <- LWbeta + 1
-
-
-  Fmort <- -1 * log(-1*(cf-1))
-  Mmort <- -1 * log(-1*(cm-1))
+  # Convert to instantaneous rates
+  Fmort <- -1*log(-1*(cf-1))
+  Mmort <- -1*log(-1*(cm-1))
   Zmort <- Fmort+Mmort
   S <- exp(-Zmort)
 
-  exploitation <-(Fmort*(1-S))/Zmort
+  # Compute exploitation rate
+  exploitation <- (Fmort*(1-S))/Zmort
 
-  #time in years to recruit to the fishery (tr - to)
-
-  if(minlength<linf){ tr <- ((log(1-minlength/linf))/-K) + t0
-  } else{ tr <- ((log(1-minlength/(minlength+.1)))/-K) + t0
+  # Find time in years to recruit to the fishery (tr - to)
+  if (minlength<linf) {
+    tr <- ((log(1-minlength/linf))/-K)+t0
+  } else {
+    tr <- ((log(1-minlength/(minlength+.1)))/-K)+t0
   }
 
-  r <- tr - t0
+  r <- tr-t0  # DHO NOTE ... IS THIS USED EVER????
 
-  #Number of recruits entering the fishery at some minimum length at time (t):
-  Nt <- N0 * exp(-Mmort * tr)
+  # Number of recruits entering the fishery at some minimum length at time (t):
+  Nt <- N0*exp(-Mmort*tr)
+  # Adjust Nt if less than 0 or greater than start, otherwise keep Nt as calculated
+  if (Nt<0) {
+    Nt <- 0
+  } else if (Nt>N0) {
+    Nt <- N0
+  } else {
+    Nt <- Nt
+  }
 
-  if (Nt<0) {Nt<-0
-  } else if (Nt>N0){Nt<-N0
-  } else {Nt<-Nt}
+  # Slope of the weight-length relation + 1 (for beta function below)
+  Q <- LWbeta+1
 
-  Y <- ((Fmort*Nt*exp(Zmort*r) * Winf) / K) *
-    (beta(Zmort/K, Q)  * stats::pbeta(exp(-K*r), Zmort/K, Q) -
-       beta(Zmort/K, Q)  * stats::pbeta(exp(-K*(maxage-t0)), Zmort/K, Q))
+  # Compute yield
+  Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*
+    (beta(Zmort/K,Q)*stats::pbeta(exp(-K*r),Zmort/K,Q)-
+       beta(Zmort/K,Q)*stats::pbeta(exp(-K*(maxage-t0)),Zmort/K,Q))
 
   #Uses Ibeta function from zipfR pacakge - only for testing
-  #Y <- ((Fmort*Nt*exp(Z*r) * Winf) / K) * (Ibeta(exp(-K*r), Z/K, Q) - Ibeta(exp(-K*(maxage-t0)), Z/K, Q))
+  #Y <- ((Fmort*Nt*exp(Z*r)*Winf)/K)*(Ibeta(exp(-K*r),Z/K,Q)-Ibeta(exp(-K*(maxage-t0)),Z/K,Q))
 
-  if (is.na(Y)) {Y <- NA
-  } else if (is.infinite(Y)) {Y <- NA
-  } else if (Y<0){Y < -0
-  } else {Y <- Y}
+  # Adjust Y if less than 0 (to 0) or infinite (to NA) or keep as is
+  if (is.na(Y)) {
+    Y <- NA
+  } else if (is.infinite(Y)) {
+    Y <- NA
+  } else if (Y<0) {
+    Y <- 0
+  } else {
+    Y <- Y
+  }
 
+  # Number of fish harvested
+  Nharv <- (Nt*Fmort)/Zmort
 
-  #number of fish harvested
-  Nharv<-(Nt*Fmort)/Zmort
-
-  if (Nharv<1){
+  # Adjust Nharv (and wt, avgl, and Y) if Nharv is less than 1 or greater than Nt
+  #   If Nharvt is good (last else) compute wt and avgl
+  if (Nharv<1) {
     Nharv <- 0
     wt <- NA
     avgl <- NA
@@ -142,32 +147,41 @@ ypr_func<-function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
     avgl <- 10^((log10(wt) - LWalpha)/LWbeta)
   }
 
-  if (!is.na(wt))
-  { if (wt<1)
-  {wt <- NA}
-    else
-    {wt <- wt}
+  # If wt is not NA but <1 then set to NA, otherwise keep as is
+  if (!is.na(wt)) {
+    if (wt<1) {
+      wt <- NA
+    } else {
+      wt <- wt
+    }
   }
 
-  if (!is.na(avgl))
-  { if (avgl<1)
-    {avgl <- NA}
-    else if (avgl<minlength)
-    {avgl <- minlength}
-    else
-    {avgl <-avgl}
+  # If avgl is not NA but <1 then set to NA, but if >1 and <minlength then set
+  #   to minlength, otherwise keep as is
+  if (!is.na(avgl)) {
+    if (avgl<1) {
+      avgl <- NA
+    } else if (avgl<minlength) {
+      avgl <- minlength
+    } else {
+      avgl <- avgl
+    }
   }
 
-
+  # Number of fish that died natually
   Ndie <- (Nt*Mmort)/Zmort
 
-  if (Ndie<0)
-  {Ndie <- 0
-  } else if (Ndie>Nt){Ndie <- Nt
-  } else {Ndie <- Ndie}
+  # Adjust Ndie if <0 (to 0) or more then Nt (to Nt), otherwise keep as is
+  if (Ndie<0) {
+    Ndie <- 0
+  } else if (Ndie>Nt) {
+    Ndie <- Nt
+  } else {
+    Ndie <- Ndie
+  }
 
-  #create dataframe to store and return output with input parameters
-  Res<-data.frame(exploitation=exploitation,
+  # Create data.frame to store and return output with input parameters
+  Res <- data.frame(exploitation=exploitation,
                   yield=Y,
                   Nharvest=Nharv,
                   Ndie=Ndie,
@@ -190,7 +204,5 @@ ypr_func<-function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
                   maxage=maxage
   )
 
-
   return(Res)
 }
-
