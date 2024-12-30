@@ -57,10 +57,7 @@
 #'
 #' @rdname ypr_function
 #' @export
-#' @importFrom stats pbeta
-#' @import FSA
-#' @import metR
-#' @import tidyverse
+
 
 ypr_func<-function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
   if (missing(cf))
@@ -115,8 +112,8 @@ ypr_func<-function(cf,cm,minlength,N0,linf,K,t0,LWalpha,LWbeta,maxage){
   } else {Nt<-Nt}
 
   Y <- ((Fmort*Nt*exp(Zmort*r) * Winf) / K) *
-    (beta(Zmort/K, Q)  * pbeta(exp(-K*r), Zmort/K, Q) -
-       beta(Zmort/K, Q)  * pbeta(exp(-K*(maxage-t0)), Zmort/K, Q))
+    (beta(Zmort/K, Q)  * stats::pbeta(exp(-K*r), Zmort/K, Q) -
+       beta(Zmort/K, Q)  * stats::pbeta(exp(-K*(maxage-t0)), Zmort/K, Q))
 
   #Uses Ibeta function from zipfR pacakge - only for testing
   #Y <- ((Fmort*Nt*exp(Z*r) * Winf) / K) * (Ibeta(exp(-K*r), Z/K, Q) - Ibeta(exp(-K*(maxage-t0)), Z/K, Q))

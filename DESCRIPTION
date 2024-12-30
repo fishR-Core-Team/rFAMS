@@ -2,25 +2,27 @@ Package: rFAMS
 Version: 0.0.0.9000
 Date: 2024-12-29
 Title: Fisheries Analysis and Modeling Simulator
-Authors@R: c(person("Jason", "Doll", , "jason.doll@fmarion.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-9024-2561")))
+Authors@R: c(person(c("Jason","C."), "Doll", email="jason.doll@fmarion.edu",role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9024-2561")),
+           person(c("Derek","H."), "Ogle", email="DerekOgle51@gmail.com",role=c("aut"),
+           comment=c(ORCID="0000-0002-0370-9299")))
 Description: Package to simulate yield for fisheries analysis.
-License: GPL (>= 2)
 URL: https://github.com/fishR-Core-Team/rFAMS
-BugReports: https://github.com/fishR-Core-Team/FAMS/issues
+BugReports: https://github.com/fishR-Core-Team/rFAMS/issues
+License: file LICENSE
 Depends:
-  R (>= 3.5.0),
-  FSA,
+  R (>= 3.5.0)
+Imports:
+  stats
+Suggests: 
+  dplyr,
+  ggplot2,
   metR,
-  tidyverse
+  knitr,
+  rmarkdown,
+  testthat (>= 3.0.0)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Suggests: 
-  ggplot2,
-  knitr,
-  rmarkdown,
-  testthat (>= 3.0.0),
-  withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr

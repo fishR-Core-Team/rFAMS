@@ -1,12 +1,3 @@
-citHeader("To cite rFAMS in publications use:")
+## R package reference generated from DESCRIPTION metadata
+citation(auto = meta)
 
-bibentry(
-  key = "rFAMS",
-  bibtype  = "Manual",
-  title    = "Fisheries Analysis and Modeling Simulator in R",
-  author = c(person("Jason", "Doll")),
-  organization = "American Fisheries Society, Fisheries Information and Technology Section",
-  year     = "2024",
-  address = "Bethesda, Maryland",
-  url   = "https://github.com/fishR-Core-Team/FAMS"
-)
