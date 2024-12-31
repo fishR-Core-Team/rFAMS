@@ -47,6 +47,7 @@ iErrGT <- function(x,value,nm) if (x>value) STOP(nm," must be <=",value,".")
 iCheckcf <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a conditional fishing mortality in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a conditional fishing mortality in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -57,6 +58,7 @@ iCheckcf <- function(x) {
 iCheckcm <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a conditional natural mortality in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a conditional natural mortality in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -67,6 +69,7 @@ iCheckcm <- function(x) {
 iCheckMLH <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a minimum length (mm) limit for harvest in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a minimum length (mm) limit for harvest in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -80,6 +83,7 @@ iCheckMLH <- function(x) {
 iCheckN0 <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify an initial number of new recruits in ",nm,".")
+  if (is.null(x)) STOP("Need to specify an initial number of new recruits in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -91,6 +95,7 @@ iCheckN0 <- function(x) {
 iCheckLinf <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a mean asymptotic length (mm) in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a mean asymptotic length (mm) in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -104,6 +109,7 @@ iCheckLinf <- function(x) {
 iCheckK <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a Brody growth coefficient in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a Brody growth coefficient in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -117,6 +123,7 @@ iCheckK <- function(x) {
 iCheckt0 <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a Brody growth coefficient in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a Brody growth coefficient in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
 }
@@ -125,6 +132,7 @@ iCheckt0 <- function(x) {
 iCheckLWb <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a weight-length beta coefficient in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a weight-length beta coefficient in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -138,6 +146,7 @@ iCheckLWb <- function(x) {
 iCheckLWa <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a weight-length alpha coefficient in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a weight-length alpha coefficient in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
 }
@@ -147,6 +156,7 @@ iCheckLWa <- function(x) {
 iCheckMaxAge <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a maximum age in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a maximum age in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)

@@ -3,6 +3,21 @@ res <- ypr_func(minlength=355,cf=0.45,cm=0.25,N0=100,
                 Linf=2000,K=0.50,t0=-0.616,
                 LWalpha=-5.453,LWbeta=3.10,maxage=15)
 
+# Same, but with named vector in N0
+parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
+res2 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+
+# Same, but with named list in N0
+parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
+res3 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+
+
+test_that("Three params of ypr_func() match",{
+  expect_equal(res2,res)
+  expect_equal(res3,res)
+  expect_equal(res3,res2)
+})
+
 test_that("ypr_func() messages",{
   ## Tests are not exhaustive, see test_internals for more
   ## check for some missing values
@@ -20,6 +35,22 @@ test_that("ypr_func() messages",{
                         LWalpha=-5.453,LWbeta=3.10,maxage=15),
                "A minimum length limit of harvest of 35 mm seems too small")
 
+  ## Errors when using the named vector/list
+  tmp <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
+  expect_error(ypr_func(cf=0.45,cm=0.25,minlength=355,N0=100,Linf=tmp),
+               "Only use one value in 'Linf'")
+  tmp <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
+  expect_error(ypr_func(cf=0.45,cm=0.25,minlength=355,N0=tmp),
+               "'N0' must contain only one value for 'N0' or 7 named")
+  tmp <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15,derek=7)
+  expect_error(ypr_func(cf=0.45,cm=0.25,minlength=355,N0=tmp),
+               "'N0' must contain only one value for 'N0' or 7 named")
+  tmp <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,MAXAGE=15)
+  expect_error(ypr_func(cf=0.45,cm=0.25,minlength=355,N0=tmp),
+               "'N0' must have named values for all of")
+  tmp <- c(100,2000,0.50,-0.616,-5.453,3.10,15)
+  expect_error(ypr_func(cf=0.45,cm=0.25,minlength=355,N0=tmp),
+               "'N0' must have named values for")
 })
 
 test_that("ypr_func() output",{

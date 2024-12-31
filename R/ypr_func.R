@@ -5,10 +5,10 @@
 #' @param cf A numeric representing conditional fishing mortality
 #' @param cm A numeric representing conditional natural mortality
 #' @param minlength A numeric representing the minimum length limit for harvest in mm
-#' @param N0 A numeric representing the initial number of new recruits entering the fishery
-#' @param Linf A numeric representing the point estimate of Linf from the LVB model in mm
-#' @param K A numeric representing the point estimate of k from the LVB model
-#' @param t0 A numeric representing the point estimate of t0 from the LVB model
+#' @param N0 A numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}
+#' @param Linf A numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm
+#' @param K A numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model
+#' @param t0 A numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model
 #' @param LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 #' @param LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
 #' @param maxage An integer representing maximum age in the population in years
@@ -45,26 +45,50 @@
 #'
 #' @examples
 #' # Estimate yield with fixed parameters
-#' Res_1 <- ypr_func(cf = 0.45,
-#'                   cm = 0.25,
-#'                   minlength = 355,
-#'                   N0 = 100,
-#'                   Linf = 2000,
-#'                   K = 0.50,
-#'                   t0 = -0.616,
-#'                   LWalpha = -5.453,
-#'                   LWbeta = 3.10,
-#'                   maxage = 15)
+#' Res_1 <- ypr_func(cf=0.45,cm=0.25,
+#'                   minlength=355,
+#'                   N0=100,
+#'                   Linf=2000,K=0.50,t0=-0.616,
+#'                   LWalpha=-5.453,LWbeta=3.10,
+#'                   maxage=15)
 #' Res_1
+#'
+#' # Same, but with named vector in N0
+#' parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
+#' Res_2 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+#' Res_2
+#'
+#' # Same, but with named list in N0
+#' parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
+#' Res_3 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+#' Res_3
 #'
 #' @rdname ypr_function
 #' @export
 
-ypr_func <- function(minlength,cf,cm,N0,Linf,K,t0,LWalpha,LWbeta,maxage){
+ypr_func <- function(minlength,cf,cm,
+                     N0,Linf=NULL,K=NULL,t0=NULL,
+                     LWalpha=NULL,LWbeta=NULL,maxage=NULL){
   # ---- Check inputs
   iCheckMLH(minlength)
   iCheckcf(cf)
   iCheckcm(cm)
+  if (length(N0)>1) {
+    pnms <- c('N0','Linf','K','t0','LWalpha','LWbeta', 'maxage')
+    if (length(N0)!=7) STOP("'N0' must contain only one value for 'N0' or 7 named\n",
+                            "values for: ",paste(pnms,collapse=", "))
+    if (is.null(names(N0))) STOP("'N0' must have named values for: ",
+                                 paste(pnms,collapse=", "))
+    if (!all(names(N0) %in% pnms)) STOP("'N0' must have named values for all of: ",
+                                        paste(pnms,collapse=", "))
+    Linf <- N0[["Linf"]]
+    K <- N0[["K"]]
+    t0 <- N0[["t0"]]
+    LWalpha <- N0[["LWalpha"]]
+    LWbeta <- N0[["LWbeta"]]
+    maxage <- N0[["maxage"]]
+    N0 <- N0[["N0"]]
+  }
   iCheckN0(N0)
   iCheckLinf(Linf)
   iCheckK(K)
