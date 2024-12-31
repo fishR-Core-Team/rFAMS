@@ -12,7 +12,7 @@
 #' @param cmmax Single value, maximum conditional natural mortality
 #' @param cminc Single value, increment to cycle from minimum to maximum conditional natural mortality
 #' @param N0 The initial number of new recruits entering the fishery
-#' @param linf Point estimate of Linf from the LVB model in mm
+#' @param Linf Point estimate of Linf from the LVB model in mm
 #' @param K Point estimate of k from the LVB model
 #' @param t0 Point estimate of t0 from the LVB model
 #' @param LWalpha Point estimate of alpha from the length-weight regression on the log10 scale.
@@ -41,7 +41,7 @@
 #' \item cf A numeric representing conditional fishing mortality
 #' \item cm A numeric representing conditional natural mortality
 #' \item N0 A numeric representing the initial number of new recruits entering the fishery
-#' \item linf A numeric representing the point estimate of Linf from the LVB model in mm
+#' \item Linf A numeric representing the point estimate of Linf from the LVB model in mm
 #' \item K A numeric representing the point estimate of k from the LVB model
 #' \item t0 A numeric representing the point estimate of t0 from the LVB model
 #' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
@@ -68,7 +68,7 @@
 #'                      cmmax = 0.95,
 #'                      cminc = 0.05,
 #'                      N0=100,
-#'                      linf=2000,
+#'                      Linf=2000,
 #'                      K=0.50,
 #'                      t0=-0.616,
 #'                      LWalpha=-5.453,
@@ -142,7 +142,7 @@
 ypr_MinTL_var<-function(lengthmin,lengthmax,lengthinc,
                         cfmin,cfmax,cfinc,
                         cmmin,cmmax,cminc,
-                        N0,linf,K,t0,LWalpha,LWbeta,maxage){
+                        N0,Linf,K,t0,LWalpha,LWbeta,maxage){
 
   if (missing(cfmin))
     stop("Need to specify cfmin.")
@@ -163,7 +163,7 @@ ypr_MinTL_var<-function(lengthmin,lengthmax,lengthinc,
   if (missing(lengthinc))
     stop("Need to specify minimum lengthinc")
   iCheckN0(N0)
-  iCheckLinf(linf)
+  iCheckLinf(Linf)
   iCheckK(K)
   iCheckt0(t0)
   iCheckLWa(LWalpha)
@@ -183,7 +183,7 @@ ypr_MinTL_var<-function(lengthmin,lengthmax,lengthinc,
 
   # Setup data.frame of input values (varying cf and cm, the rest constant)
   res <- expand.grid(minlength=seq(lengthmin,lengthmax,lengthinc),cf=seq(cfmin,cfmax,cfinc),cm=seq(cmmin,cmmax,cminc),
-                     N0=N0,linf=linf,K=K,t0=t0,
+                     N0=N0,Linf=Linf,K=K,t0=t0,
                      LWalpha=LWalpha,LWbeta=LWbeta,maxage=maxage)
   # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
   res <- purrr::pmap_df(res,ypr_func)

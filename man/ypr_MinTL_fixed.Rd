@@ -13,7 +13,7 @@ ypr_MinTL_fixed(
   cmmax,
   cminc,
   N0,
-  linf,
+  Linf,
   K,
   t0,
   LWalpha,
@@ -38,7 +38,7 @@ ypr_MinTL_fixed(
 
 \item{N0}{The initial number of new recruits entering the fishery}
 
-\item{linf}{Point estimate of Linf from the LVB model in mm}
+\item{Linf}{Point estimate of Linf from the LVB model in mm}
 
 \item{K}{Point estimate of k from the LVB model}
 
@@ -69,7 +69,7 @@ the following values in a data.frame for each cf, cm, and minimum length limit s
 \item cf A numeric representing conditional fishing mortality
 \item cm A numeric representing conditional natural mortality
 \item N0 A numeric representing the initial number of new recruits entering the fishery
-\item linf A numeric representing the point estimate of Linf from the LVB model in mm
+\item Linf A numeric representing the point estimate of Linf from the LVB model in mm
 \item K A numeric representing the point estimate of k from the LVB model
 \item t0 A numeric representing the point estimate of t0 from the LVB model
 \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
@@ -98,7 +98,7 @@ Res_1<-ypr_MinTL_fixed(minlength = 200,
                        cmmax = 0.95,
                        cminc = 0.05,
                        N0=100,
-                       linf=2000,
+                       Linf=2000,
                        K=0.50,
                        t0=-0.616,
                        LWalpha=-5.453,

@@ -4,7 +4,7 @@
 \alias{ypr_func}
 \title{Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for single input parameters}
 \usage{
-ypr_func(minlength, cf, cm, N0, linf, K, t0, LWalpha, LWbeta, maxage)
+ypr_func(minlength, cf, cm, N0, Linf, K, t0, LWalpha, LWbeta, maxage)
 }
 \arguments{
 \item{minlength}{A numeric representing the minimum length limit for harvest in mm}
@@ -15,7 +15,7 @@ ypr_func(minlength, cf, cm, N0, linf, K, t0, LWalpha, LWbeta, maxage)
 
 \item{N0}{A numeric representing the initial number of new recruits entering the fishery}
 
-\item{linf}{A numeric representing the point estimate of Linf from the LVB model in mm}
+\item{Linf}{A numeric representing the point estimate of Linf from the LVB model in mm}
 
 \item{K}{A numeric representing the point estimate of k from the LVB model}
 
@@ -30,13 +30,13 @@ ypr_func(minlength, cf, cm, N0, linf, K, t0, LWalpha, LWbeta, maxage)
 \value{
 the following calculated and input values in a data.frame
 \itemize{
-\item exploitation is the exploitation rate
 \item yield is the calculated yield
+\item exploitation is the exploitation rate
 \item Nharvest is the number of harvested fish
 \item Ndie is the number of fish that die of natural deaths.
-\item wt is the average weight of fish harvested
-\item avgl is the average length of fish harvested
 \item Nt is the number of fish at time t (time they become harvestable size)
+\item avgwt is the average weight of fish harvested
+\item avglen is the average length of fish harvested
 \item tr is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 \item Fmort is the estimated instantaneous rate of fishing mortality
 \item Mmort is the estimated  instantaneous rate of natural mortality
@@ -46,7 +46,7 @@ the following calculated and input values in a data.frame
 \item cm A numeric representing conditional natural mortality
 \item minlength A numeric representing the minimum length limit for harvest in mm
 \item N0 A numeric representing the initial number of new recruits entering the fishery
-\item linf A numeric representing the point estimate of Linf from the LVB model in mm
+\item Linf A numeric representing the point estimate of Linf from the LVB model in mm
 \item K A numeric representing the point estimate of k from the LVB model
 \item t0 A numeric representing the point estimate of t0 from the LVB model
 \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
@@ -66,7 +66,7 @@ Res_1 <- ypr_func(cf = 0.45,
                   cm = 0.25,
                   minlength = 355,
                   N0 = 100,
-                  linf = 2000,
+                  Linf = 2000,
                   K = 0.50,
                   t0 = -0.616,
                   LWalpha = -5.453,
