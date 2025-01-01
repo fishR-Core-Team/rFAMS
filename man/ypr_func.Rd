@@ -5,7 +5,7 @@
 \title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for single input parameters}
 \usage{
 ypr_func(
-  minlength,
+  minLL,
   cf,
   cm,
   N0,
@@ -18,7 +18,7 @@ ypr_func(
 )
 }
 \arguments{
-\item{minlength}{A single numeric representing the minimum length limit for harvest in mm.}
+\item{minLL}{A single numeric representing the minimum length limit for harvest in mm.}
 
 \item{cf}{A single numeric representing conditional fishing mortality.}
 
@@ -55,10 +55,10 @@ A data.frame with the following calculated values:
 \item \code{S} is the (total) annual rate of survival.
 }
 
-For convenience the data.frame also contains the model input values (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}).
+For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}).
 }
 \description{
-Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minlength}).
+Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minLL}).
 }
 \details{
 Details will be filled out later
@@ -66,7 +66,7 @@ Details will be filled out later
 \examples{
 # Estimate yield with fixed parameters
 Res_1 <- ypr_func(cf=0.45,cm=0.25,
-                  minlength=355,
+                  minLL=355,
                   N0=100,
                   Linf=2000,K=0.50,t0=-0.616,
                   LWalpha=-5.453,LWbeta=3.10,
@@ -75,17 +75,17 @@ Res_1
 
 # Same, but with named vector in N0
 parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-Res_2 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+Res_2 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
 Res_2
 
 # Same, but with named list in N0
 parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-Res_3 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+Res_3 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
 Res_3
 
 }
 \seealso{
-\code{\link{ypr_MinTL_fixed}} and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minlength}.
+\code{\link{ypr_MinTL_fixed}} and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}

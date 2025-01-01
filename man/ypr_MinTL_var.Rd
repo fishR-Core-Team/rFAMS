@@ -73,10 +73,10 @@ A data.frame with the following calculated values:
 \item \code{S} is the (total) annual rate of survival.
 }
 
-For convenience the data.frame also contains the model input values (\code{minlength} derived from \code{lengthmin}, \code{lengthmax}, and \code{lengthinc}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
+For convenience the data.frame also contains the model input values (\code{minLL} derived from \code{lengthmin}, \code{lengthmax}, and \code{lengthinc}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
 }
 \description{
-Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minlength}).
+Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
 }
 \details{
 Details will be filled out later
@@ -86,7 +86,7 @@ Details will be filled out later
 parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,
            LWalpha=-5.453,LWbeta=3.10,maxage=15)
 
-# Estimate yield for multiple values of minlength, cf, and cm
+# Estimate yield for multiple values of minLL, cf, and cm
 # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
 # #   to produce finer-scaled results
 Res_1 <- ypr_MinTL_var(lengthmin=200,lengthinc=50,lengthmax=600,
@@ -114,7 +114,7 @@ theme_FAMS <- function(...) {
 
 # Yield curve (yield vs exploitation)
 # Extract results for cm=0.40 and minimum length limit=400
-plot_dat <- Res_1 \%>\% dplyr::filter(cm==0.40,minlength==400)
+plot_dat <- Res_1 \%>\% dplyr::filter(cm==0.40,minLL==400)
 
 ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
   geom_point() +
@@ -126,15 +126,15 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
 plot_dat <- Res_1 \%>\% filter(cm==0.40)
 
 ggplot(data=plot_dat,mapping=aes(y=yield,x=exploitation,
-                                 group=minlength,color=minlength)) +
+                                 group=minLL,color=minLL)) +
   geom_line(linewidth=1) +
   scale_color_gradient2(high="black") +
   labs(y="Yield (g)",x="Exploitation",color="Min Length Limit") +
   theme_FAMS()
 
-# Yield isopleths for varying minlength and exploitation with cm=0.40
+# Yield isopleths for varying minLL and exploitation with cm=0.40
 # # Using same data as previous example
-ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minlength,z=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
   geom_contour(color="black") +
   metR::geom_text_contour(stroke=0.15) +
   xlab("Exploitation") +
@@ -142,7 +142,7 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minlength,z=yield)) +
   theme_FAMS()
 
 # Same as previous but using number harvested isopleths
-ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minlength,z=Nharvest)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=Nharvest)) +
   geom_contour(color="black")+
   metR::geom_text_contour(stroke = 0.15)+
   xlab("Exploitation")+
@@ -151,7 +151,7 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minlength,z=Nharvest)) +
 
 }
 \seealso{
-\code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minlength}, and \code{\link{ypr_MinTL_fixed}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minlength}.
+\code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_MinTL_fixed}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}

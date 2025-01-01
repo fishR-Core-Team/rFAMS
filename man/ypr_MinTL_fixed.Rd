@@ -5,7 +5,7 @@
 \title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters}
 \usage{
 ypr_MinTL_fixed(
-  minlength,
+  minLL,
   cfmin,
   cfmax,
   cfinc,
@@ -22,7 +22,7 @@ ypr_MinTL_fixed(
 )
 }
 \arguments{
-\item{minlength}{The minimum length limit for harvest in mm}
+\item{minLL}{The minimum length limit for harvest in mm}
 
 \item{cfmin}{A single numeric for minimum conditional fishing mortality.}
 
@@ -67,10 +67,10 @@ A data.frame with the following calculated values:
 \item \code{S} is the (total) annual rate of survival.
 }
 
-For convenience the data.frame also contains the model input values (\code{minlength}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
+For convenience the data.frame also contains the model input values (\code{minLL}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
 }
 \description{
-Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using a range of values for conditional fishing (\code{cf}) and natural (\code{cm}) mortality and a single fixed minimum length limit for harvest (\code{minlength}).
+Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using a range of values for conditional fishing (\code{cf}) and natural (\code{cm}) mortality and a single fixed minimum length limit for harvest (\code{minLL}).
 }
 \details{
 Details will be filled out later
@@ -80,10 +80,10 @@ Details will be filled out later
 parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,
            LWalpha=-5.453,LWbeta=3.10,maxage=15)
 
-# Estimate yield for multiple values of minlength, cf, and cm
+# Estimate yield for multiple values of minLL, cf, and cm
 # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
 # #   to produce finer-scaled results
-Res_1 <- ypr_MinTL_fixed(minlength=200,
+Res_1 <- ypr_MinTL_fixed(minLL=200,
                          cfmin=0.1,cfmax=0.9,cfinc=0.1,
                          cmmin=0.1,cmmax=0.9,cminc=0.1,
                          N0=parms)
@@ -118,7 +118,7 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
 
 }
 \seealso{
-\code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minlength}, and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minlength}.
+\code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}

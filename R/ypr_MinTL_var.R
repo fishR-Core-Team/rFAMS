@@ -1,6 +1,6 @@
 #' @title Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest
 #'
-#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minlength}).
+#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
 #'
 #' @inheritParams ypr_MinTL_fixed
 #' @param lengthmin A single numeric for the lower limit of minimum length limit for harvest in mm.
@@ -25,18 +25,18 @@
 #' \item \code{S} is the (total) annual rate of survival.
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (\code{minlength} derived from \code{lengthmin}, \code{lengthmax}, and \code{lengthinc}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
+#' For convenience the data.frame also contains the model input values (\code{minLL} derived from \code{lengthmin}, \code{lengthmax}, and \code{lengthinc}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minlength}, and \code{\link{ypr_MinTL_fixed}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minlength}.
+#' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_MinTL_fixed}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
 #'
 #' @examples
 #' # Life history parameters to be used below
 #' parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,
 #'            LWalpha=-5.453,LWbeta=3.10,maxage=15)
 #'
-#' # Estimate yield for multiple values of minlength, cf, and cm
+#' # Estimate yield for multiple values of minLL, cf, and cm
 #' # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
 #' # #   to produce finer-scaled results
 #' Res_1 <- ypr_MinTL_var(lengthmin=200,lengthinc=50,lengthmax=600,
@@ -64,7 +64,7 @@
 #'
 #' # Yield curve (yield vs exploitation)
 #' # Extract results for cm=0.40 and minimum length limit=400
-#' plot_dat <- Res_1 %>% dplyr::filter(cm==0.40,minlength==400)
+#' plot_dat <- Res_1 %>% dplyr::filter(cm==0.40,minLL==400)
 #'
 #' ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
 #'   geom_point() +
@@ -76,15 +76,15 @@
 #' plot_dat <- Res_1 %>% filter(cm==0.40)
 #'
 #' ggplot(data=plot_dat,mapping=aes(y=yield,x=exploitation,
-#'                                  group=minlength,color=minlength)) +
+#'                                  group=minLL,color=minLL)) +
 #'   geom_line(linewidth=1) +
 #'   scale_color_gradient2(high="black") +
 #'   labs(y="Yield (g)",x="Exploitation",color="Min Length Limit") +
 #'   theme_FAMS()
 #'
-#' # Yield isopleths for varying minlength and exploitation with cm=0.40
+#' # Yield isopleths for varying minLL and exploitation with cm=0.40
 #' # # Using same data as previous example
-#' ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minlength,z=yield)) +
+#' ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
 #'   geom_contour(color="black") +
 #'   metR::geom_text_contour(stroke=0.15) +
 #'   xlab("Exploitation") +
@@ -92,7 +92,7 @@
 #'   theme_FAMS()
 #'
 #' # Same as previous but using number harvested isopleths
-#' ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minlength,z=Nharvest)) +
+#' ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=Nharvest)) +
 #'   geom_contour(color="black")+
 #'   metR::geom_text_contour(stroke = 0.15)+
 #'   xlab("Exploitation")+
@@ -109,7 +109,7 @@ ypr_MinTL_var <- function(lengthmin,lengthmax,lengthinc,
   # ---- Check inputs
   iCheckMLH(lengthmin,"minimum")
   iCheckMLH(lengthmax,"maximum")
-  minlength <- iCheckMLHinc(lengthinc,lengthmin,lengthmax)
+  minLL <- iCheckMLHinc(lengthinc,lengthmin,lengthmax)
   iCheckcf(cfmin,"minimum")
   iCheckcf(cfmax,"maximum")
   cf <- iCheckcfminc(cfinc,cfmin,cfmax)
@@ -134,15 +134,15 @@ ypr_MinTL_var <- function(lengthmin,lengthmax,lengthinc,
   iCheckLWb(LWbeta)
   iCheckMaxAge(maxage)
 
-  # ---- Compute Yield et al. for varying minlength, cf, and cm
-  # Setup data.frame of input values ... minlength, cf, and cm sequences were
+  # ---- Compute Yield et al. for varying minLL, cf, and cm
+  # Setup data.frame of input values ... minLL, cf, and cm sequences were
   #   created in checks above
-  res <- expand.grid(minlength=minlength,cf=cf,cm=cm,
+  res <- expand.grid(minLL=minLL,cf=cf,cm=cm,
                      N0=N0,Linf=Linf,K=K,t0=t0,
                      LWalpha=LWalpha,LWbeta=LWbeta,maxage=maxage)
 
   # Send each row to ypr_func() ...
-  #   i.e., calculate yield et al for all minlength, cf, and cm combos
+  #   i.e., calculate yield et al for all minLL, cf, and cm combos
   res <- purrr::pmap_df(res,ypr_func)
 
   # ---- Return data.frame with both output values and input parameters

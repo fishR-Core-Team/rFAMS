@@ -1,9 +1,9 @@
 #' @title Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters
 #'
-#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using a range of values for conditional fishing (\code{cf}) and natural (\code{cm}) mortality and a single fixed minimum length limit for harvest (\code{minlength}).
+#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using a range of values for conditional fishing (\code{cf}) and natural (\code{cm}) mortality and a single fixed minimum length limit for harvest (\code{minLL}).
 #'
 #' @inheritParams ypr_func
-#' @param minlength The minimum length limit for harvest in mm
+#' @param minLL The minimum length limit for harvest in mm
 #' @param cfmin A single numeric for minimum conditional fishing mortality.
 #' @param cfmax A single numeric for maximum conditional fishing mortality.
 #' @param cfinc A single numeric for increment to cycle from minimum to maximum conditional fishing mortality.
@@ -29,9 +29,9 @@
 #' \item \code{S} is the (total) annual rate of survival.
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (\code{minlength}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
+#' For convenience the data.frame also contains the model input values (\code{minLL}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
 #'
-#' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minlength}, and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minlength}.
+#' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
@@ -40,10 +40,10 @@
 #' parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,
 #'            LWalpha=-5.453,LWbeta=3.10,maxage=15)
 #'
-#' # Estimate yield for multiple values of minlength, cf, and cm
+#' # Estimate yield for multiple values of minLL, cf, and cm
 #' # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
 #' # #   to produce finer-scaled results
-#' Res_1 <- ypr_MinTL_fixed(minlength=200,
+#' Res_1 <- ypr_MinTL_fixed(minLL=200,
 #'                          cfmin=0.1,cfmax=0.9,cfinc=0.1,
 #'                          cmmin=0.1,cmmax=0.9,cminc=0.1,
 #'                          N0=parms)
@@ -79,11 +79,11 @@
 
 #' @rdname ypr_MinTL_fixed
 #' @export
-ypr_MinTL_fixed<-function(minlength,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
+ypr_MinTL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
                           N0,Linf,K,t0,LWalpha,LWbeta,maxage){
 
   # ---- Check inputs
-  iCheckMLH(minlength)
+  iCheckMLH(minLL)
   iCheckcf(cfmin,"minimum")
   iCheckcf(cfmax,"maximum")
   cf <- iCheckcfminc(cfinc,cfmin,cfmax)
@@ -108,10 +108,10 @@ ypr_MinTL_fixed<-function(minlength,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
   iCheckLWb(LWbeta)
   iCheckMaxAge(maxage)
 
-  # ---- Compute Yield et al. for varying minlength, cf, and cm
+  # ---- Compute Yield et al. for varying minLL, cf, and cm
   # Setup data.frame of input values ... cf, and cm sequences were
   #   created in checks above
-  res <- expand.grid(minlength=minlength,cf=cf,cm=cm,
+  res <- expand.grid(minLL=minLL,cf=cf,cm=cm,
                      N0=N0,Linf=Linf,K=K,t0=t0,
                      LWalpha=LWalpha,LWbeta=LWbeta,maxage=maxage)
 
