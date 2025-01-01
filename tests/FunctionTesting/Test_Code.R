@@ -2,15 +2,15 @@ library(ggplot2)
 library(tidyverse)
 library(metR)  #needed for contour plots
 
-source("ypr_MinTL_fixed.R")
-source("ypr_MinTL_var.R")
+source("ypr_minLL_fixed.R")
+source("ypr_minLL_var.R")
 source("ypr_func.R")
 source("rFAMS-internals.R")
 
 #Estimate yield based on a fixed minimum length and range of exploitation with the ypr1 function
 
 #Calculate yield based on a range of cf, cm and fixed minimum length limit
-Res_1<-ypr_MinTL_fixed(cfmin = 0.05,
+Res_1<-ypr_minLL_fixed(cfmin = 0.05,
                        cfmax = 0.95,
                        cfinc = 0.05,
                        cmmin = 0.05,
@@ -47,7 +47,7 @@ ggplot(data = plot_dat, aes(x=exploitation,y=yield)) +
   )
 
 
-Res_1<-ypr_MinTL_var( lengthmin = 200,
+Res_1<-ypr_minLL_var( lengthmin = 200,
                       lengthmax = 550,
                       lengthinc= 50,
                       cfmin = 0.05,
@@ -65,7 +65,7 @@ Res_1<-ypr_MinTL_var( lengthmin = 200,
                       maxage=15)
 
 #Calculate yield based on a range of cf, cm and minimum length limit
-Res_1<-ypr_MinTL_var(cfmin = 0.05,
+Res_1<-ypr_minLL_var(cfmin = 0.05,
                        cfmax = 0.95,
                        cfinc = 0.01,
                        cmmin = 0.30,

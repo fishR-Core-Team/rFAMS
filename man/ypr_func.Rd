@@ -24,7 +24,7 @@ ypr_func(
 
 \item{cm}{A single numeric representing conditional natural mortality.}
 
-\item{N0}{A single numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.}
+\item{N0}{A single numeric representing the initial number of fish in the population OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.}
 
 \item{Linf}{A single numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm. May be given in a named vector or list given to \code{N0} (see examples).}
 
@@ -85,7 +85,7 @@ Res_3
 
 }
 \seealso{
-\code{\link{ypr_MinTL_fixed}} and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
+\code{\link{ypr_minLL_fixed}} and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}

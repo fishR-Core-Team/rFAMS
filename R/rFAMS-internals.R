@@ -135,11 +135,13 @@ iCheckcfminc <- function(xinc,xmin,xmax) {
   res
 }
 
-# Check initial number of new recruits entering the fishery
+# Check initial number of fish in the population
 iCheckN0 <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify an initial number of new recruits in ",nm,".")
-  if (is.null(x)) STOP("Need to specify an initial number of new recruits in ",nm,".")
+  if (missing(x))
+    STOP("Need to specify an initial number of fish in the population in ",nm,".")
+  if (is.null(x))
+    STOP("Need to specify an initial number of fish in the population in ",nm,".")
   if (length(x)>1) {
     pnms <- c('N0','Linf','K','t0','LWalpha','LWbeta', 'maxage')
     if (length(x)!=7) STOP(nm," must contain only one value for ",nm," or 7 named\n",
@@ -153,7 +155,7 @@ iCheckN0 <- function(x) {
     iErrNotNumeric(x,nm)
     iErrLT(x,0,nm)
     if (!is.wholenumber(x))
-      WARN("The initial number of new recruits is not a whole number,\n",
+      WARN("The initial number in the population is not a whole number,\n",
            "  please check value in ",nm,".")
   }
 }

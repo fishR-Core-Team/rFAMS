@@ -31,7 +31,7 @@
 #'
 #' For convenience the data.frame also contains the model input values (\code{minLL}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
 #'
-#' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
+#' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
@@ -43,7 +43,7 @@
 #' # Estimate yield for multiple values of minLL, cf, and cm
 #' # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
 #' # #   to produce finer-scaled results
-#' Res_1 <- ypr_MinTL_fixed(minLL=200,
+#' Res_1 <- ypr_minLL_fixed(minLL=200,
 #'                          cfmin=0.1,cfmax=0.9,cfinc=0.1,
 #'                          cmmin=0.1,cmmax=0.9,cminc=0.1,
 #'                          N0=parms)
@@ -77,9 +77,9 @@
 #'   theme_FAMS()
 #'
 
-#' @rdname ypr_MinTL_fixed
+#' @rdname ypr_minLL_fixed
 #' @export
-ypr_MinTL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
+ypr_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
                           N0,Linf,K,t0,LWalpha,LWbeta,maxage){
 
   # ---- Check inputs

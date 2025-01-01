@@ -2,7 +2,7 @@
 #'
 #' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
 #'
-#' @inheritParams ypr_MinTL_fixed
+#' @inheritParams ypr_minLL_fixed
 #' @param lengthmin A single numeric for the lower limit of minimum length limit for harvest in mm.
 #' @param lengthmax A single numeric for the upper limit of minimum length limit for harvest in mm.
 #' @param lengthinc A single numeric for the increment to cycle from lower to upper minimum length limit for harvest in mm.
@@ -29,7 +29,7 @@
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_MinTL_fixed}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
+#' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_minLL_fixed}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
 #'
 #' @examples
 #' # Life history parameters to be used below
@@ -39,7 +39,7 @@
 #' # Estimate yield for multiple values of minLL, cf, and cm
 #' # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
 #' # #   to produce finer-scaled results
-#' Res_1 <- ypr_MinTL_var(lengthmin=200,lengthinc=50,lengthmax=600,
+#' Res_1 <- ypr_minLL_var(lengthmin=200,lengthinc=50,lengthmax=600,
 #'                        cfmin=0.1,cfmax=0.9,cfinc=0.1,
 #'                        cmmin=0.1,cmmax=0.9,cminc=0.1,
 #'                        N0=parms)
@@ -99,10 +99,10 @@
 #'   ylab("Minimum length limit (mm)")+
 #'   theme_FAMS()
 #'
-#' @rdname ypr_MinTL_var
+#' @rdname ypr_minLL_var
 #' @export
 
-ypr_MinTL_var <- function(lengthmin,lengthmax,lengthinc,
+ypr_minLL_var <- function(lengthmin,lengthmax,lengthinc,
                           cfmin,cfmax,cfinc,
                           cmmin,cmmax,cminc,
                           N0,Linf,K,t0,LWalpha,LWbeta,maxage){

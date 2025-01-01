@@ -99,7 +99,7 @@ test_that("iCheckcfminc() messages and values",{
 test_that("iCheckN0() messages and values",{
   ## Test with just one value
   expect_error(rFAMS:::iCheckN0(),
-               "Need to specify an initial number of new recruits in")
+               "Need to specify an initial number of fish in the population in")
   ## Set MLHinc to value outside function to test that name is extracted
   N0 <- -100
   expect_error(rFAMS:::iCheckN0(N0),"must be >=0")

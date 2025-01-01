@@ -5,7 +5,7 @@
 #' @param cf A single numeric representing conditional fishing mortality.
 #' @param cm A single numeric representing conditional natural mortality.
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
-#' @param N0 A single numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.
+#' @param N0 A single numeric representing the initial number of fish in the population OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.
 #' @param Linf A single numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm. May be given in a named vector or list given to \code{N0} (see examples).
 #' @param K A single numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
 #' @param t0 A single numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
@@ -35,7 +35,7 @@
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{ypr_MinTL_fixed}} and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
+#' @seealso \code{\link{ypr_minLL_fixed}} and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 #'
 #' @examples
 #' # Estimate yield with fixed parameters
@@ -100,7 +100,7 @@ ypr_func <- function(minLL,cf,cm,
   exploitation <- (1-S)*(Fmort/Zmort)
 
   # Time (years) when fish recruit to the fishery (tr) ... FAMS equation 6:2
-  #   needed adjustment if minLL<Linf
+  #   needed adjustment if minLL>Linf
   # and amount of time (years) to recruit to the fishery (r) ... defined in FAMS
   if (minLL<Linf) tr <- ((log(1-minLL/Linf))/-K)+t0
     else tr <- ((log(1-minLL/(minLL+.1)))/-K)+t0
