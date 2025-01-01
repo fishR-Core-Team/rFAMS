@@ -62,10 +62,10 @@ iCheckMLH <- function(x,type="") {
 iCheckMLHinc <- function(xinc,xmin,xmax) {
   ## checks of increment
   nm <- paste0("'",deparse(substitute(xinc)),"'")
-  if (missing(xinc)) STOP("Need to specify an increment for minimum length (mm)
-                          limit for harvest in ",nm,".")
-  if (is.null(xinc)) STOP("Need to specify an increment for minimum length (mm)
-                          limit for harvest in ",nm,".")
+  if (missing(xinc))
+    STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
+  if (is.null(xinc))
+    STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
   iErrMore1(xinc,nm)
   iErrNotNumeric(xinc,nm)
   iErrLT(xinc,0,nm)
@@ -115,10 +115,10 @@ iCheckcm <- function(x,type=NULL) {
 iCheckcfminc <- function(xinc,xmin,xmax) {
   ## checks of increment
   nm <- paste0("'",deparse(substitute(xinc)),"'")
-  if (missing(xinc)) STOP("Need to specify an increment for conditional
-                          natural mortality in ",nm,".")
-  if (is.null(xinc)) STOP("Need to specify an increment for conditional
-                          natural mortality in ",nm,".")
+  if (missing(xinc))
+    STOP("Need to specify an increment for conditional natural mortality in ",nm,".")
+  if (is.null(xinc))
+    STOP("Need to specify an increment for conditional natural mortality in ",nm,".")
   iErrMore1(xinc,nm)
   iErrNotNumeric(xinc,nm)
   iErrLT(xinc,0,nm)
@@ -130,7 +130,7 @@ iCheckcfminc <- function(xinc,xmin,xmax) {
   res <- seq(xmin,xmax,xinc)
   if (length(res)>100)
     WARN("Choices of ",nm1,", ",nm2,", and ",nm," resulted in ",length(res),
-         " values./n","  Depending on other choices the simulation may be slow.")
+         " values.\n","  Depending on other choices the simulation may be slow.")
   ## Return sequence
   res
 }
