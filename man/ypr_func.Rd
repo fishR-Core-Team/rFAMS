@@ -39,7 +39,7 @@ ypr_func(
 \item{maxage}{An single whole number representing maximum age in the population in years. May be given in a named vector or list given to \code{N0} (see examples).}
 }
 \value{
-A data.frame with the following cal (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage})culated values:
+A data.frame with the following calculated values:
 \itemize{
 \item \code{yield} is the estimated yield (in g).
 \item \code{exploitation} is the exploitation rate.
@@ -55,7 +55,7 @@ A data.frame with the following cal (\code{minlength}, \code{cf}, \code{cm}, \co
 \item \code{S} is the (total) annual rate of survival.
 }
 
-For convenience the data.frame also contains the model input values (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage}).
+For convenience the data.frame also contains the model input values (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}).
 }
 \description{
 Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minlength}).

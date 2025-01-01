@@ -15,7 +15,7 @@
 #'
 #' @details Details will be filled out later
 #'
-#' @return A data.frame with the following cal (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage})culated values:
+#' @return A data.frame with the following calculated values:
 #' \itemize{
 #' \item \code{yield} is the estimated yield (in g).
 #' \item \code{exploitation} is the exploitation rate.
@@ -31,7 +31,7 @@
 #' \item \code{S} is the (total) annual rate of survival.
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage}).
+#' For convenience the data.frame also contains the model input values (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}).
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
@@ -67,14 +67,8 @@ ypr_func <- function(minlength,cf,cm,
   iCheckMLH(minlength)
   iCheckcf(cf)
   iCheckcm(cm)
+  iCheckN0(N0)    # initial check if vector/list
   if (length(N0)>1) {
-    pnms <- c('N0','Linf','K','t0','LWalpha','LWbeta', 'maxage')
-    if (length(N0)!=7) STOP("'N0' must contain only one value for 'N0' or 7 named\n",
-                            "values for: ",paste(pnms,collapse=", "))
-    if (is.null(names(N0))) STOP("'N0' must have named values for: ",
-                                 paste(pnms,collapse=", "))
-    if (!all(names(N0) %in% pnms)) STOP("'N0' must have named values for all of: ",
-                                        paste(pnms,collapse=", "))
     Linf <- N0[["Linf"]]
     K <- N0[["K"]]
     t0 <- N0[["t0"]]
@@ -82,8 +76,8 @@ ypr_func <- function(minlength,cf,cm,
     LWbeta <- N0[["LWbeta"]]
     maxage <- N0[["maxage"]]
     N0 <- N0[["N0"]]
+    iCheckN0(N0)  # second check of single value of N0
   }
-  iCheckN0(N0)
   iCheckLinf(Linf)
   iCheckK(K)
   iCheckt0(t0)
