@@ -2,7 +2,7 @@
 % Please edit documentation in R/ypr_MinTL_var.R
 \name{ypr_MinTL_var}
 \alias{ypr_MinTL_var}
-\title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters}
+\title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest}
 \usage{
 ypr_MinTL_var(
   lengthmin,
@@ -83,7 +83,8 @@ Details will be filled out later
 }
 \examples{
 # Life history parameters to be used below
-parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
+parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,
+           LWalpha=-5.453,LWbeta=3.10,maxage=15)
 
 # Estimate yield for multiple values of minlength, cf, and cm
 # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller

@@ -1,17 +1,11 @@
-#' @title Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters
+#' @title Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest
 #'
 #' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minlength}).
 #'
-#' @inheritParams ypr_func
+#' @inheritParams ypr_MinTL_fixed
 #' @param lengthmin A single numeric for the lower limit of minimum length limit for harvest in mm.
 #' @param lengthmax A single numeric for the upper limit of minimum length limit for harvest in mm.
 #' @param lengthinc A single numeric for the increment to cycle from lower to upper minimum length limit for harvest in mm.
-#' @param cfmin A single numeric for minimum conditional fishing mortality.
-#' @param cfmax A single numeric for maximum conditional fishing mortality.
-#' @param cfinc A single numeric for increment to cycle from minimum to maximum conditional fishing mortality.
-#' @param cmmin A single numeric for minimum conditional natural mortality.
-#' @param cmmax A single numeric for maximum conditional natural mortality.
-#' @param cminc A single numeric for increment to cycle from minimum to maximum conditional natural mortality.
 #'
 #' @details Details will be filled out later
 #'
@@ -39,7 +33,8 @@
 #'
 #' @examples
 #' # Life history parameters to be used below
-#' parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
+#' parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,
+#'            LWalpha=-5.453,LWbeta=3.10,maxage=15)
 #'
 #' # Estimate yield for multiple values of minlength, cf, and cm
 #' # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
