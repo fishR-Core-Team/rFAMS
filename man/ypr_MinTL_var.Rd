@@ -99,14 +99,14 @@ library(metR)
 
 #Estimate yield
 Res_1<-ypr_MinTL_var(lengthmin = 200,
-                     lengthinc= 25,
+                     lengthinc= 50,
                      lengthmax = 600,
                      cfmin = 0.05,
                      cfmax = 0.95,
-                     cfinc = 0.05,
+                     cfinc = 0.1,
                      cmmin = 0.05,
                      cmmax = 0.95,
-                     cminc = 0.05,
+                     cminc = 0.1,
                      N0=100,
                      Linf=2000,
                      K=0.50,

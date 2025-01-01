@@ -1,47 +1,41 @@
-#' @title Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for single input parameters
+#' @title Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for single input parameters
 #'
-#' @description Function to estimate yield using the Beverton-Holt YPR model. This main function accepts only single values for cf, cm, and minlength. Use the wrapper ypr() function for specifying range of cf, cm, and minlength
+#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minlength}).
 #'
-#' @param cf A numeric representing conditional fishing mortality
-#' @param cm A numeric representing conditional natural mortality
-#' @param minlength A numeric representing the minimum length limit for harvest in mm
-#' @param N0 A numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}
-#' @param Linf A numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm
-#' @param K A numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model
-#' @param t0 A numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model
-#' @param LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
-#' @param LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
-#' @param maxage An integer representing maximum age in the population in years
+#' @param cf A single numeric representing conditional fishing mortality.
+#' @param cm A single numeric representing conditional natural mortality.
+#' @param minlength A single numeric representing the minimum length limit for harvest in mm.
+#' @param N0 A single numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.
+#' @param Linf A single numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm. May be given in a named vector or list given to \code{N0} (see examples).
+#' @param K A single numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
+#' @param t0 A single numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
+#' @param LWalpha A single numeric representing the point estimate of alpha from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
+#' @param LWbeta A single numeric representing the point estimate of beta from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
+#' @param maxage An single whole number representing maximum age in the population in years. May be given in a named vector or list given to \code{N0} (see examples).
 #'
 #' @details Details will be filled out later
 #'
-#' @return the following calculated and input values in a data.frame
+#' @return A data.frame with the following cal (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage})culated values:
 #' \itemize{
-#' \item yield is the calculated yield
-#' \item exploitation is the exploitation rate
-#' \item Nharvest is the number of harvested fish
-#' \item Ndie is the number of fish that die of natural deaths.
-#' \item Nt is the number of fish at time t (time they become harvestable size)
-#' \item avgwt is the average weight of fish harvested
-#' \item avglen is the average length of fish harvested
-#' \item tr is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
-#' \item Fmort is the estimated instantaneous rate of fishing mortality
-#' \item Mmort is the estimated  instantaneous rate of natural mortality
-#' \item Zmort is the estimated  instantaneous rate of total mortality
-#' \item S is the estimated total survival
-#' \item cf A numeric representing conditional fishing mortality
-#' \item cm A numeric representing conditional natural mortality
-#' \item minlength A numeric representing the minimum length limit for harvest in mm
-#' \item N0 A numeric representing the initial number of new recruits entering the fishery
-#' \item Linf A numeric representing the point estimate of Linf from the LVB model in mm
-#' \item K A numeric representing the point estimate of k from the LVB model
-#' \item t0 A numeric representing the point estimate of t0 from the LVB model
-#' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
-#' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
-#' \item maxage An integer representing of maximum age in the population in years
+#' \item \code{yield} is the estimated yield (in g).
+#' \item \code{exploitation} is the exploitation rate.
+#' \item \code{Nharvest} is the number of harvested fish.
+#' \item \code{Ndie} is the number of fish that die of natural deaths.
+#' \item \code{Nt} is the number of fish at time tr (time they become harvestable size).
+#' \item \code{avgwt} is the average weight of fish harvested.
+#' \item \code{avglen} is the average length of fish harvested.
+#' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
+#' \item \code{Fmort} is the instantaneous rate of fishing mortality.
+#' \item \code{Mmort} is the instantaneous rate of natural mortality.
+#' \item \code{Zmort} is the instantaneous rate of total mortality.
+#' \item \code{S} is the (total) annual rate of survival.
 #' }
 #'
+#' For convenience the data.frame also contains the model input values (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage}).
+#'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
+#'
+#' @seealso \code{\link{ypr_MinTL_fixed}} and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minlength}.
 #'
 #' @examples
 #' # Estimate yield with fixed parameters
@@ -63,7 +57,7 @@
 #' Res_3 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
 #' Res_3
 #'
-#' @rdname ypr_function
+#' @rdname ypr_func
 #' @export
 
 ypr_func <- function(minlength,cf,cm,
