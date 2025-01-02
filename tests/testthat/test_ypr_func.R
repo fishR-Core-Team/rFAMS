@@ -34,6 +34,11 @@ test_that("ypr_func() messages",{
                         Linf=2000,K=0.50,t0=-0.616,
                         LWalpha=-5.453,LWbeta=3.10,maxage=15),
                "A minimum length limit of harvest of 35 mm seems too small")
+  ypr_func(cf=0.45,cm=0.25,minLL=2235,N0=100,
+           Linf=2000,K=0.50,t0=-0.616,
+           LWalpha=-5.453,LWbeta=3.10,maxage=15) |>
+    expect_warning("A minimum length limit of harvest of 2235 mm seems too large") |>
+    expect_warning("The set mininmum length limit of harvest")
 
   ## Errors when using the named vector/list
   tmp <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)

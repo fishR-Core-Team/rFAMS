@@ -102,8 +102,13 @@ ypr_func <- function(minLL,cf,cm,
   # Time (years) when fish recruit to the fishery (tr) ... FAMS equation 6:2
   #   needed adjustment if minLL>Linf
   # and amount of time (years) to recruit to the fishery (r) ... defined in FAMS
-  if (minLL<Linf) tr <- ((log(1-minLL/Linf))/-K)+t0
-    else tr <- ((log(1-minLL/(minLL+.1)))/-K)+t0
+  if (minLL>=Linf) {
+    WARN("The set mininmum length limit of harvest (=",minLL,") is greater than\n",
+         "  the asymptotic mean length (=",Linf,"). The time to recruit to the\n",
+         "  fishery was adjusted. There will be very little harvest and the\n",
+         "  YPR calculations may not be robust.")
+      tr <- ((log(1-minLL/(minLL+.1)))/-K)+t0
+    } else tr <- ((log(1-minLL/Linf))/-K)+t0
   r <- tr-t0
 
   # Number recruiting to fishery based on time at minimum length (tr) ...
