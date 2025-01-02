@@ -4,6 +4,8 @@
 \alias{.onAttach}
 \alias{STOP}
 \alias{WARN}
+\alias{is.wholenumber}
+\alias{iIbeta}
 \alias{iErrMore1}
 \alias{iErrNotNumeric}
 \alias{iErrLT}

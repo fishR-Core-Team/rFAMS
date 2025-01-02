@@ -4,7 +4,7 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases STOP WARN .onAttach iErrMore1 iErrNotNumeric iErrLT iErrGt iCheckMLH iCheckMLHinc iCheckcf iCheckcm iCheckcfminc iCheckN0 iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge
+#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iCheckMLH iCheckMLHinc iCheckcf iCheckcm iCheckcfminc iCheckN0 iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
@@ -27,6 +27,14 @@ is.wholenumber <- function(x,tol=.Machine$double.eps^0.5) {
   abs(x - round(x)) < tol
 }
 
+# Incomplete beta function ... see tests for comparison to other packages
+iIbeta <- function(x,a,b) {
+  if (any(x<0)) STOP("'x' in incomplete beta function must be >=0.")
+  if (any(x>1)) STOP("'x' in incomplete beta function must be <=1.")
+  if (any(a<0)) STOP("'a' in incomplete beta function must be >=0.")
+  if (any(b<0)) STOP("'b' in incomplete beta function must be >=0.")
+  beta(a,b)*stats::pbeta(x,a,b)
+}
 
 # -- General Error Checks --
 # Error if more than one item

@@ -126,14 +126,11 @@ ypr_func <- function(minLL,cf,cm,
   Xi <- exp(-K*(maxage-t0))
 
   # ---- Compute yield
-  #Uses Ibeta function from zipfR pacakge - only for testing
-  #Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*(Ibeta(exp(-K*r),Zmort/K,Q)-Ibeta(exp(-K*(maxage-t0)),Zmort/K,Q))
-
   # FAMS equation 6:1
-  Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*
-    (beta(P,Q)*stats::pbeta(X,P,Q)-beta(P,Q)*stats::pbeta(Xi,P,Q))
+  #   see testing for internal iIbeta() to note how it matches other packages
+  Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*(iIbeta(X,P,Q)-iIbeta(Xi,P,Q))
 
-  # Adjust Y to NA if NA or infinite, to 0 if negative, otherwise keep as caculated
+  # Adjust Y to NA if NA or infinite, to 0 if negative, otherwise keep as calculated
   if (is.na(Y) || is.infinite(Y)) Y <- NA
     else if (Y<0) Y <- 0
 
