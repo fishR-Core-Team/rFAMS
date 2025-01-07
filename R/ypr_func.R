@@ -1,11 +1,11 @@
 #' @title Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for single input parameters
 #'
-#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minlength}).
+#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minLL}).
 #'
 #' @param cf A single numeric representing conditional fishing mortality.
 #' @param cm A single numeric representing conditional natural mortality.
-#' @param minlength A single numeric representing the minimum length limit for harvest in mm.
-#' @param N0 A single numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.
+#' @param minLL A single numeric representing the minimum length limit for harvest in mm.
+#' @param N0 A single numeric representing the initial number of fish in the population OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.
 #' @param Linf A single numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm. May be given in a named vector or list given to \code{N0} (see examples).
 #' @param K A single numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
 #' @param t0 A single numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
@@ -15,7 +15,7 @@
 #'
 #' @details Details will be filled out later
 #'
-#' @return A data.frame with the following cal (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage})culated values:
+#' @return A data.frame with the following calculated values:
 #' \itemize{
 #' \item \code{yield} is the estimated yield (in g).
 #' \item \code{exploitation} is the exploitation rate.
@@ -31,16 +31,16 @@
 #' \item \code{S} is the (total) annual rate of survival.
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage}).
+#' For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}).
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{ypr_MinTL_fixed}} and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minlength}.
+#' @seealso \code{\link{ypr_minLL_fixed}} and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 #'
 #' @examples
 #' # Estimate yield with fixed parameters
 #' Res_1 <- ypr_func(cf=0.45,cm=0.25,
-#'                   minlength=355,
+#'                   minLL=355,
 #'                   N0=100,
 #'                   Linf=2000,K=0.50,t0=-0.616,
 #'                   LWalpha=-5.453,LWbeta=3.10,
@@ -49,32 +49,26 @@
 #'
 #' # Same, but with named vector in N0
 #' parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-#' Res_2 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+#' Res_2 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
 #' Res_2
 #'
 #' # Same, but with named list in N0
 #' parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-#' Res_3 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+#' Res_3 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
 #' Res_3
 #'
 #' @rdname ypr_func
 #' @export
 
-ypr_func <- function(minlength,cf,cm,
+ypr_func <- function(minLL,cf,cm,
                      N0,Linf=NULL,K=NULL,t0=NULL,
                      LWalpha=NULL,LWbeta=NULL,maxage=NULL){
   # ---- Check inputs
-  iCheckMLH(minlength)
+  iCheckMLH(minLL)
   iCheckcf(cf)
   iCheckcm(cm)
+  iCheckN0(N0)    # initial check if vector/list
   if (length(N0)>1) {
-    pnms <- c('N0','Linf','K','t0','LWalpha','LWbeta', 'maxage')
-    if (length(N0)!=7) STOP("'N0' must contain only one value for 'N0' or 7 named\n",
-                            "values for: ",paste(pnms,collapse=", "))
-    if (is.null(names(N0))) STOP("'N0' must have named values for: ",
-                                 paste(pnms,collapse=", "))
-    if (!all(names(N0) %in% pnms)) STOP("'N0' must have named values for all of: ",
-                                        paste(pnms,collapse=", "))
     Linf <- N0[["Linf"]]
     K <- N0[["K"]]
     t0 <- N0[["t0"]]
@@ -82,8 +76,8 @@ ypr_func <- function(minlength,cf,cm,
     LWbeta <- N0[["LWbeta"]]
     maxage <- N0[["maxage"]]
     N0 <- N0[["N0"]]
+    iCheckN0(N0)  # second check of single value of N0
   }
-  iCheckN0(N0)
   iCheckLinf(Linf)
   iCheckK(K)
   iCheckt0(t0)
@@ -106,10 +100,15 @@ ypr_func <- function(minlength,cf,cm,
   exploitation <- (1-S)*(Fmort/Zmort)
 
   # Time (years) when fish recruit to the fishery (tr) ... FAMS equation 6:2
-  #   needed adjustment if minlength<Linf
+  #   needed adjustment if minLL>Linf
   # and amount of time (years) to recruit to the fishery (r) ... defined in FAMS
-  if (minlength<Linf) tr <- ((log(1-minlength/Linf))/-K)+t0
-    else tr <- ((log(1-minlength/(minlength+.1)))/-K)+t0
+  if (minLL>=Linf) {
+    WARN("The set mininmum length limit of harvest (=",minLL,") is greater than\n",
+         "  the asymptotic mean length (=",Linf,"). The time to recruit to the\n",
+         "  fishery was adjusted. There will be very little harvest and the\n",
+         "  YPR calculations may not be robust.")
+      tr <- ((log(1-minLL/(minLL+.1)))/-K)+t0
+    } else tr <- ((log(1-minLL/Linf))/-K)+t0
   r <- tr-t0
 
   # Number recruiting to fishery based on time at minimum length (tr) ...
@@ -127,14 +126,11 @@ ypr_func <- function(minlength,cf,cm,
   Xi <- exp(-K*(maxage-t0))
 
   # ---- Compute yield
-  #Uses Ibeta function from zipfR pacakge - only for testing
-  #Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*(Ibeta(exp(-K*r),Zmort/K,Q)-Ibeta(exp(-K*(maxage-t0)),Zmort/K,Q))
-
   # FAMS equation 6:1
-  Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*
-    (beta(P,Q)*stats::pbeta(X,P,Q)-beta(P,Q)*stats::pbeta(Xi,P,Q))
+  #   see testing for internal iIbeta() to note how it matches other packages
+  Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*(iIbeta(X,P,Q)-iIbeta(Xi,P,Q))
 
-  # Adjust Y to NA if NA or infinite, to 0 if negative, otherwise keep as caculated
+  # Adjust Y to NA if NA or infinite, to 0 if negative, otherwise keep as calculated
   if (is.na(Y) || is.infinite(Y)) Y <- NA
     else if (Y<0) Y <- 0
 
@@ -161,7 +157,7 @@ ypr_func <- function(minlength,cf,cm,
   avglen <- 10^((log10(avgwt) - LWalpha)/LWbeta)
 
   # Adjust non-NA mean lengths less than min length to min length
-  if (!is.na(avglen)) if (avglen<minlength) avglen <- minlength
+  if (!is.na(avglen)) if (avglen<minLL) avglen <- minLL
 
   # ---- Return data.frame with both output values and input parameters
   data.frame(
@@ -179,7 +175,7 @@ ypr_func <- function(minlength,cf,cm,
     S=S,
     cf=cf,
     cm=cm,
-    minlength=minlength,
+    minLL=minLL,
     N0=N0,
     Linf=Linf,
     K=K,
