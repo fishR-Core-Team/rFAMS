@@ -14,7 +14,8 @@ ypr_func(
   t0 = NULL,
   LWalpha = NULL,
   LWbeta = NULL,
-  maxage = NULL
+  maxage = NULL,
+  matchRicker = TRUE
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ ypr_func(
 \item{LWbeta}{A single numeric representing the point estimate of beta from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).}
 
 \item{maxage}{An single whole number representing maximum age in the population in years. May be given in a named vector or list given to \code{N0} (see examples).}
+
+\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
 }
 \value{
 A data.frame with the following calculated values:
@@ -83,6 +86,11 @@ parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxag
 Res_3 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
 Res_3
 
+}
+\references{
+Ricker, W.E. 1975. Computation and interpretation of biological statistics of fish populations. Technical Report Bulletin 191, Bulletin of the Fisheries Research Board of Canada. Was (is?) from \url{https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/1485.pdf}.
+
+Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling simulator. v1.64. American Fisheries Society, Bethesda, MD. Was (is?) from \url{https://units.fisheries.org/fits/wp-content/uploads/sites/29/2019/06/FAMS-1.64-Manual.pdf}.
 }
 \seealso{
 \code{\link{ypr_minLL_fixed}} and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.

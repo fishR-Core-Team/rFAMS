@@ -12,6 +12,7 @@
 #' @param LWalpha A single numeric representing the point estimate of alpha from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
 #' @param LWbeta A single numeric representing the point estimate of beta from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
 #' @param maxage An single whole number representing maximum age in the population in years. May be given in a named vector or list given to \code{N0} (see examples).
+#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #'
 #' @details Details will be filled out later
 #'
@@ -36,6 +37,11 @@
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #' @seealso \code{\link{ypr_minLL_fixed}} and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
+#'
+#' @references
+#' Ricker, W.E. 1975. Computation and interpretation of biological statistics of fish populations. Technical Report Bulletin 191, Bulletin of the Fisheries Research Board of Canada. Was (is?) from \url{https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/1485.pdf}.
+#'
+#' Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling simulator. v1.64. American Fisheries Society, Bethesda, MD. Was (is?) from \url{https://units.fisheries.org/fits/wp-content/uploads/sites/29/2019/06/FAMS-1.64-Manual.pdf}.
 #'
 #' @examples
 #' # Estimate yield with fixed parameters
@@ -62,7 +68,8 @@
 
 ypr_func <- function(minLL,cf,cm,
                      N0,Linf=NULL,K=NULL,t0=NULL,
-                     LWalpha=NULL,LWbeta=NULL,maxage=NULL){
+                     LWalpha=NULL,LWbeta=NULL,maxage=NULL,
+                     matchRicker=TRUE){
   # ---- Check inputs
   iCheckMLH(minLL)
   iCheckcf(cf)
@@ -126,9 +133,11 @@ ypr_func <- function(minLL,cf,cm,
   Xi <- exp(-K*(maxage-t0))
 
   # ---- Compute yield
-  # FAMS equation 6:1
+  # Y is FAMS equation 6:1 ...
   #   see testing for internal iIbeta() to note how it matches other packages
   Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*(iIbeta(X,P,Q)-iIbeta(Xi,P,Q))
+  # ... if matchRicker then Y is "corrected" to match equation 10.22 in Ricker
+  if (matchRicker) Y <- Y*exp(Mmort*t0)
 
   # Adjust Y to NA if NA or infinite, to 0 if negative, otherwise keep as calculated
   if (is.na(Y) || is.infinite(Y)) Y <- NA

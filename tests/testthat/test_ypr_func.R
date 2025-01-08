@@ -1,15 +1,15 @@
 ## Get some simple results
 res <- ypr_func(minLL=355,cf=0.45,cm=0.25,N0=100,
                 Linf=2000,K=0.50,t0=-0.616,
-                LWalpha=-5.453,LWbeta=3.10,maxage=15)
+                LWalpha=-5.453,LWbeta=3.10,maxage=15,matchRicker=FALSE)
 
 # Same, but with named vector in N0
 parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-res2 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
+res2 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms,matchRicker=FALSE)
 
 # Same, but with named list in N0
 parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-res3 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
+res3 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms,matchRicker=FALSE)
 
 
 test_that("Three params of ypr_func() match",{

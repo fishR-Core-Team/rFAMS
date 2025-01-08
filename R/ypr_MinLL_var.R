@@ -105,7 +105,8 @@
 ypr_minLL_var <- function(lengthmin,lengthmax,lengthinc,
                           cfmin,cfmax,cfinc,
                           cmmin,cmmax,cminc,
-                          N0,Linf,K,t0,LWalpha,LWbeta,maxage){
+                          N0,Linf,K,t0,LWalpha,LWbeta,maxage,
+                          matchRicker=TRUE){
   # ---- Check inputs
   iCheckMLH(lengthmin,"minimum")
   iCheckMLH(lengthmax,"maximum")
@@ -143,7 +144,7 @@ ypr_minLL_var <- function(lengthmin,lengthmax,lengthinc,
 
   # Send each row to ypr_func() ...
   #   i.e., calculate yield et al for all minLL, cf, and cm combos
-  res <- purrr::pmap_df(res,ypr_func)
+  res <- purrr::pmap_df(res,ypr_func,matchRicker=matchRicker)
 
   # ---- Return data.frame with both output values and input parameters
   res

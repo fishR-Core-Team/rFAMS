@@ -80,7 +80,8 @@
 #' @rdname ypr_minLL_fixed
 #' @export
 ypr_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
-                          N0,Linf,K,t0,LWalpha,LWbeta,maxage){
+                          N0,Linf,K,t0,LWalpha,LWbeta,maxage,
+                          matchRicker=TRUE){
 
   # ---- Check inputs
   iCheckMLH(minLL)
@@ -117,7 +118,7 @@ ypr_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
 
   # Send each row to ypr_func() ...
   #   i.e., calculate yield et al for all cf, and cm combos
-  res <- purrr::pmap_df(res,ypr_func)
+  res <- purrr::pmap_df(res,ypr_func,matchRicker=matchRicker)
 
   # ---- Return data.frame with both output values and input parameters
   res
