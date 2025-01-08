@@ -62,11 +62,12 @@ test_that("ypr_func() output",{
   expect_type(res,"list")
   expect_equal(class(res),"data.frame")
   expect_equal(nrow(res),1)
-  expect_equal(ncol(res),22)
+  expect_equal(ncol(res),23)
   expect_equal(names(res),c("yield","exploitation","Nharvest","Ndie","Nt",
                             "avgwt","avglen","tr","Fmort","Mmort","Zmort","S",
                             "cf","cm","minLL","N0","Linf","K","t0",
-                            "LWalpha","LWbeta","maxage"))
+                            "LWalpha","LWbeta","maxage","notes"))
+  expect_equal(res$notes,"Nt>N0")
 })
 
 test_that("ypr_func() results",{
