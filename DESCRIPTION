@@ -23,6 +23,7 @@ Suggests:
     rmarkdown,
     spsh,
     testthat (>= 3.0.0),
+    tidyr,
     zipfR,
     quarto
 Encoding: UTF-8

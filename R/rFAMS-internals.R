@@ -52,10 +52,14 @@ iErrGT <- function(x,value,nm) if (x>value) STOP(nm," must be <=",value,".")
 
 # -- Specific Checks --
 # Check minimum length limit for harvest
-iCheckMLH <- function(x,type="") {
+iCheckMLH <- function(x,minmax=NULL,check_missing=TRUE) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify a minimum length (mm) limit for harvest in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a minimum length (mm) limit for harvest in ",nm,".")
+  if(!is.null(minmax)) minmax <- paste0(" ",minmax)  ## to handle space padding in msg
+  if (check_missing) {
+    tmp <- paste0("Need to specify a",minmax," minimum length (mm) limit for harvest in ",nm,".")
+    if (missing(x)) STOP(tmp)
+    if (is.null(x)) STOP(tmp)
+  }
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -67,13 +71,14 @@ iCheckMLH <- function(x,type="") {
 
 # Check min length at harvest increments (min/max should be checked prior),
 #   return sequence if everything looks good
-iCheckMLHinc <- function(xinc,xmin,xmax) {
+iCheckMLHinc <- function(xinc,xmin,xmax,check_missing=TRUE) {
   ## checks of increment
   nm <- paste0("'",deparse(substitute(xinc)),"'")
-  if (missing(xinc))
-    STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
-  if (is.null(xinc))
-    STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
+  if (check_missing) {
+    tmp <- paste0("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
+    if (missing(xinc)) STOP(tmp)
+    if (is.null(xinc)) STOP(tmp)
+  }
   iErrMore1(xinc,nm)
   iErrNotNumeric(xinc,nm)
   iErrLT(xinc,0,nm)
@@ -89,29 +94,15 @@ iCheckMLHinc <- function(xinc,xmin,xmax) {
   res
 }
 
-
 # Check conditional fishing mortality value
-iCheckcf <- function(x,type=NULL) {
+iCheckcfm <- function(x,type,minmax=NULL,check_missing=TRUE) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional fishing mortality in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a ",type,
-                       " conditional fishing mortality in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  iErrGT(x,1,nm)
-}
-
-# Check conditional natural mortality value
-iCheckcm <- function(x,type=NULL) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional natural mortality in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a",type,
-                       " conditional natural mortality in ",nm,".")
+  if(!is.null(minmax)) minmax <- paste0(" ",minmax)  ## to handle space padding in msg
+  if (check_missing) {
+    tmp <- paste0("Need to specify a",minmax," conditional ",type," mortality in ",nm,".")
+    if (missing(x)) STOP(tmp)
+    if (is.null(x)) STOP(tmp)
+  }
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -120,13 +111,14 @@ iCheckcm <- function(x,type=NULL) {
 
 # Check conditional mortality increments (min/max should be checked prior),
 #   return sequence if everything looks good
-iCheckcfminc <- function(xinc,xmin,xmax) {
+iCheckcfminc <- function(xinc,xmin,xmax,type,check_missing=TRUE) {
   ## checks of increment
   nm <- paste0("'",deparse(substitute(xinc)),"'")
-  if (missing(xinc))
-    STOP("Need to specify an increment for conditional natural mortality in ",nm,".")
-  if (is.null(xinc))
-    STOP("Need to specify an increment for conditional natural mortality in ",nm,".")
+  if (check_missing) {
+    tmp <- paste0("Need to specify an increment for conditional ",type," mortality in ",nm,".")
+    if (missing(xinc)) STOP(tmp)
+    if (is.null(xinc)) STOP(tmp)
+  }
   iErrMore1(xinc,nm)
   iErrNotNumeric(xinc,nm)
   iErrLT(xinc,0,nm)
@@ -143,6 +135,26 @@ iCheckcfminc <- function(xinc,xmin,xmax) {
   res
 }
 
+# Check life history parameters object
+iCheckLHparms <- function(x) {
+  nm <- paste0("'",deparse(substitute(x)),"'")
+  tmp <- paste0("Need to specify a vector or list of life history parameters in ",nm,".")
+  if (missing(x)) STOP(tmp)
+  if (is.null(x)) STOP(tmp)
+  tmp <- paste0("Life history parameters in ",nm," must be specified in a vector or list.")
+  if (!(is.vector(x) | is.list(x))) STOP(tmp)
+  tmp <- paste0("Life history parameters in ",nm," must be NAMED.")
+  if (is.null(names(x))) STOP(tmp)
+  pnms <- c('N0','Linf','K','t0','LWalpha','LWbeta', 'maxage')
+  pnmslbl <- paste(pnms,collapse=", ")
+  if (length(x)>7) STOP(nm," should have only 7 (not ",length(x),
+                        ") values for each of: ",pnmslbl)
+  pnms2 <- pnms[!pnms %in% names(x)]
+  pnms2lbl <- paste(pnms2,collapse=", ")
+  if (length(pnms2)>0) STOP(nm," does not contain a value for: ",pnms2lbl)
+}
+
+
 # Check initial number of fish in the population
 iCheckN0 <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
@@ -150,22 +162,12 @@ iCheckN0 <- function(x) {
     STOP("Need to specify an initial number of fish in the population in ",nm,".")
   if (is.null(x))
     STOP("Need to specify an initial number of fish in the population in ",nm,".")
-  if (length(x)>1) {
-    pnms <- c('N0','Linf','K','t0','LWalpha','LWbeta', 'maxage')
-    if (length(x)!=7) STOP(nm," must contain only one value for ",nm," or 7 named\n",
-                           "values for: ",paste(pnms,collapse=", "))
-    if (is.null(names(x))) STOP(nm," must have named values for: ",
-                                paste(pnms,collapse=", "))
-    if (!all(names(x) %in% pnms)) STOP(nm," must have named values for all of: ",
-                                       paste(pnms,collapse=", "))
-  } else {
-    iErrMore1(x,nm)
-    iErrNotNumeric(x,nm)
-    iErrLT(x,0,nm)
-    if (!is.wholenumber(x))
-      WARN("The initial number in the population is not a whole number,\n",
-           "  please check value in ",nm,".")
-  }
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  if (!is.wholenumber(x))
+    WARN("The initial number in the population is not a whole number,\n",
+         "  please check value in ",nm,".")
 }
 
 # Check Linf

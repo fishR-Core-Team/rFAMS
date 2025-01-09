@@ -2,19 +2,24 @@
 #'
 #' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minLL}).
 #'
+#' @param minLL A single numeric representing the minimum length limit for harvest in mm.
 #' @param cf A single numeric representing conditional fishing mortality.
 #' @param cm A single numeric representing conditional natural mortality.
-#' @param minLL A single numeric representing the minimum length limit for harvest in mm.
-#' @param N0 A single numeric representing the initial number of fish in the population OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.
-#' @param Linf A single numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param K A single numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param t0 A single numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param LWalpha A single numeric representing the point estimate of alpha from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param LWbeta A single numeric representing the point estimate of beta from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param maxage An single whole number representing maximum age in the population in years. May be given in a named vector or list given to \code{N0} (see examples).
+#' @param lhparms A named vector or list that contains values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See details for definitions of these life history parameters.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #'
-#' @details Details will be filled out later
+#' @details MORE Details will be filled out later
+#'
+#' The vector or list in \code{lhparms} MUST contain a value (which MUST be named) for each of the following life history parameters to be used in the calculation of yield.
+#' \itemize{
+#' \item \code{N0}: A single numeric representing the number of fish in the population at the hypothetical age of \code{t0}.
+#' \item \code{Linf}: A single numeric representing the point estimate of asymptotic mean length from the von Bertalanffy growth model.
+#' \item \code{K}: A single numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model.
+#' \item \code{t0}: A single numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model.
+#' \item \code{LWalpha}: A single numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
+#' \item \code{LWbeta}: A single numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
+#' \item \code{maxage}: A single whole number representing maximum age in the population in years.
+#' }
 #'
 #' @return A data.frame with the following calculated values:
 #' \itemize{
@@ -52,7 +57,7 @@
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{ypr_minLL_fixed}} and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
+#' @seealso \code{\link{ypr_minLL}} for simulating yield with (possibly) multiple values of \code{minLL}, \code{cf}, and \code{cm}.
 #'
 #' @references
 #' Ricker, W.E. 1975. Computation and interpretation of biological statistics of fish populations. Technical Report Bulletin 191, Bulletin of the Fisheries Research Board of Canada. Was (is?) from \url{https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/1485.pdf}.
@@ -60,47 +65,31 @@
 #' Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling simulator. v1.64. American Fisheries Society, Bethesda, MD. Was (is?) from \url{https://units.fisheries.org/fits/wp-content/uploads/sites/29/2019/06/FAMS-1.64-Manual.pdf}.
 #'
 #' @examples
-#' # Estimate yield with fixed parameters
-#' Res_1 <- ypr_func(cf=0.45,cm=0.25,
-#'                   minLL=355,
-#'                   N0=100,
-#'                   Linf=2000,K=0.50,t0=-0.616,
-#'                   LWalpha=-5.453,LWbeta=3.10,
-#'                   maxage=15)
-#' Res_1
+#' # Life history parameters to be used below
+#' LH <- c(N0=100,Linf=600,K=0.30,t0=-0.6,LWalpha=-5.453,LWbeta=3.10,maxage=15)
 #'
-#' # Same, but with named vector in N0
-#' parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-#' Res_2 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
-#' Res_2
-#'
-#' # Same, but with named list in N0
-#' parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-#' Res_3 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
-#' Res_3
+#' # Estimate yield for single values of minLL, cf, and cm
+#' res <- ypr_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH)
+#' res
 #'
 #' @rdname ypr_func
 #' @export
 
-ypr_func <- function(minLL,cf,cm,
-                     N0,Linf=NULL,K=NULL,t0=NULL,
-                     LWalpha=NULL,LWbeta=NULL,maxage=NULL,
+ypr_func <- function(minLL,cf,cm,lhparms,
                      matchRicker=TRUE){
   # ---- Check inputs
   iCheckMLH(minLL)
-  iCheckcf(cf)
-  iCheckcm(cm)
-  iCheckN0(N0)    # initial check if vector/list
-  if (length(N0)>1) {
-    Linf <- N0[["Linf"]]
-    K <- N0[["K"]]
-    t0 <- N0[["t0"]]
-    LWalpha <- N0[["LWalpha"]]
-    LWbeta <- N0[["LWbeta"]]
-    maxage <- N0[["maxage"]]
-    N0 <- N0[["N0"]]
-    iCheckN0(N0)  # second check of single value of N0
-  }
+  iCheckcfm(cf,type="fishing")
+  iCheckcfm(cm,type="natural")
+  iCheckLHparms(lhparms)
+  Linf <- lhparms[["Linf"]]
+  K <- lhparms[["K"]]
+  t0 <- lhparms[["t0"]]
+  LWalpha <- lhparms[["LWalpha"]]
+  LWbeta <- lhparms[["LWbeta"]]
+  maxage <- lhparms[["maxage"]]
+  N0 <- lhparms[["N0"]]
+  iCheckN0(N0)  # second check of single value of N0
   iCheckLinf(Linf)
   iCheckK(K)
   iCheckt0(t0)
