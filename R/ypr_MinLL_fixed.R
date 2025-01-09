@@ -31,6 +31,8 @@
 #'
 #' For convenience the data.frame also contains the model input values (\code{minLL}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
 #'
+#' The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are defined under "values" in the documentation for \code{\link{ypr_func}}.
+#'
 #' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
@@ -80,7 +82,8 @@
 #' @rdname ypr_minLL_fixed
 #' @export
 ypr_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
-                          N0,Linf,K,t0,LWalpha,LWbeta,maxage){
+                          N0,Linf,K,t0,LWalpha,LWbeta,maxage,
+                          matchRicker=TRUE){
 
   # ---- Check inputs
   iCheckMLH(minLL)
@@ -117,7 +120,7 @@ ypr_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
 
   # Send each row to ypr_func() ...
   #   i.e., calculate yield et al for all cf, and cm combos
-  res <- purrr::pmap_df(res,ypr_func)
+  res <- purrr::pmap_df(res,ypr_func,matchRicker=matchRicker)
 
   # ---- Return data.frame with both output values and input parameters
   res
