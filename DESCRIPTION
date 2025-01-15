@@ -13,19 +13,21 @@ License: file LICENSE
 Depends:
   R (>= 3.5.0)
 Imports:
+  FSA,
   stats,
   purrr
 Suggests: 
-    dplyr,
-    ggplot2,
-    metR,
-    knitr,
-    rmarkdown,
-    spsh,
-    testthat (>= 3.0.0),
-    tidyr,
-    zipfR,
-    quarto
+  dplyr,
+  FSAdata,
+  ggplot2,
+  knitr,
+  metR,
+  quarto,
+  rmarkdown,
+  spsh,
+  testthat (>= 3.0.0),
+  tidyr,
+  zipfR
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

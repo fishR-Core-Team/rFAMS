@@ -1,10 +1,11 @@
 ## Get some simple results
-parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-res1 <- ypr_func(cf=0.45,cm=0.25,minLL=355,lhparms=parms,matchRicker=FALSE)
+LH <- makeLH(N0=100,maxage=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
+res1 <- ypr_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,matchRicker=FALSE)
 
-# Same, but with named list in N0
-parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-res2 <- ypr_func(cf=0.45,cm=0.25,minLL=355,lhparms=parms,matchRicker=FALSE)
+# Same, but with named vector in N0
+LH <- makeLH(N0=100,maxage=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,
+             restype="vector")
+res2 <- ypr_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,matchRicker=FALSE)
 
 
 test_that("Two types of lhparams of ypr_func() match",{
@@ -15,24 +16,24 @@ test_that("ypr_func() messages",{
   ## Tests are not exhaustive, see test_internals for more
   ## check for some missing values
   expect_error(ypr_func(),"Need to specify a minimum length")
-  expect_error(ypr_func(minLL=355,cm=0.25,lhparms=parms),
+  expect_error(ypr_func(minLL=355,cm=0.25,lhparms=LH),
                "Need to specify a conditional fishing mortality in 'cf'.")
-  expect_error(ypr_func(,minLL=355,cf=0.45,lhparms=parms),
+  expect_error(ypr_func(,minLL=355,cf=0.45,lhparms=LH),
                "Need to specify a conditional natural mortality in 'cm'.")
-  expect_warning(ypr_func(minLL=35,cf=0.45,cm=0.25,lhparms=parms),
+  expect_warning(ypr_func(minLL=35,cf=0.45,cm=0.25,lhparms=LH),
                  "A minimum length limit of harvest of 35 mm seems too small")
-  ypr_func(minLL=2235,cf=0.45,cm=0.25,lhparms=parms) |>
+  ypr_func(minLL=2235,cf=0.45,cm=0.25,lhparms=LH) |>
     expect_warning("A minimum length limit of harvest of 2235 mm seems too large") |>
     expect_warning("The set mininmum length limit of harvest")
 
   ## Errors when using the named vector/list
-  tmp <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15,derek=7)
+  tmp <- c(N0=100,maxage=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,derek=7)
   expect_error(ypr_func(cf=0.45,cm=0.25,minLL=355,lhparms=tmp),
                "'lhparms' should have only 7")
-  tmp <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,MAXAGE=15)
+  tmp <- c(N0=100,MAXAGE=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
   expect_error(ypr_func(cf=0.45,cm=0.25,minLL=355,lhparms=tmp),
                "'lhparms' does not contain a value for: maxage")
-  tmp <- c(100,2000,0.50,-0.616,-5.453,3.10,15)
+  tmp <- c(100,15,2000,0.50,-0.616,-5.453,3.10)
   expect_error(ypr_func(cf=0.45,cm=0.25,minLL=355,lhparms=tmp),
                "Life history parameters in 'lhparms' must be NAMED.")
 })

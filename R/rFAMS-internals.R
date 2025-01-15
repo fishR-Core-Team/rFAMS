@@ -194,7 +194,7 @@ iCheckK <- function(x) {
   iErrLT(x,0,nm)
   if (x<0.1) WARN("A Brody growth coefficient of ",x," seems too small,\n",
                   "  please check value in ",nm,".")
-  if (x>0.6) WARN("A Brody growth coefficient of ",x," mm seems too large,\n",
+  if (x>0.6) WARN("A Brody growth coefficient of ",x," seems too large,\n",
                   "  please check value in ",nm,".")
 }
 
@@ -217,7 +217,7 @@ iCheckLWb <- function(x) {
   iErrLT(x,0,nm)
   if (x<2) WARN("A weight-length beta coefficient of ",x," seems too small,\n",
                 "  please check value in ",nm,".")
-  if (x>4) WARN("A weight-length beta coefficient of ",x," mm seems too large,\n",
+  if (x>4) WARN("A weight-length beta coefficient of ",x," seems too large,\n",
                 "  please check value in ",nm,".")
 }
 

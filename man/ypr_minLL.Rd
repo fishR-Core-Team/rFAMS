@@ -25,7 +25,7 @@ ypr_minLL(
 
 \item{cm}{A single numeric for conditional natural mortality. If \code{cmmax} and \code{cminc} are given then this will be the minimum conditional natural mortality for a sequence from \code{cm} to \code{cmmax} in increments of \code{cminc}.}
 
-\item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See details for definitions of these life history parameters.}
+\item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{maxage}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
 \item{minLLmax}{A single numeric for the upper limit of the sequence of minimum length limit for harvest in mm. See \code{minLL} above.}
 
@@ -66,12 +66,22 @@ The data.frame also contains a \code{notes} value which may contain abbreviation
 Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model with user-supplied inputs for minimum length limits for harvest (\code{minLL}), conditional fishing mortality (\code{cf}), and conditional natural mortality (\code{cm}). Any of these three inputs may be varied, alone or with the other inputs, to estimate yield under varying scenarios of minimum length limits, conditional fishing mortality, and conditional natural mortality.
 }
 \details{
-Details will be filled out later
+Best practice is to enter the life history parameters into a list or vector using \code{\link{makeLH}} (rather than directly) as \code{makeLH} performs several sanity checks on the values entered (e.g., ensures Linf>0); i.e.,
+
+\if{html}{\out{<div class="sourceCode R">}}\preformatted{# Best practice for entering life history parameter values
+LH <- makeLH(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,
+             LWalpha=-5.453,LWbeta=3.10)
+
+# Works but no checks on the values
+LH <- list(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,
+           LWalpha=-5.453,LWbeta=3.10)
+}\if{html}{\out{</div>}}
 }
 \examples{
 # Life history parameters to be used below
-LH <- c(N0=100,Linf=600,K=0.30,t0=-0.6,LWalpha=-5.453,LWbeta=3.10,maxage=15)
+LH <- makeLH(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,LWalpha=-5.453,LWbeta=3.10)
 
+# --- Simple Examples -------------------------------------------------------
 # Estimate yield for single values of minLL, cf, and cm
 res <- ypr_minLL(minLL=200,cf=0.3,cm=0.5,lhparms=LH)
 res
@@ -91,6 +101,7 @@ res <- ypr_minLL(minLL=200,cf=0.3,cm=0.5,lhparms=LH,
                  cmmax=0.9,cminc=0.2)
 res
 
+# --- More Realist Example (with Plots) -------------------------------------
 # More realistic example to show possible plots
 res <- ypr_minLL(minLL=200,cf=0.1,cm=0.1,lhparms=LH,
                  minLLmax=500,minLLinc=10,
@@ -138,19 +149,23 @@ ggplot(data=plot_dat,mapping=aes(y=yield,x=exploitation,
 # Yield isopleths for varying minLL and exploitation with cm=0.40
 # # Using same data as previous example
 ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
+  geom_contour_filled(alpha=0.5) +
   geom_contour(color="black") +
   metR::geom_text_contour(stroke=0.15) +
   xlab("Exploitation") +
   ylab("Minimum length limit (mm)") +
-  theme_FAMS()
+  theme_FAMS() +
+  theme(legend.position="none")
 
 # Same as previous but using number harvested isopleths
 ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=Nharvest)) +
+  geom_contour_filled(alpha=0.5) +
   geom_contour(color="black")+
   metR::geom_text_contour(stroke = 0.15)+
   xlab("Exploitation")+
   ylab("Minimum length limit (mm)")+
-  theme_FAMS()
+  theme_FAMS() +
+  theme(legend.position="none")
 
 }
 \seealso{
