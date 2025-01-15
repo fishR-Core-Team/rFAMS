@@ -19,31 +19,34 @@ test_that("makeLH() messages",{
   expect_no_error(makeLH(N0=100,maxage=15,Linf=2000,K=0.50,t0=-0.616,
                          LWalpha=-5.453,LWbeta=3.10))
   expect_error(makeLH(Linf=2000,maxage=15,K=0.50,t0=-0.616,
-                      LWalpha=-5.453,LWbeta=3.10,interactive=FALSE),
-               "Must give a value for 'N0' or set 'interactive=TRUE'")
+                      LWalpha=-5.453,LWbeta=3.10),
+               "Need to specify an initial number of fish")
   expect_error(makeLH(N0=100,maxage=15,K=0.50,t0=-0.616,
-                      LWalpha=-5.453,LWbeta=3.10,interactive=FALSE),
-               "Must give a value for 'Linf' or set 'interactive=TRUE'")
+                      LWalpha=-5.453,LWbeta=3.10),
+               "Need to specify a mean asymptotic length")
 
-  ## A few checks on reasonableness of vaules, there are more tests in internals
+  ## A few checks on reasonableness of values, there are more tests in internals
   expect_error(makeLH(N0=-100,maxage=15,Linf=2000,K=0.50,t0=-0.616,
-                      LWalpha=-5.453,LWbeta=3.10,interactive=FALSE),
+                      LWalpha=-5.453,LWbeta=3.10),
                "'N0' must be >=0")
   expect_error(makeLH(N0=100,maxage=15,Linf=-2000,K=0.50,t0=-0.616,
-                      LWalpha=-5.453,LWbeta=3.10,interactive=FALSE),
+                      LWalpha=-5.453,LWbeta=3.10),
                "'Linf' must be >=0")
   expect_error(makeLH(N0=c(100,200),maxage=15,Linf=2000,K=0.50,t0=-0.616,
-                      LWalpha=-5.453,LWbeta=3.10,interactive=FALSE),
+                      LWalpha=-5.453,LWbeta=3.10),
                "Only use one value in 'N0'")
   expect_error(makeLH(N0=100,maxage=15,Linf="a",K=0.50,t0=-0.616,
-                      LWalpha=-5.453,LWbeta=3.10,interactive=FALSE),
+                      LWalpha=-5.453,LWbeta=3.10),
                "'Linf' must be a number")
   expect_warning(makeLH(N0=100,maxage=15,Linf=20000,K=0.50,t0=-0.616,
-                        LWalpha=-5.453,LWbeta=3.10,interactive=FALSE),
+                        LWalpha=-5.453,LWbeta=3.10),
                "A mean asymptotic length of 20000 mm seems too large")
-  expect_error(makeLH(N0=100,Linf=fit2,
-                      LWalpha=-5.453,LWbeta=3.10,maxage=15,interactive=FALSE),
+  expect_error(makeLH(N0=100,maxage=15,Linf=fit2,LWalpha=-5.453,LWbeta=3.10),
                "Names of parameters in 'nls' object are not 'Linf', 'K', and 't0'")
+  expect_error(makeLH(N0=100,maxage=15,Linf=fit3,LWalpha=-5.453,LWbeta=3.10),
+               "'Linf' given object from 'lm")
+  expect_error(makeLH(N0=100,maxage=15,Linf=fit1,LWalpha=fit1),
+               "'LWalpha' given object from 'nls")
 })
 
 test_that("makeLH() results",{

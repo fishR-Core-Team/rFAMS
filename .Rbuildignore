@@ -8,6 +8,9 @@ cran-comments.md
 ^.*\.Rproj$
 ^\.Rproj\.user$
 
+## Files keeping until we know we don't need them
+^zzzKeepForNow
+
 ## Tests for building functions and plotting
 ^tests/FunctionTesting/
 

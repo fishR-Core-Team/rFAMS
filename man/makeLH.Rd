@@ -4,17 +4,7 @@
 \alias{makeLH}
 \title{Make a list or vector of life history parameters for yield-per-recruit analyses.}
 \usage{
-makeLH(
-  N0,
-  maxage,
-  Linf,
-  K,
-  t0,
-  LWalpha,
-  LWbeta,
-  interactive = TRUE,
-  restype = c("list", "vector")
-)
+makeLH(N0, maxage, Linf, K, t0, LWalpha, LWbeta, restype = c("list", "vector"))
 }
 \arguments{
 \item{N0}{A single numeric that represents the number of fish in the population at the hypothetical age of \code{t0}.}
@@ -31,15 +21,13 @@ makeLH(
 
 \item{LWbeta}{A single numeric that represents the point estimate of beta from the length-weight regression on the log10 scale.}
 
-\item{interactive}{A logical that indicates whether parameters can be input interactively through dialog boxes (on Windows) or command line prompts (on non-Windows), Ignored for parameters that are given through function arguments.}
-
 \item{restype}{A character that indicates the type of output (list or vector) returned by the function.}
 }
 \value{
 A named list or vector (depending on \code{restype}) that contains the given (or extracted) life history parameters values that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{ypr_minLL}}).
 }
 \description{
-Efficiently construct either a vector or list that contains the seven life history parameters required for Beverton-Holt yield-per-recruit analyses. The parameters can be given by the user through function arguments or through interactive dialog boxes (on Windows) or command line prompts (on non-Windows). Additionally, the von Bertalanffy parameters (\code{Linf}, \code{K}, and \code{t0}) may be extracted from a \code{nls} object created from fitting the von Bertalanffy equation to length-at-age data (object created outside this function). Similarly the log10-transformed weight-length model coefficients may be extracted from a \code{lm} object created from fitting the model to transformed weight-length data (object created outside this function).
+Efficiently construct either a vector or list that contains the seven life history parameters required for Beverton-Holt yield-per-recruit analyses. The parameters can be given by the user through function arguments. Alternativvely, the von Bertalanffy parameters (\code{Linf}, \code{K}, and \code{t0}) may be extracted from an \code{nls} object created from fitting the von Bertalanffy equation to length-at-age data (object created outside this function). Similarly the log10-transformed weight-length model coefficients may be extracted from an \code{lm} object created from fitting the model to transformed weight-length data (object created outside this function). All parameter values are checked for sanity (e.g., Linf>0).
 }
 \details{
 Use of this function for putting life history parameters into a list or vector is recommended as (i) values for \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta} can be extracted from objects from appropriate model fitting and (ii) checks for impossible or improbable values for each parameter are performed; i.e.,
@@ -56,19 +44,10 @@ LH <- list(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,
 If a list is returned then values will be displayed with the number of decimals provided by the user. If a vector is returned then the number of decimals displayed will be the same for each value and will match the value supplied by the user with the most decimals. Thus, a list is preferred as it will be easier to match what was given to what was expected to be given.
 }
 \examples{
-# ----- All values supplied as arguments ... no interactivity ---------------
+# ----- Simple examples with explicity arguments for each -------------------
 makeLH(N0=100,maxage=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1)
 makeLH(N0=100,maxage=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1,
-restype="vector")
-
-# ----- Examples with interactivity by user ---------------------------------
-## !!! The next two examples require user-interaction and are not run !!! ##
-
-# No values supplied as arguments ... will ask for inputs interactively
-\dontrun{makeLH()}
-
-# Some values supplied as arguments ... others asked for interactively
-\dontrun{makeLH(N0=200,maxage=15)}
+       restype="vector")
 
 # ----- Example of extracting values from model fits ------------------------
 # N0 and maxage provided as arguments ... Linf, K, and t0 extracted from nls
