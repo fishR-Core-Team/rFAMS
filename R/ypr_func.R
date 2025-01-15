@@ -79,8 +79,8 @@ ypr_func <- function(minLL,cf,cm,lhparms,
                      matchRicker=TRUE){
   # ---- Check inputs
   iCheckMLH(minLL)
-  iCheckcfm(cf,type="fishing")
-  iCheckcfm(cm,type="natural")
+  iCheckMort(cf,typeTFM="fishing",typeIC="conditional")
+  iCheckMort(cm,typeTFM="natural",typeIC="conditional")
   iCheckLHparms(lhparms)
   Linf <- lhparms[["Linf"]]
   K <- lhparms[["K"]]

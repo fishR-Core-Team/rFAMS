@@ -4,7 +4,7 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iCheckMLH iCheckMLHinc iCheckcf iCheckcm iCheckcfminc iCheckN0 iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge
+#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iCheckMLH iCheckMLHinc iCheckMort iCheckMortinc iCheckN0 iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
@@ -94,35 +94,34 @@ iCheckMLHinc <- function(xinc,xmin,xmax,check_missing=TRUE) {
   res
 }
 
-# Check conditional fishing mortality value
-iCheckcfm <- function(x,type,minmax=NULL,check_missing=TRUE) {
+iCheckMort <- function(x,typeTFM,typeIC,
+                       minmax=NULL,check_missing=TRUE) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if(!is.null(minmax)) minmax <- paste0(" ",minmax)  ## to handle space padding in msg
   if (check_missing) {
-    tmp <- paste0("Need to specify a",minmax," conditional ",type," mortality in ",nm,".")
+    tmp <- paste0("Need to specify a",minmax," ",typeIC," ",typeTFM," mortality in ",nm,".")
     if (missing(x)) STOP(tmp)
     if (is.null(x)) STOP(tmp)
   }
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  iErrGT(x,1,nm)
+  if (typeIC=="conditional") iErrGT(x,1,nm)
 }
 
-# Check conditional mortality increments (min/max should be checked prior),
-#   return sequence if everything looks good
-iCheckcfminc <- function(xinc,xmin,xmax,type,check_missing=TRUE) {
+iCheckMortinc <- function(xinc,xmin,xmax,typeTFM,typeIC,check_missing=TRUE) {
   ## checks of increment
   nm <- paste0("'",deparse(substitute(xinc)),"'")
   if (check_missing) {
-    tmp <- paste0("Need to specify an increment for conditional ",type," mortality in ",nm,".")
+    tmp <- paste0("Need to specify an increment for ",typeIC," ",
+                  typeTFM," mortality in ",nm,".")
     if (missing(xinc)) STOP(tmp)
     if (is.null(xinc)) STOP(tmp)
   }
   iErrMore1(xinc,nm)
   iErrNotNumeric(xinc,nm)
   iErrLT(xinc,0,nm)
-  iErrGT(xinc,1,nm)
+  if (typeIC=="conditional") iErrGT(xinc,1,nm)
   ## Check min vs max
   nm1 <- paste0("'",deparse(substitute(xmin)),"'")
   nm2 <- paste0("'",deparse(substitute(xmax)),"'")

@@ -37,11 +37,14 @@ test_that("iCheckMLHinc() messages and values",{
   ## Set MLHinc to value outside function to test that name is extracted
   MLHmin <- 100; MLHmax <- 900
   MLHinc <- -100
-  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),"must be >=0")
+  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),
+               "must be >=0")
   MLHinc <- "a"
-  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),"must be a number")
+  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),
+               "must be a number")
   MLHinc <- c(300,500)
-  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),"Only use one value in")
+  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),
+               "Only use one value in")
 
   ## Problems with MLHmin and MLHmax
   MLHmin <- 900; MLHmax <- 100; MLHinc <- 100
@@ -56,60 +59,75 @@ test_that("iCheckMLHinc() messages and values",{
   expect_equal(length(tmp),801)
 })
 
-test_that("iCheckcfm() messages",{
-  ## Fishing mortality
-  expect_error(rFAMS:::iCheckcfm(type="fishing"),
+test_that("iCheckMort() messages",{
+  ## Conditional fishing mortality
+  expect_error(rFAMS:::iCheckMort(typeTFM="fishing",typeIC="conditional"),
                "Need to specify a conditional fishing mortality in")
   ## Set cf to value outside function to test that name is extracted
   cf <- -1
-  expect_error(rFAMS:::iCheckcfm(cf,type="fishing"),"'cf' must be >=0")
+  expect_error(rFAMS:::iCheckMort(cf,typeTFM="fishing",typeIC="conditional"),
+               "'cf' must be >=0")
   cf <- 2
-  expect_error(rFAMS:::iCheckcfm(cf,type="fishing"),"'cf' must be <=1")
+  expect_error(rFAMS:::iCheckMort(cf,typeTFM="fishing",typeIC="conditional"),
+               "'cf' must be <=1")
   cf <- "a"
-  expect_error(rFAMS:::iCheckcfm(cf,type="fishing"),"'cf' must be a number")
+  expect_error(rFAMS:::iCheckMort(cf,typeTFM="fishing",typeIC="conditional"),
+               "'cf' must be a number")
   cf <- c(0.3,0.5)
-  expect_error(rFAMS:::iCheckcfm(cf,type="fishing"),"Only use one value in 'cf'")
+  expect_error(rFAMS:::iCheckMort(cf,typeTFM="fishing",typeIC="conditional"),
+               "Only use one value in 'cf'")
   ## test function for work with cfmin and cfmax
   cfmax <- "a"
-  expect_error(rFAMS:::iCheckcfm(cfmax,type="fishing"),"'cfmax' must be a number")
+  expect_error(rFAMS:::iCheckMort(cfmax,typeTFM="fishing",typeIC="conditional"),
+               "'cfmax' must be a number")
 
-  ## Natural mortality
-  expect_error(rFAMS:::iCheckcfm(type="natural"),
+  ## Conditional natural mortality
+  expect_error(rFAMS:::iCheckMort(typeTFM="natural",typeIC="conditional"),
                "Need to specify a conditional natural mortality in")
   ## Set cf to value outside function to test that name is extracted
   cm <- -1
-  expect_error(rFAMS:::iCheckcfm(cm,type="natural"),"'cm' must be >=0")
+  expect_error(rFAMS:::iCheckMort(cm,typeTFM="natural",typeIC="conditional"),
+               "'cm' must be >=0")
   cm <- 2
-  expect_error(rFAMS:::iCheckcfm(cm,type="natural"),"'cm' must be <=1")
+  expect_error(rFAMS:::iCheckMort(cm,typeTFM="natural",typeIC="conditional"),
+               "'cm' must be <=1")
   cm <- "a"
-  expect_error(rFAMS:::iCheckcfm(cm,type="natural"),"'cm' must be a number")
+  expect_error(rFAMS:::iCheckMort(cm,typeTFM="natural",typeIC="conditional"),
+               "'cm' must be a number")
   cm <- c(0.3,0.5)
-  expect_error(rFAMS:::iCheckcfm(cm,type="natural"),"Only use one value in 'cm'")
+  expect_error(rFAMS:::iCheckMort(cm,typeTFM="natural",typeIC="conditional"),
+               "Only use one value in 'cm'")
   ## test function for work with cmmax
   cmmax <- "a"
-  expect_error(rFAMS:::iCheckcfm(cmmax,type="natural"),"'cmmax' must be a number")
+  expect_error(rFAMS:::iCheckMort(cmmax,typeTFM="natural",typeIC="conditional"),
+               "'cmmax' must be a number")
 })
 
-test_that("iCheckcfminc() messages and values",{
-  expect_error(rFAMS:::iCheckcfminc(type="fishing"),
+test_that("iCheckMortinc() messages and values",{
+  expect_error(rFAMS:::iCheckMortinc(typeTFM="fishing",typeIC="conditional"),
                "Need to specify an increment for conditional fishing mortality in")
   ## Set cfinc to value outside function to test that name is extracted
   cf <- 0.1; cfmax <- 0.9
   cfinc <- -0.1
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cf,cfmax,type="fishing"),"must be >=0")
+  expect_error(rFAMS:::iCheckMortinc(cfinc,cf,cfmax,typeTFM="fishing",typeIC="conditional"),
+               "must be >=0")
   cfinc <- 2
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cf,cfmax,type="fishing"),"must be <=1")
+  expect_error(rFAMS:::iCheckMortinc(cfinc,cf,cfmax,typeTFM="fishing",typeIC="conditional"),
+               "must be <=1")
   cfinc <- "a"
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cf,cfmax,type="fishing"),"must be a number")
+  expect_error(rFAMS:::iCheckMortinc(cfinc,cf,cfmax,typeTFM="fishing",typeIC="conditional"),
+               "must be a number")
   cfinc <- c(0.3,0.5)
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cf,cfmax,type="fishing"),"Only use one value in")
+  expect_error(rFAMS:::iCheckMortinc(cfinc,cf,cfmax,typeTFM="fishing",typeIC="conditional"),
+               "Only use one value in")
 
   ## Problems with cf and cfmax
   cf <- 0.9; cfmax <- 0.1; cfinc <- 0.1
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cf,cfmax,type="fishing"),
+  expect_error(rFAMS:::iCheckMortinc(cfinc,cf,cfmax,typeTFM="fishing",typeIC="conditional"),
                "'cf' must be equal to or less than 'cfmax'")
   cf <- 0.1; cfmax <- 0.9; cfinc <- 0.001
-  expect_warning(tmp <- rFAMS:::iCheckcfminc(cfinc,cf,cfmax,type="fishing"),
+  expect_warning(tmp <- rFAMS:::iCheckMortinc(cfinc,cf,cfmax,typeTFM="fishing",
+                                              typeIC="conditional"),
                         "Choices of 'cf', 'cfmax', and 'cfinc' resulted in")
 
   ## Values returned

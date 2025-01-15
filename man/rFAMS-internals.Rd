@@ -12,9 +12,8 @@
 \alias{iErrGt}
 \alias{iCheckMLH}
 \alias{iCheckMLHinc}
-\alias{iCheckcf}
-\alias{iCheckcm}
-\alias{iCheckcfminc}
+\alias{iCheckMort}
+\alias{iCheckMortinc}
 \alias{iCheckN0}
 \alias{iCheckLinf}
 \alias{iCheckK}

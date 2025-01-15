@@ -151,8 +151,8 @@ ypr_minLL <- function(minLL,cf,cm,lhparms,
   # Modeling inputs first ... each of minLL, cf, and cm should be a single value
   #   or a sequence when this is done, if arguments are declared properly
   iCheckMLH(minLL)
-  iCheckcfm(cf,type="fishing")
-  iCheckcfm(cm,type="natural")
+  iCheckMort(cf,typeTFM="fishing",typeIC="conditional")
+  iCheckMort(cm,typeTFM="natural",typeIC="conditional")
   if (!is.null(minLLmax)) {
     if (is.null(minLLinc)) STOP("if 'minLLmax' is given then 'minLLinc' must also be given.")
     iCheckMLH(minLLmax,minmax="maximum",check_missing=FALSE)
@@ -160,13 +160,17 @@ ypr_minLL <- function(minLL,cf,cm,lhparms,
   }
   if (!is.null(cfmax)) {
     if (is.null(cfinc)) STOP("if 'cfmax' is given then 'cfinc' must also be given.")
-    iCheckcfm(cfmax,type="fishing",minmax="maximum",check_missing=FALSE)
-    cf <- iCheckcfminc(cfinc,cf,cfmax,check_missing=FALSE)
+    iCheckMort(cfmax,typeTFM="fishing",typeIC="conditional",
+              minmax="maximum",check_missing=FALSE)
+    cf <- iCheckMortinc(cfinc,cf,cfmax,typeTFM="fishing",typeIC="conditional",
+                        check_missing=FALSE)
   }
   if (!is.null(cmmax)) {
     if (is.null(cminc)) STOP("if 'cmmax' is given then 'cminc' must also be given.")
-    iCheckcfm(cmmax,type="natural",minmax="maximum",check_missing=FALSE)
-    cm <- iCheckcfminc(cminc,cm,cmmax,check_missing=FALSE)
+    iCheckMort(cmmax,typeTFM="natural",typeIC="conditional",
+              minmax="maximum",check_missing=FALSE)
+    cm <- iCheckMortinc(cminc,cm,cmmax,typeTFM="fishing",typeIC="conditional",
+                        check_missing=FALSE)
   }
 
   # Life history parameters next
