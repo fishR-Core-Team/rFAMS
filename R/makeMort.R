@@ -1,26 +1,21 @@
-#' @title Create data frame of mortality values for yield-per-recruit (YPR) simulations
+#' @title Create data,frame of mortality values for yield-per-recruit (YPR) simulations
 #'
-#' @description XXX
+#' @description Create a data.frame of instantaneous fishing (F) and natural (M) mortality rates from user inputs to be used in yield-per-recruit (YPR) simulations in other functions.
 #'
-#' @details The user may enter the mortality values in one of three ways, which must be declared with `input` as follows.
+#' @details The user may enter the mortality values in one of three ways.
 #'
-#' * With `input="cfcm"` the user must use `cf` (and optionally `cfmax` and `cfinc`) and `cm` (and optionally `cmmax` and `cminc`) to enter conditional fishing mortality (cf) and natural mortality (cm) values.
-#' * With `input="FM"` the user must use `F` (and optionally `Fmax` and `Finc`) and `M` (and optionally `Mmax` and `Minc`) to enter instantaneous fishing mortality (F) and natural mortality (M) values.
-#' * With `input="MZ"` the user must use `M` (and optionally `Mmax` and `Minc`) and `Z` (and optionally `Zmax` and `Zinc`) to enter instantaneous natural mortality (Z) and total mortality (M) values.
+#' * User may enter values for `F` (and optionally `Fmax` and `Finc`) and `M` (and optionally `Mmax` and `Minc`) to enter instantaneous fishing mortality (F) and natural mortality (M) values.
+#' * User may enter values for `cf` (and optionally `cfmax` and `cfinc`) and `cm` (and optionally `cmmax` and `cminc`) to enter conditional fishing mortality (cf) and natural mortality (cm) values.
+#' * User may enter values of `Z` (and optionally `Zmax` and `Zinc`) along with `F` (and optionally `Fmax` and `Finc`) or `M` (and optionally `Mmax` and `Minc`) to enter instantaneous natural mortality (Z) and one of its components (F or M) values.
 #'
-#' In all instances the values may be entered in a variety of ways, as described below for `cf`,
+#' In all instances the values may be entered in a variety of ways, as described below for `F`,
 #'
-#' * If `cf` is a single value and `cfmax` and `cfinc` are not used, then a single constant conditional fishing mortality value will be used.
-#' * If `cf`, `cfmax`, and `cfinc` are all single values, then a sequence of conditional fishing mortality values will be created from `cf` to `cfmax` in steps of `cfinc`.
-#' * If `cf` is a vector of values and `cfmax` and `cfinc` are not used, then that vector of conditional fishing mortality values will be used.
+#' * If `F` is a single value and `Fmax` and `Finc` are not used, then a single constant instantaneous fishing mortality value will be used.
+#' * If `F`, `Fmax`, and `Finc` are all single values, then a sequence of instantaneous fishing mortality values will be created from `F` to `Fmax` in steps of `Finc`.
+#' * If `F` is a vector of values and `Fmax` and `Finc` are not used, then that vector of instantaneous fishing mortality values will be used.
 #'
-#' @param input A string that contains an abbreviation for how the mortality values will be given by the user. See details.
-#' @param cf A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for conditional fishing mortality. May not be used depending on `input`. See details and examples.
-#' @param cfmax A single numeric that represents the maximum values for a sequence of conditional fishing mortality values. May not be used depending on `input`. See details and examples.
-#' @param cfinc A single numeric that represents the increment (i.e., step) for a sequence of conditional fishing mortality values. May not be used depending on `input`. See details and examples.
-#' @param cm A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for conditional natural mortality. May not be used depending on `input`. See details and examples.
-#' @param cmmax A single numeric that represents the maximum values for a sequence of conditional natural mortality values. May not be used depending on `input`. See details and examples.
-#' @param cminc A single numeric that represents the increment (i.e., step) for a sequence of conditional natural mortality values. May not be used depending on `input`. See details and examples.
+#' The number of combinations of `F` and `M` may be less than expected when using `Z` as combinations that result in F<0 or M<0 are not included.
+#'
 #' @param F A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for instantaneous fishing mortality. May not be used depending on `input`. See details and examples.
 #' @param Fmax A single numeric that represents the maximum values for a sequence of instantaneous fishing mortality values. May not be used depending on `input`. See details and examples.
 #' @param Finc A single numeric that represents the increment (i.e., step) for a sequence of instantaneous fishing mortality values. May not be used depending on `input`. See details and examples.
@@ -30,58 +25,117 @@
 #' @param Z A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for instantaneous total mortality. May not be used depending on `input`. See details and examples.
 #' @param Zmax A single numeric that represents the maximum values for a sequence of instantaneous total mortality values. May not be used depending on `input`. See details and examples.
 #' @param Zinc A single numeric that represents the increment (i.e., step) for a sequence of instantaneous total mortality values. May not be used depending on `input`. See details and examples.
+#' @param cf A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for conditional fishing mortality. May not be used depending on `input`. See details and examples.
+#' @param cfmax A single numeric that represents the maximum values for a sequence of conditional fishing mortality values. May not be used depending on `input`. See details and examples.
+#' @param cfinc A single numeric that represents the increment (i.e., step) for a sequence of conditional fishing mortality values. May not be used depending on `input`. See details and examples.
+#' @param cm A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for conditional natural mortality. May not be used depending on `input`. See details and examples.
+#' @param cmmax A single numeric that represents the maximum values for a sequence of conditional natural mortality values. May not be used depending on `input`. See details and examples.
+#' @param cminc A single numeric that represents the increment (i.e., step) for a sequence of conditional natural mortality values. May not be used depending on `input`. See details and examples.
 #'
-#' @returns A data.frame that contains the following items
-#'
-#' * `cf`: Conditional fishing mortality rate
-#' * `cm`: Conditional natural mortality rate
-#' * `F`: Instantaneous fishing mortality rate
-#' * `M`: Instantaneous naural mortality rate
-#' * `Z`: Instantaneous total mortality rate
-#' * `S`: Annual survival rate
-#' * `A`: Annual mortality rate
-#' * `u`: Annual exploitation rate
+#' @returns A data.frame that contains columns of `F` (instantaneous fishing mortality rate) and `M`: (instantaneous natural mortality rate) that were derived from the arguments as described in the details.
 #'
 #' @examples
 #' # Demo of various ways to provide the input values
 #' ## Both cf and cm constant
-#' makeMort("cfcm",cf=0.1,cm=0.2)
+#' makeMort(cf=0.1,cm=0.2)
 #'
 #' ## cf varies as a sequence, cm constant
-#' makeMort("cfcm",cf=0.1,cfmax=0.5,cfinc=0.1,cm=0.2)
+#' makeMort(cf=0.1,cfmax=0.5,cfinc=0.1,cm=0.2)
 #'
 #' ## both cf and cm vary as a sequence
-#' makeMort("cfcm",cf=0.1,cfmax=0.3,cfinc=0.1,cm=0.2,cmmax=0.5,cminc=0.1)
+#' makeMort(cf=0.1,cfmax=0.3,cfinc=0.1,cm=0.2,cmmax=0.5,cminc=0.1)
 #'
 #' ## cf varies by user-provided values, cm constant
-#' makeMort("cfcm",cf=c(0.1,0.2,0.3),cm=0.2)
+#' makeMort(cf=c(0.1,0.2,0.3),cm=0.2)
 #'
 #' ## both cf and cm vary by user-provided values
-#' makeMort("cfcm",cf=c(0.1,0.2,0.3),cm=c(0.2,0.8,0.3))
+#' makeMort(cf=c(0.1,0.2,0.3),cm=c(0.2,0.8,0.3))
 #'
 #' ## Similar examples for F & M values
-#' makeMort("FM",F=0.1,M=0.5)
-#' makeMort("FM",F=0.1,Fmax=0.5,Finc=0.1,M=0.5)
-#' makeMort("FM",F=0.25,Fmax=1,Finc=0.25,M=0.5,Mmax=2,Minc=0.5)
-#' makeMort("FM",F=c(0.25,0.4),M=0.5,Mmax=2,Minc=0.25)
+#' makeMort(F=0.1,M=0.5)
+#' makeMort(F=0.1,Fmax=0.5,Finc=0.1,M=0.5)
+#' makeMort(F=0.25,Fmax=1,Finc=0.25,M=0.5,Mmax=2,Minc=0.5)
+#' makeMort(F=c(0.25,0.4),M=0.5,Mmax=2,Minc=0.25)
 #'
-#' ## Similar examples for F & M values
-#' makeMort("MZ",M=0.5,Z=1)
-#' makeMort("MZ",M=0.5,Z=0.5,Zmax=2,Zinc=0.25)
-#' makeMort("MZ",M=0.5,Mmax=2,Minc=0.25,Z=0.5,Zmax=2,Zinc=0.5)
+#' ## Similar examples for M & Z values
+#' makeMort(M=0.5,Z=1)
+#' makeMort(M=0.5,Z=0.5,Zmax=2,Zinc=0.25)
+#' makeMort(M=0.5,Mmax=2,Minc=0.25,Z=0.5,Zmax=2,Zinc=0.5)
 #'
 #' @rdname makeMort
 #' @export
 
-makeMort <- function(input=c("cfcm","FM","MZ","cmcf","MF","ZM"),
-                     cf=NULL,cfmax=NULL,cfinc=NULL,
-                     cm=NULL,cmmax=NULL,cminc=NULL,
-                     F=NULL,Fmax=NULL,Finc=NULL,
+makeMort <- function(F=NULL,Fmax=NULL,Finc=NULL,
                      M=NULL,Mmax=NULL,Minc=NULL,
-                     Z=NULL,Zmax=NULL,Zinc=NULL) {
+                     Z=NULL,Zmax=NULL,Zinc=NULL,
+                     cf=NULL,cfmax=NULL,cfinc=NULL,
+                     cm=NULL,cmmax=NULL,cminc=NULL) {
 
-  ## Internal functions
-  iGetcfcm <- function(cf,cfmax,cfinc,cm,cmmax,cminc) {
+  #===== Internal checking functions
+  iCheckInputCFCM <- function(F,Fmax,Finc,M,Mmax,Minc,Z,Zmax,Zinc,
+                              cf,cfmax,cfinc,cm,cmmax,cminc) {
+    if (!is.null(cf)) {
+      if (is.null(cm)) {
+        if (any(!is.null(Z),!is.null(Zmax),!is.null(Zinc)))
+          STOP("'Z', 'Zmax', and 'Zinc' not used with 'cf', only 'cm' can be.")
+        if (any(!is.null(F),!is.null(Fmax),!is.null(Finc)))
+          STOP("'F', 'Fmax', and 'Finc' not used with 'cf', only 'cm' can be")
+        if (any(!is.null(M),!is.null(Mmax),!is.null(Minc)))
+          STOP("'M', 'Mmax', and 'Minc' not used with 'cf'\n",
+               "  Did you mean to use 'cm' instead?")
+        STOP("Must include 'cm' with 'cf'.")
+      } else {
+        if (any(!is.null(Z),!is.null(Zmax),!is.null(Zinc)))
+          WARN("'Z', 'Zmax', and 'Zinc' not used with 'cf' and 'cm';\n",
+               "  only values in 'cf' and 'cm' were used.")
+        if (any(!is.null(F),!is.null(Fmax),!is.null(Finc)))
+          WARN("'F', 'Fmax', and 'Finc' not used with 'cf' and 'cm';\n",
+               "  only values in 'cf' and 'cm' were used.")
+        if (any(!is.null(M),!is.null(Mmax),!is.null(Minc)))
+          WARN("'M', 'Mmax', and 'Minc' not used with 'cf' and 'cm';\n",
+               "  only values in 'cf' and 'cm' were used.")
+      }
+    } else {
+      if (!is.null(cm)) {
+        if (any(!is.null(Z),!is.null(Zmax),!is.null(Zinc)))
+          STOP("'Z', 'Zmax', and 'Zinc' not used with 'cm', only 'cf' can be.")
+        if (any(!is.null(M),!is.null(Mmax),!is.null(Minc)))
+          STOP("'M', 'Mmax', and 'Minc' not used with 'cm', only 'cf' can be")
+        if (any(!is.null(F),!is.null(Fmax),!is.null(Finc)))
+          STOP("'F', 'Fmax', and 'Finc' not used with 'cm'\n",
+               "  Did you mean to use 'cf' instead?")
+        STOP("Must include 'cf' with 'cm'.")
+      }
+    }
+    # If here without STOPping then return input value
+    "cfcm"
+  }
+
+  iCheckInputFMZ <- function(F,Fmax,Finc,M,Mmax,Minc,Z,Zmax,Zinc,
+                             cf,cfmax,cfinc,cm,cmmax,cminc) {
+    if (all(!is.null(F),!is.null(M),!is.null(Z)))
+      STOP("Only two of 'F', 'M', and 'Z' can be given (not all three).")
+    if (any(!is.null(cf),!is.null(cfmax),!is.null(cfinc)))
+      STOP("'cf', 'cfmax', and 'cfinc' not used with 'Z', 'F', or 'M'",
+           ifelse(!is.null(F),"\n  Did you mean to use 'F' instead?","."))
+    if (any(!is.null(cm),!is.null(cmmax),!is.null(cminc)))
+      STOP("'cm', 'cmmax', and 'cminc' not used with 'Z', 'F', or 'M'",
+           ifelse(!is.null(F),"\n  Did you mean to use 'M' instead?","."))
+    if (!is.null(F) & is.null(M) & is.null(Z))
+      STOP("Must include 'M' or 'Z' with 'F'.")
+    if (!is.null(M) & is.null(F) & is.null(Z))
+      STOP("Must include 'F' or 'Z' with 'M'.")
+    if (!is.null(Z) & is.null(F) & is.null(M))
+      STOP("Must include 'F' or 'M' with 'Z'.")
+    if (!is.null(F)) {
+      if (!is.null(M)) input <- "FM"
+      else input <- "FZ"
+    } else input <- "MZ"
+    input
+  }
+
+  #===== Internal checking and calculation functions
+  iGetCF <- function(cf,cfmax,cfinc) {
     if (length(cf)>1) {
       # cf vector provided by the user ... just do some checks
       if (!is.numeric(cf)) STOP("'cf' must be numeric.")
@@ -99,7 +153,10 @@ makeMort <- function(input=c("cfcm","FM","MZ","cmcf","MF","ZM"),
                             check_missing=FALSE)
       }
     }
+    cf
+  }
 
+  iGetCM <- function(cm,cmmax,cminc) {
     if (length(cm)>1) {
       # cm vector provided by the user ... just do some checks
       if (!is.numeric(cm)) STOP("'cm' must be numeric.")
@@ -117,15 +174,10 @@ makeMort <- function(input=c("cfcm","FM","MZ","cmcf","MF","ZM"),
                             check_missing=FALSE)
       }
     }
-
-    # Create all combos of cf & cm, and add F, M, and Z ... return item
-    tidyr::expand_grid(cf,cm) |>
-      dplyr::mutate(F=-log(1-cf),
-                    M=-log(1-cm),
-                    Z=F+M)
+    cm
   }
 
-  iGetFM <- function(F,Fmax,Finc,M,Mmax,Minc) {
+  iGetF <- function(F,Fmax,Finc) {
     if (length(F)>1) {
       # F vector provided by the user ... just do some checks
       if (!is.numeric(F)) STOP("'F' must be numeric.")
@@ -141,31 +193,10 @@ makeMort <- function(input=c("cfcm","FM","MZ","cmcf","MF","ZM"),
                            check_missing=FALSE)
       }
     }
-
-    if (length(M)>1) {
-      # M vector provided by the user ... just do some checks
-      if (!is.numeric(M)) STOP("'M' must be numeric.")
-      if (any(M<0)) STOP("All values in 'M' must be >=0")
-    } else {
-      # M needs to be created as a sequence ... after some checks
-      iCheckMort(M,typeTFM="natural",typeIC="instantaneous")
-      if (!is.null(Mmax)) {
-        if (is.null(Minc)) STOP("if 'Mmax' is given then 'Minc' must also be given.")
-        iCheckMort(Mmax,typeTFM="natural",typeIC="instantaneous",
-                   minmax="maximum",check_missing=FALSE)
-        M <- iCheckMortinc(Minc,M,Mmax,typeTFM="natural",typeIC="instantaneous",
-                           check_missing=FALSE)
-      }
-    }
-
-    # Create all combos of F & M, and add cf, cm, and Z ... return item
-    tidyr::expand_grid(F,M) |>
-      dplyr::mutate(cf=1-exp(-F),
-                    cm=1-exp(-M),
-                    Z=F+M)
+    F
   }
 
-  iGetMZ <- function(M,Mmax,Minc,Z,Zmax,Zinc) {
+  iGetM <- function(M,Mmax,Minc) {
     if (length(M)>1) {
       # M vector provided by the user ... just do some checks
       if (!is.numeric(M)) STOP("'M' must be numeric.")
@@ -181,10 +212,13 @@ makeMort <- function(input=c("cfcm","FM","MZ","cmcf","MF","ZM"),
                            check_missing=FALSE)
       }
     }
+    M
+  }
 
+  iGetZ <- function(Z,Zmax,Zinc) {
     if (length(Z)>1) {
       # Z vector provided by the user ... just do some checks
-      if (!is.numeric(Z)) STOP("'M' must be numeric.")
+      if (!is.numeric(Z)) STOP("'Z' must be numeric.")
       if (any(Z<0)) STOP("All values in 'Z' must be >=0")
     } else {
       # M needs to be created as a sequence ... after some checks
@@ -197,65 +231,71 @@ makeMort <- function(input=c("cfcm","FM","MZ","cmcf","MF","ZM"),
                            check_missing=FALSE)
       }
     }
-
-    # Create all combos of Z & M; add cf, cm, and F; delete F is neg ... return item
-    tidyr::expand_grid(Z,M) |>
-      dplyr::mutate(F=Z-M,
-                    cf=1-exp(-F),
-                    cm=1-exp(-M)) |>
-      dplyr::filter(F>=0)
+    Z
   }
+
+  #===== Internal calculation functions
+  iHndlCFCM <- function(cf,cfmax,cfinc,cm,cmmax,cminc) {
+    # Get vector of values if all checks for values are passed
+    cf <- iGetCF(cf,cfmax,cfinc)
+    cm <- iGetCM(cm,cmmax,cminc)
+
+    # Create all combos of F & M from cf & cm ... return item
+    F <- -log(1-cf)
+    M <- -log(1-cm)
+    tidyr::expand_grid(F,M)
+  }
+
+  iHndlFM <- function(F,Fmax,Finc,M,Mmax,Minc) {
+    # Get vector of values if all checks for values are passed
+    F <- iGetF(F,Fmax,Finc)
+    M <- iGetM(M,Mmax,Minc)
+    # Create all combos of F & M ... return item
+    tidyr::expand_grid(F,M)
+  }
+
+  iHndlMZ <- function(M,Mmax,Minc,Z,Zmax,Zinc) {
+    # Get vector of values if all checks for values are passed
+    M <- iGetM(M,Mmax,Minc)
+    Z <- iGetZ(Z,Zmax,Zinc)
+    # Create all combos of F & M from M & Z, only return where F>=0 ... return item
+    tidyr::expand_grid(M,Z) |>
+      dplyr::mutate(F=Z-M) |>
+      dplyr::filter(F>=0) |>
+      dplyr::select(F,M) |>
+      dplyr::arrange(F,M)
+  }
+
+  iHndlFZ <- function(F,Fmax,Finc,Z,Zmax,Zinc) {
+    # Get vector of values if all checks for values are passed
+    F <- iGetF(F,Fmax,Finc)
+    Z <- iGetZ(Z,Zmax,Zinc)
+    # Create all combos of F & M from F & Z, only return where M>=0 ... return item
+    tidyr::expand_grid(F,Z) |>
+      dplyr::mutate(M=Z-F) |>
+      dplyr::filter(M>=0) |>
+      dplyr::select(F,M) |>
+      dplyr::arrange(F,M)
+  }
+
 
   ## Main function
-  #----- Deal with visible bindings issue on check
-  S <- A <- NULL
-  #- Handle input arg ... match, deal w/ reversals of acronyms
-  input <- match.arg(input)
-  if (input=="cmcf") input <- "cfcm"
-  if (input=="MF") input <- "FM"
-  if (input=="ZM") input <- "MZ"
-  #- Send warnings if arguments other than those asked for are used
-  if (input %in% c("cfcm","MF")) {
-    if (any(!is.null(Z),!is.null(Zmax),!is.null(Zinc)))
-      STOP("'Z', 'Zmax', and 'Zinc' not used with 'input' of '",input,"'.")
-  }
-  if (input=="cfcm") {
-    if (any(!is.null(F),!is.null(Fmax),!is.null(Finc)))
-      STOP("'F', 'Fmax', and 'Finc' not used with 'input' of '",input,"'",
-                   ifelse(is.null(cf),"\n  Did you mean to use 'cf' instead?","."))
-    if (any(!is.null(M),!is.null(Mmax),!is.null(Minc)))
-      STOP("'M', 'Mmax', and 'Minc' not used with 'input' of '",input,"'",
-                   ifelse(is.null(cm),"\n  Did you mean to use 'cm' instead?","."))
-  }
-  if (input=="FM") {
-    if (any(!is.null(cf),!is.null(cfmax),!is.null(cfinc)))
-      STOP("'cf', 'cfmax', and 'cfinc' not used with 'input' of '",input,"'",
-                   ifelse(is.null(F),"\n  Did you mean to use 'F' instead?","."))
-    if (any(!is.null(cm),!is.null(cmmax),!is.null(cminc)))
-      STOP("'cm', 'cmmax', and 'cminc' not used with 'input' of '",input,"'",
-                   ifelse(is.null(M),"\n  Did you mean to use 'M' instead?","."))
-  }
-  if (input=="MZ") {
-    if (any(!is.null(cf),!is.null(cfmax),!is.null(cfinc)))
-      STOP("'cf', 'cfmax', and 'cfinc' not used with 'input' of '",input,"'.")
-    if (any(!is.null(F),!is.null(Fmax),!is.null(Finc)))
-      STOP("'F', 'Fmax', and 'Finc' not used with 'input' of '",input,"'",
-                   ifelse(is.null(M),"\n  Did you mean to use 'M' instead?",
-                          ifelse(is.null(Z),"\n  Did you mean to use 'Z' instead?",".")))
-    if (any(!is.null(cm),!is.null(cmmax),!is.null(cminc)))
-      STOP("'cm', 'cmmax', and 'cminc' not used with 'input' of '",input,"'",
-                   ifelse(is.null(M),"\n  Did you mean to use 'M' instead?","."))
-  }
+  #----- Determine which values are given
+  if (is.null(cf) & is.null(cm) & is.null(F) & is.null(M) & is.null(Z))
+    STOP("Values must be given to 'cf' and 'cm', or any two of 'F', 'M', and 'Z'")
 
-  #- Send to internals depending on input choice
+  if (!all(is.null(cf),is.null(cm)))
+    input <- iCheckInputCFCM(F,Fmax,Finc,M,Mmax,Minc,Z,Zmax,Zinc,
+                             cf,cfmax,cfinc,cm,cmmax,cminc)
+  if (!all(is.null(F),is.null(M),is.null(Z)))
+    input <- iCheckInputFMZ(F,Fmax,Finc,M,Mmax,Minc,Z,Zmax,Zinc,
+                            cf,cfmax,cfinc,cm,cmmax,cminc)
+
+  #----- Send to internals depending on input choice
   switch(input,
-         cfcm = iGetcfcm(cf,cfmax,cfinc,cm,cmmax,cminc),
-         FM = iGetFM(F,Fmax,Finc,M,Mmax,Minc),
-         MZ = iGetMZ(M,Mmax,Minc,Z,Zmax,Zinc)) |>
-    dplyr::arrange(cf,cm) |>
-    dplyr::select(cf,cm,F,M,Z) |>
-    dplyr::mutate(S=exp(-Z),
-                  A=1-S,
-                  u=A*F/Z) |>
-    as.data.frame()
+         cfcm = iHndlCFCM(cf,cfmax,cfinc,cm,cmmax,cminc),
+         FM = iHndlFM(F,Fmax,Finc,M,Mmax,Minc),
+         MZ = iHndlMZ(M,Mmax,Minc,Z,Zmax,Zinc),
+         FZ = iHndlFZ(F,Fmax,Finc,Z,Zmax,Zinc)) |>
+  as.data.frame()
 }

@@ -42,7 +42,18 @@
 #' * `avglen` is the average length of fish harvested.
 #' * `tr` is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
 #'
-#' The data.frame also contains a `notes` column which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are:
+#' For convenience the data.frame also contains the input values of `minLL`, `F`, and `M`, as well as the following values calculated directly from `F` and `M`:
+#'
+#' * `Z` is the total instantaneous mortality rate (=F+M).
+#' * `cf` is the conditional fishing mortality rate (=1-exp(-F)).
+#' * `cm` is the conditional natural mortality rate (=1-exp(-M)).
+#' * `u` is the exploitation rate (=A(F/Z)).
+#' * `A` is the annual total mortality rate (=1-exp(-Z)).
+#' * `S` is the annual total survival rate (=exp(-Z))
+#'
+#' Also for convenience, the input values for the life history parameters are included in the data.frame (i.e., `N0`, `maxage`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`).
+#'
+#' Finally, the data.frame also contains a `notes` column which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are:
 #'
 #' * `minLL>=Linf`: The minimum length limit (minLL) being explored was greater than the given asymptotic mean length (Linf). For the purpose (only) of computing the time at recruitment to the fishery (tr) the Linf was set to minLL+0.1.
 #' * `tr<t0`: The age at recruitment to the fishery (tr) was less than the hypothetical time when the mean length is zero (t0). The fish can't recruit to the fishery prior to having length 0 so tr was set to t0. This also assures that the time it takes to recruit to the fishery is greater than 0.
@@ -174,12 +185,8 @@ yprBH_minLL <- function(minLL,morts,lhparms,
   inputs <- do.call(cbind,list(minLLtmp,mortstmp))
 
   # Send each row to yprBH_minLL_1
-  res <- purrr::pmap_df(inputs[,c("minLL","F","M")],yprBH_minLL_1,
-                        lhparms=lhparms,matchRicker=matchRicker)
+  res <- purrr::pmap_df(inputs,yprBH_minLL_1,lhparms=lhparms,matchRicker=matchRicker)
 
   # ---- Return data.frame with both output values and input parameters
-  # Bind on all input (morts and lhparms) for final result
-  lhtmp <- as.data.frame(lhparms)[rep(1,nrow(res)),]
-  rownames(lhtmp) <- seq_len(nrow(lhtmp))
-  do.call(cbind,list(res,inputs,lhtmp))
+  res
 }

@@ -2,16 +2,9 @@
 % Please edit documentation in R/makeMort.R
 \name{makeMort}
 \alias{makeMort}
-\title{Create data frame of mortality values for yield-per-recruit (YPR) simulations}
+\title{Create data,frame of mortality values for yield-per-recruit (YPR) simulations}
 \usage{
 makeMort(
-  input = c("cfcm", "FM", "MZ", "cmcf", "MF", "ZM"),
-  cf = NULL,
-  cfmax = NULL,
-  cfinc = NULL,
-  cm = NULL,
-  cmmax = NULL,
-  cminc = NULL,
   F = NULL,
   Fmax = NULL,
   Finc = NULL,
@@ -20,24 +13,16 @@ makeMort(
   Minc = NULL,
   Z = NULL,
   Zmax = NULL,
-  Zinc = NULL
+  Zinc = NULL,
+  cf = NULL,
+  cfmax = NULL,
+  cfinc = NULL,
+  cm = NULL,
+  cmmax = NULL,
+  cminc = NULL
 )
 }
 \arguments{
-\item{input}{A string that contains an abbreviation for how the mortality values will be given by the user. See details.}
-
-\item{cf}{A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for conditional fishing mortality. May not be used depending on \code{input}. See details and examples.}
-
-\item{cfmax}{A single numeric that represents the maximum values for a sequence of conditional fishing mortality values. May not be used depending on \code{input}. See details and examples.}
-
-\item{cfinc}{A single numeric that represents the increment (i.e., step) for a sequence of conditional fishing mortality values. May not be used depending on \code{input}. See details and examples.}
-
-\item{cm}{A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for conditional natural mortality. May not be used depending on \code{input}. See details and examples.}
-
-\item{cmmax}{A single numeric that represents the maximum values for a sequence of conditional natural mortality values. May not be used depending on \code{input}. See details and examples.}
-
-\item{cminc}{A single numeric that represents the increment (i.e., step) for a sequence of conditional natural mortality values. May not be used depending on \code{input}. See details and examples.}
-
 \item{F}{A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for instantaneous fishing mortality. May not be used depending on \code{input}. See details and examples.}
 
 \item{Fmax}{A single numeric that represents the maximum values for a sequence of instantaneous fishing mortality values. May not be used depending on \code{input}. See details and examples.}
@@ -55,64 +40,68 @@ makeMort(
 \item{Zmax}{A single numeric that represents the maximum values for a sequence of instantaneous total mortality values. May not be used depending on \code{input}. See details and examples.}
 
 \item{Zinc}{A single numeric that represents the increment (i.e., step) for a sequence of instantaneous total mortality values. May not be used depending on \code{input}. See details and examples.}
+
+\item{cf}{A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for conditional fishing mortality. May not be used depending on \code{input}. See details and examples.}
+
+\item{cfmax}{A single numeric that represents the maximum values for a sequence of conditional fishing mortality values. May not be used depending on \code{input}. See details and examples.}
+
+\item{cfinc}{A single numeric that represents the increment (i.e., step) for a sequence of conditional fishing mortality values. May not be used depending on \code{input}. See details and examples.}
+
+\item{cm}{A single numeric that represents a constant value, a single numeric that represents the minimum value in a sequence, or a vector of values for conditional natural mortality. May not be used depending on \code{input}. See details and examples.}
+
+\item{cmmax}{A single numeric that represents the maximum values for a sequence of conditional natural mortality values. May not be used depending on \code{input}. See details and examples.}
+
+\item{cminc}{A single numeric that represents the increment (i.e., step) for a sequence of conditional natural mortality values. May not be used depending on \code{input}. See details and examples.}
 }
 \value{
-A data.frame that contains the following items
-\itemize{
-\item \code{cf}: Conditional fishing mortality rate
-\item \code{cm}: Conditional natural mortality rate
-\item \code{F}: Instantaneous fishing mortality rate
-\item \code{M}: Instantaneous naural mortality rate
-\item \code{Z}: Instantaneous total mortality rate
-\item \code{S}: Annual survival rate
-\item \code{A}: Annual mortality rate
-\item \code{u}: Annual exploitation rate
-}
+A data.frame that contains columns of \code{F} (instantaneous fishing mortality rate) and \code{M}: (instantaneous natural mortality rate) that were derived from the arguments as described in the details.
 }
 \description{
-XXX
+Create a data.frame of instantaneous fishing (F) and natural (M) mortality rates from user inputs to be used in yield-per-recruit (YPR) simulations in other functions.
 }
 \details{
-The user may enter the mortality values in one of three ways, which must be declared with \code{input} as follows.
+The user may enter the mortality values in one of three ways.
 \itemize{
-\item With \code{input="cfcm"} the user must use \code{cf} (and optionally \code{cfmax} and \code{cfinc}) and \code{cm} (and optionally \code{cmmax} and \code{cminc}) to enter conditional fishing mortality (cf) and natural mortality (cm) values.
-\item With \code{input="FM"} the user must use \code{F} (and optionally \code{Fmax} and \code{Finc}) and \code{M} (and optionally \code{Mmax} and \code{Minc}) to enter instantaneous fishing mortality (F) and natural mortality (M) values.
-\item With \code{input="MZ"} the user must use \code{M} (and optionally \code{Mmax} and \code{Minc}) and \code{Z} (and optionally \code{Zmax} and \code{Zinc}) to enter instantaneous natural mortality (Z) and total mortality (M) values.
+\item User may enter values for \code{F} (and optionally \code{Fmax} and \code{Finc}) and \code{M} (and optionally \code{Mmax} and \code{Minc}) to enter instantaneous fishing mortality (F) and natural mortality (M) values.
+\item User may enter values for \code{cf} (and optionally \code{cfmax} and \code{cfinc}) and \code{cm} (and optionally \code{cmmax} and \code{cminc}) to enter conditional fishing mortality (cf) and natural mortality (cm) values.
+\item User may enter values of \code{Z} (and optionally \code{Zmax} and \code{Zinc}) along with \code{F} (and optionally \code{Fmax} and \code{Finc}) or \code{M} (and optionally \code{Mmax} and \code{Minc}) to enter instantaneous natural mortality (Z) and one of its components (F or M) values.
 }
 
-In all instances the values may be entered in a variety of ways, as described below for \code{cf},
+In all instances the values may be entered in a variety of ways, as described below for \code{F},
 \itemize{
-\item If \code{cf} is a single value and \code{cfmax} and \code{cfinc} are not used, then a single constant conditional fishing mortality value will be used.
-\item If \code{cf}, \code{cfmax}, and \code{cfinc} are all single values, then a sequence of conditional fishing mortality values will be created from \code{cf} to \code{cfmax} in steps of \code{cfinc}.
-\item If \code{cf} is a vector of values and \code{cfmax} and \code{cfinc} are not used, then that vector of conditional fishing mortality values will be used.
+\item If \code{F} is a single value and \code{Fmax} and \code{Finc} are not used, then a single constant instantaneous fishing mortality value will be used.
+\item If \code{F}, \code{Fmax}, and \code{Finc} are all single values, then a sequence of instantaneous fishing mortality values will be created from \code{F} to \code{Fmax} in steps of \code{Finc}.
+\item If \code{F} is a vector of values and \code{Fmax} and \code{Finc} are not used, then that vector of instantaneous fishing mortality values will be used.
 }
+
+The number of combinations of \code{F} and \code{M} may be less than expected when using \code{Z} as combinations that result in F<0 or M<0 are not included.
 }
 \examples{
 # Demo of various ways to provide the input values
 ## Both cf and cm constant
-makeMort("cfcm",cf=0.1,cm=0.2)
+makeMort(cf=0.1,cm=0.2)
 
 ## cf varies as a sequence, cm constant
-makeMort("cfcm",cf=0.1,cfmax=0.5,cfinc=0.1,cm=0.2)
+makeMort(cf=0.1,cfmax=0.5,cfinc=0.1,cm=0.2)
 
 ## both cf and cm vary as a sequence
-makeMort("cfcm",cf=0.1,cfmax=0.3,cfinc=0.1,cm=0.2,cmmax=0.5,cminc=0.1)
+makeMort(cf=0.1,cfmax=0.3,cfinc=0.1,cm=0.2,cmmax=0.5,cminc=0.1)
 
 ## cf varies by user-provided values, cm constant
-makeMort("cfcm",cf=c(0.1,0.2,0.3),cm=0.2)
+makeMort(cf=c(0.1,0.2,0.3),cm=0.2)
 
 ## both cf and cm vary by user-provided values
-makeMort("cfcm",cf=c(0.1,0.2,0.3),cm=c(0.2,0.8,0.3))
+makeMort(cf=c(0.1,0.2,0.3),cm=c(0.2,0.8,0.3))
 
 ## Similar examples for F & M values
-makeMort("FM",F=0.1,M=0.5)
-makeMort("FM",F=0.1,Fmax=0.5,Finc=0.1,M=0.5)
-makeMort("FM",F=0.25,Fmax=1,Finc=0.25,M=0.5,Mmax=2,Minc=0.5)
-makeMort("FM",F=c(0.25,0.4),M=0.5,Mmax=2,Minc=0.25)
+makeMort(F=0.1,M=0.5)
+makeMort(F=0.1,Fmax=0.5,Finc=0.1,M=0.5)
+makeMort(F=0.25,Fmax=1,Finc=0.25,M=0.5,Mmax=2,Minc=0.5)
+makeMort(F=c(0.25,0.4),M=0.5,Mmax=2,Minc=0.25)
 
-## Similar examples for F & M values
-makeMort("MZ",M=0.5,Z=1)
-makeMort("MZ",M=0.5,Z=0.5,Zmax=2,Zinc=0.25)
-makeMort("MZ",M=0.5,Mmax=2,Minc=0.25,Z=0.5,Zmax=2,Zinc=0.5)
+## Similar examples for M & Z values
+makeMort(M=0.5,Z=1)
+makeMort(M=0.5,Z=0.5,Zmax=2,Zinc=0.25)
+makeMort(M=0.5,Mmax=2,Minc=0.25,Z=0.5,Zmax=2,Zinc=0.5)
 
 }

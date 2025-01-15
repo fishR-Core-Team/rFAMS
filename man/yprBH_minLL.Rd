@@ -38,7 +38,19 @@ A data.frame with the following calculated values:
 \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
 }
 
-The data.frame also contains a \code{notes} column which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are:
+For convenience the data.frame also contains the input values of \code{minLL}, \code{F}, and \code{M}, as well as the following values calculated directly from \code{F} and \code{M}:
+\itemize{
+\item \code{Z} is the total instantaneous mortality rate (=F+M).
+\item \code{cf} is the conditional fishing mortality rate (=1-exp(-F)).
+\item \code{cm} is the conditional natural mortality rate (=1-exp(-M)).
+\item \code{u} is the exploitation rate (=A(F/Z)).
+\item \code{A} is the annual total mortality rate (=1-exp(-Z)).
+\item \code{S} is the annual total survival rate (=exp(-Z))
+}
+
+Also for convenience, the input values for the life history parameters are included in the data.frame (i.e., \code{N0}, \code{maxage}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}).
+
+Finally, the data.frame also contains a \code{notes} column which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are:
 \itemize{
 \item \code{minLL>=Linf}: The minimum length limit (minLL) being explored was greater than the given asymptotic mean length (Linf). For the purpose (only) of computing the time at recruitment to the fishery (tr) the Linf was set to minLL+0.1.
 \item \code{tr<t0}: The age at recruitment to the fishery (tr) was less than the hypothetical time when the mean length is zero (t0). The fish can't recruit to the fishery prior to having length 0 so tr was set to t0. This also assures that the time it takes to recruit to the fishery is greater than 0.

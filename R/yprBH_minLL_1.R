@@ -45,8 +45,13 @@ yprBH_minLL_1 <- function(minLL,F,M,lhparms,matchRicker=TRUE) {
   iCheckMLH(minLL)
   # ## morts and lhparams were checked in makeMort and makeLH
 
-  # Compute Z
+  # Compute mortality-related items (only Z is needed here, rest are for convenience)
   Z <- F+M
+  cf <- 1-exp(-F)
+  cm <- 1-exp(-M)
+  A <- 1-exp(-Z)
+  S <- 1-A
+  u <- A*F/Z
 
   # Extract individual life history values
   N0 <- lhparms[["N0"]]
@@ -172,6 +177,22 @@ yprBH_minLL_1 <- function(minLL,F,M,lhparms,matchRicker=TRUE) {
     avgwt=avgwt,
     avglen=avglen,
     tr=tr,
+    minLL=minLL,
+    Z=Z,
+    F=F,
+    M=M,
+    cf=cf,
+    cm=cm,
+    u=u,
+    A=A,
+    S=S,
+    N0=N0,
+    maxage=maxage,
+    Linf=Linf,
+    K=K,
+    t0=t0,
+    LWalpha=LWalpha,
+    LWbeta=LWbeta,
     notes=paste(notes,collapse="; ")
   )
 }
