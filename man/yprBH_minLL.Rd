@@ -114,6 +114,11 @@ MORTS <- makeMort(cf=0.3,cfmax=0.7,cfinc=0.2,cm=0.5,cmmax=0.9,cminc=0.2)
 res <- yprBH_minLL(minLL=200,minLLmax=500,minLLinc=100,morts=MORTS,lhparms=LH)
 res
 
+# Estimate yield for multiple values of minLL, cf, and cm ... all not sequence
+MORTS <- makeMort(cf=c(0.3,0.7),cm=c(0.5,0.9))
+res <- yprBH_minLL(minLL=c(200,250,400),morts=MORTS,lhparms=LH)
+res
+
 # --- More Realist Example (with Plots) -------------------------------------
 # More realistic example to show possible plots
 MORTS <- makeMort(cf=0.1,cfmax=0.9,cfinc=0.1,cm=0.1,cmmax=0.9,cminc=0.1)

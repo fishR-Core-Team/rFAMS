@@ -100,6 +100,11 @@
 #' res <- yprBH_minLL(minLL=200,minLLmax=500,minLLinc=100,morts=MORTS,lhparms=LH)
 #' res
 #'
+#' # Estimate yield for multiple values of minLL, cf, and cm ... all not sequence
+#' MORTS <- makeMort(cf=c(0.3,0.7),cm=c(0.5,0.9))
+#' res <- yprBH_minLL(minLL=c(200,250,400),morts=MORTS,lhparms=LH)
+#' res
+#'
 #' # --- More Realist Example (with Plots) -------------------------------------
 #' # More realistic example to show possible plots
 #' MORTS <- makeMort(cf=0.1,cfmax=0.9,cfinc=0.1,cm=0.1,cmmax=0.9,cminc=0.1)
@@ -168,14 +173,28 @@
 
 yprBH_minLL <- function(minLL,morts,lhparms,
                         minLLmax=NULL,minLLinc=NULL,matchRicker=TRUE){
-  # ---- Check inputs
-  iCheckMLH(minLL)
-  if (!is.null(minLLmax)) {
-    if (is.null(minLLinc)) STOP("if 'minLLmax' is given then 'minLLinc' must also be given.")
-    iCheckMLH(minLLmax,minmax="maximum",check_missing=FALSE)
-    minLL <- iCheckMLHinc(minLLinc,minLL,minLLmax,check_missing=FALSE)
+  #===== Internal checking and calculation function
+  iGetMinLL <- function(minLL,minLLmax,minLLinc) {
+    if (length(minLL)>1) {
+      # cf vector provided by the user ... just do some checks
+      if (!is.numeric(minLL)) STOP("'minLL' must be numeric.")
+      if (any(minLL<0)) STOP("All values in 'minLL' must be >=0")
+    } else {
+      # cf needs to be created as a sequence ... after some checks
+      iCheckMLH(minLL)
+      if (!is.null(minLLmax)) {
+        if (is.null(minLLinc))
+          STOP("if 'minLLmax' is given then 'minLLinc' must also be given.")
+        iCheckMLH(minLLmax,minmax="maximum",check_missing=FALSE)
+        minLL <- iCheckMLHinc(minLLinc,minLL,minLLmax,check_missing=FALSE)
+      }
+    }
+    minLL
   }
+
+  # ---- Check inputs
   # morts and lhparms were checked in makeMort and makeLH
+  minLL <- iGetMinLL(minLL,minLLmax,minLLinc)
 
   # ---- Compute Yield et al. for varying minLL and morts
   # Setup data.frame of input values
