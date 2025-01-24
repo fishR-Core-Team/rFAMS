@@ -1,10 +1,20 @@
 ---
-title: "Comparing FAMS and Ricker YPR Equations"
+title: "Comparing FAMS and Ricker Beverton-Holt YPR Calculations"
 author: "Derek H. Ogle"
 date: "`r Sys.Date()`"
 format: 
   html: 
+    toc: true
+    toc-depth: 2
+    bibliography: RFAMS.bib
+    csl: american-fisheries-society.csl
     code-fold: true
+    reference-location: margin
+    fig-cap-location: bottom
+    code-summary: "Show Code"
+    echo: false
+
+
 knitr:
   opts_chunk:
     comment: '#>'
@@ -12,155 +22,333 @@ knitr:
 
 ```{r}
 #| label: packages
-#| echo: false
 #| results: hide
 #| message: false
 library(tidyverse)
+
+arw <- arrow(length=unit(3,"mm"),angle=20)
+
+theme_BH <- function() {
+  theme_bw() +
+  theme(
+    axis.title=element_text(size=12,color="black"),
+    axis.text=element_text(size=10,color="black"),
+    panel.grid.major=element_blank()
+  ) 
+}
 ```
 
-## Yield Equations
+# Introduction
+As we work to create an R package that can recreate (and ultimately extend) the functionality of the FAMS software [@slipkemaceina_2014] we have attempted to understand what FAMS is doing "under-the-hood" with respect to the yield-per-recruit (YPR) model of @bevertonholt_1957. Of course, this is made difficult because FAMS is proprietary software for which we cannot access the source code. Thus, we are left trying to discern how it works from the manual, which, while useful, does not seem complete or is sometimes ambiguous. The manual claims that the software largely follows equations provided by @ricker_1975a. However, when we program Ricker's equations we do not get the same results as when we program the equations in the FAMS manual. In fact, some of the equations do not seem to match between the two sources. In this document we explore some of these differences to see if that can help us generate the most accurate calculations possible.
 
-The Beverton-Holt yield-per-recruit (YPR) equation according to the FAMS documentation is:
+# Parameter Definitions
+The equations in both the FAMS manual and Ricker use a variety of symbols, some that match between the two sources and some that do not. Here we identify those that match, those that match by definition but not by symbol, and one that matches by symbol but not by definition. Following that we will show how that difference effects how some of the calculations compare between the two sources. 
 
-$$ Y = \frac{FN_{t}e^{Zr}W_{\infty}}{K} [\beta(X,P,Q)-\beta(X1,P,Q)] $$
+## FAMS and Ricker are Same
+FAMS and Ricker agree on the following definitions of parameters used in the Beverton-Holt yield-per-recruit equations:^[A few of these symbols ($M$, $a$, $b$, and $Maxage$) are not used within this document, but are critical parts of the YPR analysis and are thus included.]
 
-The Beverton-Holt YPR equation according to Ricker is:
-
-$$ Y = \frac{FN_{0}e^{Fr}W_{\infty}}{K} [\beta(X,P,Q)-\beta(X1,P,Q)] $$
-
-Note the use $N_t$ vs $N_0$ and the use of $Z$ vs $F$ (in the exponent).
-
-Parameters are defined as: 
-
-- $F$ is instantaneous fishing mortality.
-- $M$ is instantaneous natural mortality (*not in above*).
-- $Z$ is instantaneous natural mortality.
-- $t_0$ is the hypothetical age (i.e., time) when the mean length is zero.
-- $t_r$ is the age (i.e., time) when fish recruit to the fishery (i.e., reach the minimum length in our example).
-- $t_\lambda$ is the maximum age of fish in the population (*not in above*).
-- $r$ is the time it takes to recruit to the fishery ($r=t_r-t_0$).
-- $N_0$ is the number of recruits to the *population* **AT** $t_0$.
-- $N_t$ is the number of recruits to the *fishery* at $t_r$ (=$N_{0}e^{-Mt_{r}}$).
-- $W_\infty$ is the average asymptotic weight of a fish.
+- $Y$ is yield biomass.
+- $F$ is instantaneous fishing mortality rate.
+- $M$ is instantaneous natural mortality rate.
+- $Z$ is instantaneous natural mortality rate.
+- $L_\infty$ is the asymptotic mean length from the von Bertalanffy growth model.
 - $K$ is the Brody growth coefficient from the von Bertalanffy growth model.
-- $b$ is the slope of the $log_{10}(Weight)$-$log_{10}(Length)$ linear model fit (*not in above*).
-- $\beta()$ is the incomplete beta function with parameters $X$, $X1$, $P$, and $Q$ defined as
+- $t_0$ is the hypothetical age (i.e., time) when the mean length is zero from the von Bertalanffy growth model.
+- $W_\infty$ is the asymptotic mean weight of a fish.
+- $r$ is the time it takes to recruit to the fishery ($r=t_r-t_0$).^[See $t_r$ below.]
+
+FAMS and Ricker also seem to agree on the following definitions of parameters, though their symbols differ. The symbols we will use are shown below with the FAMS and Ricker symbols shown after the definition in brackets.
+
+- $t_r$ is the age (i.e., time) when fish recruit to the fishery (i.e., reach the minimum length limit). [$t_r$ in FAMS; $t_R$ in Ricker]
+- $a$ is the intercept of the $log_{10}(Weight)$-$log_{10}(Length)$ linear model fit. [$a$ in FAMS; $a'$ in Ricker]
+- $b$ is the slope of the $log_{10}(Weight)$-$log_{10}(Length)$ linear model fit. [$b$ in FAMS; $b'$ in Ricker]
+- $t_{max}$ is the maximum age of fish in the population. [$Maxage$ in FAMS; $t_\lambda$ in Ricker]
+
+FAMS and Ricker both use an incomplete beta function in the calculation of yield which is symbolized with $\beta()$ and has the following parameters:^[FAMS and Ricker agree on these parameters though some of the symbols in their calculations differ because of above differences in symbols.]
+
   - $X=e^{-Kr}$
-  - $X1=e^{-K(t_\lambda-t_0)}$
+  - $X1=e^{-K(t_{max}-t_0)}$
   - $P=\frac{Z}{K}$
   - $Q=b+1$
 
-## FAMS vs Ricker "Issue"
-We have not been able to reproduce the results from FAMS with results in R using the Ricker equation. This suggests some issue with coding (in FAMS or by us in R) or that the FAMS and Ricker YPR equations are not equal. We don't have the ability to examine the code in FAMS and we are confident that we have coded Ricker's equation correction. Thus, we look more closely at the two yield equations here.
+FAMS and Ricker define $N_t$ and $R$, respectively, as
 
-The two yield equations above are equivalent except for the $N_{t}e^{Zr}$ portion (from FAMS) and the $N_{0}e^{Fr}$ portion (from Ricker). Thus, as was suggested in the FAMS documentation, is it possible to make substitutions into the Ricker equation to produce the FAMS equation? We try this below.
+- $N_t$ (from FAMS) is "the number of recruits entering the fishery at some minimum length at time ($t$)."
+- $N_t$ (from Ricker) is "yearly number of recruits which enter the fishery at age $t_R$."
 
-- Substitute $Z-M$ for $F$ in the Ricker portion, distribute the $r$, and separate the exponents.
+These definitions seem to agree if "minimum length" in the FAMS definition is read as "minimum length limit", which is implied throughout the FAMS manual.
 
-$$ N_{0}e^{(Z-M)r} = N_{0}e^{Zr-Mr} = N_{0}e^{Zr}e^{-Mr}$$
+## FAMS and Ricker Differ
+FAMS and Ricker differ in their definition of $N_0$, as follows:
+
+- $N_0$ (from FAMS) is "the number of age-0 recruits entering the population."
+- $N_0$ (from Ricker) is "the hypothetical number of individuals that reach the hypothetical age $t_0$ annually."
+
+From this it appears that FAMS considers $N_0$ to be the number of fish at $t=0$, whereas Ricker considers $N_0$ to be the number of fish at $t=t_0$.
+
+```{r}
+#| label: get-t0-data
+#| results: hide
+#| echo: false
+library(rfishbase)
+fbt0 <- popgrowth() |>
+  dplyr::select(SpecCode,to) |>
+  dplyr::rename(t0=to) |>
+  dplyr::filter(!is.na(t0))
+
+fbt0sum <- fbt0 |>
+  dplyr::summarize(n=dplyr::n(),
+                   min=min(t0),
+                   avg=mean(t0),
+                   max=max(t0),
+                   q5=quantile(t0,probs=0.05),
+                   q95=quantile(t0,probs=0.95))
+
+fbt0 <- fbt0 |>
+  filter(t0>fbt0sum$q5,t0<fbt0sum$q95)
+```
+
+The definitions of $N_0$ by FAMS and Ricker will agree when $t_0=0$. An examination of the middle 90% (n=`r fbt0sum$n`) of observations of $t_0$ for all fishes found in FishBase show that $t_0$ is very often negative and is quite often between -1 and -4 (@fig-hist-t0). Thus, $t_0$ is rarely 0 and, in fact, might not even be particularly close to 0.
+
+<br>
+
+```{r}
+#| label: fig-hist-t0
+#| fig-width: 4.5
+#| fig-height: 4
+#| fig-cap: Frequency of the middle 90% of $t_0$ observations for all species in fishbase.
+#| message: false
+#| echo: false
+
+ggplot(data=fbt0,mapping=aes(x=t0)) +
+  geom_histogram(color="black",fill="gray75") +
+  geom_vline(xintercept=0,color="red",linewidth=0.75,linetype=3) +
+  scale_x_continuous(name=parse(text="t[0]")) +
+  scale_y_continuous(name="Frequency",expand=expansion(mult=c(0,0.01))) +
+  theme_bw() +
+  theme(panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank())
+```
+
+<br>
+
+The differing definitions of $N_0$ also present fundamentally different views for modeling yield over the lifetime of a cohort; i.e., FAMS views the cohort starting at $t=0$, whereas Ricker views the cohort starting at $t=t_0$. This difference in definition results in different calculations of yield because different numbers of fish will recruit to the fishery (i.e., $N_t$) due to some amount of natural mortality occurring to "Ricker's cohort" between $t_0$ and $0$ if $t_0<0$ or to "FAMS' cohort" between $0$ and $t_0$ if $t_0>0$. So, at any given time/age greater than the maximum of $t_0$ and $0$, the abundance of the cohort will differ between the FAMS and Ricker methods (@fig-abundance).
+
+<br>
+
+```{r}
+#| label: fig-abundance
+#| fig-width: 5.5
+#| fig-height: 4.5
+#| fig-cap: Relative abundance over the lifetime of a cohort of fish with $N_0$=100 and assuming that $N_0$ is defined as by the FAMS manual (abundance at $t=0$) or by Ricker (abundance at $t=t_0$). Note that $t_0=-0.5$ here.
+
+# set-parameters
+LH <- data.frame(N0=100,maxage=10,Linf=450,K=0.3,t0=-0.5,LWalpha=-5.453,LWbeta=3.1)
+MORTS <- data.frame(F=0.15,M=0.3)
+minLL <- 254
+
+# calc tr
+tr <- LH$t0-log(1-minLL/LH$Linf)/LH$K
+
+# make cohort data
+d1 <- data.frame(t=seq(LH$t0,LH$maxage,0.01)) |>
+  dplyr::mutate(Ricker=LH$N0*exp(-MORTS$M*(t-LH$t0)),
+                FAMS=LH$N0*exp(-MORTS$M*t)) |>
+  tidyr::pivot_longer(cols=Ricker:FAMS,names_to="author",values_to="N") |>
+  arrange(author,t) |>
+  dplyr::mutate(interp=ifelse(author=="FAMS" & N>LH$N0,"yes","no")) |>
+  as.data.frame()
+
+# set some breaks for the time axis
+xbrks <- c(LH$t0,0:LH$maxage)
+xlbls <- parse(text=c("t[0]",0:LH$maxage))
+
+# make the plot
+ggplot() +
+  geom_line(data=dplyr::filter(d1,interp=="yes"),
+            mapping=aes(y=N,x=t,group=author,color=author),linetype=2,linewidth=1) +
+  geom_line(data=dplyr::filter(d1,interp=="no"),
+            mapping=aes(y=N,x=t,group=author,color=author),linewidth=1) +
+  geom_vline(xintercept=0,linetype=3,linewidth=0.75,color="red") +
+  scale_x_continuous(name="Age (yrs)",expand=expansion(mult=c(0,0.01)),
+                     breaks=xbrks,labels=xlbls) +
+  scale_y_continuous(name="Relative Abundance",expand=expansion(mult=c(0,0.025)),
+                     limits=c(0,120),breaks=seq(0,120,20)) +
+  scale_color_manual(values=c("Ricker"="black","FAMS"="gray75")) +
+  guides(color=guide_legend(position="inside")) +
+  theme_bw() +
+  theme(
+    axis.title=element_text(size=12,color="black"),
+    axis.text=element_text(size=10,color="black"),
+    panel.grid.major=element_blank(),
+    legend.position.inside=c(0.75,0.75),
+    legend.text=element_text(size=12),
+    legend.title=element_blank(),
+    legend.background=element_rect(fill="gray98"),
+    legend.key=element_rect(fill="gray98")
+  ) +
+  annotate(geom="segment",x=1,xend=LH$t0,y=LH$N0,yend=LH$N0,
+           linewidth=0.75,linetype=3,color="red") +
+  annotate(geom="text",x=1,y=LH$N0,label=paste0("N[0]==",LH$N0),
+           vjust=0.5,hjust=-0.1,parse=TRUE)
+```
+
+<br>
+
+We will show below that the calculated values of $Y$ and $N_t$ will differ between FAMS and Ricker due to the differing definitions of $N_0$. At those points we will add an asterisk to the FAMS versions (i.e., $Y$ and $N^{*}_{t}$) to distinguish them from the Ricker versions.
+
+# Consequences
+## Estimation of Abundance at Recruitment to the Fishery
+A time at recruitment ($t_r$) must be known or estimated to estimate $R$. FAMS estimates $t_r$ by solving the von Bertalanffy growth equation for the time when the minimum length limit ($minLL$; i.e., recruitment to the fishery) would be reached.^[Rearranged version of equation 6:2 in FAMS.]
+
+$$ t_r = t_0 - \frac{log(1-\frac{minLL}{L_\infty})}{K} $$
+
+Both FAMS and Ricker further compute the time to recruit to the fishery ($r$) as $t_r-t_0$. @ricker_1975a generally "knew" $t_r$ from other information, but in our modeling scenario $t_r$ and $r$ are the same for both FAMS and Ricker methods.
+
+However. FAMS and Ricker compute the abundance at the time of recruitment differently. FAMS^[Their equation 6:3 but with $N^*_t$.] uses 
+
+$$ N^*_t=N_{0}e^{-Mt_r} $$ {#eq-FAMS-Nt}
+
+whereas Ricker^[His equation 10.14.] uses
+
+$$ N_t=N_{0}e^{-Mr} $$ {#eq-Ricker-Nt}
+
+Ricker's form (@eq-Ricker-Nt) can be expressed equivalently by substituting $t_r-t_0$ for $r$, distributing the $M$, separating the exponents, and replacing $N_{0}e^{-Mt_r}$ with $N^*_t$ (from @eq-FAMS-Nt) :
+
+$$
+\begin{align}
+N_t &= N_{0}e^{-M(t_r-t_0)} \\
+    &= N_{0}e^{-Mt_r+Mt_0} \\
+    &= N_{0}e^{-Mt_r}e^{Mt_0} \\
+    &= N^*_te^{Mt_0}
+\end{align}
+$$
+
+Thus, Ricker's equation for $N_t$ differs^[Unless, of course, $t_0=0$.] from that of FAMS by a multiple of $e^{Mt_0}$. This difference is evident in @fig-abundance as relative abundance differs between the FAMS and Ricker calculations for any $t$, one of which will be $t_r$. Thus, the difference in values of $N_t$ between the two authors stems from their different definitions of $N_0$.
+
+## Estimation of Yield
+Not surprisingly the differences in $N_t$ seem to follow into the Beverton-Holt yield equations used by FAMS and Ricker. FAMS uses^[Their equation 6:1 but with $Y^*$ and $N^*_t$.]
+
+$$ Y^* = \frac{FN^*_te^{Zr}W_{\infty}}{K} [\beta(X,P,Q)-\beta(X1,P,Q)] $$ {#eq-FAMS-Y}
+
+whereas Ricker uses^[His equation 10.22.]
+
+$$ Y = \frac{FN_0e^{Fr}W_{\infty}}{K} [\beta(X,P,Q)-\beta(X1,P,Q)] $$ {#eq-Ricker-Y}
+
+The two yield equations above are equivalent except for the $N^*_te^{Zr}$ (from FAMS) and $N_0e^{Fr}$ (from Ricker) portions. The FAMS manual suggests that it is possible to make substitutions into the Ricker equation to produce the FAMS equation. We try this below.
+
+- Starting with the Ricker portion, substitute $Z-M$ for $F$, distribute the $r$, and separate the exponents.
+
+$$
+\begin{align}
+N_0e^{Fr} &= N_0e^{(Z-M)r} \\
+          &= N_0e^{Zr-Mr}  \\
+          &= N_0e^{Zr}e^{-Mr}
+\end{align}
+$$
 
 - Substitute $t_r-t_0$ for $r$ in the $M$ portion, distribute the $M$, and separate the exponents.
 
-$$ N_{0}e^{Zr}e^{-M(t_r-t_0)} = N_{0}e^{Zr}e^{-Mt_r+Mt_0} = N_{0}e^{Zr}e^{-Mt_r}e^{Mt_0}$$
+$$
+\begin{align}
+N_0e^{Zr}e^{-Mr} &= N_0e^{Zr}e^{-M(t_r-t_0)} \\
+                 &= N_0e^{Zr}e^{-Mt_r+Mt_0} \\
+                 &= N_0e^{Zr}e^{-Mt_r}e^{Mt_0}
+\end{align}
+$$
 
-- Rearrange the exponentiated parts and substitute $N_{t}$ for $N_{0}e^{-Mt_{r}}$
+- Rearrange the exponentiated parts and substitute $N^*_t$ for $N_0e^{-Mt_{r}}$ (from @eq-FAMS-Nt).
 
-$$ N_{0}e^{-Mt_r}e^{Zr}e^{Mt_0} = N_{t}e^{Zr}e^{Mt_0}$$
+$$
+\begin{align}
+N_0e^{Zr}e^{-Mt_r}e^{Mt_0} &= N_0e^{-Mt_r}e^{Zr}e^{Mt_0}\\
+                           &= N^*_te^{Zr}e^{Mt_0}
+\end{align}
+$$
 
-This last expression is the FAMS equation **EXCEPT** that it includes $e^{Mt_0}$. In other words, these portions of the yield equations would be exactly equal if $t_{0}=0$ such that $e^{Mt_0}=1$. Otherwise, they are not equal.
+Thus,
 
-Does this explain the difference between FAMS and Ricker?
+$$ N_0e^{Fr} = N^*_te^{Zr}e^{Mt_0} $$ {#eq-Yparts-compare}
 
-# Exploration
-Below is a quick function to compute the portions of the yield equations worked with above and to compute the percent differences (from the Ricker result) between the two results.
+Now if we start again with the Ricker yield equation (i.e., @eq-Ricker-Y), substitute in this last result (i.e., @eq-Yparts-compare), break out the $e^{Mt_0}$ part, and substitute in the FAMS yield equation (i.e., @eq-FAMS-Y) we get.
+
+
+$$
+\begin{align}
+Y &= \frac{FN_0e^{Fr}W_{\infty}}{K} [\beta(X,P,Q)-\beta(X1,P,Q)] \\
+  &= \frac{FN^*_te^{Zr}e^{Mt_0}W_{\infty}}{K} [\beta(X,P,Q)-\beta(X1,P,Q)] \\
+  &= \frac{FN^*_te^{Zr}W_{\infty}}{K} [\beta(X,P,Q)-\beta(X1,P,Q)] e^{Mt_0} \\
+  &= Y^*e^{Mt_0}
+\end{align}
+$$
+
+Thus, Ricker yield is equal to FAMS yield when multiplied by the same $e^{Mt_0}$.
+
+Of course, if $t_{0}=0$ then $e^{Mt_0}=1$ and $Y=Y^*$. However, as shown in @fig-hist-t0, $t_0$ is rarely 0. @fig-compY-1 shows that estimated yield may differ greatly between the FAMS and Ricker equations with the Ricker version resulting in lower yield values compared to FAMS when $t_0<0$ and greater yield values when $t_0>0$. This makes sense because, as shown in @fig-abundance, the number of fish that recruit to the fishery will be lower in the Ricker equation than the FAMS equation when $t_0<0$.
+
+<br>
 
 ```{r}
-#| label: comp-eqn-1
-FAMSvRicker1 <- function(N0,F,M,tr,t0) {
-  Nt <- N0*exp(-M*tr)
-  r <- tr-t0
-  Z <- F+M
-  data.frame(t0,
-             FAMS=Nt*exp(Z*r),
-             RCKR=N0*exp(F*r)) |>
-    dplyr::mutate(percdiff=100*(FAMS-RCKR)/RCKR)
-}
-```
+#| label: fig-compY-1
+#| fig-width: 4.5
+#| fig-height: 4.5
+#| fig-cap: Percent difference between Ricker-calculated and FAMS-calculated estimates of yield with varying values of $t_0$ (and all other parameters held constant).
 
-Here the function is used to examine the impact of variable $t_0$ on the differences between the two yield equation portions, with all other parameters held constant. It can be seen that the two equation portions are equal when $t_{0}=0$, the FAMS portion if greater when $t_{0}<0$ and the FAMS portion is less when $t_{0}>0$. The percent difference can be quite great over the range of reasonable $t_0$ values.
+t0 <- seq(-2,1,length.out=100)
+tr <- t0-log(1-minLL/LH$Linf)/LH$K
+Nt <- LH$N0*exp(-MORTS$M*tr)
+r <- tr-t0
+Z <- MORTS$F+MORTS$M
+Winf <- 10^(LH$LWalpha+LH$LWbeta*log10(LH$Linf))
+P <- Z/LH$K
+Q <- LH$LWbeta+1
+X <- exp(-LH$K*r)
+X1 <- exp(-LH$K*(LH$maxage-t0))
+betas <- rFAMS:::iIbeta(X,P,Q)-rFAMS:::iIbeta(X1,P,Q)
 
-```{r}
-#| label: comp-res-1
-#| fig-width: 3
-#| fig-height: 3
-tmp <- FAMSvRicker1(100,0.2,0.3,1,seq(-2,2,length.out=100))
+d2 <- data.frame(t0,
+                 FAMS=((MORTS$F*Nt*exp(Z*r)*Winf)/LH$K)*betas,
+                 cFAMS=((MORTS$F*Nt*exp(Z*r)*Winf)/LH$K)*betas*exp(MORTS$M*t0),
+                 RCKR=((MORTS$F*LH$N0*exp(MORTS$F*r)*Winf)/LH$K)*betas) |>
+    dplyr::mutate(percdiff=100*(RCKR-FAMS)/FAMS,
+                  cpercdiff=100*(RCKR-cFAMS)/FAMS)
 
-ggplot(data=tmp,mapping=aes(y=percdiff,x=t0)) +
+ggplot(data=d2,mapping=aes(y=percdiff,x=t0)) +
   geom_point() +
   geom_hline(yintercept=0,color="red",linetype="dashed") +
   geom_vline(xintercept=0,color="red",linetype="dashed") +
-  labs(x="t_0",y="Percent Difference",title="Yield Portion: FAMS vs Ricker") +
+  labs(x=parse(text="t[0]"),y="Percent Difference (from FAMS)",
+       title="Yield: Ricker vs FAMS") +
   theme_bw()
 ```
 
-What is the impact of this difference in the actual yield equations. Again, a function to compute the two yield equations and find the absolute and percent differences is made. Note, however, that I included a "corrected" version of the FAMS equation that included the  $e^{Mt_0}$ term.
+<br>
+
+For completeness, the FAMS calculation is equal to the Ricker calculation (within rounding error; @fig-compY-2) when the FAMS calculation is multiplied by $e^{Mt_0}$.
+
+<br>
 
 ```{r}
-#| label: comp-eqn-2
-FAMSvRicker <- function(N0,F,M,tr,t0,tlambda,Linf,K,a,b) {
-  Nt <- N0*exp(-M*tr)
-  r <- tr-t0
-  Z <- F+M
-  Winf <- 10^(a+b*log10(Linf))
-  P <- Z/K
-  Q <- b+1
-  X <- exp(-K*r)
-  X1 <- exp(-K*(tlambda-t0))
-  betas <- rFAMS:::iIbeta(X,P,Q)-rFAMS:::iIbeta(X1,P,Q)
-
-  data.frame(t0,
-             FAMS=((F*Nt*exp(Z*r)*Winf)/K)*betas,
-             cFAMS=((F*Nt*exp(Z*r)*Winf)/K)*betas*exp(M*t0),
-             RCKR=((F*N0*exp(F*r)*Winf)/K)*betas) |>
-    dplyr::mutate(percdiff=100*(FAMS-RCKR)/RCKR,
-                  cpercdiff=100*(cFAMS-RCKR)/RCKR)
-}
-```
-
-Here it is seen that the estimated yield results can differ greatly between the two equations.
-
-```{r}
-#| label: comp-res-2
-#| fig-width: 3
-#| fig-height: 3
-tmp <- FAMSvRicker(N0=100,F=0.2,M=0.3,tr=1,t0=seq(-2,1,length.out=100),
-                   tlambda=10,Linf=500,K=3.1,a=-5.6,b=3.1)
-ggplot(data=tmp,mapping=aes(y=percdiff,x=t0)) +
+#| label: fig-compY-2
+#| fig-width: 4.5
+#| fig-height: 4.5
+#| fig-cap: Percent difference between Ricker-calculated and FAMS-calculated-but-adjusted estimates of yield with varying values of $t_0$ (and all other parameters held constant).
+ggplot(data=d2,mapping=aes(y=cpercdiff,x=t0)) +
   geom_point() +
   geom_hline(yintercept=0,color="red",linetype="dashed") +
   geom_vline(xintercept=0,color="red",linetype="dashed") +
-  labs(x="t_0",y="Percent Difference",title="Yield: FAMS vs Ricker") +
+  labs(x=parse(text="t[0]"),y="Percent Difference (from FAMS)",
+       title="Yield: Ricker vs 'Adjusted' FAMS") +
   theme_bw()
 ```
 
-However, the differences disappear (within machine rounding error) when the "corrected" FAMS equation is used.
+<br>
 
-```{r}
-#| label: comp-res-3
-#| fig-width: 3
-#| fig-height: 3
-ggplot(data=tmp,mapping=aes(y=cpercdiff,x=t0)) +
-  geom_point() +
-  geom_hline(yintercept=0,color="red",linetype="dashed") +
-  geom_vline(xintercept=0,color="red",linetype="dashed") +
-  labs(x="t_0",y="Percent Difference",title="Yield: 'Corrected' FAMS vs Ricker") +
-  theme_bw()
-```
+# Conclusion
+The abundance at time of recruitment ($N_t$) and yield ($Y$) equations in Ricker and FAMS are only strictly equal when $t_0=0$. Rather large percentage differences between the Ricker and FAMS calculations may be observed as $t_0$ deviates further from 0.
 
-## Conclusion
-The YPR equations in Ricker and FAMS are only strictly equal when $t_0=0$. Again, we can't know what the authors of FAMS did, but perhaps they dropped this term as $t_0$ is often near 0 which means that $e^{Mt_0}$ would be near 1. However, as shown here, dropping that term can result in substantively different estimates of yield. Within a set of simulations this may not be a big deal because comparisons of yield are mostly made across other parameters that vary while $t_0$ is held constant. 
+These types of calculations are often referred to as "yield-per-recruit", implying that $YPR=\frac{Y}{N_t}$ is the primary value of interest. It should be noted that the differences between Ricker and FAMS calculations for $Y$ and $N_t$, respectively, both differed by the same multiple of $e^{Mt_0}$. Given that this multiplier is in both the numerator and denominator of the YPR calculation the YPR from Ricker and FAMS should be equal.
 
-However, it is not difficult to include the $e^{Mt_0}$ term in the coding so why not include it to be as accurate with Ricker as possible?
+It is not possible for us to know why the authors of FAMS chose not to include the $e^{Mt_0}$ term in their equations for $N^*_t$ and $Y^*$. It does not seem to be due to there being no effect on $YPR$ as they don't seem to calculate that directly in either their manual or software. It could be that $t_0$ is though to be often near 0 (and $e^{Mt_0}$ is near 1) and it was assumed that its effect on the calculations was negligible. However, as shown here, $t_0$ is not often near 0 and dropping the $e^{Mt_0}$ term can result in substantively different estimates of numbers at recruitment to the fishery and yield. That being said, most yield situations using the FAMS software are only making comparisons of yield across other parameters that vary (e.g., $F$ or $minLL$) while $t_0$ is held constant. Thus, the *relative* comparisons should be the same regardless whether the equations from FAMS or Ricker are used. 
 
-In addition, it likely makes sense to include this term as Ricker defines $N_0$ as the "hypothetical number of individuals that reach the hypothetical age $t_0$ annually" rather than the initial number of recruits at age 0. It seems reasonable that there would be a term to "handle" natural mortality for the time between $t_0$ and 0.
-
+However, it is not difficult to include the $e^{Mt_0}$ term in the calculations so we will include it to most accurately follow Ricker, which is often considered the "gold standard" for fisheries assessment calculations. In addition, even though $t_0$ does not make biological sense, it is a key component of modeling growth with the von Bertalanffy growth equation and seems to logically represent the start of a cohort, in a modeling sense. Thus, it seems reasonable to include the $e^{Mt_0}$ term to "handle" natural mortality for the time between $t_0$ and 0.

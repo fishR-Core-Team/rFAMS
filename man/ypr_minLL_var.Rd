@@ -57,7 +57,7 @@ ypr_minLL_var(
 
 \item{maxage}{An single whole number representing maximum age in the population in years. May be given in a named vector or list given to \code{N0} (see examples).}
 
-\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
+\item{matchRicker}{A logical that indicates whether the Nt (and, ultimately, the yield) calculation should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
 }
 \value{
 A data.frame with the following calculated values:

@@ -12,7 +12,7 @@
 #' @param LWalpha A single numeric representing the point estimate of alpha from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
 #' @param LWbeta A single numeric representing the point estimate of beta from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
 #' @param maxage An single whole number representing maximum age in the population in years. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
+#' @param matchRicker A logical that indicates whether the Nt (and, ultimately, the yield) calculation should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #'
 #' @details Details will be filled out later
 #'
@@ -152,6 +152,9 @@ ypr_func <- function(minLL,cf,cm,
   # Number recruiting to fishery based on time at minimum length (tr) ...
   #    FAMS equation 6:3
   Nt <- N0*exp(-Mmort*tr)
+  # ... if matchRicker then Nt is "corrected" to match Ricker
+  if (matchRicker) Nt <- Nt*exp(Mmort*t0)
+
   # Adjust Nt if less than 0 or greater than start, otherwise keep Nt as calculated
   #    not clear that this is done in FAMS
   if (Nt<0) {
@@ -172,8 +175,6 @@ ypr_func <- function(minLL,cf,cm,
   # Y is FAMS equation 6:1 ...
   #   see testing for internal iIbeta() to note how it matches other packages
   Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*(iIbeta(X,P,Q)-iIbeta(Xi,P,Q))
-  # ... if matchRicker then Y is "corrected" to match equation 10.22 in Ricker
-  if (matchRicker) Y <- Y*exp(Mmort*t0)
 
   # Adjust Y to NA if infinite, to 0 if negative, otherwise keep as calculated
   if (is.infinite(Y)) {
