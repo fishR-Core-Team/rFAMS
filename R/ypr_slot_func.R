@@ -102,9 +102,6 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
                      N0,Linf=NULL,K=NULL,t0=NULL,
                      LWalpha=NULL,LWbeta=NULL,tmax=NULL){
   # ---- Check inputs
-  # iCheckMLH(minlength)
-  # iCheckcf(cf)
-  # iCheckcm(cm)
   if (length(N0)>1) {
     pnms <- c('N0','Linf','K','t0','LWalpha','LWbeta', 'tmax')
     if (length(N0)!=7) STOP("'N0' must contain only one value for 'N0' or 7 named\n",
@@ -127,7 +124,7 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
   iCheckt0(t0)
   iCheckLWa(LWalpha)
   iCheckLWb(LWbeta)
-  #iCheckMaxAge(tmax)  #Maxage is not always an integer in the slot limit code.
+  iCheckMaxAge(tmax)
 
   #Can't use ypr_func because it calculates Nr based on natural mortality only because below length limit M the only source of mortality
   #And Nr in ypr_func is calculated only with M
@@ -181,7 +178,7 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
 
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size
-  #Number of fish harvested:
+
   #Calculate the number of fish between recruitment size and lower slot limit size (Nr_under)
   #Calculate the number remain then determine what proportion of lost fish are due to fishing and natural mortality
   Nharv_under <- (Nr_under - (Nr_under*exp(-Z_under* (tmax_lowerSL-tr)))) * (F_under/Z_under)
@@ -221,7 +218,7 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
 
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size
-  #Number of fish harvested:
+
   #Calculate the number of fish between recruitment size and lower slot limit size (Nr_under)
   #Calculate the number remain then determine what proportion of lost fish are due to fishing and natural mortality
   Nharv_in <- (Nr_in - (Nr_in*exp(-Z_in* (tmax_upperSL-tmax_lowerSL)))) * (F_in/Z_in)
@@ -258,7 +255,7 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
 
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size
-  #Number of fish harvested:
+
   #Calculate the number of fish between recruitment size and lower slot limit size (Nr_under)
   #Calculate the number remain then determine what proportion of lost fish are due to fishing and natural mortality
   Nharv_above <- (Nr_above - (Nr_above*exp(-Z_above* (tmax-tmax_upperSL)))) * (F_above/Z_above)
