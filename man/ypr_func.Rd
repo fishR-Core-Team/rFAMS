@@ -5,7 +5,7 @@
 \title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for single input parameters}
 \usage{
 ypr_func(
-  minlength,
+  minLL,
   cf,
   cm,
   N0,
@@ -14,17 +14,18 @@ ypr_func(
   t0 = NULL,
   LWalpha = NULL,
   LWbeta = NULL,
-  maxage = NULL
+  maxage = NULL,
+  matchRicker = TRUE
 )
 }
 \arguments{
-\item{minlength}{A single numeric representing the minimum length limit for harvest in mm.}
+\item{minLL}{A single numeric representing the minimum length limit for harvest in mm.}
 
 \item{cf}{A single numeric representing conditional fishing mortality.}
 
 \item{cm}{A single numeric representing conditional natural mortality.}
 
-\item{N0}{A single numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.}
+\item{N0}{A single numeric representing the initial number of fish in the population OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.}
 
 \item{Linf}{A single numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm. May be given in a named vector or list given to \code{N0} (see examples).}
 
@@ -37,9 +38,11 @@ ypr_func(
 \item{LWbeta}{A single numeric representing the point estimate of beta from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).}
 
 \item{maxage}{An single whole number representing maximum age in the population in years. May be given in a named vector or list given to \code{N0} (see examples).}
+
+\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
 }
 \value{
-A data.frame with the following cal (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage})culated values:
+A data.frame with the following calculated values:
 \itemize{
 \item \code{yield} is the estimated yield (in g).
 \item \code{exploitation} is the exploitation rate.
@@ -55,10 +58,26 @@ A data.frame with the following cal (\code{minlength}, \code{cf}, \code{cm}, \co
 \item \code{S} is the (total) annual rate of survival.
 }
 
-For convenience the data.frame also contains the model input values (\code{minlength}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, \code{maxage}).
+For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}).
+
+The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are as follows:
+
+\itemize{
+\item \code{minLL>=Linf}: The minimum length limit (minLL) being explored was greater than the given asymptotic mean length (Linf). For the purpose (only) of computing the time at recruitment to the fishery (tr) the Linf was set to minLL+0.1.
+\item \code{tr<t0}: The age at recruitment to the fishery (tr) was less than the hypothetical time when the mean length is zero (t0). The fish can't recruit to the fishery prior to having length 0 so tr was set to t0. This also assures that the time it takes to recruit to the fishery is greater than 0.
+\item \code{Nt<0}: The number of fish recruiting to the fishery was less than 0. There cannot be negative fish, so Nt was then set to 0.
+\item \code{Nt>N0}: The number of fish recruiting to the fishery was more than the number of fish recruited to the populations. Fish cannot be added to the cohort, so Nt was set to N0.
+\item \code{Y=Infinite}: The calculated yield (Y) was inifinity, which is impossible and suggests some other propblem. Yield was set to NA.
+\item \code{Y<0}: The calculated yield (Y) was negative, which is impossible. Yield was set to 0.
+\item \code{Nharv<0}: The calculated number of fish harvested (Nharv) was negative, which is not possible. Number harvested was set to 0.
+\item \code{Nharv>Nt}: The calculated number of fish harvested (Nharv) was greater than the number of fish recruiting to the fishery, which is impossible. The number harvested was set to the number recruiting to the fishery.
+\item \code{Ndie<0}: The calculated number of fish recruiting to the fishery that died naturally (Ndie) was negative, which is not possible. Number that died was set to 0.
+\item \code{Ndie>Nt}: The calculated number of fish recruiting to the fishery that died naturally (Ndie) was greater than the number of fish recruiting to the fishery, which is impossible. The number that died was set to the number recruiting to the fishery.
+\item \code{agvglen<minLL}: The average length of harvested fish was less than the given minimum length limit being explored, which is not possible (with only legal harvest). The average length was set to the minimum length limit.
+}
 }
 \description{
-Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minlength}).
+Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minLL}).
 }
 \details{
 Details will be filled out later
@@ -66,7 +85,7 @@ Details will be filled out later
 \examples{
 # Estimate yield with fixed parameters
 Res_1 <- ypr_func(cf=0.45,cm=0.25,
-                  minlength=355,
+                  minLL=355,
                   N0=100,
                   Linf=2000,K=0.50,t0=-0.616,
                   LWalpha=-5.453,LWbeta=3.10,
@@ -75,17 +94,22 @@ Res_1
 
 # Same, but with named vector in N0
 parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-Res_2 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+Res_2 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
 Res_2
 
 # Same, but with named list in N0
 parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-Res_3 <- ypr_func(cf=0.45,cm=0.25,minlength=355,N0=parms)
+Res_3 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
 Res_3
 
 }
+\references{
+Ricker, W.E. 1975. Computation and interpretation of biological statistics of fish populations. Technical Report Bulletin 191, Bulletin of the Fisheries Research Board of Canada. Was (is?) from \url{https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/1485.pdf}.
+
+Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling simulator. v1.64. American Fisheries Society, Bethesda, MD. Was (is?) from \url{https://units.fisheries.org/fits/wp-content/uploads/sites/29/2019/06/FAMS-1.64-Manual.pdf}.
+}
 \seealso{
-\code{\link{ypr_MinTL_fixed}} and \code{\link{ypr_MinTL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minlength}.
+\code{\link{ypr_minLL_fixed}} and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}

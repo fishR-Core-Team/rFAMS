@@ -2,21 +2,21 @@ library(ggplot2)
 library(tidyverse)
 library(metR)  #needed for contour plots
 
-source("ypr_MinTL_fixed.R")
-source("ypr_MinTL_var.R")
+source("ypr_minLL_fixed.R")
+source("ypr_minLL_var.R")
 source("ypr_func.R")
 source("rFAMS-internals.R")
 
 #Estimate yield based on a fixed minimum length and range of exploitation with the ypr1 function
 
 #Calculate yield based on a range of cf, cm and fixed minimum length limit
-Res_1<-ypr_MinTL_fixed(cfmin = 0.05,
+Res_1<-ypr_minLL_fixed(cfmin = 0.05,
                        cfmax = 0.95,
                        cfinc = 0.05,
                        cmmin = 0.05,
                        cmmax = 0.95,
                        cminc = 0.05,
-                       minlength = 400,
+                       minLL = 400,
                        N0=100,
                        linf=2000,
                        K=0.50,
@@ -47,7 +47,7 @@ ggplot(data = plot_dat, aes(x=exploitation,y=yield)) +
   )
 
 
-Res_1<-ypr_MinTL_var( lengthmin = 200,
+Res_1<-ypr_minLL_var( lengthmin = 200,
                       lengthmax = 550,
                       lengthinc= 50,
                       cfmin = 0.05,
@@ -65,7 +65,7 @@ Res_1<-ypr_MinTL_var( lengthmin = 200,
                       maxage=15)
 
 #Calculate yield based on a range of cf, cm and minimum length limit
-Res_1<-ypr_MinTL_var(cfmin = 0.05,
+Res_1<-ypr_minLL_var(cfmin = 0.05,
                        cfmax = 0.95,
                        cfinc = 0.01,
                        cmmin = 0.30,
@@ -87,7 +87,7 @@ Res_1<-ypr_MinTL_var(cfmin = 0.05,
 #Which index has cm = 0.40
 
 plot_dat <- Res_1 %>%
-  filter(cm == 0.40, minlength ==400)
+  filter(cm == 0.40, minLL ==400)
 
 ggplot(data = plot_dat, aes(x=exploitation,y=yield)) +
   theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
@@ -112,8 +112,8 @@ plot_dat <- Res_1 %>%
 #Yield isopleth
 ggplot(data = plot_dat) +
   theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
-  geom_contour(aes(x=exploitation,y=minlength,z=yield))+
-  metR::geom_text_contour(aes(x=exploitation,y=minlength,z = yield),stroke = 0.15)+
+  geom_contour(aes(x=exploitation,y=minLL,z=yield))+
+  metR::geom_text_contour(aes(x=exploitation,y=minLL,z = yield),stroke = 0.15)+
   xlab("Exploitation")+
   ylab("Minimum length limit (mm)")+
   theme(axis.text.x=element_text(size=20),
@@ -137,8 +137,8 @@ plot_dat <- Res_1 %>%
 
 ggplot(data = plot_dat) +
   theme_bw()+theme(panel.grid.major=element_blank(),panel.grid.minor=element_blank())+
-  geom_contour(aes(x=exploitation,y=minlength,z=Nharvest))+
-  metR::geom_text_contour(aes(x=exploitation,y=minlength,z = Nharvest),stroke = 0.15)+
+  geom_contour(aes(x=exploitation,y=minLL,z=Nharvest))+
+  metR::geom_text_contour(aes(x=exploitation,y=minLL,z = Nharvest),stroke = 0.15)+
   xlab("Exploitation")+
   ylab("Minimum length limit (mm)")+
   theme(axis.text.x=element_text(size=20),

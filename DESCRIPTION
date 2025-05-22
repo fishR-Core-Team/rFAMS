@@ -1,6 +1,6 @@
 Package: rFAMS
 Version: 0.0.0.9000
-Date: 2024-12-29
+Date: 2024-1-1
 Title: Fisheries Analysis and Modeling Simulator
 Authors@R: c(person(c("Jason","C."), "Doll", email="jason.doll@fmarion.edu",role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-9024-2561")),
@@ -16,13 +16,17 @@ Imports:
   stats,
   purrr
 Suggests: 
-  dplyr,
-  ggplot2,
-  metR,
-  knitr,
-  rmarkdown,
-  testthat (>= 3.0.0)
+    dplyr,
+    ggplot2,
+    metR,
+    knitr,
+    rmarkdown,
+    spsh,
+    testthat (>= 3.0.0),
+    zipfR,
+    quarto
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
+Config/Needs/website: quarto

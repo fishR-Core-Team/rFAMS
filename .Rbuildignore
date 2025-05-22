@@ -13,3 +13,6 @@ cran-comments.md
 
 ## Misecellaneous files
 ^Misc/
+^vignettes/articles/\.quarto$
+^vignettes/articles/*_files$
+^vignettes/articles$

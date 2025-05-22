@@ -4,6 +4,24 @@
 \alias{.onAttach}
 \alias{STOP}
 \alias{WARN}
+\alias{is.wholenumber}
+\alias{iIbeta}
+\alias{iErrMore1}
+\alias{iErrNotNumeric}
+\alias{iErrLT}
+\alias{iErrGt}
+\alias{iCheckMLH}
+\alias{iCheckMLHinc}
+\alias{iCheckcf}
+\alias{iCheckcm}
+\alias{iCheckcfminc}
+\alias{iCheckN0}
+\alias{iCheckLinf}
+\alias{iCheckK}
+\alias{iCheckt0}
+\alias{iCheckLWb}
+\alias{iCheckLWa}
+\alias{iCheckMaxAge}
 \title{Internal functions.}
 \usage{
 .onAttach(libname, pkgname)

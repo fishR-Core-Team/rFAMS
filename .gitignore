@@ -45,3 +45,4 @@ vignettes/*.pdf
 # Local programming and notes not relevant to others
 development-commands.R
 inst/doc
+**/.quarto/
