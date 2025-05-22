@@ -94,7 +94,7 @@ Res_1 <- ypr_minLL_fixed(minLL=200,
                          N0=parms)
 
 # Load other required packages for organizing output and plotting
-library(dplyr)    ## for filter \%>\%
+library(dplyr)    ## for filter
 library(ggplot2)  ## for ggplot et al.
 library(metR)     ## geom_text_contour
 
@@ -113,7 +113,7 @@ theme_FAMS <- function(...) {
 
 # Yield curve (yield vs exploitation)
 # Extract results for cm=0.40
-plot_dat <- Res_1 \%>\% dplyr::filter(cm==0.40)
+plot_dat <- Res_1 |> dplyr::filter(cm==0.40)
 
 ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
   geom_point() +
