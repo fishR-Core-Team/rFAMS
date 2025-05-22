@@ -2,24 +2,30 @@
 #'
 #' @description Main wrapper function to estimate yield using the Beverton-Holt YPR model. This main function accepts a range of values for cf, cm, recruitment length, lower slot limit length, and upper slot limit length.
 #'
+#' @details Best practice is to enter the life history parameters into a list or vector using \code{\link{makeLH}} (rather than directly) as `makeLH` performs several sanity checks on the values entered (e.g., ensures Linf>0); i.e.,
+#'
+#' ```R
+#' # Best practice for entering life history parameter values
+#' LH <- makeLH(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,
+#'              LWalpha=-5.453,LWbeta=3.10)
+#'
+#' # Works but no checks on the values
+#' LH <- list(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,
+#'            LWalpha=-5.453,LWbeta=3.10)
+#' ```
+#'
 #' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param lowerSL A numeric representing the length of the lower slot limit in mm.
 #' @param upperSL A numeric representing the length of the upper slot limit in mm.
 #' @param cf_under Single value, conditional fishing mortality under the lower slot limit.
 #' @param cf_in Single value, conditional fishing mortality within the lower and upper slot limit.
 #' @param cf_above Single value, conditional fishing mortality over the upper slot limit.
-#' @param cm A numeric representing conditional natural mortality
-#' @param N0 A numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{tmax}
-#' @param Linf A numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm
-#' @param K A numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model
-#' @param t0 A numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model
-#' @param LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
-#' @param LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
-#' @param tmax An integer representing maximum age in the population in years
+#' @param cmmin Single value, minimum conditional natural mortality
+#' @param cmmax Single value, maximum conditional natural mortality
+#' @param cminc Single value, increment to cycle from minimum to maximum conditional natural mortality
+#' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #'
-#' @details Details will be filled out later
-#'
-#' @return the following calculated and input values in a data.frame
+#' @return A data.frame with the following calculated values:
 #' \itemize{
 #' \item cm A numeric representing conditional natural mortality
 #' \item TotalYield is the calculated total yield
@@ -84,19 +90,20 @@
 #' library(dplyr)
 #' library(metR)
 #'
+#' # Life history parameters to be used below
+#' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
+#'
 #' #Estimate yield
-#'  Res_1 <- ypr_SlotLimit(recruitmentTL=200,lowerSL=250,upperSL=325,
+#'  Res_1 <- yprBH_SlotLimit(recruitmentTL=200,lowerSL=250,upperSL=325,
 #'                        cf_under=0.25,cf_in=0.6,cf_above=0.15,cmmin=0.3,cmmax=0.55,cminc=0.05,
-#'                        N0=100,Linf=592,K=0.2,t0=-0.3,
-#'                        LWalpha=-5.528,LWbeta=3.273,tmax=15)
+#'                        lhparms=LH)
 #'
 #'  Res_1
 #'
-#' @rdname ypr_MinTL_fixed
+#' @rdname yprBH_SlotLL.R
 #' @export
-ypr_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,cmmin,cmmax,cminc,
-                        N0,Linf=NULL,K=NULL,t0=NULL,
-                        LWalpha=NULL,LWbeta=NULL,tmax=NULL){
+yprBH_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,cmmin,cmmax,cminc,
+                        lhparms){
 
   if (missing(recruitmentTL))
     stop("Need to specify recruitmentTL")
@@ -117,12 +124,12 @@ ypr_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,cm
   if (missing(cminc))
     stop("Need to specify cminc")
   #iCheckMLH(minlength)
-  iCheckN0(N0)
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
+  # iCheckN0(N0)
+  # iCheckLinf(Linf)
+  # iCheckK(K)
+  # iCheckt0(t0)
+  # iCheckLWa(LWalpha)
+  # iCheckLWb(LWbeta)
   #iChecktmax(tmax)
 
   if(recruitmentTL>lowerSL)
@@ -136,11 +143,9 @@ ypr_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,cm
   # Setup data.frame of input values (varying cf and cm, the rest constant)
   res <- expand.grid(recruitmentTL=recruitmentTL,lowerSL=lowerSL,upperSL=upperSL,
                      cf_under=cf_under,cf_in=cf_in,cf_above=cf_above,
-                     cm=seq(cmmin,cmmax,cminc),
-                     N0=N0,Linf=Linf,K=K,t0=t0,
-                     LWalpha=LWalpha,LWbeta=LWbeta,tmax=tmax)
+                     cm=seq(cmmin,cmmax,cminc))
   # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
-  res <- purrr::pmap_df(res,ypr_slot_func)
+  res <- purrr::pmap_df(res,yprBH_slot_func,lhparms=lhparms)
   # Return result
   return(res)
 

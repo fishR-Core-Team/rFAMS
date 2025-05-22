@@ -9,13 +9,7 @@
 #' @param cf_in Single value, conditional fishing mortality within the lower and upper slot limit.
 #' @param cf_above Single value, conditional fishing mortality over the upper slot limit.
 #' @param cm A numeric representing conditional natural mortality
-#' @param N0 A numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{tmax}
-#' @param Linf A numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm
-#' @param K A numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model
-#' @param t0 A numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model
-#' @param LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
-#' @param LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
-#' @param tmax An integer representing maximum age in the population in years
+#' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #'
 #' @details Details will be filled out later
 #'
@@ -80,51 +74,39 @@
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #' @examples
+#' # Life history parameters to be used below
+#' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
+#'
 #' # Estimate yield with fixed parameters
-#' Res_1 <- ypr_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
+#' Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
 #'                        cf_under=0.25,cf_in=0.6,cf_above=0.15,cm=0.4,
-#'                        N0=100,Linf=592,K=0.2,t0=-0.3,
-#'                        LWalpha=-5.528,LWbeta=3.273,tmax=15)
+#'                        lhparms=LH)
 #' Res_1
 #'
-#' # Same, but with named vector in N0
-#' parms <- c(N0=100,Linf=592,K=0.2,t0=-0.3,LWalpha=-5.528,LWbeta=3.273,tmax=15)
-#' Res_2 <- ypr_func(recruitmentTL=200,lowerSL=250,upperSL=325,
-#'                        cf_under=0.25,cf_in=0.6,cf_above=0.15,cm=0.4,
-#'                        N0=parms)
-#' Res_2
 #'
-#'
-#' @rdname ypr_function
+#' @rdname yprBH_slot_function
 #' @export
 
-ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,cm, #cmmin,cmmax,cminc,
-                     N0,Linf=NULL,K=NULL,t0=NULL,
-                     LWalpha=NULL,LWbeta=NULL,tmax=NULL){
+yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,cm,
+                          lhparms){
   # ---- Check inputs
-  if (length(N0)>1) {
-    pnms <- c('N0','Linf','K','t0','LWalpha','LWbeta', 'tmax')
-    if (length(N0)!=7) STOP("'N0' must contain only one value for 'N0' or 7 named\n",
-                            "values for: ",paste(pnms,collapse=", "))
-    if (is.null(names(N0))) STOP("'N0' must have named values for: ",
-                                 paste(pnms,collapse=", "))
-    if (!all(names(N0) %in% pnms)) STOP("'N0' must have named values for all of: ",
-                                        paste(pnms,collapse=", "))
-    Linf <- N0[["Linf"]]
-    K <- N0[["K"]]
-    t0 <- N0[["t0"]]
-    LWalpha <- N0[["LWalpha"]]
-    LWbeta <- N0[["LWbeta"]]
-    tmax <- N0[["tmax"]]
-    N0 <- N0[["N0"]]
-  }
-  iCheckN0(N0)
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
-  iCheckMaxAge(tmax)
+  # iCheckN0(N0)
+  # iCheckLinf(Linf)
+  # iCheckK(K)
+  # iCheckt0(t0)
+  # iCheckLWa(LWalpha)
+  # iCheckLWb(LWbeta)
+  # iCheckMaxAge(tmax)
+
+
+  # Extract individual life history values
+  N0 <- lhparms[["N0"]]
+  tmax <- lhparms[["tmax"]]
+  Linf <- lhparms[["Linf"]]
+  K <- lhparms[["K"]]
+  t0 <- lhparms[["t0"]]
+  LWalpha <- lhparms[["LWalpha"]]
+  LWbeta <- lhparms[["LWbeta"]]
 
   #Can't use ypr_func because it calculates Nr based on natural mortality only because below length limit M the only source of mortality
   #And Nr in ypr_func is calculated only with M
@@ -134,6 +116,8 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
   #   log10 transformation to linearize it
   Winf <- 10^(LWalpha+log10(Linf)*LWbeta)
 
+
+  # Yield under the slot limit####
   # Instantaneous mortality rates (F,M,Z) ... rearrange of FAMS equations 4:16 & 4:17
   F_under <- -1*log(1-cf_under)
   M_under <- -1*log(1-cm)
@@ -180,7 +164,7 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
   # recruitment size and lower slot size
 
   #Calculate the number of fish between recruitment size and lower slot limit size (Nr_under)
-  #Calculate the number remain then determine what proportion of lost fish are due to fishing and natural mortality
+  #Calculate the number that remain then determine what proportion of lost fish are due to fishing and natural mortality
   Nharv_under <- (Nr_under - (Nr_under*exp(-Z_under* (tmax_lowerSL-tr)))) * (F_under/Z_under)
   Ndie_under <- (Nr_under - (Nr_under*exp(-Z_under* (tmax_lowerSL-tr)))) * (M_under/Z_under)
 
@@ -192,7 +176,8 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
   # Mean length of harvest fish ... from mean weight and weight-length parameters
   avglen_under <- 10^((log10(avgwt_under) - LWalpha)/LWbeta)
 
-  #yield in slot
+
+  #yield in slot######
   #Max age at upper slot
   tmax_upperSL <- ((log(1-upperSL/Linf))/-K)+t0
 
@@ -219,8 +204,8 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size
 
-  #Calculate the number of fish between recruitment size and lower slot limit size (Nr_under)
-  #Calculate the number remain then determine what proportion of lost fish are due to fishing and natural mortality
+  #Use the number of fish between lower and upper slot limit size (Nr_in)
+  #Calculate the number that remain then determine what proportion of lost fish are due to fishing and natural mortality
   Nharv_in <- (Nr_in - (Nr_in*exp(-Z_in* (tmax_upperSL-tmax_lowerSL)))) * (F_in/Z_in)
   Ndie_in <- (Nr_in - (Nr_in*exp(-Z_in* (tmax_upperSL-tmax_lowerSL)))) * (M_in/Z_in)
 
@@ -230,6 +215,7 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
   # Mean length of harvest fish ... from mean weight and weight-length parameters
   avglen_in <- 10^((log10(avgwt_in) - LWalpha)/LWbeta)
 
+  #yield over slot######
 
   #Parameters for over slot
   F_above <- -1*log(1-cf_above)
@@ -240,10 +226,7 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
   # Exploitation rate (u) ... rearrange of FAMS equation 4:14
   exploitation_above <- (1-S_above)*(F_above/Z_above)
 
-  #Need to get number alive after harvest and natural mortality in slot
-  #Nr is the number going into the slot
-  #need tmax_upperSl - tmax_lowerSL (for age at recruitment to slot)
-  #Number going into the upper slot - needs Z from within slot
+
   Nr_above <- Nr_in*exp(-Z_in* (tmax_upperSL-tmax_lowerSL))
   P <- Z_above/K
   Q <- LWbeta+1
@@ -256,8 +239,8 @@ ypr_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size
 
-  #Calculate the number of fish between recruitment size and lower slot limit size (Nr_under)
-  #Calculate the number remain then determine what proportion of lost fish are due to fishing and natural mortality
+  #Use the number of fish between upper slot limit and maximum age (Nr_above)
+  #Calculate the number that remain then determine what proportion of lost fish are due to fishing and natural mortality
   Nharv_above <- (Nr_above - (Nr_above*exp(-Z_above* (tmax-tmax_upperSL)))) * (F_above/Z_above)
   Ndie_above <- (Nr_above - (Nr_above*exp(-Z_above* (tmax-tmax_upperSL)))) * (M_above/Z_above)
 
