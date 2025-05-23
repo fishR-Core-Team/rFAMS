@@ -2,7 +2,7 @@
 
 export(makeLH)
 export(yprBH_SlotLimit)
+export(yprBH_func)
+export(yprBH_minLL_fixed)
+export(yprBH_minLL_var)
 export(yprBH_slot_func)
-export(ypr_func)
-export(ypr_minLL_fixed)
-export(ypr_minLL_var)

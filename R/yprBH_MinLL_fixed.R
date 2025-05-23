@@ -2,7 +2,7 @@
 #'
 #' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using a range of values for conditional fishing (\code{cf}) and natural (\code{cm}) mortality and a single fixed minimum length limit for harvest (\code{minLL}).
 #'
-#' @inheritParams ypr_func
+#' @inheritParams yprBH_func
 #' @param minLL The minimum length limit for harvest in mm
 #' @param cfmin A single numeric for minimum conditional fishing mortality.
 #' @param cfmax A single numeric for maximum conditional fishing mortality.
@@ -23,32 +23,31 @@
 #' \item \code{avgwt} is the average weight of fish harvested.
 #' \item \code{avglen} is the average length of fish harvested.
 #' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
-#' \item \code{Fmort} is the instantaneous rate of fishing mortality.
-#' \item \code{Mmort} is the instantaneous rate of natural mortality.
-#' \item \code{Zmort} is the instantaneous rate of total mortality.
+#' \item \code{F} is the instantaneous rate of fishing mortality.
+#' \item \code{M} is the instantaneous rate of natural mortality.
+#' \item \code{Z} is the instantaneous rate of total mortality.
 #' \item \code{S} is the (total) annual rate of survival.
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (\code{minLL}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{maxage}).
+#' For convenience the data.frame also contains the model input values (\code{minLL}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax}).
 #'
-#' The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are defined under "values" in the documentation for \code{\link{ypr_func}}.
+#' The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are defined under "values" in the documentation for \code{\link{yprBH_func}}.
 #'
-#' @seealso \code{\link{ypr_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
+#' @seealso \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{yprBH_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #' @examples
 #' # Life history parameters to be used below
-#' parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,
-#'            LWalpha=-5.453,LWbeta=3.10,maxage=15)
+#' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 #'
 #' # Estimate yield for multiple values of minLL, cf, and cm
 #' # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
 #' # #   to produce finer-scaled results
-#' Res_1 <- ypr_minLL_fixed(minLL=200,
+#' Res_1 <- yprBH_minLL_fixed(minLL=200,
 #'                          cfmin=0.1,cfmax=0.9,cfinc=0.1,
 #'                          cmmin=0.1,cmmax=0.9,cminc=0.1,
-#'                          N0=parms)
+#'                          lhparms=LH)
 #'
 #' # Load other required packages for organizing output and plotting
 #' library(dplyr)    ## for filter
@@ -72,18 +71,17 @@
 #' # Extract results for cm=0.40
 #' plot_dat <- Res_1 |> dplyr::filter(cm==0.40)
 #'
-#' ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
+#' ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
 #'   geom_point() +
 #'   geom_line() +
-#'   labs(y="Yield (g)",x="Exploitation") +
+#'   labs(y="Yield (g)",x="Exploitation (u)") +
 #'   theme_FAMS()
 #'
 
-#' @rdname ypr_minLL_fixed
+#' @rdname yprBH_minLL_fixed
 #' @export
-ypr_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
-                          N0,Linf,K,t0,LWalpha,LWbeta,maxage,
-                          matchRicker=TRUE){
+yprBH_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
+                            lhparms,matchRicker=FALSE){
 
   # ---- Check inputs
   iCheckMLH(minLL)
@@ -93,34 +91,41 @@ ypr_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
   iCheckcm(cmmin,"minimum")
   iCheckcf(cmmax,"maximum")
   cm <- iCheckcfminc(cminc,cmmin,cmmax)
-  iCheckN0(N0)
-  if (length(N0)>1) {
-    Linf <- N0[["Linf"]]
-    K <- N0[["K"]]
-    t0 <- N0[["t0"]]
-    LWalpha <- N0[["LWalpha"]]
-    LWbeta <- N0[["LWbeta"]]
-    maxage <- N0[["maxage"]]
-    N0 <- N0[["N0"]]
-    iCheckN0(N0)  # second check of single value of N0
-  }
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
-  iCheckMaxAge(maxage)
+  # iCheckN0(N0)
+  # if (length(N0)>1) {
+  #   Linf <- N0[["Linf"]]
+  #   K <- N0[["K"]]
+  #   t0 <- N0[["t0"]]
+  #   LWalpha <- N0[["LWalpha"]]
+  #   LWbeta <- N0[["LWbeta"]]
+  #   tmax <- N0[["tmax"]]
+  #   N0 <- N0[["N0"]]
+  #   iCheckN0(N0)  # second check of single value of N0
+  # }
+  # iCheckLinf(Linf)
+  # iCheckK(K)
+  # iCheckt0(t0)
+  # iCheckLWa(LWalpha)
+  # iCheckLWb(LWbeta)
+  # iChecktmax(tmax)
+
+  # Extract individual life history values
+  N0 <- lhparms[["N0"]]
+  tmax <- lhparms[["tmax"]]
+  Linf <- lhparms[["Linf"]]
+  K <- lhparms[["K"]]
+  t0 <- lhparms[["t0"]]
+  LWalpha <- lhparms[["LWalpha"]]
+  LWbeta <- lhparms[["LWbeta"]]
 
   # ---- Compute Yield et al. for varying minLL, cf, and cm
   # Setup data.frame of input values ... cf, and cm sequences were
   #   created in checks above
-  res <- expand.grid(minLL=minLL,cf=cf,cm=cm,
-                     N0=N0,Linf=Linf,K=K,t0=t0,
-                     LWalpha=LWalpha,LWbeta=LWbeta,maxage=maxage)
+  res <- expand.grid(minLL=minLL,cf=cf,cm=cm)
 
-  # Send each row to ypr_func() ...
+  # Send each row to yprBH_func() ...
   #   i.e., calculate yield et al for all cf, and cm combos
-  res <- purrr::pmap_df(res,ypr_func,matchRicker=matchRicker)
+  res <- purrr::pmap_df(res,yprBH_func,matchRicker=matchRicker,lhparms=lhparms)
 
   # ---- Return data.frame with both output values and input parameters
   res

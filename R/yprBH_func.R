@@ -5,13 +5,7 @@
 #' @param cf A single numeric representing conditional fishing mortality.
 #' @param cm A single numeric representing conditional natural mortality.
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
-#' @param N0 A single numeric representing the initial number of fish in the population OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}. See examples.
-#' @param Linf A single numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param K A single numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param t0 A single numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param LWalpha A single numeric representing the point estimate of alpha from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param LWbeta A single numeric representing the point estimate of beta from the length-weight regression on the log10 scale. May be given in a named vector or list given to \code{N0} (see examples).
-#' @param maxage An single whole number representing maximum age in the population in years. May be given in a named vector or list given to \code{N0} (see examples).
+#' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #'
 #' @details Details will be filled out later
@@ -26,13 +20,13 @@
 #' \item \code{avgwt} is the average weight of fish harvested.
 #' \item \code{avglen} is the average length of fish harvested.
 #' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
-#' \item \code{Fmort} is the instantaneous rate of fishing mortality.
-#' \item \code{Mmort} is the instantaneous rate of natural mortality.
-#' \item \code{Zmort} is the instantaneous rate of total mortality.
+#' \item \code{F} is the instantaneous rate of fishing mortality.
+#' \item \code{M} is the instantaneous rate of natural mortality.
+#' \item \code{Z} is the instantaneous rate of total mortality.
 #' \item \code{S} is the (total) annual rate of survival.
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{maxage}).
+#' For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{tmax}).
 #'
 #' The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are as follows:
 #'
@@ -52,7 +46,7 @@
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{ypr_minLL_fixed}} and \code{\link{ypr_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
+#' @seealso \code{\link{yprBH_minLL_fixed}} and \code{\link{yprBH_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 #'
 #' @references
 #' Ricker, W.E. 1975. Computation and interpretation of biological statistics of fish populations. Technical Report Bulletin 191, Bulletin of the Fisheries Research Board of Canada. Was (is?) from \url{https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/1485.pdf}.
@@ -60,53 +54,48 @@
 #' Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling simulator. v1.64. American Fisheries Society, Bethesda, MD. Was (is?) from \url{https://units.fisheries.org/fits/wp-content/uploads/sites/29/2019/06/FAMS-1.64-Manual.pdf}.
 #'
 #' @examples
+#' #' # Life history parameters to be used below
+#' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
+#'
 #' # Estimate yield with fixed parameters
-#' Res_1 <- ypr_func(cf=0.45,cm=0.25,
-#'                   minLL=355,
-#'                   N0=100,
-#'                   Linf=2000,K=0.50,t0=-0.616,
-#'                   LWalpha=-5.453,LWbeta=3.10,
-#'                   maxage=15)
+#' Res_1 <- yprBH_func(cf=0.45,cm=0.25,
+#'                   minLL=355,lhparms=LH)
 #' Res_1
 #'
-#' # Same, but with named vector in N0
-#' parms <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-#' Res_2 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
-#' Res_2
-#'
-#' # Same, but with named list in N0
-#' parms <- list(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-#' Res_3 <- ypr_func(cf=0.45,cm=0.25,minLL=355,N0=parms)
-#' Res_3
-#'
-#' @rdname ypr_func
+#' @rdname yprBH_func
 #' @export
 
-ypr_func <- function(minLL,cf,cm,
-                     N0,Linf=NULL,K=NULL,t0=NULL,
-                     LWalpha=NULL,LWbeta=NULL,maxage=NULL,
-                     matchRicker=TRUE){
+yprBH_func <- function(minLL,cf,cm,lhparms,matchRicker=FALSE){
   # ---- Check inputs
   iCheckMLH(minLL)
-  iCheckcf(cf)
-  iCheckcm(cm)
-  iCheckN0(N0)    # initial check if vector/list
-  if (length(N0)>1) {
-    Linf <- N0[["Linf"]]
-    K <- N0[["K"]]
-    t0 <- N0[["t0"]]
-    LWalpha <- N0[["LWalpha"]]
-    LWbeta <- N0[["LWbeta"]]
-    maxage <- N0[["maxage"]]
-    N0 <- N0[["N0"]]
-    iCheckN0(N0)  # second check of single value of N0
-  }
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
-  iCheckMaxAge(maxage)
+  #iCheckcf(cf)
+  #iCheckcm(cm)
+  # iCheckN0(N0)    # initial check if vector/list
+  # if (length(N0)>1) {
+  #   Linf <- N0[["Linf"]]
+  #   K <- N0[["K"]]
+  #   t0 <- N0[["t0"]]
+  #   LWalpha <- N0[["LWalpha"]]
+  #   LWbeta <- N0[["LWbeta"]]
+  #   tmax <- N0[["tmax"]]
+  #   N0 <- N0[["N0"]]
+  #   iCheckN0(N0)  # second check of single value of N0
+  # }
+  # iCheckLinf(Linf)
+  # iCheckK(K)
+  # iCheckt0(t0)
+  # iCheckLWa(LWalpha)
+  # iCheckLWb(LWbeta)
+  # iChecktmax(tmax)
+
+  # Extract individual life history values
+  N0 <- lhparms[["N0"]]
+  tmax <- lhparms[["tmax"]]
+  Linf <- lhparms[["Linf"]]
+  K <- lhparms[["K"]]
+  t0 <- lhparms[["t0"]]
+  LWalpha <- lhparms[["LWalpha"]]
+  LWbeta <- lhparms[["LWbeta"]]
 
   # prepare notes vector
   notes <- NULL
@@ -117,13 +106,13 @@ ypr_func <- function(minLL,cf,cm,
   Winf <- 10^(LWalpha+log10(Linf)*LWbeta)
 
   # Instantaneous mortality rates (F,M,Z) ... rearrange of FAMS equations 4:16 & 4:17
-  Fmort <- -1*log(1-cf)
-  Mmort <- -1*log(1-cm)
-  Zmort <- Fmort+Mmort
+  F <- -1*log(1-cf)
+  M <- -1*log(1-cm)
+  Z <- F+M
   # Annual survival rate (S)
-  S <- exp(-Zmort)
+  S <- exp(-Z)
   # Exploitation rate (u) ... rearrange of FAMS equation 4:14
-  exploitation <- (1-S)*(Fmort/Zmort)
+  exploitation <- (1-S)*(F/Z)
 
   # Time (years) when fish recruit to the fishery (tr) ... FAMS equation 6:2
   #   needed adjustment if minLL>Linf
@@ -151,7 +140,7 @@ ypr_func <- function(minLL,cf,cm,
 
   # Number recruiting to fishery based on time at minimum length (tr) ...
   #    FAMS equation 6:3
-  Nt <- N0*exp(-Mmort*tr)
+  Nt <- N0*exp(-M*tr)
   # Adjust Nt if less than 0 or greater than start, otherwise keep Nt as calculated
   #    not clear that this is done in FAMS
   if (Nt<0) {
@@ -163,17 +152,17 @@ ypr_func <- function(minLL,cf,cm,
   }
 
   # Convenience calculations for beta function below ... per FAMS definitions
-  P <- Zmort/K
+  P <- Z/K
   Q <- LWbeta+1
   X <- exp(-K*r)
-  Xi <- exp(-K*(maxage-t0))
+  Xi <- exp(-K*(tmax-t0))
 
   # ---- Compute yield
   # Y is FAMS equation 6:1 ...
   #   see testing for internal iIbeta() to note how it matches other packages
-  Y <- ((Fmort*Nt*exp(Zmort*r)*Winf)/K)*(iIbeta(X,P,Q)-iIbeta(Xi,P,Q))
+  Y <- ((F*Nt*exp(Z*r)*Winf)/K)*(iIbeta(X,P,Q)-iIbeta(Xi,P,Q))
   # ... if matchRicker then Y is "corrected" to match equation 10.22 in Ricker
-  if (matchRicker) Y <- Y*exp(Mmort*t0)
+  if (matchRicker) Y <- Y*exp(M*t0)
 
   # Adjust Y to NA if infinite, to 0 if negative, otherwise keep as calculated
   if (is.infinite(Y)) {
@@ -186,7 +175,7 @@ ypr_func <- function(minLL,cf,cm,
 
   # ---- Other calculations made in FAMS
   # Number of fish harvested ... FAMS equation 6:4
-  Nharv <- Nt*(Fmort/Zmort)
+  Nharv <- Nt*(F/Z)
 
   # Adjust Nharv to Nharv if Nharv is greater than Nt, otherwise keep as calcd
   #   not clear that FAMS does this
@@ -199,7 +188,7 @@ ypr_func <- function(minLL,cf,cm,
   }
 
   # Number of fish that died naturally ... FAMS equation 6:5
-  Ndie <- Nt*(Mmort/Zmort)
+  Ndie <- Nt*(M/Z)
 
   # Adjust Ndie to 0 if negative or Nt if greater than Nt, otherwise keep as calcd
   #   not clear that FAMS does this
@@ -226,16 +215,16 @@ ypr_func <- function(minLL,cf,cm,
   # ---- Return data.frame with both output values and input parameters
   data.frame(
     yield=Y,
-    exploitation=exploitation,
+    u=exploitation,
     Nharvest=Nharv,
     Ndie=Ndie,
-    Nt= Nt,
     avgwt=avgwt,
     avglen=avglen,
+    Nt= Nt,
     tr=tr,
-    Fmort=Fmort,
-    Mmort=Mmort,
-    Zmort=Zmort,
+    F=F,
+    M=M,
+    Z=Z,
     S=S,
     cf=cf,
     cm=cm,
@@ -246,7 +235,7 @@ ypr_func <- function(minLL,cf,cm,
     t0=t0,
     LWalpha=LWalpha,
     LWbeta=LWbeta,
-    maxage=maxage,
+    tmax=tmax,
     notes=paste(notes,collapse="; ")
   )
 }
