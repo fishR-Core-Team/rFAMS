@@ -8,9 +8,9 @@ yprBH_slot_func(
   recruitmentTL,
   lowerSL,
   upperSL,
-  cf_under,
-  cf_in,
-  cf_above,
+  cfunder,
+  cfin,
+  cfabove,
   cm,
   lhparms
 )
@@ -22,11 +22,11 @@ yprBH_slot_func(
 
 \item{upperSL}{A numeric representing the length of the upper slot limit in mm.}
 
-\item{cf_under}{Single value, conditional fishing mortality under the lower slot limit.}
+\item{cfunder}{Single value, conditional fishing mortality under the lower slot limit.}
 
-\item{cf_in}{Single value, conditional fishing mortality within the lower and upper slot limit.}
+\item{cfin}{Single value, conditional fishing mortality within the lower and upper slot limit.}
 
-\item{cf_above}{Single value, conditional fishing mortality over the upper slot limit.}
+\item{cfabove}{Single value, conditional fishing mortality over the upper slot limit.}
 
 \item{cm}{A numeric representing conditional natural mortality}
 
@@ -40,7 +40,7 @@ the following calculated and input values in a data.frame
 \item TotalHarvest is the calculated total number of harvested fish
 \item TotalNdie is the calculated total number of fish that die of natural death
 \item yieldUnder is the calculated yield under the slot limit
-\item yieldIn is the calculated yied within the slot limit
+\item yieldIn is the calculated yield within the slot limit
 \item yieldAbove is the calculated yield above the slot limit
 \item uUnder is the exploitation rate under the slot limit
 \item uIn is the exploitation rate within the slot limit
@@ -103,7 +103,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
 # Estimate yield with fixed parameters
 Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
-                       cf_under=0.25,cf_in=0.6,cf_above=0.15,cm=0.4,
+                       cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
                        lhparms=LH)
 Res_1
 

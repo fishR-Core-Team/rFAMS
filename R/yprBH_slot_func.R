@@ -5,9 +5,9 @@
 #' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param lowerSL A numeric representing the length of the lower slot limit in mm.
 #' @param upperSL A numeric representing the length of the upper slot limit in mm.
-#' @param cf_under Single value, conditional fishing mortality under the lower slot limit.
-#' @param cf_in Single value, conditional fishing mortality within the lower and upper slot limit.
-#' @param cf_above Single value, conditional fishing mortality over the upper slot limit.
+#' @param cfunder Single value, conditional fishing mortality under the lower slot limit.
+#' @param cfin Single value, conditional fishing mortality within the lower and upper slot limit.
+#' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
 #' @param cm A numeric representing conditional natural mortality
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #'
@@ -20,7 +20,7 @@
 #' \item TotalHarvest is the calculated total number of harvested fish
 #' \item TotalNdie is the calculated total number of fish that die of natural death
 #' \item yieldUnder is the calculated yield under the slot limit
-#' \item yieldIn is the calculated yied within the slot limit
+#' \item yieldIn is the calculated yield within the slot limit
 #' \item yieldAbove is the calculated yield above the slot limit
 #' \item uUnder is the exploitation rate under the slot limit
 #' \item uIn is the exploitation rate within the slot limit
@@ -79,7 +79,7 @@
 #'
 #' # Estimate yield with fixed parameters
 #' Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
-#'                        cf_under=0.25,cf_in=0.6,cf_above=0.15,cm=0.4,
+#'                        cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
 #'                        lhparms=LH)
 #' Res_1
 #'
@@ -87,7 +87,7 @@
 #' @rdname yprBH_slot_function
 #' @export
 
-yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,cm,
+yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
                           lhparms){
   # ---- Check inputs
   # iCheckN0(N0)
@@ -119,7 +119,7 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_abov
 
   # Yield under the slot limit####
   # Instantaneous mortality rates (F,M,Z) ... rearrange of FAMS equations 4:16 & 4:17
-  F_under <- -1*log(1-cf_under)
+  F_under <- -1*log(1-cfunder)
   M_under <- -1*log(1-cm)
   Z_under <- F_under+M_under
   # Annual survival rate (S)
@@ -183,7 +183,7 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_abov
 
   # Instantaneous mortality rates (F,M,Z) ... rearrange of FAMS equations 4:16 & 4:17
   #Need in cf for F
-  F_in <- -1*log(1-cf_in)
+  F_in <- -1*log(1-cfin)
   M_in <- -1*log(1-cm)
   Z_in <- F_in+M_in
   # Annual survival rate (S)
@@ -218,7 +218,7 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_abov
   #yield over slot######
 
   #Parameters for over slot
-  F_above <- -1*log(1-cf_above)
+  F_above <- -1*log(1-cfabove)
   M_above <- -1*log(1-cm)
   Z_above <- F_above+M_above
   # Annual survival rate (S)
@@ -294,9 +294,9 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_abov
     SUnder=S_under,
     SIn=S_in,
     SAbove=S_above,
-    cfUnder=cf_under,
-    cfIn=cf_in,
-    cfOver=cf_above,
+    cfUnder=cfunder,
+    cfIn=cfin,
+    cfOver=cfabove,
     recruitmentTL=recruitmentTL,
     lowerSL=lowerSL,
     upperSL=upperSL,

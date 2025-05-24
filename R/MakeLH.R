@@ -27,7 +27,7 @@
 #'
 #' If a list is returned then values will be displayed with the number of decimals provided by the user. If a vector is returned then the number of decimals displayed will be the same for each value and will match the value supplied by the user with the most decimals. Thus, a list is preferred as it will be easier to match what was given to what was expected to be given.
 #'
-#' @returns A named list or vector (depending on `restype`) that contains the given (or extracted) life history parameters values that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{yprBH_SlotLimit}}).
+#' @returns A named list or vector (depending on `restype`) that contains the given (or extracted) life history parameters values that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{yprBH_SlotLL}}).
 #'
 #' @examples
 #' library(FSA)

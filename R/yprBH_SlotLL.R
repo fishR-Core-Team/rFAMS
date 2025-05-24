@@ -17,9 +17,9 @@
 #' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param lowerSL A numeric representing the length of the lower slot limit in mm.
 #' @param upperSL A numeric representing the length of the upper slot limit in mm.
-#' @param cf_under Single value, conditional fishing mortality under the lower slot limit.
-#' @param cf_in Single value, conditional fishing mortality within the lower and upper slot limit.
-#' @param cf_above Single value, conditional fishing mortality over the upper slot limit.
+#' @param cfunder Single value, conditional fishing mortality under the lower slot limit.
+#' @param cfin Single value, conditional fishing mortality within the lower and upper slot limit.
+#' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
 #' @param cmmin Single value, minimum conditional natural mortality
 #' @param cmmax Single value, maximum conditional natural mortality
 #' @param cminc Single value, increment to cycle from minimum to maximum conditional natural mortality
@@ -94,15 +94,15 @@
 #' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 #'
 #' #Estimate yield
-#'  Res_1 <- yprBH_SlotLimit(recruitmentTL=200,lowerSL=250,upperSL=325,
-#'                        cf_under=0.25,cf_in=0.6,cf_above=0.15,cmmin=0.3,cmmax=0.55,cminc=0.05,
+#'  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
+#'                        cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.55,cminc=0.05,
 #'                        lhparms=LH)
 #'
 #'  Res_1
 #'
 #' @rdname yprBH_SlotLL.R
 #' @export
-yprBH_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,cmmin,cmmax,cminc,
+yprBH_SlotLL<-function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cmmin,cmmax,cminc,
                         lhparms){
 
   if (missing(recruitmentTL))
@@ -111,11 +111,11 @@ yprBH_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
     stop("Need to specify lowerSL")
   if (missing(upperSL))
     stop("Need to specify upperSL")
-  if (missing(cf_under))
+  if (missing(cfunder))
     stop("Need to specify cf_under")
-  if (missing(cf_in))
+  if (missing(cfin))
     stop("Need to specify cf_in")
-  if (missing(cf_above))
+  if (missing(cfabove))
     stop("Need to specify cf_above")
   if (missing(cmmin))
     stop("Need to specify cmmin")
@@ -142,7 +142,7 @@ yprBH_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
 
   # Setup data.frame of input values (varying cf and cm, the rest constant)
   res <- expand.grid(recruitmentTL=recruitmentTL,lowerSL=lowerSL,upperSL=upperSL,
-                     cf_under=cf_under,cf_in=cf_in,cf_above=cf_above,
+                     cfunder=cfunder,cfin=cfin,cfabove=cfabove,
                      cm=seq(cmmin,cmmax,cminc))
   # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
   res <- purrr::pmap_df(res,yprBH_slot_func,lhparms=lhparms)
