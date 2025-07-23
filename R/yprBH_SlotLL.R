@@ -2,28 +2,21 @@
 #'
 #' @description Main wrapper function to estimate yield using the Beverton-Holt YPR model. This main function accepts a range of values for cf, cm, recruitment length, lower slot limit length, and upper slot limit length.
 #'
-#' @details Best practice is to enter the life history parameters into a list or vector using \code{\link{makeLH}} (rather than directly) as `makeLH` performs several sanity checks on the values entered (e.g., ensures Linf>0); i.e.,
-#'
-#' ```R
-#' # Best practice for entering life history parameter values
-#' LH <- makeLH(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,
-#'              LWalpha=-5.453,LWbeta=3.10)
-#'
-#' # Works but no checks on the values
-#' LH <- list(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,
-#'            LWalpha=-5.453,LWbeta=3.10)
-#' ```
+#' @details Details will be filled out later
 #'
 #' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param lowerSL A numeric representing the length of the lower slot limit in mm.
 #' @param upperSL A numeric representing the length of the upper slot limit in mm.
-#' @param cf_under Single value, conditional fishing mortality under the lower slot limit.
-#' @param cf_in Single value, conditional fishing mortality within the lower and upper slot limit.
-#' @param cf_above Single value, conditional fishing mortality over the upper slot limit.
+#' @param cfunder Single value, conditional fishing mortality under the lower slot limit.
+#' @param cfin Single value, conditional fishing mortality within the lower and upper slot limit.
+#' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
 #' @param cmmin Single value, minimum conditional natural mortality
 #' @param cmmax Single value, maximum conditional natural mortality
 #' @param cminc Single value, increment to cycle from minimum to maximum conditional natural mortality
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
+#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
+#' @param SPR A boolean to indicate if spawner per recruit is to be calculated. If true, an object of SPRdat must be provide
+#' @param SPRdat A named list that contains values for each `FLR`, `FLRint`, `FLRslope`, `MatAge`, `percF`, and `percFSpawn`. See \code{\link{makeSPR}} for definitions of these parameters. Also see details.
 #'
 #' @return A data.frame with the following calculated values:
 #' \itemize{
@@ -89,21 +82,80 @@
 #' library(ggplot2)
 #' library(dplyr)
 #' library(metR)
+#' library(tidyr)
+#'
+#' # Custom theme for plots (to make look nice)
+#' theme_FAMS <- function(...) {
+#'   theme_bw() +
+#'   theme(
+#'     panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
+#'     axis.text=element_text(size=14,color="black"),
+#'     axis.title=element_text(size=16,color="black"),
+#'     axis.title.y=element_text(angle=90),
+#'     axis.line=element_line(color="black"),
+#'     panel.border=element_blank()
+#'   )
+#' }
 #'
 #' # Life history parameters to be used below
 #' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 #'
 #' #Estimate yield
-#'  Res_1 <- yprBH_SlotLimit(recruitmentTL=200,lowerSL=250,upperSL=325,
-#'                        cf_under=0.25,cf_in=0.6,cf_above=0.15,cmmin=0.3,cmmax=0.55,cminc=0.05,
+#'  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
+#'                        cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
 #'                        lhparms=LH)
 #'
 #'  Res_1
 #'
+#' # Plot results
+#' # Total Yield vs Conditional Natural Mortality (cm)
+#' ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
+#'   geom_point() +
+#'   geom_line() +
+#'   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
+#'   theme_FAMS()
+#'
+#'
+#' # Yield under, in, and above the slot limit vs Conditional Natural Mortality (cm)
+#' # Select columns for plotting
+#' plot_data <- Res_1 %>%
+#'   select(cm, yieldUnder, yieldIn, yieldAbove) %>%
+#'   pivot_longer(!cm, names_to="YieldCat",values_to="Yield")
+#'
+#' # Generate plot
+#' ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
+#'   geom_point() +
+#'   scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Under SL"))+
+#'   geom_line() +
+#'   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
+#'   theme_FAMS() +
+#'   theme(legend.position = "top")+
+#'   guides(color=guide_legend(title="Yield"))
+#'
+#' # Estimate yield and spawning potential ratio with a slot limit
+#' # Life history parameters to be used below
+#' LH <- makeLH(N0=100,tmax=15,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
+#' # Spawning potential ratio parameters to be used below
+#' SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+#' percF=c(0,0,0,rep(0.50,12)), percFSpawn = c(0,0,0,0.24,0.24,0.53, rep(100,9)))
+#'
+#' Res_2 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
+#'                       cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
+#'                       lhparms=LH, SPR=TRUE, SPRdat = SPRdat)
+#'
+#' # Spawning potential ratio vs conditional natural mortality
+#' ggplot(data=Res_2,mapping=aes(y=spr,x=cm)) +
+#'   geom_point(size=2)+
+#'   geom_line(linewidth=1) +
+#'   scale_color_gradient2(high="black") +
+#'   labs(y="Spawning potential ratio",x="Conditional natural mortality (cm)") +
+#'   theme_FAMS()
+#'
 #' @rdname yprBH_SlotLL.R
 #' @export
-yprBH_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,cmmin,cmmax,cminc,
-                        lhparms){
+yprBH_SlotLL<-function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cmmin,cmmax,cminc,
+                       lhparms,matchRicker=FALSE,
+                       SPR=FALSE, SPRdat = NULL){
 
   if (missing(recruitmentTL))
     stop("Need to specify recruitmentTL")
@@ -111,11 +163,11 @@ yprBH_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
     stop("Need to specify lowerSL")
   if (missing(upperSL))
     stop("Need to specify upperSL")
-  if (missing(cf_under))
+  if (missing(cfunder))
     stop("Need to specify cf_under")
-  if (missing(cf_in))
+  if (missing(cfin))
     stop("Need to specify cf_in")
-  if (missing(cf_above))
+  if (missing(cfabove))
     stop("Need to specify cf_above")
   if (missing(cmmin))
     stop("Need to specify cmmin")
@@ -139,13 +191,38 @@ yprBH_SlotLimit<-function(recruitmentTL,lowerSL,upperSL,cf_under,cf_in,cf_above,
   if(cmmin>cmmax)
     stop("cmmin must be equal to or less than cmmax")
 
+  # Extract individual life history values
+  N0 <- lhparms[["N0"]]
+  tmax <- lhparms[["tmax"]]
+  Linf <- lhparms[["Linf"]]
+  K <- lhparms[["K"]]
+  t0 <- lhparms[["t0"]]
+  LWalpha <- lhparms[["LWalpha"]]
+  LWbeta <- lhparms[["LWbeta"]]
+
 
   # Setup data.frame of input values (varying cf and cm, the rest constant)
   res <- expand.grid(recruitmentTL=recruitmentTL,lowerSL=lowerSL,upperSL=upperSL,
-                     cf_under=cf_under,cf_in=cf_in,cf_above=cf_above,
+                     cfunder=cfunder,cfin=cfin,cfabove=cfabove,
                      cm=seq(cmmin,cmmax,cminc))
   # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
-  res <- purrr::pmap_df(res,yprBH_slot_func,lhparms=lhparms)
+  res <- purrr::pmap_df(res,yprBH_slot_func,matchRicker=matchRicker,lhparms=lhparms)
+
+  #Calculate SPR
+  if(SPR == TRUE){
+    spr<-c()
+    #loop through each row and calculate SPR and Number of Eggs
+    for(x in 1:nrow(res)){
+      spr<-c(spr,static_spr(Linf = Linf, K = K, t0 = t0, FLR = SPRdat$FLR, FLRint = SPRdat$FLRint, FLRslope = SPRdat$FLRslope, MatAge = SPRdat$MatAge,
+                            percF = SPRdat$percF, percFSpawn = SPRdat$percFSpawn, MUnder = res$MUnder[x], MIn = res$MIn[x] ,MAbove = res$MAbove[x],
+                            FUnder = res$FUnder[x], FIn = res$FIn[x], FAbove = res$FAbove[x], tmax = lhparms$tmax,
+                            slot=TRUE, recruitmentTL = res$recruitmentTL[x], lowerSL = res$lowerSL[x], upperSL = res$upperSL[x]))
+    }
+
+    res <- cbind(res,spr)
+  }
+
+
   # Return result
   return(res)
 

@@ -24,7 +24,7 @@ makeLH(N0, tmax, Linf, K, t0, LWalpha, LWbeta, restype = c("list", "vector"))
 \item{restype}{A character that indicates the type of output (list or vector) returned by the function.}
 }
 \value{
-A named list or vector (depending on \code{restype}) that contains the given (or extracted) life history parameters values that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{yprBH_SlotLimit}}).
+A named list or vector (depending on \code{restype}) that contains the given (or extracted) life history parameters values that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{yprBH_SlotLL}}).
 }
 \description{
 Efficiently construct either a vector or list that contains the seven life history parameters required for Beverton-Holt yield-per-recruit analyses. The parameters can be given by the user through function arguments. Alternativvely, the von Bertalanffy parameters (\code{Linf}, \code{K}, and \code{t0}) may be extracted from an \code{nls} object created from fitting the von Bertalanffy equation to length-at-age data (object created outside this function). Similarly the log10-transformed weight-length model coefficients may be extracted from an \code{lm} object created from fitting the model to transformed weight-length data (object created outside this function). All parameter values are checked for sanity (e.g., Linf>0).
