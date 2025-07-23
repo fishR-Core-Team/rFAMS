@@ -14,7 +14,10 @@ yprBH_SlotLL(
   cmmin,
   cmmax,
   cminc,
-  lhparms
+  lhparms,
+  matchRicker = FALSE,
+  SPR = FALSE,
+  SPRdat = NULL
 )
 }
 \arguments{
@@ -37,6 +40,12 @@ yprBH_SlotLL(
 \item{cminc}{Single value, increment to cycle from minimum to maximum conditional natural mortality}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
+
+\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
+
+\item{SPR}{A boolean to indicate if spawner per recruit is to be calculated. If true, an object of SPRdat must be provide}
+
+\item{SPRdat}{A named list that contains values for each \code{FLR}, \code{FLRint}, \code{FLRslope}, \code{MatAge}, \code{percF}, and \code{percFSpawn}. See \code{\link{makeSPR}} for definitions of these parameters. Also see details.}
 }
 \value{
 A data.frame with the following calculated values:
@@ -100,32 +109,81 @@ A data.frame with the following calculated values:
 Main wrapper function to estimate yield using the Beverton-Holt YPR model. This main function accepts a range of values for cf, cm, recruitment length, lower slot limit length, and upper slot limit length.
 }
 \details{
-Best practice is to enter the life history parameters into a list or vector using \code{\link{makeLH}} (rather than directly) as \code{makeLH} performs several sanity checks on the values entered (e.g., ensures Linf>0); i.e.,
-
-\if{html}{\out{<div class="sourceCode R">}}\preformatted{# Best practice for entering life history parameter values
-LH <- makeLH(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,
-             LWalpha=-5.453,LWbeta=3.10)
-
-# Works but no checks on the values
-LH <- list(N0=100,maxage=15,Linf=600,K=0.30,t0=-0.6,
-           LWalpha=-5.453,LWbeta=3.10)
-}\if{html}{\out{</div>}}
+Details will be filled out later
 }
 \examples{
 #Load other required packages for organizing output and plotting
 library(ggplot2)
 library(dplyr)
 library(metR)
+library(tidyr)
+
+# Custom theme for plots (to make look nice)
+theme_FAMS <- function(...) {
+  theme_bw() +
+  theme(
+    panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
+    axis.text=element_text(size=14,color="black"),
+    axis.title=element_text(size=16,color="black"),
+    axis.title.y=element_text(angle=90),
+    axis.line=element_line(color="black"),
+    panel.border=element_blank()
+  )
+}
 
 # Life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
 #Estimate yield
  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
-                       cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.55,cminc=0.05,
+                       cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
                        lhparms=LH)
 
  Res_1
+
+# Plot results
+# Total Yield vs Conditional Natural Mortality (cm)
+ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
+  geom_point() +
+  geom_line() +
+  labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
+  theme_FAMS()
+
+
+# Yield under, in, and above the slot limit vs Conditional Natural Mortality (cm)
+# Select columns for plotting
+plot_data <- Res_1 \%>\%
+  select(cm, yieldUnder, yieldIn, yieldAbove) \%>\%
+  pivot_longer(!cm, names_to="YieldCat",values_to="Yield")
+
+# Generate plot
+ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
+  geom_point() +
+  scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Under SL"))+
+  geom_line() +
+  labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
+  theme_FAMS() +
+  theme(legend.position = "top")+
+  guides(color=guide_legend(title="Yield"))
+
+# Estimate yield and spawning potential ratio with a slot limit
+# Life history parameters to be used below
+LH <- makeLH(N0=100,tmax=15,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
+# Spawning potential ratio parameters to be used below
+SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+percF=c(0,0,0,rep(0.50,12)), percFSpawn = c(0,0,0,0.24,0.24,0.53, rep(100,9)))
+
+Res_2 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
+                      cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
+                      lhparms=LH, SPR=TRUE, SPRdat = SPRdat)
+
+# Spawning potential ratio vs conditional natural mortality
+ggplot(data=Res_2,mapping=aes(y=spr,x=cm)) +
+  geom_point(size=2)+
+  geom_line(linewidth=1) +
+  scale_color_gradient2(high="black") +
+  labs(y="Spawning potential ratio",x="Conditional natural mortality (cm)") +
+  theme_FAMS()
 
 }
 \author{

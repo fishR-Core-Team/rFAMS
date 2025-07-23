@@ -10,6 +10,7 @@
 #' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
 #' @param cm A numeric representing conditional natural mortality
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
+#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #'
 #' @details Details will be filled out later
 #'
@@ -88,7 +89,7 @@
 #' @export
 
 yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
-                          lhparms){
+                          lhparms,matchRicker=FALSE){
   # ---- Check inputs
   # iCheckN0(N0)
   # iCheckLinf(Linf)
@@ -160,6 +161,9 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   Y_under <- ((F_under*Nr_under*exp(Z_under*r)*Winf)/K)*
     (beta(P,Q)*stats::pbeta(X,P,Q)-beta(P,Q)*stats::pbeta(Xi,P,Q))
 
+  # ... if matchRicker then Y_under is "corrected" to match equation 10.22 in Ricker
+  if (matchRicker) Y_under <- Y_under*exp(M_under*t0)
+
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size
 
@@ -201,6 +205,9 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   Y_in <- ((F_in*Nr_in*exp(Z_in*(tmax_lowerSL-t0))*Winf)/K)*
     (beta(P,Q)*stats::pbeta(X,P,Q)-beta(P,Q)*stats::pbeta(Xi,P,Q))
 
+  # ... if matchRicker then Y_in is "corrected" to match equation 10.22 in Ricker
+  if (matchRicker) Y_in <- Y_in*exp(M_in*t0)
+
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size
 
@@ -235,6 +242,9 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
 
   Y_above <- ((F_above*Nr_above*exp(Z_above*(tmax_upperSL-t0))*Winf)/K)*
     (beta(P,Q)*stats::pbeta(X,P,Q)-beta(P,Q)*stats::pbeta(Xi,P,Q))
+
+  # ... if matchRicker then Y_in is "corrected" to match equation 10.22 in Ricker
+  if (matchRicker) Y_above <- Y_above*exp(M_above*t0)
 
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size

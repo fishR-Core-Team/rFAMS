@@ -2,7 +2,7 @@
 % Please edit documentation in R/yprBH_MinLL_fixed.R
 \name{yprBH_minLL_fixed}
 \alias{yprBH_minLL_fixed}
-\title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters}
+\title{Main function to simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters}
 \usage{
 yprBH_minLL_fixed(
   minLL,
@@ -13,7 +13,9 @@ yprBH_minLL_fixed(
   cmmax,
   cminc,
   lhparms,
-  matchRicker = FALSE
+  matchRicker = FALSE,
+  SPR = FALSE,
+  SPRdat = NULL
 )
 }
 \arguments{
@@ -34,6 +36,10 @@ yprBH_minLL_fixed(
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
+
+\item{SPR}{A boolean to indicate if spawner per recruit is to be calculated. If true, an object of SPRdat must be provide}
+
+\item{SPRdat}{A named list that contains values for each \code{FLR}, \code{FLRint}, \code{FLRslope}, \code{MatAge}, \code{percF}, and \code{percFSpawn}. See \code{\link{makeSPR}} for definitions of these parameters. Also see details.}
 }
 \value{
 A data.frame with the following calculated values:
@@ -100,6 +106,29 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Yield (g)",x="Exploitation (u)") +
+  theme_FAMS()
+
+# Estimate yield and spawning potential ratio
+# Life history parameters to be used below
+LH <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
+# Spawning potential ratio parameters to be used below
+SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+                 percF=c(0,0,0,rep(0.50,27)), percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+
+Res_2 <- yprBH_minLL_fixed(minLL=200,
+                           cfmin=0.00, cfmax=0.70, cfinc=0.05,
+                           cmmin=0.1,cmmax=0.9,cminc=0.1,
+                           lhparms=LH, SPR = TRUE, SPRdat=SPRdat)
+
+# Spawning potential ratio vs exploitation by varying conditional natural mortality less than 0.7
+plot_dat <- Res_2 |> filter(cm<0.7)
+
+ggplot(data=plot_dat,mapping=aes(y=spr,x=u,
+                              group=as.factor(cm),shape=as.factor(cm))) +
+  geom_point(size=2)+
+  geom_line(linewidth=1) +
+  scale_color_gradient2(high="black") +
+  labs(y="Spawning potential ratio",x="Exploitation (u)",shape="Conditional natural mortality") +
   theme_FAMS()
 
 }

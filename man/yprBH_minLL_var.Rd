@@ -2,7 +2,7 @@
 % Please edit documentation in R/yprBH_MinLL_var.R
 \name{yprBH_minLL_var}
 \alias{yprBH_minLL_var}
-\title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest}
+\title{Main function to simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest}
 \usage{
 yprBH_minLL_var(
   lengthmin,
@@ -15,7 +15,9 @@ yprBH_minLL_var(
   cmmax,
   cminc,
   lhparms,
-  matchRicker = FALSE
+  matchRicker = FALSE,
+  SPR = F,
+  SPRdat = NULL
 )
 }
 \arguments{
@@ -40,6 +42,10 @@ yprBH_minLL_var(
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
+
+\item{SPR}{A boolean to indicate if spawner per recruit is to be calculated. If true, an object of SPRdat must be provide}
+
+\item{SPRdat}{A named list that contains values for each \code{FLR}, \code{FLRint}, \code{FLRslope}, \code{MatAge}, \code{percF}, and \code{percFSpawn}. See \code{\link{makeSPR}} for definitions of these parameters. Also see details.}
 }
 \value{
 A data.frame with the following calculated values:
@@ -133,6 +139,29 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=Nharvest)) +
   metR::geom_text_contour(stroke = 0.15)+
   xlab("Exploitation (u)")+
   ylab("Minimum length limit (mm)")+
+  theme_FAMS()
+
+# Estimate yield and spawning potential ratio
+# Life history parameters to be used below
+LH <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
+# Spawning potential ratio parameters to be used below
+SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+                 percF=c(0,0,0,rep(0.50,27)), percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+
+Res_2 <- yprBH_minLL_var(lengthmin=280,lengthinc=60,lengthmax=400,
+                         cfmin=0.00, cfmax=0.70, cfinc=0.05,
+                         cmmin=0.1,cmmax=0.9,cminc=0.1,
+                         lhparms=LH, SPR = TRUE, SPRdat=SPRdat)
+
+# Spawning potential ratio curves vs exploitation by varying minimum lengths, using cm=40
+plot_dat <- Res_2 |> filter(cm==0.40)
+
+ggplot(data=plot_dat,mapping=aes(y=spr,x=u,
+                                 group=as.factor(minLL),shape=as.factor(minLL))) +
+  geom_point(size=2)+
+  geom_line(linewidth=1) +
+  scale_color_gradient2(high="black") +
+  labs(y="Spawning potential ratio",x="Exploitation (u)",shape="Min Length Limit") +
   theme_FAMS()
 
 }

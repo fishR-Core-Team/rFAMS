@@ -12,7 +12,8 @@ yprBH_slot_func(
   cfin,
   cfabove,
   cm,
-  lhparms
+  lhparms,
+  matchRicker = FALSE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ yprBH_slot_func(
 \item{cm}{A numeric representing conditional natural mortality}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
+
+\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
 }
 \value{
 the following calculated and input values in a data.frame
