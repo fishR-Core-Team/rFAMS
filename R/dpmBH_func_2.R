@@ -3,8 +3,8 @@
 #' @description Estimate yield-at-age using the Beverton-Holt Yield-per-Recruit (YPR) model for a single year-class. This main function accepts  a minimum length limit for harvest (\code{minLL}), a vector for conditional fishing mortality (\code{cf}), a vector of conditional natural mortality (\code{cm}), a vector of recruitment abundance (\code{rec}), and life history parameters (\code{lhparams}).
 #'
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
-#' @param cf A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
-#' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
+#' @param cf A vector of conditional fishing mortality for age-0 through maximum age.
+#' @param cm A vector of conditional natural mortality for age-0 through maximum age.
 #' @param rec A single numeric representing initial recruitment abundance.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
@@ -126,28 +126,9 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
   # Maximum theoretical weight derived from L-inf and weight to length regression
   #   log10 transformation to linearize it
   Winf <- 10^(LWalpha+log10(Linf)*LWbeta)
-  length <- Linf * (1- exp(-K * (seq(0,tmax) -t0)))
 
   for(x in 1:(tmax+1)){
-
-  #Check length at start of year, if less than minLL then F = 0 (regardless of input), exploitation = 0, and yield = 0.
-  if(length[x] < minLL && length[x+1]<minLL){
-      F[x] <- 0
-      M[x] <- -1*log(1-cm[x])
-      Z[x] <- F[x]+M[x]
-      # Annual survival rate (S)
-      S[x] <- exp(-Z[x])
-      exploitation[x] <-0
-      # Expectation of natural death (u) ... rearrange of FAMS equation 4:14
-      if(M[x]==0){
-        expect_nat_death[x] <-0
-      }else{
-        expect_nat_death[x] <- (1-S[x])*(M[x]/Z[x])
-      }
-      yieldvec[x] <- 0
-      N_harvest[x] <- 0
-      N_die[x] <- abundvec[x] - (abundvec[x]*exp(-M[x])) #number that die naturally during year fish reach harvestable size
-  }else{
+    # Yield under the slot limit####
     # Instantaneous mortality rates (F,M,Z) ... rearrange of FAMS equations 4:16 & 4:17
     F[x] <- -1*log(1-cf[x])
     M[x] <- -1*log(1-cm[x])
@@ -155,17 +136,10 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
     # Annual survival rate (S)
     S[x] <- exp(-Z[x])
     # Exploitation rate (u) ... rearrange of FAMS equation 4:14
-    if(F[x]==0){
-      exploitation[x] <-0
-    }else{
-      exploitation[x] <- (1-S[x])*(F[x]/Z[x])
-    }
+    exploitation[x] <- (1-S[x])*(F[x]/Z[x])
     # Expectation of natural death (u) ... rearrange of FAMS equation 4:14
-    if(M[x]==0){
-      expect_nat_death[x] <-0
-    }else{
-      expect_nat_death[x] <- (1-S[x])*(M[x]/Z[x])
-    }
+    expect_nat_death[x] <- (1-S[x])*(M[x]/Z[x])
+
 
     # Time (years) when fish recruit to the fishery (tr) ... FAMS equation 6:2
     #   needed adjustment if minlength<Linf
@@ -182,10 +156,8 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
     if(x == (floor(tr)+1) && r > 0){
       Nr <- Nr * exp(-M[x] * (r))
       age_enter_fishery <- tr
-    }else if (x>floor(tr)){
-      age_enter_fishery <- x -1  #This doesn't make sense - works only
     }else{
-      age_enter_fishery <- NA
+      age_enter_fishery <- x -1
     }
 
     # Adjust Nr if less than 0 or greater than start, otherwise keep Nr as calculated
@@ -202,30 +174,25 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
     Xi <- exp(-K*(x-t0)) #max age in fishery - t0
 
     # FAMS equation 6:1
-      yieldvec[x] <- (((F[x])*Nr*exp(Z[x]*(age_enter_fishery-t0))*Winf)/K)*
-        (beta(P,Q)*stats::pbeta(X,P,Q)-beta(P,Q)*stats::pbeta(Xi,P,Q))
+    yieldvec[x] <- (((F[x])*Nr*exp(Z[x]*(age_enter_fishery-t0))*Winf)/K)*
+      (beta(P,Q)*stats::pbeta(X,P,Q)-beta(P,Q)*stats::pbeta(Xi,P,Q))
 
-      #... if matchRicker then yieldvec is "corrected" to match equation 10.22 in Ricker
-      if (matchRicker) yieldvec[x] <- yieldvec[x]*exp(M[x]*t0)
+    #... if matchRicker then yieldvec is "corrected" to match equation 10.22 in Ricker
+    if (matchRicker) yieldvec[x] <- yieldvec[x]*exp(M[x]*t0)
 
-    if((x-1)==floor(tr) && r >0){
+
+    if(x==floor(tr) && r >0){
       #Remove fish from natural mortality first then fishing
-      removed_under <- abundvec[x]- (abundvec[x] * exp(-M[x] * r))
-      remain_for_harvest <-(abundvec[x]-removed_under)
-      # N_harvest[x] <- remain_for_harvest - (remain_for_harvest *exp(-F[x]* (x-tr))) #1-r is simply number of years in the fishery
-      # remain_for_harvest <- remain_for_harvest-N_harvest[x]
-      # N_die[x]<- remain_for_harvest - (remain_for_harvest*exp(-M[x]*(x-tr))) + removed_under
-      #Calculate remaining loss to harvest and natural deaths
-      N_harvest[x] <- (remain_for_harvest - (remain_for_harvest*exp(-Z[x]*(x-tr)))) * ((F[x]*(x-tr))/(Z[x]*(x-tr)))
-      N_die[x] <- (remain_for_harvest - (remain_for_harvest*exp(-Z[x]*(x-tr)))) * ((M[x]*(x-tr))/(Z[x]*(x-tr))) +removed_under
-
+      N_harvest[x] <- abundvec[x] - (abundvec[x] * exp(-M[x] * r))
+      N_harvest[x] <- N_harvest[x] - (N_harvest[x] *exp(-F[x]* (floor(tr)-r))) #1-r is simply number of years in the fishery
+      N_die[x] <- abundvec[x] - (abundvec[x]*exp(-M[x]* (1))) #number that die naturally during year fish reach harvestable size
     }else{
       if(x>tr){
-      N_harvest[x] <- (abundvec[x] - (abundvec[x]*exp(-Z[x]))) * (F[x]/Z[x])
+      N_harvest[x] <- abundvec[x] - (abundvec[x] *exp(-F[x])) #1-r is simply number of years in the fishery
       }else{
       N_harvest[x] <-0
       }
-      N_die[x] <- (abundvec[x] - (abundvec[x]*exp(-Z[x]))) * (M[x]/Z[x])
+      N_die[x] <- abundvec[x] - (abundvec[x]*exp(-M[x]))
     }
 
     # if(x == (floor(tr)+1) && r > 0){
@@ -238,11 +205,11 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
     #   N_die[x] <- (Nr - (Nr*exp(-Z[x]* (1)))) * (M[x]/Z[x])
     # }
 
-  }
-
     if(x<(tmax+1)){
-      abundvec[x+1] <- abundvec[x] - N_harvest[x] - N_die[x]
+      abundvec[x+1] <- Nr - N_harvest[x] - N_die[x]
     }
+
+    length[x] <- Linf * (1- exp(-K * (x - 1 -t0)))
 
     if(length[x]>0){
       weight[x] <- (10^(LWalpha+log10(length[x])*LWbeta))
@@ -255,7 +222,8 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
 
     N_start<-abundvec[x]
     Age[x] <- x-1
-}
+
+  }
 
   #Calculate number of fish that reach harvestable size
   Nt = N0

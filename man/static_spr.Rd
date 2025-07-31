@@ -2,7 +2,7 @@
 % Please edit documentation in R/staticSPR.R
 \name{static_spr}
 \alias{static_spr}
-\title{Function to calculate spawning potential ratio}
+\title{Function to calculate static spawning potential ratio}
 \usage{
 static_spr(
   Linf,

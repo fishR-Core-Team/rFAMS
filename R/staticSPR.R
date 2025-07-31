@@ -1,4 +1,4 @@
-#' @title Function to calculate spawning potential ratio
+#' @title Function to calculate static spawning potential ratio
 #'
 #' @description Calculates the static spawning potential ratio with the yield-per-recruit model
 #'
@@ -56,7 +56,7 @@ static_spr <- function(Linf, K, t0, FLR, FLRint, FLRslope,MatAge, percF, percFSp
                        MUnder = NULL, MIn = NULL, MAbove = NULL, FUnder = NULL, FIn = NULL, FAbove = NULL,
                        tmax, slot=FALSE, minLL = NULL, recruitmentTL = NULL, lowerSL = NULL, upperSL = NULL){
 
- #generate length at age and fectundity at age
+ #generate length at age and fecundity at age
  ages <- 1:tmax
  l_at_age <- Linf * (1 - exp(-K * (ages - t0)))
  if(FLR == "linear"){

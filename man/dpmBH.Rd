@@ -4,22 +4,36 @@
 \alias{dpmBH}
 \title{Main function to simulate expected yield using the Dynamic Pool model for a range of input parameters, including minimum length limits for harvest}
 \usage{
-dpmBH(simyears, minLL, cf, cm, rec, lhparms, matchRicker = FALSE)
+dpmBH(
+  simyears,
+  minLL,
+  cf,
+  cm,
+  rec,
+  lhparms,
+  matchRicker = FALSE,
+  SPR = FALSE,
+  SPRdat = NULL
+)
 }
 \arguments{
 \item{simyears}{A single numeric for the lower limit of minimum length limit for harvest in mm.}
 
 \item{minLL}{A single numeric representing the minimum length limit for harvest in mm.}
 
-\item{cf}{A vector of conditional fishing mortality for age-0 through maximum age.}
+\item{cf}{A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.}
 
-\item{cm}{A vector of conditional natural mortality for age-0 through maximum age.}
+\item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.}
 
 \item{rec}{A single numeric representing initial recruitment abundance.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
+
+\item{SPR}{A boolean to indicate if spawner per recruit is to be calculated. If true, an object of SPRdat must be provide}
+
+\item{SPRdat}{A named list that contains values for each \code{FLR}, \code{FLRint}, \code{FLRslope}, \code{MatAge}, \code{percF}, and \code{percFSpawn}. See \code{\link{makeSPR}} for definitions of these parameters. Also see details.}
 }
 \value{
 A data.frame with the following calculated values:
@@ -49,16 +63,41 @@ Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using range
 Details will be filled out later
 }
 \examples{
+#load required library
+library(dplyr)
+
+# Example of simulating yield with the dynamic pool model,
+# without spawning potential ratio
+
 lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
             LWalpha=-5.2147,LWbeta=3.153)
 simyears <- 50
 minLL <- 400
 rec <- fixedRec(Nrec = 100, simyears = simyears)
-cm <- rep(0.18,(lhparms$tmax+1))
-cf <- c(rep(0,3), rep(0.33,(lhparms$tmax+1) - 3))
+cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
-out<-dpmBH(simyears = simyears, minLL = minLL, cf = cf, cm = cm,
-      rec = rec, lhparms = lhparms, matchRicker=FALSE)
+out<-dpmBH(simyears = 50, minLL = 400, cf = cf, cm = cm, rec = rec, lhparms = lhparms,
+    matchRicker=FALSE,SPR=FALSE)
+
+# Example of simulating yield with the dynamic pool model,
+# wigh spawning potential ratio
+
+lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
+            LWalpha=-5.2147,LWbeta=3.153)
+simyears <- 50
+minLL <- 400
+rec <- fixedRec(Nrec = 100, simyears = simyears)
+cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+
+SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+percF=c(0,0,0,rep(0.50,27)),
+percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+
+out<-dpmBH(simyears = 50, minLL = 400, cf = cf, cm = cm, rec = rec, lhparms = lhparms,
+    matchRicker=FALSE,SPR=TRUE,SPRdat=SPRdat)
+
 
 }
 \seealso{

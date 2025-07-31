@@ -2,8 +2,15 @@
 #'
 #' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
 #'
-#' @inheritParams dpmBH_func
 #' @param simyears A single numeric for the lower limit of minimum length limit for harvest in mm.
+#' @param minLL A single numeric representing the minimum length limit for harvest in mm.
+#' @param cf A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
+#' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
+#' @param rec A single numeric representing initial recruitment abundance.
+#' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
+#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
+#' @param SPR A boolean to indicate if spawner per recruit is to be calculated. If true, an object of SPRdat must be provide
+#' @param SPRdat A named list that contains values for each `FLR`, `FLRint`, `FLRslope`, `MatAge`, `percF`, and `percFSpawn`. See \code{\link{makeSPR}} for definitions of these parameters. Also see details.
 #'
 #' @details Details will be filled out later
 #'
@@ -32,21 +39,46 @@
 #' @seealso \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{yprBH_minLL_fixed}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
 #'
 #' @examples
+#' #load required library
+#' library(dplyr)
+#'
+#' # Example of simulating yield with the dynamic pool model,
+#' # without spawning potential ratio
+#'
 #' lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
 #'             LWalpha=-5.2147,LWbeta=3.153)
 #' simyears <- 50
 #' minLL <- 400
 #' rec <- fixedRec(Nrec = 100, simyears = simyears)
-#' cm <- rep(0.18,(lhparms$tmax+1))
-#' cf <- c(rep(0,3), rep(0.33,(lhparms$tmax+1) - 3))
+#' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+#' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
-#' out<-dpmBH(simyears = simyears, minLL = minLL, cf = cf, cm = cm,
-#'       rec = rec, lhparms = lhparms, matchRicker=FALSE)
+#' out<-dpmBH(simyears = 50, minLL = 400, cf = cf, cm = cm, rec = rec, lhparms = lhparms,
+#'     matchRicker=FALSE,SPR=FALSE)
+#'
+#' # Example of simulating yield with the dynamic pool model,
+#' # wigh spawning potential ratio
+#'
+#' lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
+#'             LWalpha=-5.2147,LWbeta=3.153)
+#' simyears <- 50
+#' minLL <- 400
+#' rec <- fixedRec(Nrec = 100, simyears = simyears)
+#' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+#' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+#'
+#' SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+#' percF=c(0,0,0,rep(0.50,27)),
+#' percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+#'
+#' out<-dpmBH(simyears = 50, minLL = 400, cf = cf, cm = cm, rec = rec, lhparms = lhparms,
+#'     matchRicker=FALSE,SPR=TRUE,SPRdat=SPRdat)
+#'
 #'
 #' @rdname dpmBH
 #' @export
 
-dpmBH <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
+dpmBH <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,SPR=FALSE, SPRdat = NULL){
 
   # ---- Check inputs
   # iCheckMLH(lengthmin,"minimum")
@@ -76,12 +108,12 @@ dpmBH <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
   # iCheckLWb(LWbeta)
   # iChecktmax(tmax)
 
-  res<-dpmBH_func(minLL = minLL, cf = cf, cm= cm, rec = rec[1], lhparms = lhparms,matchRicker=FALSE)
+  res<-dpmBH_func(minLL = minLL, cf = cf[1,], cm= cm[1,], rec = rec[1], lhparms = lhparms,matchRicker=FALSE)
   yearsum<-data.frame(year= seq(1:nrow(res)), yc = rep(1,length(seq(1:nrow(res)))))
   res<-cbind(yearsum,res)
 
   for(x in 2:simyears){
-    out<-dpmBH_func(minLL = minLL, cf = cf, cm= cm, rec = rec[x], lhparms = lhparms,matchRicker=FALSE)
+    out<-dpmBH_func(minLL = minLL, cf = cf[x,], cm= cm[x,], rec = rec[x], lhparms = lhparms,matchRicker=FALSE)
     yearsum<-data.frame(year= x:(nrow(out)+x-1), yc = rep(x,length(x:(nrow(out)+x-1))))
     out<-cbind(yearsum,out)
 
@@ -89,9 +121,13 @@ dpmBH <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
 
   }
 
-  res2<-subset(res,res$year<=simyears)
+  res<-subset(res,res$year<=simyears)
 
+  if(SPR == TRUE){
 
+    tspr<-t_spr(dproutput=res,SPRdat=SPRdat)
+  res<-list(res,tspr)
+  }
   # ---- Return data.frame with both output values and input parameters
   res
 }

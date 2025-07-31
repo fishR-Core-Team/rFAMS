@@ -60,9 +60,10 @@ MatAge = 4
 LWalpha = -5.2147
 LWbeta = 3.153
 #Build cm and cf vectors - supplied by user
+rec<-1000
 tmax <- 30
-cm <- rep(0.18,(tmax+1))
-cf <- c(rep(0,3), rep(0.33,(tmax+1) - 1))
+cm <- c(0,rep(0.18,(tmax)))
+cf <- c(0, rep(0.33,(tmax)))
 MLL <- 400
 
 #Generate number at age for each year-class
