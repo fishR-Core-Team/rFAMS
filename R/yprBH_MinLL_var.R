@@ -12,8 +12,6 @@
 #' @param cmmin A single numeric for minimum conditional natural mortality.
 #' @param cmmax A single numeric for maximum conditional natural mortality.
 #' @param cminc A single numeric for increment to cycle from minimum to maximum conditional natural mortality.
-#' @param SPR A boolean to indicate if spawner per recruit is to be calculated. If true, an object of SPRdat must be provide
-#' @param SPRdat A named list that contains values for each `FLR`, `FLRint`, `FLRslope`, `MatAge`, `percF`, and `percFSpawn`. See \code{\link{makeSPR}} for definitions of these parameters. Also see details.
 #'
 #' @details Details will be filled out later
 #'
@@ -108,28 +106,6 @@
 #'   ylab("Minimum length limit (mm)")+
 #'   theme_FAMS()
 #'
-#' # Estimate yield and spawning potential ratio
-#' # Life history parameters to be used below
-#' LH <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
-#' # Spawning potential ratio parameters to be used below
-#' SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
-#'                  percF=c(0,0,0,rep(0.50,27)), percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
-#'
-#' Res_2 <- yprBH_minLL_var(lengthmin=280,lengthinc=60,lengthmax=400,
-#'                          cfmin=0.00, cfmax=0.70, cfinc=0.05,
-#'                          cmmin=0.1,cmmax=0.9,cminc=0.1,
-#'                          lhparms=LH, SPR = TRUE, SPRdat=SPRdat)
-#'
-#' # Spawning potential ratio curves vs exploitation by varying minimum lengths, using cm=40
-#' plot_dat <- Res_2 |> filter(cm==0.40)
-#'
-#' ggplot(data=plot_dat,mapping=aes(y=spr,x=u,
-#'                                  group=as.factor(minLL),shape=as.factor(minLL))) +
-#'   geom_point(size=2)+
-#'   geom_line(linewidth=1) +
-#'   scale_color_gradient2(high="black") +
-#'   labs(y="Spawning potential ratio",x="Exploitation (u)",shape="Min Length Limit") +
-#'   theme_FAMS()
 #'
 #' @rdname yprBH_minLL_var
 #' @export
@@ -137,8 +113,7 @@
 yprBH_minLL_var <- function(lengthmin,lengthmax,lengthinc,
                           cfmin,cfmax,cfinc,
                           cmmin,cmmax,cminc,
-                          lhparms,matchRicker=FALSE,
-                          SPR=F, SPRdat = NULL){
+                          lhparms,matchRicker=FALSE){
   # ---- Check inputs
   iCheckMLH(lengthmin,"minimum")
   iCheckMLH(lengthmax,"maximum")
@@ -185,19 +160,6 @@ yprBH_minLL_var <- function(lengthmin,lengthmax,lengthinc,
   #   i.e., calculate yield et al for all minLL, cf, and cm combos
   res <- purrr::pmap_df(res,yprBH_func,matchRicker=matchRicker,lhparms=lhparms)
 
-  #Calculate SPR
-  if(SPR == TRUE){
-    spr<-c()
-    #loop through each row and calculate SPR and Number of Eggs
-    for(x in 1:nrow(res)){
-    spr<-c(spr,static_spr(Linf = Linf, K = K, t0 = t0, FLR = SPRdat$FLR, FLRint = SPRdat$FLRint, FLRslope = SPRdat$FLRslope, MatAge = SPRdat$MatAge,
-               percF = SPRdat$percF, percFSpawn = SPRdat$percFSpawn, M = res$M[x], F = res$F[x], tmax = lhparms$tmax,
-               slot=FALSE, minLL = res$minLL[x]
-               ))
-    }
-
-    res <- cbind(res,spr)
-  }
 
   # ---- Return data.frame with both output values and input parameters
   res

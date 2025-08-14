@@ -48,12 +48,7 @@ These function is used to generate recruitment abundances across multiple years 
 This function is used internally and not generally used interactively
 }
 \examples{
-# This example creates a list where fish mature at age-4. Leading 0's are used in
-# the vectors for percF and percFSpawn because they do not contribute to eggs produced
-
-SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
-                 percF=c(0,0,0,rep(0.50,27)),
-                 percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+# To be filled out later
 
 }
 \author{
