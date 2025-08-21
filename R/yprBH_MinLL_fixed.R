@@ -85,38 +85,13 @@ yprBH_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
 
   # ---- Check inputs
   iCheckMLH(minLL)
+  iCheckLLinf(minLL,lhparms$Linf)
   iCheckcf(cfmin,"minimum")
   iCheckcf(cfmax,"maximum")
   cf <- iCheckcfminc(cfinc,cfmin,cfmax)
   iCheckcm(cmmin,"minimum")
-  iCheckcf(cmmax,"maximum")
+  iCheckcm(cmmax,"maximum")
   cm <- iCheckcfminc(cminc,cmmin,cmmax)
-  # iCheckN0(N0)
-  # if (length(N0)>1) {
-  #   Linf <- N0[["Linf"]]
-  #   K <- N0[["K"]]
-  #   t0 <- N0[["t0"]]
-  #   LWalpha <- N0[["LWalpha"]]
-  #   LWbeta <- N0[["LWbeta"]]
-  #   tmax <- N0[["tmax"]]
-  #   N0 <- N0[["N0"]]
-  #   iCheckN0(N0)  # second check of single value of N0
-  # }
-  # iCheckLinf(Linf)
-  # iCheckK(K)
-  # iCheckt0(t0)
-  # iCheckLWa(LWalpha)
-  # iCheckLWb(LWbeta)
-  # iChecktmax(tmax)
-
-  # Extract individual life history values
-  N0 <- lhparms[["N0"]]
-  tmax <- lhparms[["tmax"]]
-  Linf <- lhparms[["Linf"]]
-  K <- lhparms[["K"]]
-  t0 <- lhparms[["t0"]]
-  LWalpha <- lhparms[["LWalpha"]]
-  LWbeta <- lhparms[["LWbeta"]]
 
   # ---- Compute Yield et al. for varying minLL, cf, and cm
   # Setup data.frame of input values ... cf, and cm sequences were

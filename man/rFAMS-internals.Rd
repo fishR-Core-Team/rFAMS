@@ -22,6 +22,13 @@
 \alias{iCheckLWb}
 \alias{iCheckLWa}
 \alias{iCheckMaxAge}
+\alias{isum_by_year}
+\alias{iChecksimyears}
+\alias{iCheckrec}
+\alias{iCheckcfcm_dpm}
+\alias{iCheckcfabove}
+\alias{iCheckcfin}
+\alias{iCheckcfunder}
 \title{Internal functions.}
 \usage{
 .onAttach(libname, pkgname)

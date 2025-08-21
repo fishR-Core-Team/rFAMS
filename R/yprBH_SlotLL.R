@@ -136,48 +136,20 @@
 yprBH_SlotLL<-function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cmmin,cmmax,cminc,
                        lhparms,matchRicker=FALSE){
 
-  if (missing(recruitmentTL))
-    stop("Need to specify recruitmentTL")
-  if (missing(lowerSL))
-    stop("Need to specify lowerSL")
-  if (missing(upperSL))
-    stop("Need to specify upperSL")
-  if (missing(cfunder))
-    stop("Need to specify cf_under")
-  if (missing(cfin))
-    stop("Need to specify cf_in")
-  if (missing(cfabove))
-    stop("Need to specify cf_above")
-  if (missing(cmmin))
-    stop("Need to specify cmmin")
-  if (missing(cmmax))
-    stop("Need to specify cmmax")
-  if (missing(cminc))
-    stop("Need to specify cminc")
-  #iCheckMLH(minlength)
-  # iCheckN0(N0)
-  # iCheckLinf(Linf)
-  # iCheckK(K)
-  # iCheckt0(t0)
-  # iCheckLWa(LWalpha)
-  # iCheckLWb(LWbeta)
-  #iChecktmax(tmax)
-
-  if(recruitmentTL>lowerSL)
-    stop("cf_under must be less than cf_in")
-  if(lowerSL>upperSL)
-    stop("lowerSL must be less than upperSL")
-  if(cmmin>cmmax)
-    stop("cmmin must be equal to or less than cmmax")
-
-  # Extract individual life history values
-  N0 <- lhparms[["N0"]]
-  tmax <- lhparms[["tmax"]]
-  Linf <- lhparms[["Linf"]]
-  K <- lhparms[["K"]]
-  t0 <- lhparms[["t0"]]
-  LWalpha <- lhparms[["LWalpha"]]
-  LWbeta <- lhparms[["LWbeta"]]
+  # ---- Check inputs
+  iCheckrecruitTL(recruitmentTL)
+  iChecklowerSLTL(lowerSL)
+  iCheckupperSLTL(upperSL)
+  iCheckslotOrder(recruitmentTL, lowerSL, upperSL)
+  iCheckLLinf(recruitmentTL,lhparms$Linf)
+  iCheckLLinf(lowerSL,lhparms$Linf)
+  iCheckLLinf(upperSL,lhparms$Linf)
+  iCheckcfunder(cfunder)
+  iCheckcfin(cfin)
+  iCheckcfabove(cfabove)
+  iCheckcm(cmmin,"minimum")
+  iCheckcm(cmmax,"maximum")
+  cm <- iCheckcfminc(cminc,cmmin,cmmax)
 
 
   # Setup data.frame of input values (varying cf and cm, the rest constant)
@@ -185,11 +157,12 @@ yprBH_SlotLL<-function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cmmin,
                      cfunder=cfunder,cfin=cfin,cfabove=cfabove,
                      cm=seq(cmmin,cmmax,cminc))
   # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
+  # output is by age
   res <- purrr::pmap_df(res,yprBH_slot_func,matchRicker=matchRicker,lhparms=lhparms)
-
-
 
   # Return result
   return(res)
 
 }
+
+
