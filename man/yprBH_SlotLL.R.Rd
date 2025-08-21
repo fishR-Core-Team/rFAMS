@@ -15,9 +15,7 @@ yprBH_SlotLL(
   cmmax,
   cminc,
   lhparms,
-  matchRicker = FALSE,
-  SPR = FALSE,
-  SPRdat = NULL
+  matchRicker = FALSE
 )
 }
 \arguments{
@@ -42,10 +40,6 @@ yprBH_SlotLL(
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
-
-\item{SPR}{A boolean to indicate if spawner per recruit is to be calculated. If true, an object of SPRdat must be provide}
-
-\item{SPRdat}{A named list that contains values for each \code{FLR}, \code{FLRint}, \code{FLRslope}, \code{MatAge}, \code{percF}, and \code{percFSpawn}. See \code{\link{makeSPR}} for definitions of these parameters. Also see details.}
 }
 \value{
 A data.frame with the following calculated values:
@@ -166,24 +160,6 @@ ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   theme(legend.position = "top")+
   guides(color=guide_legend(title="Yield"))
 
-# Estimate yield and spawning potential ratio with a slot limit
-# Life history parameters to be used below
-LH <- makeLH(N0=100,tmax=15,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
-# Spawning potential ratio parameters to be used below
-SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
-percF=c(0,0,0,rep(0.50,12)), percFSpawn = c(0,0,0,0.24,0.24,0.53, rep(100,9)))
-
-Res_2 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
-                      cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
-                      lhparms=LH, SPR=TRUE, SPRdat = SPRdat)
-
-# Spawning potential ratio vs conditional natural mortality
-ggplot(data=Res_2,mapping=aes(y=spr,x=cm)) +
-  geom_point(size=2)+
-  geom_line(linewidth=1) +
-  scale_color_gradient2(high="black") +
-  labs(y="Spawning potential ratio",x="Conditional natural mortality (cm)") +
-  theme_FAMS()
 
 }
 \author{

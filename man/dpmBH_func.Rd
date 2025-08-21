@@ -9,9 +9,9 @@ dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker = FALSE)
 \arguments{
 \item{minLL}{A single numeric representing the minimum length limit for harvest in mm.}
 
-\item{cf}{A vector of conditional fishing mortality for age-0 through maximum age.}
+\item{cf}{A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.}
 
-\item{cm}{A vector of conditional natural mortality for age-0 through maximum age.}
+\item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.}
 
 \item{rec}{A single numeric representing initial recruitment abundance.}
 
@@ -22,9 +22,9 @@ dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker = FALSE)
 \value{
 A data.frame with the following calculated values:
 \itemize{
-\item \code{Age} is the age of the year class
+\item \code{age} is the age of the year class
 \item \code{length} is the mean length at age calculated using the von Bertalanffy growth model and provided parameters
-\item \code{length} is the mean weight at age calculated using the log10 length-weight regression using the provided parameters
+\item \code{weight} is the mean weight at age calculated using the log10 length-weight regression using the provided parameters
 \item \code{N_start} is the number of individuals at age at the start of the year.
 \item \code{exploitation} is the exploitation rate.
 \item \code{expect_nat_death} is the expectation of natural death.
@@ -34,6 +34,8 @@ A data.frame with the following calculated values:
 \item \code{M} is the instantaneous rate of natural mortality.
 \item \code{Z} is the instantaneous rate of total mortality.
 \item \code{S} is the (total) annual rate of survival
+\item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
+\item \code{Nt} is the number of fish at time tr (time they become harvestable size).
 \item \code{biomass} is the total biomass at age (g)
 \item \code{N_harvest} is the total number harvested at age
 \item \code{N_die} is the total number that die at age
@@ -47,14 +49,10 @@ The data.frame also contains a \code{notes} value which may contain abbreviation
 \itemize{
 \item \code{minLL>=Linf}: The minimum length limit (minLL) being explored was greater than the given asymptotic mean length (Linf). For the purpose (only) of computing the time at recruitment to the fishery (tr) the Linf was set to minLL+0.1.
 \item \code{tr<t0}: The age at recruitment to the fishery (tr) was less than the hypothetical time when the mean length is zero (t0). The fish can't recruit to the fishery prior to having length 0 so tr was set to t0. This also assures that the time it takes to recruit to the fishery is greater than 0.
-\item \code{Nt<0}: The number of fish recruiting to the fishery was less than 0. There cannot be negative fish, so Nt was then set to 0.
-\item \code{Nt>N0}: The number of fish recruiting to the fishery was more than the number of fish recruited to the populations. Fish cannot be added to the cohort, so Nt was set to N0.
 \item \code{Y=Infinite}: The calculated yield (Y) was inifinity, which is impossible and suggests some other propblem. Yield was set to NA.
 \item \code{Y<0}: The calculated yield (Y) was negative, which is impossible. Yield was set to 0.
 \item \code{Nharv<0}: The calculated number of fish harvested (Nharv) was negative, which is not possible. Number harvested was set to 0.
-\item \code{Nharv>Nt}: The calculated number of fish harvested (Nharv) was greater than the number of fish recruiting to the fishery, which is impossible. The number harvested was set to the number recruiting to the fishery.
 \item \code{Ndie<0}: The calculated number of fish recruiting to the fishery that died naturally (Ndie) was negative, which is not possible. Number that died was set to 0.
-\item \code{Ndie>Nt}: The calculated number of fish recruiting to the fishery that died naturally (Ndie) was greater than the number of fish recruiting to the fishery, which is impossible. The number that died was set to the number recruiting to the fishery.
 \item \code{agvglen<minLL}: The average length of harvested fish was less than the given minimum length limit being explored, which is not possible (with only legal harvest). The average length was set to the minimum length limit.
 }
 }

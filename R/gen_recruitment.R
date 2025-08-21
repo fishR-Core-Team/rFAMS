@@ -2,6 +2,7 @@
 #'
 #' @description These function is used to generate recruitment abundances across multiple years using different random function.
 #'
+#' @param method A single string to call the method of generating a vector of recruits. `fixed` generate recruitment based on a fixed value for each year of simyears, `uniform` generates recruitment based on random values from a unifrom distribution for each year of simyears, `normal` generates recruitment based on random values from a unifrom distribution for each year of simyears, `StrYC_Nth` generates recruitment based on a strong year class every Nth year, and `StrYC_randInt` generates recruitment based on a strong year classes at random intervals.
 #' @param simyears A single numeric that sets the number of years to simulate recruitment
 #' @param Nrec A single numeric that sets the fixed number of recruitment
 #' @param MinR A single numeric that sets the minimum recruitment abundance during simulations.
@@ -17,61 +18,105 @@
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #'
-#' @returns A named list that contains the given reproduction options that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{yprBH_SlotLL}}).
+#' @returns A vector that contains the given recruitment options that can be used directly in the dynamic pool model (e.g., \code{\link{dpmBH}}).
 #'
 #' @examples
-#' # This example creates a list where fish mature at age-4. Leading 0's are used in
-#' # the vectors for percF and percFSpawn because they do not contribute to eggs produced
+#' # To be filled out later
 #'
-#' SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
-#'                  percF=c(0,0,0,rep(0.50,27)),
-#'                  percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+#' @rdname genRecruits
+#' @export
 #'
-#' @name recruit_functions
 
-#' @rdname recruit_functions
-#' @export
-#Generate initial recruits
-#Fixed
-fixedRec <- function(simyears = 50, Nrec = 1000){
-  rec <- rep(x = Nrec, times = simyears)
-  rec
+genRecruits <- function(method=c("fixed", "uniform", "normal", "StrYC_Nth", "StrYC_randInt"), simyears = 50,
+                        Nrec = NULL, MinR = NULL, MaxR = NULL, meanR = NULL, sdR = NULL,
+                        Nthyr = NULL, sizeStr = NULL, avgFreq = NULL){
+  iChecksimyears(simyears)
+
+  if (method == "fixed"){
+    iCheckNrec(Nrec)
+    iCheckNrec(Nrec)
+
+    rec <- rep(x = Nrec, times = simyears)
+
+  }else if (method == "uniform"){
+    iCheckMinR(MinR)
+    iCheckMaxR(MaxR)
+
+    rec <- round(stats::runif(n = simyears, min = MinR, max = MaxR))
+
+  }else if (method == "normal"){
+    iCheckMinRNorm(MinR)
+    iCheckMaxRNorm(MaxR)
+    iCheckmeanR(meanR)
+    iChecksdR(sdR)
+
+    rec <- round(stats::rnorm(n = simyears, mean = meanR, sd = sdR))
+    rec[rec < MinR] <- MinR
+    rec[rec > MaxR] <- MaxR
+
+  }else if (method == "StrYC_Nth"){
+    iCheckmeanRNth(meanR)
+    iCheckNthyr(Nthyr)
+    iChecksizeStr(sizeStr)
+
+    rec <- rep(c(rep(meanR, (Nthyr - 1)), (meanR * sizeStr)), (simyears/Nthyr))
+
+  }else if (method == "StrYC_randInt"){
+    iCheckmeanRrandInt(meanR)
+    iCheckavgFreq(avgFreq)
+    iChecksizeStrRrandInt(sizeStr)
+
+    rec <- stats::rbinom(simyears,1,(1/avgFreq)) + 1
+    rec[rec == 1] <- meanR
+    rec[rec == 2] <- meanR * sizeStr
+
+  }else {
+    STOP("Please select a valid recruitment method.")
+  }
+ return(rec)
 }
 
-
-#' @rdname recruit_functions
-#' @export
-#Random - Uniform
-unifRec <- function(simyears = 50, MinR = 10, MaxR = 1000){
-  rec <- round(stats::runif(n = simyears, min = MinR, max = MaxR))
-  rec
-}
-
-#' @rdname recruit_functions
-#' @export
-#Random - Normal
-rnormRec <- function(simyears = 50, meanR = 1000, sdR = 500, MinR = 100, MaxR = 2500){
-  rec <- round(stats::rnorm(n = simyears, mean = meanR, sd = sdR))
-  rec[rec < MinR] <- MinR
-  rec[rec > MaxR] <- MaxR
-
-  rec
-}
-
-#' @rdname recruit_functions
-#' @export
-#Strong year-class every Nth year
-StrYC_Nth <- function(simyears = 50, meanR = 1000, Nthyr = 5, sizeStr = 2){
-  rec <- rep(c(rep(meanR, (Nthyr - 1)), (meanR * sizeStr)), (simyears/Nthyr))
-  rec
-}
-
-#' @rdname recruit_functions
-#' @export
-#Strong year-class at random intervals
-StrYC_randInt <- function(simyears = 50, meanR = 1000, avgFreq = 5, sizeStr = 2){
-  rec <- stats::rbinom(simyears,1,(1/avgFreq)) + 1
-  rec[rec == 1] <- meanR
-  rec[rec == 2] <- meanR * sizeStr
-  rec
-}
+#'
+#' #Fixed
+#' fixedRec <- function(simyears = 50, Nrec = 1000){
+#'   rec <- rep(x = Nrec, times = simyears)
+#'   rec
+#' }
+#'
+#'
+#' #' @rdname recruit_functions
+#' #' @export
+#' #Random - Uniform
+#' unifRec <- function(simyears = 50, MinR = 10, MaxR = 1000){
+#'   rec <- round(stats::runif(n = simyears, min = MinR, max = MaxR))
+#'   rec
+#' }
+#'
+#' #' @rdname recruit_functions
+#' #' @export
+#' #Random - Normal
+#' rnormRec <- function(simyears = 50, meanR = 1000, sdR = 500, MinR = 100, MaxR = 2500){
+#'   rec <- round(stats::rnorm(n = simyears, mean = meanR, sd = sdR))
+#'   rec[rec < MinR] <- MinR
+#'   rec[rec > MaxR] <- MaxR
+#'
+#'   rec
+#' }
+#'
+#' #' @rdname recruit_functions
+#' #' @export
+#' #Strong year-class every Nth year
+#' StrYC_Nth <- function(simyears = 50, meanR = 1000, Nthyr = 5, sizeStr = 2){
+#'   rec <- rep(c(rep(meanR, (Nthyr - 1)), (meanR * sizeStr)), (simyears/Nthyr))
+#'   rec
+#' }
+#'
+#' #' @rdname recruit_functions
+#' #' @export
+#' #Strong year-class at random intervals
+#' StrYC_randInt <- function(simyears = 50, meanR = 1000, avgFreq = 5, sizeStr = 2){
+#'   rec <- stats::rbinom(simyears,1,(1/avgFreq)) + 1
+#'   rec[rec == 1] <- meanR
+#'   rec[rec == 2] <- meanR * sizeStr
+#'   rec
+#' }
