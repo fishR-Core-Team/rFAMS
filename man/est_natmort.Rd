@@ -34,7 +34,7 @@ Other methods that require parameters other than those required by \code{makeLH}
 }
 \examples{
 # An example lhparm as would be returned from makeLH
-tmp <- list(N0=100,maxage=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.16,LWbeta=3.1)
+tmp <- list(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.16,LWbeta=3.1)
 
 # All methods in metaM() that use those life history parameters
 est_natmort(tmp)

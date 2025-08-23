@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' # An example lhparm as would be returned from makeLH
-#' tmp <- list(N0=100,maxage=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.16,LWbeta=3.1)
+#' tmp <- list(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.16,LWbeta=3.1)
 #'
 #' # All methods in metaM() that use those life history parameters
 #' est_natmort(tmp)
@@ -65,7 +65,7 @@ est_natmort <- function(lhparms=NULL,method="rFAMS",incl.avg=FALSE,...) {
     if (!"K" %in% nmargs) margs$K <- lhparms[["K"]]
     if (!"t0" %in% nmargs) margs$t0 <- lhparms[["t0"]]
     if (!"b" %in% nmargs) margs$b <- lhparms[["LWbeta"]]
-    if (!"tmax" %in% nmargs) margs$tmax <- lhparms[["maxage"]]
+    if (!"tmax" %in% nmargs) margs$tmax <- lhparms[["tmax"]]
   }
 
   # if method is not null then get methods that can use rFAMS lhparms
