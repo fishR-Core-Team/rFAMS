@@ -26,14 +26,14 @@ To recreate and expand/improve upon the FAMS/FAST software functionality for equ
 
 ## Status
 
-The package currently replicates all yield per recruit and dynamic pool modeling in FAMS with the exception of spawner per recruit. That function will be added at a later date. Life history parameters can be estimated using FSA.
+The package currently replicates all yield per recruit and dynamic pool modeling in FAMS with the exception of spawning potential ratio. That function will be added at a later date. Life history parameters can be estimated using FSA.
 
 ## Process 
 
 ### Equilibrium Modeling
 
 1. Complete
-2. Add spawner per recruit
+2. Add spawning potential ratio
 3. Incorporate suggestions from the fisheries community.
 
 ### RShiny Development
@@ -44,7 +44,7 @@ The package currently replicates all yield per recruit and dynamic pool modeling
 ### Dynamic Pool Modeling
 
 1. Complete
-2. Add spawner per recruit
+2. Add spawning potential ratio
 3. Incorporate suggestions from the fisheries community.
 
 ## Installation (Section Under Development)
