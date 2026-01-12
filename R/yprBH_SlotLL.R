@@ -13,6 +13,7 @@
 #' @param cmmin Single value, minimum conditional natural mortality
 #' @param cmmax Single value, maximum conditional natural mortality
 #' @param cminc Single value, increment to cycle from minimum to maximum conditional natural mortality
+#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #'
@@ -71,7 +72,8 @@
 #' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 #' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
 #' \item tmax An integer representing maximum age in the population in years
-#' }
+#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' #' }
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
@@ -101,7 +103,7 @@
 #' #Estimate yield
 #'  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
 #'                        cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
-#'                        lhparms=LH)
+#'                        loi=c(200,250,300,325,350),lhparms=LH)
 #'
 #'  Res_1
 #'
@@ -134,7 +136,7 @@
 #' @rdname yprBH_SlotLL.R
 #' @export
 yprBH_SlotLL<-function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cmmin,cmmax,cminc,
-                       lhparms,matchRicker=FALSE){
+                       loi=NA,lhparms,matchRicker=FALSE){
 
   # ---- Check inputs
   iCheckrecruitTL(recruitmentTL)
@@ -150,7 +152,7 @@ yprBH_SlotLL<-function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cmmin,
   iCheckcm(cmmin,"minimum")
   iCheckcm(cmmax,"maximum")
   cm <- iCheckcfminc(cminc,cmmin,cmmax)
-
+  iCheckloi(loi)
 
   # Setup data.frame of input values (varying cf and cm, the rest constant)
   res <- expand.grid(recruitmentTL=recruitmentTL,lowerSL=lowerSL,upperSL=upperSL,
@@ -158,7 +160,7 @@ yprBH_SlotLL<-function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cmmin,
                      cm=seq(cmmin,cmmax,cminc))
   # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
   # output is by age
-  res <- purrr::pmap_df(res,yprBH_slot_func,matchRicker=matchRicker,lhparms=lhparms)
+  res <- purrr::pmap_df(res,yprBH_slot_func,matchRicker=matchRicker,loi=loi,lhparms=lhparms)
 
   # Return result
   return(res)

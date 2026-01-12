@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-Fisheries Analysis and Modeling Simulator
+Fisheries Analysis and Modeling Simulator in R
 
 ## Purpose
 
@@ -26,16 +26,15 @@ To recreate and expand/improve upon the FAMS/FAST software functionality for equ
 
 ## Status
 
-Just starting to code!
+The package currently replicates all yield per recruit and dynamic pool modeling in FAMS with the exception of spawning potential ratio. That function will be added at a later date. Life history parameters can be estimated using FSA.
 
 ## Process 
 
 ### Equilibrium Modeling
 
-1. Evaluate steps in the analysis.
-2. Determine whether any steps need updating in analytical approach to be current with fisheries science.
-3. Determine whether any steps need expanding upon to better incorporate current fisheries science.
-4. Begin coding, concurrently documenting and establishing error and validation tests.
+1. Complete
+2. Add spawning potential ratio
+3. Incorporate suggestions from the fisheries community.
 
 ### RShiny Development
 
@@ -44,7 +43,9 @@ Just starting to code!
 
 ### Dynamic Pool Modeling
 
-1. Not there yet.
+1. Complete
+2. Add spawning potential ratio
+3. Incorporate suggestions from the fisheries community.
 
 ## Installation (Section Under Development)
 
@@ -60,23 +61,58 @@ devtools::install_github("fishR-Core-Team/FAMS")
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-library(FAMS)
-## basic example code
+#Load other required packages for organizing output and plotting
+library(rFAMS)
+library(ggplot2)
+library(dplyr)
+library(metR)
+library(tidyr)
+
+# Custom theme for plots (to make look nice)
+theme_FAMS <- function(...) {
+  theme_bw() +
+  theme(
+    panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
+    axis.text=element_text(size=14,color="black"),
+    axis.title=element_text(size=16,color="black"),
+    axis.title.y=element_text(angle=90),
+    axis.line=element_line(color="black"),
+    panel.border=element_blank()
+  )
+}
+
+# Life history parameters to be used below
+LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
+
+#Estimate yield
+Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
+                      cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
+                      lhparms=LH)
+
+Res_1
+
+# Plot results
+# Total Yield vs Conditional Natural Mortality (cm)
+ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
+ geom_point() +
+ geom_line() +
+ labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
+ theme_FAMS()
+
+
+# Yield under, in, and above the slot limit vs Conditional Natural Mortality (cm)
+# Select columns for plotting
+plot_data <- Res_1 %>%
+ select(cm, yieldUnder, yieldIn, yieldAbove) %>%
+ pivot_longer(!cm, names_to="YieldCat",values_to="Yield")
+
+# Generate plot
+ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
+ geom_point() +
+ scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Under SL"))+
+ geom_line() +
+ labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
+ theme_FAMS() +
+ theme(legend.position = "top")+
+ guides(color=guide_legend(title="Yield"))
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
-
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.

@@ -12,6 +12,7 @@
 #' @param cmmin A single numeric for minimum conditional natural mortality.
 #' @param cmmax A single numeric for maximum conditional natural mortality.
 #' @param cminc A single numeric for increment to cycle from minimum to maximum conditional natural mortality.
+#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #'
 #' @details Details will be filled out later
 #'
@@ -29,6 +30,7 @@
 #' \item \code{M} is the instantaneous rate of natural mortality.
 #' \item \code{Z} is the instantaneous rate of total mortality.
 #' \item \code{S} is the (total) annual rate of survival.
+#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 #' }
 #'
 #' For convenience the data.frame also contains the model input values (\code{minLL} derived from \code{lengthmin}, \code{lengthmax}, and \code{lengthinc}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax}).
@@ -45,11 +47,11 @@
 #'
 #' # Estimate yield for multiple values of minLL, cf, and cm
 #' # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
-#' # #   to produce finer-scaled results
+#' # #   to produce finer-scaled results.
 #' Res_1 <- yprBH_minLL_var(lengthmin=200,lengthinc=50,lengthmax=550,
 #'                        cfmin=0.1,cfmax=0.9,cfinc=0.1,
 #'                        cmmin=0.1,cmmax=0.9,cminc=0.1,
-#'                        lhparms=LH)
+#'                        loi=c(200,250,300,325,350),lhparms=LH)
 #'
 #' # Load other required packages for organizing output and plotting
 #' library(dplyr)    ## for filter
@@ -112,7 +114,7 @@
 
 yprBH_minLL_var <- function(lengthmin,lengthmax,lengthinc,
                           cfmin,cfmax,cfinc,
-                          cmmin,cmmax,cminc,
+                          cmmin,cmmax,cminc,loi=NA,
                           lhparms,matchRicker=FALSE){
   # ---- Check inputs
   iCheckMLH(lengthmin,"minimum")
@@ -126,7 +128,7 @@ yprBH_minLL_var <- function(lengthmin,lengthmax,lengthinc,
   iCheckcm(cmmin,"minimum")
   iCheckcm(cmmax,"maximum")
   cm <- iCheckcfminc(cminc,cmmin,cmmax)
-
+  iCheckloi(loi)
 
   # ---- Compute Yield et al. for varying minLL, cf, and cm
   # Setup data.frame of input values ... minLL, cf, and cm sequences were
@@ -135,7 +137,7 @@ yprBH_minLL_var <- function(lengthmin,lengthmax,lengthinc,
 
   # Send each row to yprBH_func() ...
   #   i.e., calculate yield et al for all minLL, cf, and cm combos
-  res <- purrr::pmap_df(res,yprBH_func,matchRicker=matchRicker,lhparms=lhparms)
+  res <- purrr::pmap_df(res,yprBH_func,matchRicker=matchRicker,loi=loi,lhparms=lhparms)
 
 
   # ---- Return data.frame with both output values and input parameters

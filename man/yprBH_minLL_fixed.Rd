@@ -12,6 +12,7 @@ yprBH_minLL_fixed(
   cmmin,
   cmmax,
   cminc,
+  loi = NA,
   lhparms,
   matchRicker = FALSE
 )
@@ -30,6 +31,8 @@ yprBH_minLL_fixed(
 \item{cmmax}{A single numeric for maximum conditional natural mortality.}
 
 \item{cminc}{A single numeric for increment to cycle from minimum to maximum conditional natural mortality.}
+
+\item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
@@ -50,6 +53,7 @@ A data.frame with the following calculated values:
 \item \code{M} is the instantaneous rate of natural mortality.
 \item \code{Z} is the instantaneous rate of total mortality.
 \item \code{S} is the (total) annual rate of survival.
+\item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 }
 
 For convenience the data.frame also contains the model input values (\code{minLL}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax}).
@@ -72,7 +76,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 Res_1 <- yprBH_minLL_fixed(minLL=200,
                          cfmin=0.1,cfmax=0.9,cfinc=0.1,
                          cmmin=0.1,cmmax=0.9,cminc=0.1,
-                         lhparms=LH)
+                         loi=c(200,250,300,350),lhparms=LH)
 
 # Load other required packages for organizing output and plotting
 library(dplyr)    ## for filter
