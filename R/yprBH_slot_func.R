@@ -9,6 +9,7 @@
 #' @param cfin Single value, conditional fishing mortality within the lower and upper slot limit.
 #' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
 #' @param cm A numeric representing conditional natural mortality
+#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #'
@@ -70,7 +71,8 @@
 #' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 #' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
 #' \item tmax An integer representing maximum age in the population in years
-#' }
+#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' #' }
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
@@ -81,7 +83,7 @@
 #' # Estimate yield with fixed parameters
 #' Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
 #'                        cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
-#'                        lhparms=LH)
+#'                        loi=c(200,250,300,325,350),lhparms=LH)
 #' Res_1
 #'
 #'
@@ -89,7 +91,7 @@
 #' @export
 
 yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
-                          lhparms,matchRicker=FALSE){
+                            loi=NA,lhparms,matchRicker=FALSE){
   # ---- Check inputs
   # iCheckN0(N0)
   # iCheckLinf(Linf)
@@ -98,7 +100,7 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   # iCheckLWa(LWalpha)
   # iCheckLWb(LWbeta)
   # iCheckMaxAge(tmax)
-
+  iCheckloi(loi)
 
   # Extract individual life history values
   N0 <- lhparms[["N0"]]
@@ -260,9 +262,42 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   # Mean length of harvest fish ... from mean weight and weight-length parameters
   avglen_above <- 10^((log10(avgwt_above) - LWalpha)/LWbeta)
 
+  #Find out where tloi is in relation to time to lower slot and upper slot.
+  #I think this might work.. needs to be tested
+  if(!is.na(loi[1])){
+    #Get vector of time to length's of interest
+    tloi <- rep(NA,length(loi))
+    Nloi <- rep(NA,length(loi))
+
+    Nr_under <- N0*exp(-M_under*tr)
+    for(x in 1:length(loi)){
+      #Time to length of interest
+      tloi[x] <- ((log(1-loi[x]/Linf))/-K)+t0
+      if(tloi[x] < tmax_lowerSL){ #time to reach length of interest is less than time to recruit then only M applied
+        if(tloi[x] < tr){
+          Nloi[x] <- N0*exp(-Z_under*tloi[x])
+        } else {
+          Nloi[x] <- Nr_under*exp(-Z_under*(tloi[x]-tr))
+        }
+
+      } else if (tloi[x] < tmax_upperSL) { #else apply M and F
+        #Nloi[x] <- Nr_in*exp(-Z_under*tmax_lowerSL)
+        #Nloi[x] <- Nloi[x]*exp(-Z_in*(tloi[x]-tmax_lowerSL))
+        Nloi[x] <- Nr_in*exp(-Z_in*(tloi[x]-tmax_lowerSL))
+      } else {
+        # Nloi[x] <- N0*exp(-Z_under*tmax_lowerSL)
+        # Nloi[x] <- Nloi[x]*exp(-Z_in*(tmax_upperSL))
+        # Nloi[x] <- Nloi[x]*exp(-Z_above*(tloi[x]-tmax_upperSL))
+        Nloi[x] <- Nr_above*exp(-Z_above*(tloi[x]-tmax_upperSL))
+      }
+    }
+
+    #Create a vector for new columns to store number at length of interest
+    Nloi_cols <- paste0("N at ", loi[1:length(loi)], " mm")
+  }
 
   #Combinde dataframe for output
-  data.frame(
+  outdf<-data.frame(
     cm=cm,
     TotalYield = Y_under+Y_in+Y_above,
     TotalNharv = Nharv_under+Nharv_in+Nharv_above,
@@ -318,5 +353,10 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
     LWbeta=LWbeta,
     tmax=tmax
   )
+
+  if(!is.na(loi[1])){
+    outdf[Nloi_cols] <- Nloi
+  }
+  outdf
 
 }

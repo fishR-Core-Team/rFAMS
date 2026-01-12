@@ -6,6 +6,7 @@
 #' @param cm A single numeric representing conditional natural mortality.
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
+#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #'
 #' @details Details will be filled out later
@@ -24,6 +25,7 @@
 #' \item \code{M} is the instantaneous rate of natural mortality.
 #' \item \code{Z} is the instantaneous rate of total mortality.
 #' \item \code{S} is the (total) annual rate of survival.
+#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 #' }
 #'
 #' For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{tmax}).
@@ -58,14 +60,14 @@
 #' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 #'
 #' # Estimate yield with fixed parameters
-#' Res_1 <- yprBH_func(cf=0.45,cm=0.25,
-#'                   minLL=355,lhparms=LH)
+#' Res_1 <- yprBH_func(minLL=355,cf=0.45,cm=0.25,
+#'                     loi=c(200,250,300,325,350),lhparms=LH)
 #' Res_1
 #'
 #' @rdname yprBH_func
 #' @export
 
-yprBH_func <- function(minLL,cf,cm,lhparms,matchRicker=FALSE){
+yprBH_func <- function(minLL,cf,cm,loi=NA,lhparms,matchRicker=FALSE){
   # ---- Check inputs
   iCheckMLH(minLL)
   #iCheckcf(cf)
@@ -87,6 +89,7 @@ yprBH_func <- function(minLL,cf,cm,lhparms,matchRicker=FALSE){
   # iCheckLWa(LWalpha)
   # iCheckLWb(LWbeta)
   # iChecktmax(tmax)
+  iCheckloi(loi)
 
   # Extract individual life history values
   N0 <- lhparms[["N0"]]
@@ -114,6 +117,7 @@ yprBH_func <- function(minLL,cf,cm,lhparms,matchRicker=FALSE){
   # Exploitation rate (u) ... rearrange of FAMS equation 4:14
   exploitation <- (1-S)*(F/Z)
 
+
   # Time (years) when fish recruit to the fishery (tr) ... FAMS equation 6:2
   #   needed adjustment if minLL>Linf
   if (minLL>=Linf) {
@@ -134,6 +138,35 @@ yprBH_func <- function(minLL,cf,cm,lhparms,matchRicker=FALSE){
          "your minLL values.")
     notes <- c(notes,"tr<t0")
   }
+
+if(!is.na(loi[1])){
+  #Get vector of time to length's of interest
+  tloi <- rep(NA,length(loi))
+  Nloi <- rep(NA,length(loi))
+
+  for(x in 1:length(loi)){
+    #Time to length of interest
+    if(loi[x] > Linf){
+      WARN("Specified length of interest, loi = ", loi[x]," is greater than\n",
+           "Linf of ",Linf," this produces an error. Please select a length\n",
+           "of interest below Linf")
+      notes <- c(notes,"loi<Linf")
+      Nloi[x] <- NA
+      break
+    }
+
+    tloi[x] <- ((log(1-loi[x]/Linf))/-K)+t0
+    if(tloi[x] < tr){ #time to reach length of interest is less than time to recruit then only M applied
+      Nloi[x] <- N0*exp(-M*tloi[x])
+    } else { #else apply M and F
+      Nloi[x] <- N0*exp(-M*tr)
+      Nloi[x] <- Nloi[x]*exp(-(F+M)*(tloi[x]-tr))
+    }
+  }
+
+  #Create a vector for new columns to store number at length of interest
+  Nloi_cols <- paste0("N at ", loi[1:length(loi)], " mm")
+}
 
   # Amount of time (years) to recruit to the fishery (r) ... defined in FAMS
   r <- tr-t0
@@ -213,29 +246,33 @@ yprBH_func <- function(minLL,cf,cm,lhparms,matchRicker=FALSE){
   }
 
   # ---- Return data.frame with both output values and input parameters
-  data.frame(
-    yield=Y,
-    u=exploitation,
-    Nharvest=Nharv,
-    Ndie=Ndie,
-    avgwt=avgwt,
-    avglen=avglen,
-    Nt= Nt,
-    tr=tr,
-    F=F,
-    M=M,
-    Z=Z,
-    S=S,
-    cf=cf,
-    cm=cm,
-    minLL=minLL,
-    N0=N0,
-    Linf=Linf,
-    K=K,
-    t0=t0,
-    LWalpha=LWalpha,
-    LWbeta=LWbeta,
-    tmax=tmax,
-    notes=paste(notes,collapse="; ")
-  )
+  outdf<-data.frame(
+                  yield=Y,
+                  u=exploitation,
+                  Nharvest=Nharv,
+                  Ndie=Ndie,
+                  avgwt=avgwt,
+                  avglen=avglen,
+                  Nt= Nt,
+                  tr=tr,
+                  F=F,
+                  M=M,
+                  Z=Z,
+                  S=S,
+                  cf=cf,
+                  cm=cm,
+                  minLL=minLL,
+                  N0=N0,
+                  Linf=Linf,
+                  K=K,
+                  t0=t0,
+                  LWalpha=LWalpha,
+                  LWbeta=LWbeta,
+                  tmax=tmax,
+                  notes=paste(notes,collapse="; ")
+                )
+  if(!is.na(loi[1])){
+     outdf[Nloi_cols] <- Nloi
+  }
+     outdf
 }

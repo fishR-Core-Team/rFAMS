@@ -10,6 +10,7 @@
 #' @param cmmin A single numeric for minimum conditional natural mortality.
 #' @param cmmax A single numeric for maximum conditional natural mortality.
 #' @param cminc A single numeric for increment to cycle from minimum to maximum conditional natural mortality.
+#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #'
 #' @details Details will be filled out later
 #'
@@ -27,6 +28,7 @@
 #' \item \code{M} is the instantaneous rate of natural mortality.
 #' \item \code{Z} is the instantaneous rate of total mortality.
 #' \item \code{S} is the (total) annual rate of survival.
+#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 #' }
 #'
 #' For convenience the data.frame also contains the model input values (\code{minLL}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax}).
@@ -47,7 +49,7 @@
 #' Res_1 <- yprBH_minLL_fixed(minLL=200,
 #'                          cfmin=0.1,cfmax=0.9,cfinc=0.1,
 #'                          cmmin=0.1,cmmax=0.9,cminc=0.1,
-#'                          lhparms=LH)
+#'                          loi=c(200,250,300,350),lhparms=LH)
 #'
 #' # Load other required packages for organizing output and plotting
 #' library(dplyr)    ## for filter
@@ -80,7 +82,7 @@
 #'
 #' @rdname yprBH_minLL_fixed
 #' @export
-yprBH_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
+yprBH_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,loi=NA,
                             lhparms,matchRicker=FALSE){
 
   # ---- Check inputs
@@ -100,7 +102,7 @@ yprBH_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,
 
   # Send each row to yprBH_func() ...
   #   i.e., calculate yield et al for all cf, and cm combos
-  res <- purrr::pmap_df(res,yprBH_func,matchRicker=matchRicker,lhparms=lhparms)
+  res <- purrr::pmap_df(res,yprBH_func,matchRicker=matchRicker,loi=loi,lhparms=lhparms)
 
   # ---- Return data.frame with both output values and input parameters
   res

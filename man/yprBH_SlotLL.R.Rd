@@ -14,6 +14,7 @@ yprBH_SlotLL(
   cmmin,
   cmmax,
   cminc,
+  loi = NA,
   lhparms,
   matchRicker = FALSE
 )
@@ -36,6 +37,8 @@ yprBH_SlotLL(
 \item{cmmax}{Single value, maximum conditional natural mortality}
 
 \item{cminc}{Single value, increment to cycle from minimum to maximum conditional natural mortality}
+
+\item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
@@ -97,7 +100,8 @@ A data.frame with the following calculated values:
 \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
 \item tmax An integer representing maximum age in the population in years
-}
+\item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' }
 }
 \description{
 Main wrapper function to estimate yield using the Beverton-Holt YPR model. This main function accepts a range of values for cf, cm, recruitment length, lower slot limit length, and upper slot limit length.
@@ -131,7 +135,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 #Estimate yield
  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
                        cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
-                       lhparms=LH)
+                       loi=c(200,250,300,325,350),lhparms=LH)
 
  Res_1
 

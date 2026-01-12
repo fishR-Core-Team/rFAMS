@@ -51,6 +51,7 @@ iErrGT <- function(x,value,nm) if (x>value) STOP(nm," must be <=",value,".")
 
 
 # -- Specific Checks --
+
 # Check minimum length limit for harvest
 iCheckMLH <- function(x,type="") {
   nm <- paste0("'",deparse(substitute(x)),"'")
@@ -243,7 +244,7 @@ iCheckcfcm_dpm <- function(x) {
   if(!is.matrix(x))
     STOP(nm, " must be a matrix")
   if(!is.numeric(x))
-    STOP(nm, " must be a nuermic data type")
+    STOP(nm, " must be a numeric data type")
 }
 
 #Check that recruitment is a numeric vector
@@ -251,7 +252,17 @@ iCheckrec <- function(rec) {
   if(!is.vector(rec))
     STOP("rec must be a vector")
   if(!is.numeric(rec))
-    STOP("rec must be a nuermic data type")
+    STOP("rec must be a numeric data type")
+}
+
+
+# Check length of interest "loi" input
+iCheckloi <- function(loi){
+  if(any(is.na(loi))){return(NULL)}
+  if(!is.vector(loi))
+    STOP("loi must be a vector")
+  if(!is.numeric(loi))
+    STOP("loi must be a numeric data type")
 }
 
 # Check initial number of fish in the population

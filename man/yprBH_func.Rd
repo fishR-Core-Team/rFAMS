@@ -4,7 +4,7 @@
 \alias{yprBH_func}
 \title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for single input parameters}
 \usage{
-yprBH_func(minLL, cf, cm, lhparms, matchRicker = FALSE)
+yprBH_func(minLL, cf, cm, loi = NA, lhparms, matchRicker = FALSE)
 }
 \arguments{
 \item{minLL}{A single numeric representing the minimum length limit for harvest in mm.}
@@ -12,6 +12,8 @@ yprBH_func(minLL, cf, cm, lhparms, matchRicker = FALSE)
 \item{cf}{A single numeric representing conditional fishing mortality.}
 
 \item{cm}{A single numeric representing conditional natural mortality.}
+
+\item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
@@ -32,6 +34,7 @@ A data.frame with the following calculated values:
 \item \code{M} is the instantaneous rate of natural mortality.
 \item \code{Z} is the instantaneous rate of total mortality.
 \item \code{S} is the (total) annual rate of survival.
+\item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 }
 
 For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{tmax}).
@@ -63,8 +66,8 @@ Details will be filled out later
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
 # Estimate yield with fixed parameters
-Res_1 <- yprBH_func(cf=0.45,cm=0.25,
-                  minLL=355,lhparms=LH)
+Res_1 <- yprBH_func(minLL=355,cf=0.45,cm=0.25,
+                    loi=c(200,250,300,325,350),lhparms=LH)
 Res_1
 
 }
