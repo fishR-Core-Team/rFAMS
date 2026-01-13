@@ -1,5 +1,5 @@
 Package: rFAMS
-Version: 0.0.0.9000
+Version: 0.0.1
 Date: 2026-1-7
 Title: Fisheries Analysis and Modeling Simulator
 Authors@R: c(person(c("Jason","C."), "Doll", email="jcdoll20@hotmail.com",role = c("aut", "cre"),
