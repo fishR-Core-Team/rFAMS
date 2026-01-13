@@ -1,5 +1,6 @@
 ## Comments to the CRAN approvers
 cran-comments.md
+^cran-comments
 ^LICENSE\.md$
 ^README\.Rmd$
 ^rFAMS\.Rproj$
@@ -16,3 +17,4 @@ cran-comments.md
 ^vignettes/articles/\.quarto$
 ^vignettes/articles/*_files$
 ^vignettes/articles$
+CODE_OF_CONDUCT.md

@@ -4,14 +4,16 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iCheckMLH iCheckMLHinc iCheckcf iCheckcm iCheckcfminc iCheckN0 iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckMaxAge iCheckrec iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder
+#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iCheckMLH iCheckMLHinc iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckcfminc iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
   vers <- read.dcf(system.file("DESCRIPTION",
                                package=pkgname,lib.loc=libname),
                    fields="Version")
-  packageStartupMessage("Welcome to rFAMS! We are currently in development. Please do not distribute.")
+  msg <- paste0("## rFAMS v",vers,". See citation('rFAMS') if used in publication.\n")
+  msg <- paste0(msg,"## Visit https://github.com/fishR-Core-Team/rFAMS/issues to report any bugs.")
+  packageStartupMessage(msg)
 }
 
 

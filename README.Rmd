@@ -32,14 +32,9 @@ The package currently replicates all yield per recruit and dynamic pool modeling
 
 ### Equilibrium Modeling
 
-1. Complete
+1. Initial package development completed
 2. Add spawning potential ratio
 3. Incorporate suggestions from the fisheries community.
-
-### RShiny Development
-
-1. Determine which variables should be allowed to vary in interface.
-2. Build a Shiny app for testing different length regulation scenarios.
 
 ### Dynamic Pool Modeling
 
@@ -47,18 +42,39 @@ The package currently replicates all yield per recruit and dynamic pool modeling
 2. Add spawning potential ratio
 3. Incorporate suggestions from the fisheries community.
 
-## Installation (Section Under Development)
+### RShiny Development
 
-You can install the development version of FAMS from [GitHub](https://github.com/) with:
+1. Initial development completed
+2. Build a Shiny app for testing different length regulation scenarios.
+
+## Installation
+
+The [most recent stable version](https://cloud.r-project.org/package=rFAMS) from CRAN may be installed with
+
+```r
+install.packages("rFAMS")
+```
+
+The [development version](https://github.com/fishR-Core-Team/rFAMS) may be installed from GitHub with
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("fishR-Core-Team/FAMS")
+devtools::install_github("fishR-Core-Team/rFAMS")
 ```
+You may need R Tools installed on your system to install the development version from GitHub. See the instructions for ([R Tools for Windows](https://cran.r-project.org/bin/windows/Rtools/) or [R Tools for Mac OS X](https://cran.r-project.org/bin/macosx/tools/)).
 
-## Example (Section Under Development)
+&nbsp;
 
-This is a basic example which shows you how to solve a common problem:
+### Questions / Comments / Problems or Contributions
+Report questions, comments, or bug reports on the [issues page](https://github.com/fishR-Core-Team/rFAMS/issues).
+
+We are always looking for others to contribute to **FSA**. Please feel free to make a pull request via GitHub or to contact the maintainers.
+
+Please adhere to the [Code of Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
+
+## Example
+
+This is a basic example which shows you how simulate yield based on a slot limit with variable cf and variable cm:
 
 ```{r example}
 #Load other required packages for organizing output and plotting
