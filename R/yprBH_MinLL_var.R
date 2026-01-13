@@ -51,7 +51,7 @@
 #' Res_1 <- yprBH_minLL_var(lengthmin=200,lengthinc=50,lengthmax=550,
 #'                        cfmin=0.1,cfmax=0.9,cfinc=0.1,
 #'                        cmmin=0.1,cmmax=0.9,cminc=0.1,
-#'                        loi=c(200,250,300,325,350),lhparms=LH)
+#'                        loi=c(400,450,500,550)),lhparms=LH)
 #'
 #' # Load other required packages for organizing output and plotting
 #' library(dplyr)    ## for filter

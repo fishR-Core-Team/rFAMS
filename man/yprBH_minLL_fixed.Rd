@@ -105,6 +105,12 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
   labs(y="Yield (g)",x="Exploitation (u)") +
   theme_FAMS()
 
+#Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
+ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
+  geom_point() +
+  geom_line() +
+  labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
+  theme_FAMS()
 
 }
 \seealso{
