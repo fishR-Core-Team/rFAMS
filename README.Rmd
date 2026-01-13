@@ -58,7 +58,7 @@ devtools::install_github("fishR-Core-Team/FAMS")
 
 ## Example (Section Under Development)
 
-This is a basic example which shows you how to solve a common problem:
+This is a basic example which shows you how simulate yield based on a slot limit with variable cf and variable cm:
 
 ```{r example}
 #Load other required packages for organizing output and plotting
