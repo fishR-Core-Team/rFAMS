@@ -125,16 +125,14 @@ ggplot(data=plot_dat,mapping=aes(y=yield,x=u,
 # Yield isopleths for varying minLL and exploitation with cm=0.40
 # # Using same data as previous example
 ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=yield)) +
-  geom_contour(color="black") +
-  metR::geom_text_contour(stroke=0.15) +
+  geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)") +
   ylab("Minimum length limit (mm)") +
   theme_FAMS()
 
 # Same as previous but using number harvested isopleths
 ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=Nharvest)) +
-  geom_contour(color="black")+
-  metR::geom_text_contour(stroke = 0.15)+
+  geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)")+
   ylab("Minimum length limit (mm)")+
   theme_FAMS()

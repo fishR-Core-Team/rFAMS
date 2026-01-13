@@ -113,7 +113,6 @@ Details will be filled out later
 #Load other required packages for organizing output and plotting
 library(ggplot2)
 library(dplyr)
-library(metR)
 library(tidyr)
 
 # Custom theme for plots (to make look nice)
