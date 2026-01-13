@@ -54,7 +54,6 @@
 #' # Load other required packages for organizing output and plotting
 #' library(dplyr)    ## for filter
 #' library(ggplot2)  ## for ggplot et al.
-#' library(metR)     ## geom_text_contour
 #'
 #' # Custom theme for plots (to make look nice)
 #' theme_FAMS <- function(...) {

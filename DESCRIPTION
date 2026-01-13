@@ -1,15 +1,16 @@
 Package: rFAMS
 Version: 0.0.1
-Date: 2026-1-7
+Date: 2026-1-13
 Title: Fisheries Analysis and Modeling Simulator
-Authors@R: c(person(c("Jason","C."), "Doll", email="jcdoll20@hotmail.com",role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-9024-2561")),
-           person(c("Derek","H."), "Ogle", email="DerekOgle51@gmail.com",role=c("aut"),
-           comment=c(ORCID="0000-0002-0370-9299")))
+Authors@R: c(person(c("Jason","C."), "Doll", email="jcdoll20@hotmail.com",
+           role = c("aut", "cre")),
+           person(c("Derek","H."), "Ogle", email="DerekOgle51@gmail.com",
+           role=c("aut"))
+           )
 Description: Package to simulate yield for fisheries analysis.
-URL: https://github.com/fishR-Core-Team/rFAMS
+URL: https://github.com/fishR-Core-Team/rFAMS/
 BugReports: https://github.com/fishR-Core-Team/rFAMS/issues
-License: file LICENSE
+License: GPL (>= 2)
 Depends:
   R (>= 4.1.0)
 Imports:
