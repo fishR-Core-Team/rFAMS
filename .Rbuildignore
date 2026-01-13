@@ -18,3 +18,4 @@ cran-comments.md
 ^vignettes/articles/*_files$
 ^vignettes/articles$
 CODE_OF_CONDUCT.md
+^\.github$
