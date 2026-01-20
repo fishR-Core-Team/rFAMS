@@ -81,6 +81,7 @@ Res_1 <- yprBH_minLL_fixed(minLL=200,
 # Load other required packages for organizing output and plotting
 library(dplyr)    ## for filter
 library(ggplot2)  ## for ggplot et al.
+library(tidyr)    ## for pivot_longer
 
 # Custom theme for plots (to make look nice)
 theme_FAMS <- function(...) {
@@ -111,6 +112,22 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
   geom_line() +
   labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
   theme_FAMS()
+# Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
+# Select columns for plotting and convert to long
+plot_data_long <- plot_dat \%>\%
+  select(u,`N at 200 mm`, `N at 250 mm`, `N at 300 mm`, `N at 350 mm`) \%>\%
+  pivot_longer(!u, names_to="loi",values_to="number")
+
+# Generate plot
+ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
+  geom_point() +
+  scale_color_discrete(name="Yield",labels=c("N at 200 mm",
+                       "N at 250 mm", "N at 300 mm", "N at 350 mm"))+
+  geom_line() +
+  labs(y="Number of fish",x="Exploitation (u)") +
+  theme_FAMS() +
+  theme(legend.position = "top")+
+  guides(color=guide_legend(title="Length of interest"))
 
 }
 \seealso{

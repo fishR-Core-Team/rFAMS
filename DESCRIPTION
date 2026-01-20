@@ -1,5 +1,5 @@
 Package: rFAMS
-Version: 0.0.1
+Version: 0.0.2
 Date: 2026-1-13
 Title: Fisheries Analysis and Modeling Simulator
 Authors@R: c(person(c("Jason","C."), "Doll", email="jcdoll20@hotmail.com",
@@ -7,7 +7,14 @@ Authors@R: c(person(c("Jason","C."), "Doll", email="jcdoll20@hotmail.com",
            person(c("Derek","H."), "Ogle", email="DerekOgle51@gmail.com",
            role=c("aut"))
            )
-Description: Package to simulate yield for fisheries analysis.
+Description: Simulates the dynamics of exploited fish populations using the Jones modification of the Beverton-Holt 
+             equilibrium yield equation to compute yield-per-recruit and dynamic pool models (Ricker 1975) 
+             <https://publications.gc.ca/site/eng/480738/publication.html>. 
+             Allows users to evaluate minimum, slot, and inverted length limits on exploited fisheries using 
+             specified life history parameters. Users can simulate population under a variety of conditional fishing mortality 
+             and conditional natural mortality. Calculated quantities include number of fish harvested and dying naturally, 
+             mean weight and length of fish harvested, number of fish that reach specified lengths of interest, total number 
+             of fish and biomass in the population, and stock density indices.
 URL: https://github.com/fishR-Core-Team/rFAMS/
 BugReports: https://github.com/fishR-Core-Team/rFAMS/issues
 License: GPL (>= 2)

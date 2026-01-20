@@ -13,45 +13,46 @@ knitr::opts_chunk$set(
 )
 ```
 
-# FAMS
+## rFAMS
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
-Fisheries Analysis and Modeling Simulator in R
+### Fisheries Analysis and Modeling Simulator in R
 
-## Purpose
+Simulates the dynamics of exploited fish populations using the Jones modification of the Beverton-Holt equilibrium yield equation to compute yield-per-recruit and dynamic pool models (Ricker 1975) <https://publications.gc.ca/site/eng/480738/publication.html>. Allows users to evaluate minimum, slot, and inverted length limits on exploited fisheries using specified life history parameters. Users can simulate population under a variety of conditional fishing mortality and conditional natural mortality. Calculated quantities include number of fish harvested and dying naturally, mean weight and length of fish harvested, number of fish that reach specified lengths of interest, total number of fish and biomass in the population, and stock density indices.
 
-To recreate and expand/improve upon the FAMS/FAST software functionality for equilibrium and dynamic pool models, utilizing existing fishR and FSA components wherever possible
+### Support
 
-## Status
+This project is supported in part by the American Fisheries Society Data and Technology Section (<https://units.fisheries.org/fits/>)
 
-The package currently replicates all yield per recruit and dynamic pool modeling in FAMS with the exception of spawning potential ratio. That function will be added at a later date. Life history parameters can be estimated using FSA.
+### Status
 
-## Process 
+The package currently replicates all yield per recruit and dynamic pool modeling in FAMS with the exception of spawning potential ratio. Spawning potential ratio calculations will be added at a later date. Life history parameters can be estimated using FSA.
 
-### Equilibrium Modeling
+#### Equilibrium Modeling
 
-1. Initial package development completed
-2. Add spawning potential ratio
-3. Incorporate suggestions from the fisheries community.
+1.  Initial package development completed
+2.  Add spawning potential ratio
+3.  Incorporate suggestions from the fisheries community.
 
-### Dynamic Pool Modeling
+#### Dynamic Pool Modeling
 
-1. Complete
-2. Add spawning potential ratio
-3. Incorporate suggestions from the fisheries community.
+1.  Complete
+2.  Add spawning potential ratio
+3.  Incorporate suggestions from the fisheries community.
 
-### RShiny Development
+#### RShiny Development
 
-1. Initial development completed
-2. Build a Shiny app for testing different length regulation scenarios.
+1.  Initial development completed
+2.  Test with CRAN released rFAMS v0.0.1
 
-## Installation
+### Installation
 
 The [most recent stable version](https://cloud.r-project.org/package=rFAMS) from CRAN may be installed with
 
-```r
+``` r
 install.packages("rFAMS")
 ```
 
@@ -61,74 +62,81 @@ The [development version](https://github.com/fishR-Core-Team/rFAMS) may be insta
 # install.packages("devtools")
 devtools::install_github("fishR-Core-Team/rFAMS")
 ```
+
 You may need R Tools installed on your system to install the development version from GitHub. See the instructions for ([R Tools for Windows](https://cran.r-project.org/bin/windows/Rtools/) or [R Tools for Mac OS X](https://cran.r-project.org/bin/macosx/tools/)).
 
-&nbsp;
+ 
 
-### Questions / Comments / Problems or Contributions
+#### Questions / Comments / Problems or Contributions
+
 Report questions, comments, or bug reports on the [issues page](https://github.com/fishR-Core-Team/rFAMS/issues).
-
-We are always looking for others to contribute to **FSA**. Please feel free to make a pull request via GitHub or to contact the maintainers.
 
 Please adhere to the [Code of Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
 
-## Example
+### Example
 
-This is a basic example which shows you how simulate yield based on a slot limit with variable cf and variable cm:
+This is a basic example which shows you how simulate yield based on a single minimum length limit with variable cf and variable cm:
 
 ```{r example}
 #Load other required packages for organizing output and plotting
 library(rFAMS)
-library(ggplot2)
-library(dplyr)
-library(metR)
-library(tidyr)
-
-# Custom theme for plots (to make look nice)
-theme_FAMS <- function(...) {
-  theme_bw() +
-  theme(
-    panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-    axis.text=element_text(size=14,color="black"),
-    axis.title=element_text(size=16,color="black"),
-    axis.title.y=element_text(angle=90),
-    axis.line=element_line(color="black"),
-    panel.border=element_blank()
-  )
-}
+library(tidyr)    ## for pivot_longer
+library(dplyr)    ## for filter
+library(ggplot2)  ## for ggplot et al.
 
 # Life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
-#Estimate yield
-Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
-                      cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
-                      lhparms=LH)
+# Estimate yield for one minLL and multiple cf and cm values.
+#  This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
+#  to produce finer-scaled results
+Res_1 <- yprBH_minLL_fixed(minLL=200,
+                          cfmin=0.1,cfmax=0.9,cfinc=0.1,
+                          cmmin=0.1,cmmax=0.9,cminc=0.1,
+                          loi=c(200,250,300,350),lhparms=LH)
 
-Res_1
+# Custom theme for plots (to make look nice)
+theme_FAMS <- function(...) {
+ theme_bw() +
+ theme(
+   panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
+   axis.text=element_text(size=14,color="black"),
+   axis.title=element_text(size=16,color="black"),
+   axis.title.y=element_text(angle=90),
+   axis.line=element_line(color="black"),
+   panel.border=element_blank()
+ )
+}
 
-# Plot results
-# Total Yield vs Conditional Natural Mortality (cm)
-ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
+# Yield curve (yield vs exploitation)
+# Extract results for cm=0.40
+plot_dat <- Res_1 |> dplyr::filter(cm==0.40)
+
+ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
  geom_point() +
  geom_line() +
- labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
+ labs(y="Yield (g)",x="Exploitation (u)") +
  theme_FAMS()
 
-
-# Yield under, in, and above the slot limit vs Conditional Natural Mortality (cm)
-# Select columns for plotting
-plot_data <- Res_1 %>%
- select(cm, yieldUnder, yieldIn, yieldAbove) %>%
- pivot_longer(!cm, names_to="YieldCat",values_to="Yield")
+ #Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
+ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
+ geom_point() +
+ geom_line() +
+ labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
+ theme_FAMS()
+# Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
+# Select columns for plotting and convert to long
+plot_data_long <- plot_dat %>%
+ select(u,`N at 200 mm`, `N at 250 mm`, `N at 300 mm`, `N at 350 mm`) %>%
+ pivot_longer(!u, names_to="loi",values_to="number")
 
 # Generate plot
-ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
+ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
  geom_point() +
- scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Under SL"))+
+ scale_color_discrete(name="Yield",labels=c("N at 200 mm", "N at 250 mm", "N at 300 mm", "N at 350 mm"))+
  geom_line() +
- labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
+ labs(y="Number of fish",x="Exploitation (u)") +
  theme_FAMS() +
  theme(legend.position = "top")+
- guides(color=guide_legend(title="Yield"))
+ guides(color=guide_legend(title="Length of interest"))
 ```
