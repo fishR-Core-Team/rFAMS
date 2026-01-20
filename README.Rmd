@@ -23,6 +23,8 @@ knitr::opts_chunk$set(
 
 Simulates the dynamics of exploited fish populations using the Jones modification of the Beverton-Holt equilibrium yield equation to compute yield-per-recruit and dynamic pool models (Ricker 1975) <https://publications.gc.ca/site/eng/480738/publication.html>. Allows users to evaluate minimum, slot, and inverted length limits on exploited fisheries using specified life history parameters. Users can simulate population under a variety of conditional fishing mortality and conditional natural mortality. Calculated quantities include number of fish harvested and dying naturally, mean weight and length of fish harvested, number of fish that reach specified lengths of interest, total number of fish and biomass in the population, and stock density indices.
 
+This package is maintained by [Jason Doll](mailto:jcdoll20@hotmail.com), Associate Professor of Fisheries at Francis Marion University
+
 ### Support
 
 This project is supported in part by the American Fisheries Society Data and Technology Section (<https://units.fisheries.org/fits/>)

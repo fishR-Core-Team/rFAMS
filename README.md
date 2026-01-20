@@ -22,6 +22,9 @@ harvested, number of fish that reach specified lengths of interest,
 total number of fish and biomass in the population, and stock density
 indices.
 
+This package is maintained by [Jason Doll](mailto:jcdoll20@hotmail.com),
+Associate Professor of Fisheries at Francis Marion University
+
 ### Support
 
 This project is supported in part by the American Fisheries Society Data
