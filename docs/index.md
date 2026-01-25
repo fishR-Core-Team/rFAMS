@@ -144,7 +144,7 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
 ![](reference/figures/README-example-2.png)
 
 ``` r
-# Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
+# Plot number of fish reaching multiple monitored lengths as a function of exploitation with cm = 0.40
 # Select columns for plotting and convert to long
 plot_data_long <- plot_dat %>%
  select(u,`N at 200 mm`, `N at 250 mm`, `N at 300 mm`, `N at 350 mm`) %>%
