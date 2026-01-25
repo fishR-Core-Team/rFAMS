@@ -1,3 +1,6 @@
+# rFAMS 0.0.2.9000
+*This is the start of the next version
+
 # rFAMS 0.0.2
 *Addressed comments in DESCRIPTION file from CRAN reviewer.
 

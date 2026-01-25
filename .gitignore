@@ -46,3 +46,4 @@ vignettes/*.pdf
 development-commands.R
 inst/doc
 **/.quarto/
+docs

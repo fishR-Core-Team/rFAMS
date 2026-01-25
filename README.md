@@ -56,13 +56,15 @@ Life history parameters can be estimated using FSA.
 
 ### Installation
 
-The [most recent stable
-version](https://cloud.r-project.org/package=rFAMS) from CRAN may be
-installed with
+<!-- The [most recent stable version](https://cloud.r-project.org/package=rFAMS) from CRAN may be installed with -->
 
-``` r
-install.packages("rFAMS")
-```
+<!-- ``` r -->
+
+<!-- install.packages("rFAMS") -->
+
+<!-- ``` -->
+
+<!-- -->
 
 The [development version](https://github.com/fishR-Core-Team/rFAMS) may
 be installed from GitHub with

@@ -13,6 +13,7 @@ cran-comments.md
 ^tests/FunctionTesting/
 
 ## Misecellaneous files
+^vignettes
 ^Misc/
 ^vignettes/articles/\.quarto$
 ^vignettes/articles/*_files$
@@ -20,3 +21,6 @@ cran-comments.md
 CODE_OF_CONDUCT.md
 ^\.github$
 LICENSE
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
