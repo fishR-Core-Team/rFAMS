@@ -1,4 +1,15 @@
-url: ~
+title: rFAMS
+
+url: https://fishr-core-team.github.io/rFAMS/
+
+authors:
+  Jason Doll:
+  Derek H. Ogle:
+
+
 template:
   bootstrap: 5
+  bootswatch: flatly
 
+development:
+  mode: release

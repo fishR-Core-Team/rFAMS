@@ -13,6 +13,7 @@ cran-comments.md
 ^tests/FunctionTesting/
 
 ## Misecellaneous files
+^vignettes
 ^Misc/
 ^vignettes/articles/\.quarto$
 ^vignettes/articles/*_files$
