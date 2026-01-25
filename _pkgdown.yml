@@ -13,3 +13,22 @@ template:
 
 development:
   mode: release
+
+navbar:
+  left:
+    - text: Reference
+      href: reference/index.html
+    - text: Articles
+      menu:
+      - text: Comparing FAMS and Ricker YPR Equations
+        href: articles/YPR_FAMSvRICKER.html
+  right:
+    - icon: fa-newspaper
+      href: news/index.html
+      aria-label: See package news
+    - icon: fa-home fa
+      href: index.html
+      aria-label: Goto rFAMS home
+    - icon: fa-github fa
+      href: https://github.com/fishR-Core-Team/rFAMS
+      aria-label: Goto rFAMS github page
