@@ -21,10 +21,6 @@
 .Rproj.user/
 .Rproj
 
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
-
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
 
@@ -43,7 +39,5 @@ vignettes/*.pdf
 .DS_Store
 
 # Local programming and notes not relevant to others
-development-commands.R
-inst/doc
 **/.quarto/
-docs
+docs/*
