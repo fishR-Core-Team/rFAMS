@@ -5,7 +5,7 @@ library(rFAMS)
 library(ggplot2)  ## to make figures
 library(tidyr)    ## for pivot_longer
 library(dplyr)    ## for filter
-library(metR)     ## geom_contour2
+library(metR)     ## geom_text_contour
 ```
 
 The objective of this article is to demonstrate how to use rFAMS to
@@ -177,7 +177,7 @@ theme_FAMS <- function(...) {
 The first graph will be a yield curve that displays the relationship
 between yield as a function of exploitation for a specified conditional
 natural morality `cm`. The example below uses `cm` = 0.30, which is
-close to the mean estimated `cm` above of 0.27
+close to the estimated mean `cm` above of 0.27
 
 ``` r
 # Round cm to account for "floating point arithmetic inaccuracies"
@@ -198,7 +198,7 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
 
 This next graph plots yield curves as a function of exploitation with
 multiple minimum lengths for a specified conditional natural morality
-`cm`. The example below uses `cm` = 0.30, as above
+`cm`. The example below uses `cm` = 0.30, as above.
 
 ``` r
 # Round cm to account for "floating point arithmetic inaccuracies"
@@ -227,7 +227,7 @@ code block above.
 
 ``` r
 # Extract results for cm=0.40 and minimum length limit=400
-plot_dat <- Res_1 |> dplyr::filter(cm==0.40,minLL==400)
+plot_dat <- Res_1 |> dplyr::filter(cm==0.30,minLL==400)
 
 ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 450 mm`)) +
   geom_point() +

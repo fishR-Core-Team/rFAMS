@@ -190,7 +190,7 @@ iCheckcfminc <- function(xinc,xmin,xmax) {
   nm1 <- paste0("'",deparse(substitute(xmin)),"'")
   nm2 <- paste0("'",deparse(substitute(xmax)),"'")
   if(xmin>xmax) STOP(nm1," must be equal to or less than ",nm2,".")
-  res <- seq(xmin,xmax,xinc)
+  res <- round(seq(xmin,xmax,xinc),8)
   if (length(res)>100)
     WARN("Choices of ",nm1,", ",nm2,", and ",nm," resulted in ",length(res),
          " values.\n","  Depending on other choices the simulation may be slow.")
