@@ -18,11 +18,7 @@ navbar:
   left:
     - text: Reference
       href: reference/index.html
-    - text: Demonstrations
-      menu:
-      - text: Estimate yield based on a single minimum length limit
-        href: articles/YPR_fixedMLL.html
-    - text: Explanations
+    - text: Articles
       menu:
       - text: Comparing FAMS and Ricker YPR Equations
         href: articles/YPR_FAMSvRICKER.html
