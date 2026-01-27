@@ -22,6 +22,8 @@ navbar:
       menu:
       - text: Estimate yield based on a single minimum length limit
         href: articles/YPR_fixedMLL.html
+      - text: Estimate yield based on multiple minimum length limit
+        href: articles/YPR_VarMLL.html
     - text: Explanations
       menu:
       - text: Comparing FAMS and Ricker YPR Equations

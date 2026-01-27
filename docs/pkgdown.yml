@@ -4,7 +4,8 @@ pkgdown_sha: ~
 articles:
   articles/YPR_FAMSvRICKER: YPR_FAMSvRICKER.html
   articles/YPR_fixedMLL: YPR_fixedMLL.html
-last_built: 2026-01-25T23:33Z
+  articles/YPR_VarMLL: YPR_VarMLL.html
+last_built: 2026-01-27T15:31Z
 urls:
   reference: https://fishr-core-team.github.io/rFAMS/reference
   article: https://fishr-core-team.github.io/rFAMS/articles

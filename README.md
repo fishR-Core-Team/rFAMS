@@ -35,7 +35,8 @@ and Technology Section (<https://units.fisheries.org/fits/>)
 The package currently replicates all yield per recruit and dynamic pool
 modeling in FAMS with the exception of spawning potential ratio.
 Spawning potential ratio calculations will be added at a later date.
-Life history parameters can be estimated using FSA.
+Life history parameters can be estimated using [FSA
+package](https://fishr-core-team.github.io/FSA/index.html)
 
 #### Equilibrium Modeling
 
@@ -52,7 +53,7 @@ Life history parameters can be estimated using FSA.
 #### RShiny Development
 
 1.  Initial development completed
-2.  Test with CRAN released rFAMS v0.0.1
+2.  Test with CRAN released rFAMS v0.0.2
 
 ### Installation
 
