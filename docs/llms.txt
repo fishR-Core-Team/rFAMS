@@ -1,4 +1,4 @@
-## rFAMS
+## rFAMS ![rFAMS logo](reference/figures/rFAMSLogo.png)
 
 ### Fisheries Analysis and Modeling Simulator in R
 

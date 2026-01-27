@@ -32,6 +32,7 @@ The objective of this article is to demonstrate how to use rFAMS to calculate yi
 
 # Build a life history parameter list
 The first step for using any of the rFAMS simulation models is to create an object with life history parameters using the `makeLH()` function. THe `makeLH()` function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters ($L_\infty$, $K$, and $t_0$), and parameters from the log10-transformed weight length model (alpha and beta). By default, the `makeLH()` returns a list. These values can be generated from functions in the [FSA package](https://fishr-core-team.github.io/FSA/index.html). The example below uses the following life history parameters:
+
 - NO is the initial number of recruits, set to 100.
 - tmax is the maximum age in the population in years, set to 15.
 - Linf is the point estimate of asymptotic mean length from the von Bertalanffy growth model, set to 592mm.
@@ -61,13 +62,14 @@ Once you have decided the range of cf and cm and decided what minimum length lim
 
 ```{r}
 #| label: estimate yield
-Res_1 <- yprBH_minLL_fixed(minLL=200,
-                          cfmin=0.1,cfmax=0.9,cfinc=0.1,
-                          cmmin=0.1,cmmax=0.9,cminc=0.1,
-                          loi=c(200,250,300,350),lhparms=LH)
+Res_1 <- yprBH_minLL_fixed(minLL=200,                     #Specifies minimum length limits
+                          cfmin=0.1,cfmax=0.9,cfinc=0.1,  #creates vector of cf values
+                          cmmin=0.1,cmmax=0.9,cminc=0.1,  #creates vector of cm values
+                          loi=c(200,250,300,350),         #sets lengths of interest to monitor
+                          lhparms=LH)                     #Specifies life history parameters
 ```
 
-The output object will be a A data.frame with the following calculated values:
+The output object will be a data.frame with the following calculated values:
 
 - yield is the estimated yield (in g).
 - exploitation is the exploitation rate.
@@ -82,6 +84,13 @@ The output object will be a A data.frame with the following calculated values:
 - Z is the instantaneous rate of total mortality.
 - S is the (total) annual rate of survival.
 - N at xxx mm is the number that reach the length of interest supplied. There will be one column for each length of interest.
+
+View the first few rows of the output
+
+```{r}
+#| label: view results
+head(Res_1)
+```
 
 # Plot results
 
@@ -103,12 +112,18 @@ theme_FAMS <- function(...) {
 }
 ```
 
-The first figure will be a yield curve that displays the relationship between yield as a function of exploitation for a specified conditional natural morality `cm`.
+## Yield as a function of exploitation
+
+The first figure will be a yield curve that displays the relationship between yield as a function of exploitation for a specified conditional natural morality `cm`. The example below uses `cm` = 0.30, which is close to the  estimated mean `cm` above of 0.27.
 
 ```{r}
 #| label: generate yield plot
-# Extract results for cm=0.40
-plot_dat <- Res_1 |> dplyr::filter(cm==0.40)
+# Round cm to account for "floating point arithmetic inaccuracies"
+# will be fixed in next version of rFAMS so this isn't needed
+Res_1$cm <- round(Res_1$cm,8)
+
+# Extract results for cm=0.30
+plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
 ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
  geom_point() +
@@ -117,7 +132,9 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
  theme_FAMS()
 ```
 
-The next figure demonstrates how to explore the number of fish reaching a specified length. This figure creates a plot showing the number of fish reaching 300mm as a function of exploitation. Note this is based on a conditional natural mortality `cm` of 0.40 which was filtered out in the code block above.
+## Number of fish that reach a specified size as a function of exploitation
+
+The next figure demonstrates how to explore the number of fish reaching a specified length. This figure creates a plot showing the number of fish reaching 300mm as a function of exploitation. Note this is based on a conditional natural mortality `cm` of 0.30 which was filtered out in the code block above.
 
 ```{r}
 #| label: Plot of fish reaching 300mm
@@ -128,7 +145,7 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
  theme_FAMS()
 ```
 
-The last example figure plots the number of fish reaching all the lengths of interests we monitored as a function of exploitation with conditional natural mortality `cm` of 0.40 which was filtered out above.
+The last example figure plots the number of fish reaching all the lengths of interests we monitored as a function of exploitation with conditional natural mortality `cm` of 0.30 which was filtered out above.
 
 ```{r}
 #| label: Plot of fish reaching all sizes

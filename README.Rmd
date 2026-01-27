@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## rFAMS
+## rFAMS <img src="man/figures/rFAMSLogo.png" align="right" height="150" width="150" alt="rFAMS logo" />
 
 <!-- badges: start -->
 

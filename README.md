@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-## rFAMS
+## rFAMS <img src="man/figures/rFAMSLogo.png" align="right" height="150" width="150" alt="rFAMS logo" />
 
 <!-- badges: start -->
 
