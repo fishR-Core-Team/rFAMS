@@ -85,6 +85,8 @@ The output object will be a data.frame with the following calculated values:
 - S is the (total) annual rate of survival.
 - N at xxx mm is the number that reach the length of interest supplied. There will be one column for each length of interest.
 
+For convenience the data.frame also contains the model input values (minLL derived from lengthmin, lengthmax, and lengthinc; cf derived from cfmin, cfmax, and cfinc; cm derived from cmmin, cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).
+
 View the first few rows of the output
 
 ```{r}
