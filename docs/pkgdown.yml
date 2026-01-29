@@ -2,10 +2,13 @@ pandoc: 3.6.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
+  articles/dpmBH: dpmBH.html
+  articles/MakeLH: MakeLH.html
   articles/YPR_FAMSvRICKER: YPR_FAMSvRICKER.html
   articles/YPR_fixedMLL: YPR_fixedMLL.html
+  articles/YPR_slotLimit: YPR_slotLimit.html
   articles/YPR_VarMLL: YPR_VarMLL.html
-last_built: 2026-01-27T18:46Z
+last_built: 2026-01-29T14:40Z
 urls:
   reference: https://fishr-core-team.github.io/rFAMS/reference
   article: https://fishr-core-team.github.io/rFAMS/articles

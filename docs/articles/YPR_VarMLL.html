@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,8 +35,11 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-demonstrations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Demonstrations</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-demonstrations">
-<li><a class="dropdown-item" href="../articles/YPR_fixedMLL.html">Estimate yield based on a single minimum length limit</a></li>
+<li><a class="dropdown-item" href="../articles/MakeLH.html">Create life history object</a></li>
+    <li><a class="dropdown-item" href="../articles/YPR_fixedMLL.html">Estimate yield based on a single minimum length limit</a></li>
     <li><a class="dropdown-item" href="../articles/YPR_VarMLL.html">Estimate yield based on multiple minimum length limit</a></li>
+    <li><a class="dropdown-item" href="../articles/YPR_slotLimit.html">Estimate yield based on a slot length limit</a></li>
+    <li><a class="dropdown-item" href="../articles/dpmBH.html">Simulate a population using the dynamic pool model</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -62,7 +65,7 @@
       <h1>Estimate yield based on multiple minimum length limits</h1>
 
       <p class="author">Jason Doll</p>
-      <p class="date">2026-01-27</p>
+      <p class="date">2026-01-29</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/YPR_VarMLL.qmd" class="external-link"><code>vignettes/articles/YPR_VarMLL.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -84,7 +87,7 @@
 <p>The objective of this article is to demonstrate how to use rFAMS to calculate yield based on multiple minimum length limit with multiple values of conditional fishing and conditional natural mortality.</p>
 <section class="section level2"><h2 id="build-a-life-history-parameter-list">Build a life history parameter list<a class="anchor" aria-label="anchor" href="#build-a-life-history-parameter-list"></a>
 </h2>
-<p>The first step for using any of the rFAMS simulation models is to create an object with life history parameters using the <code><a href="../reference/makeLH.html">makeLH()</a></code> function. THe <code><a href="../reference/makeLH.html">makeLH()</a></code> function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>∞</mi></msub><annotation encoding="application/x-tex">L_\infty</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>0</mn></msub><annotation encoding="application/x-tex">t_0</annotation></semantics></math>), and parameters from the log10-transformed weight length model (alpha and beta). By default, the <code><a href="../reference/makeLH.html">makeLH()</a></code> returns a list. These values can be generated from functions in the <a href="https://fishr-core-team.github.io/FSA/index.html" class="external-link">FSA package</a>. The example below uses the following life history parameters: - NO is the initial number of recruits, set to 100. - tmax is the maximum age in the population in years, set to 15. - Linf is the point estimate of asymptotic mean length from the von Bertalanffy growth model, set to 592mm. - K (upper case) is the point estimate of the Brody growth coefficient from the von Bertalanffy growth model, set to 0.20. - t0 is the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model, set to -0.3. - LWalpha is the point estimate of alpha from the length-weight regression on the log10 scale, set to -5.528. - LWbeta is the point estimate of beta from the length-weight regression on the log10 scale, set to 3.273.</p>
+<p>The first step for using any of the rFAMS simulation models is to create an object with life history parameters using the <code><a href="../reference/makeLH.html">makeLH()</a></code> function. THe <code><a href="../reference/makeLH.html">makeLH()</a></code> function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>∞</mi></msub><annotation encoding="application/x-tex">L_\infty</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>0</mn></msub><annotation encoding="application/x-tex">t_0</annotation></semantics></math>), and parameters from the log10-transformed weight length model (alpha and beta). By default, the <code><a href="../reference/makeLH.html">makeLH()</a></code> returns a list. Growth length-weight model paramaters can be generated from functions in the <a href="https://fishr-core-team.github.io/FSA/index.html" class="external-link">FSA package</a>. The example below uses the following life history parameters: - NO is the initial number of recruits, set to 100. - tmax is the maximum age in the population in years, set to 15. - Linf is the point estimate of asymptotic mean length from the von Bertalanffy growth model, set to 592mm. - K (upper case) is the point estimate of the Brody growth coefficient from the von Bertalanffy growth model, set to 0.20. - t0 is the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model, set to -0.3. - LWalpha is the point estimate of alpha from the length-weight regression on the log10 scale, set to -5.528. - LWbeta is the point estimate of beta from the length-weight regression on the log10 scale, set to 3.273.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create life history parameter object</span></span>
@@ -144,6 +147,7 @@
 <li>S is the (total) annual rate of survival.</li>
 <li>N at xxx mm is the number that reach the length of interest supplied. There will be one column for each length of interest.</li>
 </ul>
+<p>For convenience the data.frame also contains the model input values (minLL derived from lengthmin, lengthmax, and lengthinc; cf derived from cfmin, cfmax, and cfinc; cm derived from cmmin, cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).</p>
 <p>View the first few rows of the output</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">

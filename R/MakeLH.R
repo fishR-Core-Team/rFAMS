@@ -48,9 +48,9 @@
 #' data(SpotVA1,package="FSA")
 #' SpotVA1 <- SpotVA1 |>
 #'   dplyr::mutate(tl=tl*25.4)
-#' vb1 <- FSA::vbFuns()
+#' vb1 <- FSA::makeGrowthFun(type="von Bertalanffy")
 #' fit1 <- nls(tl~vb1(age,Linf,K,t0),data=SpotVA1,
-#'             start=FSA::vbStarts(tl~age,data=SpotVA1))
+#'             start=FSA::findGrowthStarts(tl~age,data=SpotVA1))
 #'
 #' ## get some LW results (as an example)
 #' data(BluegillLM,package="FSAdata")

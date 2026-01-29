@@ -31,7 +31,7 @@ library(dplyr)    ## for filter
 The objective of this article is to demonstrate how to use rFAMS to calculate yield based on a fixed minimum length limit with multiple values of conditional fishing and conditional natural mortality.
 
 # Build a life history parameter list
-The first step for using any of the rFAMS simulation models is to create an object with life history parameters using the `makeLH()` function. THe `makeLH()` function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters ($L_\infty$, $K$, and $t_0$), and parameters from the log10-transformed weight length model (alpha and beta). By default, the `makeLH()` returns a list. These values can be generated from functions in the [FSA package](https://fishr-core-team.github.io/FSA/index.html). The example below uses the following life history parameters:
+The first step for using any of the rFAMS simulation models is to create an object with life history parameters using the `makeLH()` function. THe `makeLH()` function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters ($L_\infty$, $K$, and $t_0$), and parameters from the log10-transformed weight length model (alpha and beta). By default, the `makeLH()` returns a list. Growth length-weight model paramaters can be generated from functions in the [FSA package](https://fishr-core-team.github.io/FSA/index.html). The example below uses the following life history parameters:
 
 - NO is the initial number of recruits, set to 100.
 - tmax is the maximum age in the population in years, set to 15.
@@ -84,6 +84,8 @@ The output object will be a data.frame with the following calculated values:
 - Z is the instantaneous rate of total mortality.
 - S is the (total) annual rate of survival.
 - N at xxx mm is the number that reach the length of interest supplied. There will be one column for each length of interest.
+
+For convenience the data.frame also contains the model input values (minLL; cf derived from cfmin, cfmax, and cfinc; cm derived from cmmin, cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).
 
 View the first few rows of the output
 

@@ -6,7 +6,7 @@
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
 #' @param cf A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
 #' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
-#' @param rec A single numeric representing initial recruitment abundance.
+#' @param rec A A numeric vector of length `simyears` to specify recruitment each year. The vector can be geneated using the `genRecruits()` function.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #' @param species is a single character to specify the species used in the simulation and will define the length for `stock`, `quality`, `preferred`, `memorable`, and `trophy`. Length categories are obtained from the FSA package, see the \code{\link[FSA]{PSDlit}} documentation.
