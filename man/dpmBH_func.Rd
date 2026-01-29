@@ -13,7 +13,7 @@ dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker = FALSE)
 
 \item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.}
 
-\item{rec}{A single numeric representing initial recruitment abundance.}
+\item{rec}{A numeric vector of length \code{simyears} to specify recruitment each year. The vector can be geneated using the \code{genRecruits()} function.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
