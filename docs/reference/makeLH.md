@@ -105,6 +105,7 @@ library(FSA)
 #> ## Run fishR() for related website and fishR('IFAR') for related book.
 library(FSAdata)
 #> ## FSAdata v0.4.1. See ?FSAdata to find data for specific fisheries analyses.
+library(dplyr)
 
 # ----- Simple examples with explicity arguments for each -------------------
 makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1)
@@ -140,24 +141,25 @@ makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1,
 #   and lm output here are just examples of the function, they should be
 #   calculated for the same species from the same waterbody, etc.
 
-## get some LVB results (as an example)
-data(SpotVA1,package="FSA")
-SpotVA1 <- SpotVA1 |>
-  dplyr::mutate(tl=tl*25.4)
-vb1 <- FSA::vbFuns()
-#> Warning: 'vbFuns()' is deprecated as of v0.10.0. Please use 'makeGrowthFun()' instead as it will be continuously updated in the future.
-fit1 <- nls(tl~vb1(age,Linf,K,t0),data=SpotVA1,
-            start=FSA::vbStarts(tl~age,data=SpotVA1))
-#> Warning: 'vbStarts()' is deprecated as of v0.10.0. Please use 'findGrowthStarts()' instead as it provides starting values based on a better theoretical approach which should generally work better than those provided by vbStarts().
+# Load data from FSAdata package, restrict to one location and year,
+# create log10 values of weight and length
+data(WalleyeErie2,package="FSAdata")
+tmp <- WalleyeErie2 |>
+  filter(loc==2,year==2010) |>
+  mutate(logW=log10(w),
+         logL=log10(tl))
 
-## get some LW results (as an example)
-data(BluegillLM,package="FSAdata")
-BluegillLM <- BluegillLM |>
-  dplyr::mutate(logW=log10(wght),
-                logL=log10(tl))
-fit2 <- lm(logW~logL,data=BluegillLM)
+# Generate LVB results
+vb1 <- FSA::makeGrowthFun(type="von Bertalanffy")
+fit1 <- nls(tl~vb1(age,Linf,K,t0),data=tmp,
+            start=FSA::findGrowthStarts(tl~age,data=tmp))
 
-makeLH(N0=100,tmax=15,Linf=fit1,LWalpha=fit2)
+# Generate length-weight regression results
+fit2 <- lm(logW~logL,data=tmp)
+
+# Make life-history list with those results
+waeLH <- makeLH(N0=100,tmax=15,Linf=fit1,LWalpha=fit2)
+waeLH
 #> $N0
 #> [1] 100
 #> 
@@ -165,18 +167,18 @@ makeLH(N0=100,tmax=15,Linf=fit1,LWalpha=fit2)
 #> [1] 15
 #> 
 #> $Linf
-#> [1] 426.6736
+#> [1] 587.9484
 #> 
 #> $K
-#> [1] 0.2249334
+#> [1] 0.4851255
 #> 
 #> $t0
-#> [1] -2.557382
+#> [1] -1.050782
 #> 
 #> $LWalpha
-#> [1] -5.524963
+#> [1] -5.857295
 #> 
 #> $LWbeta
-#> [1] 3.406255
+#> [1] 3.329038
 #> 
 ```

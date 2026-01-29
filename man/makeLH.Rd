@@ -35,6 +35,7 @@ Use of this function for putting life history parameters into a list or vector i
 \examples{
 library(FSA)
 library(FSAdata)
+library(dplyr)
 
 # ----- Simple examples with explicity arguments for each -------------------
 makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1)
@@ -47,22 +48,25 @@ makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1,
 #   and lm output here are just examples of the function, they should be
 #   calculated for the same species from the same waterbody, etc.
 
-## get some LVB results (as an example)
-data(SpotVA1,package="FSA")
-SpotVA1 <- SpotVA1 |>
-  dplyr::mutate(tl=tl*25.4)
+# Load data from FSAdata package, restrict to one location and year,
+# create log10 values of weight and length
+data(WalleyeErie2,package="FSAdata")
+tmp <- WalleyeErie2 |>
+  filter(loc==2,year==2010) |>
+  mutate(logW=log10(w),
+         logL=log10(tl))
+
+# Generate LVB results
 vb1 <- FSA::makeGrowthFun(type="von Bertalanffy")
-fit1 <- nls(tl~vb1(age,Linf,K,t0),data=SpotVA1,
-            start=FSA::findGrowthStarts(tl~age,data=SpotVA1))
+fit1 <- nls(tl~vb1(age,Linf,K,t0),data=tmp,
+            start=FSA::findGrowthStarts(tl~age,data=tmp))
 
-## get some LW results (as an example)
-data(BluegillLM,package="FSAdata")
-BluegillLM <- BluegillLM |>
-  dplyr::mutate(logW=log10(wght),
-                logL=log10(tl))
-fit2 <- lm(logW~logL,data=BluegillLM)
+# Generate length-weight regression results
+fit2 <- lm(logW~logL,data=tmp)
 
-makeLH(N0=100,tmax=15,Linf=fit1,LWalpha=fit2)
+# Make life-history list with those results
+waeLH <- makeLH(N0=100,tmax=15,Linf=fit1,LWalpha=fit2)
+waeLH
 
 }
 \author{

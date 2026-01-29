@@ -117,6 +117,7 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ## Run fishR() for related website and fishR('IFAR') for related book.</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fishr-core-team.github.io/FSAdata/" class="external-link">FSAdata</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ## FSAdata v0.4.1. See ?FSAdata to find data for specific fisheries analyses.</span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ----- Simple examples with explicity arguments for each -------------------</span></span></span>
 <span class="r-in"><span><span class="fu">makeLH</span><span class="op">(</span>N0<span class="op">=</span><span class="fl">100</span>,tmax<span class="op">=</span><span class="fl">15</span>,Linf<span class="op">=</span><span class="fl">500</span>,K<span class="op">=</span><span class="fl">0.3</span>,t0<span class="op">=</span><span class="op">-</span><span class="fl">0.5</span>,LWalpha<span class="op">=</span><span class="op">-</span><span class="fl">5.613</span>,LWbeta<span class="op">=</span><span class="fl">3.1</span><span class="op">)</span></span></span>
@@ -152,24 +153,25 @@
 <span class="r-in"><span><span class="co">#   and lm output here are just examples of the function, they should be</span></span></span>
 <span class="r-in"><span><span class="co">#   calculated for the same species from the same waterbody, etc.</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## get some LVB results (as an example)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SpotVA1</span>,package<span class="op">=</span><span class="st">"FSA"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">SpotVA1</span> <span class="op">&lt;-</span> <span class="va">SpotVA1</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>tl<span class="op">=</span><span class="va">tl</span><span class="op">*</span><span class="fl">25.4</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">vb1</span> <span class="op">&lt;-</span> <span class="fu">FSA</span><span class="fu">::</span><span class="fu"><a href="https://fishr-core-team.github.io/FSA/reference/growthModels.html" class="external-link">vbFuns</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'vbFuns()' is deprecated as of v0.10.0. Please use 'makeGrowthFun()' instead as it will be continuously updated in the future.</span>
-<span class="r-in"><span><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html" class="external-link">nls</a></span><span class="op">(</span><span class="va">tl</span><span class="op">~</span><span class="fu">vb1</span><span class="op">(</span><span class="va">age</span>,<span class="va">Linf</span>,<span class="va">K</span>,<span class="va">t0</span><span class="op">)</span>,data<span class="op">=</span><span class="va">SpotVA1</span>,</span></span>
-<span class="r-in"><span>            start<span class="op">=</span><span class="fu">FSA</span><span class="fu">::</span><span class="fu"><a href="https://fishr-core-team.github.io/FSA/reference/vbStarts.html" class="external-link">vbStarts</a></span><span class="op">(</span><span class="va">tl</span><span class="op">~</span><span class="va">age</span>,data<span class="op">=</span><span class="va">SpotVA1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>'vbStarts()' is deprecated as of v0.10.0. Please use 'findGrowthStarts()' instead as it provides starting values based on a better theoretical approach which should generally work better than those provided by vbStarts().</span>
+<span class="r-in"><span><span class="co"># Load data from FSAdata package, restrict to one location and year,</span></span></span>
+<span class="r-in"><span><span class="co"># create log10 values of weight and length</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">WalleyeErie2</span>,package<span class="op">=</span><span class="st">"FSAdata"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="va">WalleyeErie2</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">loc</span><span class="op">==</span><span class="fl">2</span>,<span class="va">year</span><span class="op">==</span><span class="fl">2010</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>logW<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>         logL<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">tl</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## get some LW results (as an example)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">BluegillLM</span>,package<span class="op">=</span><span class="st">"FSAdata"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">BluegillLM</span> <span class="op">&lt;-</span> <span class="va">BluegillLM</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>logW<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">wght</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                logL<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">tl</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">logW</span><span class="op">~</span><span class="va">logL</span>,data<span class="op">=</span><span class="va">BluegillLM</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Generate LVB results</span></span></span>
+<span class="r-in"><span><span class="va">vb1</span> <span class="op">&lt;-</span> <span class="fu">FSA</span><span class="fu">::</span><span class="fu"><a href="https://fishr-core-team.github.io/FSA/reference/makeGrowthFun.html" class="external-link">makeGrowthFun</a></span><span class="op">(</span>type<span class="op">=</span><span class="st">"von Bertalanffy"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html" class="external-link">nls</a></span><span class="op">(</span><span class="va">tl</span><span class="op">~</span><span class="fu">vb1</span><span class="op">(</span><span class="va">age</span>,<span class="va">Linf</span>,<span class="va">K</span>,<span class="va">t0</span><span class="op">)</span>,data<span class="op">=</span><span class="va">tmp</span>,</span></span>
+<span class="r-in"><span>            start<span class="op">=</span><span class="fu">FSA</span><span class="fu">::</span><span class="fu"><a href="https://fishr-core-team.github.io/FSA/reference/findGrowthStarts.html" class="external-link">findGrowthStarts</a></span><span class="op">(</span><span class="va">tl</span><span class="op">~</span><span class="va">age</span>,data<span class="op">=</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">makeLH</span><span class="op">(</span>N0<span class="op">=</span><span class="fl">100</span>,tmax<span class="op">=</span><span class="fl">15</span>,Linf<span class="op">=</span><span class="va">fit1</span>,LWalpha<span class="op">=</span><span class="va">fit2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Generate length-weight regression results</span></span></span>
+<span class="r-in"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">logW</span><span class="op">~</span><span class="va">logL</span>,data<span class="op">=</span><span class="va">tmp</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Make life-history list with those results</span></span></span>
+<span class="r-in"><span><span class="va">waeLH</span> <span class="op">&lt;-</span> <span class="fu">makeLH</span><span class="op">(</span>N0<span class="op">=</span><span class="fl">100</span>,tmax<span class="op">=</span><span class="fl">15</span>,Linf<span class="op">=</span><span class="va">fit1</span>,LWalpha<span class="op">=</span><span class="va">fit2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">waeLH</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $N0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -177,19 +179,19 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 15</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Linf</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 426.6736</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 587.9484</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $K</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2249334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4851255</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $t0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2.557382</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.050782</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $LWalpha</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -5.524963</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -5.857295</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $LWbeta</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.406255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.329038</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

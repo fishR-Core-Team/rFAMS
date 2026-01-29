@@ -4,6 +4,7 @@
 library(rFAMS)
 library(FSA)     ## for growth model 
 library(FSAdata) ## for data used in example
+library(dplyr)   ## for mutate
 ```
 
 The objective of this article is to demonstrate how to build a life
@@ -85,20 +86,21 @@ information about fitting von Bertalanffy growth models and
 length-weight models.
 
 ``` r
-## Generate LVB results using the SptoVA1 data from the FSA package
-data(SpotVA1,package="FSA")
-SpotVA1 <- SpotVA1 |>
-  dplyr::mutate(tl=tl*25.4)
-vb1 <- FSA::makeGrowthFun(type="von Bertalanffy")
-fit1 <- nls(tl~vb1(age,Linf,K,t0),data=SpotVA1,
-            start=FSA::findGrowthStarts(tl~age,data=SpotVA1))
+## Load data from FSAdata package, restrict to one location and year,
+##   create log10 values of weight and length
+data(WalleyeErie2,package="FSAdata")
+tmp <- WalleyeErie2 |>
+  filter(loc==2,year==2010) |>
+  mutate(logW=log10(w),
+         logL=log10(tl))
 
-## Generate length-weight regression results using the BluegillLM data from the FSAdata package
-data(BluegillLM,package="FSAdata")
-BluegillLM <- BluegillLM |>
-  dplyr::mutate(logW=log10(wght),
-                logL=log10(tl))
-fit2 <- lm(logW~logL,data=BluegillLM)
+## Generate LVB results
+vb1 <- FSA::makeGrowthFun(type="von Bertalanffy")
+fit1 <- nls(tl~vb1(age,Linf,K,t0),data=tmp,
+            start=FSA::findGrowthStarts(tl~age,data=tmp))
+
+## Generate length-weight regression results
+fit2 <- lm(logW~logL,data=tmp)
 ```
 
 The model object created above are then passed through the
@@ -106,26 +108,27 @@ The model object created above are then passed through the
 function in the `Linf` and `LWalpha` arguments.
 
 ``` r
-LHparams <- makeLH(N0=100,tmax=15,Linf=fit1,LWalpha=fit2)
-LHparams
+## Make life-history list with those results
+waeLH <- makeLH(N0=100,tmax=20,Linf=fit1,LWalpha=fit2)
+waeLH
 #> $N0
 #> [1] 100
 #> 
 #> $tmax
-#> [1] 15
+#> [1] 20
 #> 
 #> $Linf
-#> [1] 426.6744
+#> [1] 587.9484
 #> 
 #> $K
-#> [1] 0.2249323
+#> [1] 0.4851255
 #> 
 #> $t0
-#> [1] -2.55739
+#> [1] -1.050782
 #> 
 #> $LWalpha
-#> [1] -5.524963
+#> [1] -5.857295
 #> 
 #> $LWbeta
-#> [1] 3.406255
+#> [1] 3.329038
 ```

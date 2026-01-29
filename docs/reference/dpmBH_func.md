@@ -34,7 +34,10 @@ dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker = FALSE)
 
 - rec:
 
-  A single numeric representing initial recruitment abundance.
+  A numeric vector of length `simyears` to specify recruitment each
+  year. The vector can be geneated using the
+  [`genRecruits()`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
+  function.
 
 - lhparms:
 
