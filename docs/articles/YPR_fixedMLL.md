@@ -24,7 +24,8 @@ population, von Bertalanffy growth model parameters ($`L_\infty`$,
 $`K`$, and $`t_0`$), and parameters from the log10-transformed weight
 length model (alpha and beta). By default, the
 [`makeLH()`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
-returns a list. These values can be generated from functions in the [FSA
+returns a list. Growth length-weight model paramaters can be generated
+from functions in the [FSA
 package](https://fishr-core-team.github.io/FSA/index.html). The example
 below uses the following life history parameters:
 
@@ -127,6 +128,10 @@ values:
 - S is the (total) annual rate of survival.
 - N at xxx mm is the number that reach the length of interest supplied.
   There will be one column for each length of interest.
+
+For convenience the data.frame also contains the model input values
+(minLL; cf derived from cfmin, cfmax, and cfinc; cm derived from cmmin,
+cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).
 
 View the first few rows of the output
 

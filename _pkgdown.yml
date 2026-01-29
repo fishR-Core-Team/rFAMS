@@ -20,10 +20,16 @@ navbar:
       href: reference/index.html
     - text: Demonstrations
       menu:
+      - text: Create life history object
+        href: articles/MakeLH.html
       - text: Estimate yield based on a single minimum length limit
         href: articles/YPR_fixedMLL.html
       - text: Estimate yield based on multiple minimum length limit
         href: articles/YPR_VarMLL.html
+      - text: Estimate yield based on a slot length limit
+        href: articles/YPR_slotLimit.html
+      - text: Simulate a population using the dynamic pool model
+        href: articles/dpmBH.html
     - text: Explanations
       menu:
       - text: Comparing FAMS and Ricker YPR Equations
