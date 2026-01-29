@@ -104,14 +104,14 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Yield (g)",x="Exploitation (u)") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 # Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
 ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
   geom_point() +
   geom_line() +
   labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 # Plot number of fish reaching multiple monitored lengths as a
 # function of exploitation with cm = 0.40
@@ -127,7 +127,7 @@ ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
                        "N at 250 mm", "N at 300 mm", "N at 350 mm"))+
   geom_line() +
   labs(y="Number of fish",x="Exploitation (u)") +
-  theme_FAMS() +
+  theme_rFAMS_manual() +
   theme(legend.position = "top")+
   guides(color=guide_legend(title="Length of interest"))
 

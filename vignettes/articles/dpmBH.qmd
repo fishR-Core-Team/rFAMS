@@ -93,23 +93,7 @@ head(out1[[2]])  #Summary by year
 ```
 
 # Plot Results
-The output contains a lot of information and there are several potential figures that can be constructed. Below are examples of a few figures that might be of interest. The first set of figures will explore the data summarized by age and the second set of figures will explore the data summarized by year. First, a custom theme is created to use across all plots.
-
-```{r}
-#| label: create custom plot
-# Custom theme for plots (to make look nice)
-theme_FAMS <- function(...) {
- theme_bw() +
- theme(
-   panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-   axis.text=element_text(size=14,color="black"),
-   axis.title=element_text(size=16,color="black"),
-   axis.title.y=element_text(angle=90),
-   axis.line=element_line(color="black"),
-   panel.border=element_blank()
- )
-}
-```
+The output contains a lot of information and there are several potential figures that can be constructed. Below are examples of a few figures that might be of interest. The first set of figures will explore the data summarized by age and the second set of figures will explore the data summarized by year.
 
 ## Exploring the summary by age output
 
@@ -126,21 +110,21 @@ ggplot(data=plotdat,mapping=aes(x=age,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Age") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 #Plot Number harvested vs age
 ggplot(data=plotdat,mapping=aes(x=age,y=N_harvest)) +
   geom_point() +
   geom_line() +
   labs(y="Number harvested",x="Age") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 #Plot Number biomass vs age
 ggplot(data=plotdat,mapping=aes(x=age,y=biomass)) +
   geom_point() +
   geom_line() +
   labs(y="Biomass (g)",x="Age") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 ```
 
 ## Exploring the summary by year output
@@ -154,14 +138,14 @@ ggplot(data=out1[[2]],mapping=aes(x=year,y=PSD)) +
   geom_point() +
   geom_line() +
   labs(y="PSD",x="Year") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 #Use summary by year data frame to plot yield vs year
 ggplot(data=out1[[2]],mapping=aes(x=year,y=Yield_age_1plus)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Year") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 ```
 

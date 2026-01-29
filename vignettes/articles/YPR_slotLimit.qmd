@@ -130,23 +130,7 @@ head(Res_1)
 
 # Plot results
 
-We will now create a series of figures to aid in interpreting the output. First, a custom theme is created to use across all plots.
-
-```{r}
-#| label: create custom plot
-# Custom theme for plots (to make look nice)
-theme_FAMS <- function(...) {
- theme_bw() +
- theme(
-   panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-   axis.text=element_text(size=14,color="black"),
-   axis.title=element_text(size=16,color="black"),
-   axis.title.y=element_text(angle=90),
-   axis.line=element_line(color="black"),
-   panel.border=element_blank()
- )
-}
-```
+We will now create a series of figures to aid in interpreting the output.
 
 ## Yield as a function of conditional natural mortality
 
@@ -159,7 +143,7 @@ ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Conditional natural mortality (cm)") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 ```
 
 ## Number of fish that reach a specified size as a function of conditional natural mortality
@@ -173,7 +157,7 @@ ggplot(data=Res_1,mapping=aes(x=cm ,y=`N at 350 mm`)) +
   geom_point() +
   geom_line() +
   labs(y="Number of fish at 450 mm",x="Conditional natural mortality (cm )") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 ```
 
 The last example figure plots yield as a function of conditional natural mortality across the three size classes; above slot limit, within slot limit, and above slot limit. 
@@ -192,7 +176,7 @@ ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   scale_color_discrete(name="Yield",labels=c("Above SL","Within SL","Under SL"))+
   geom_line() +
   labs(y="Total yield (g)",x="Conditional natural mortality (cm)") +
-  theme_FAMS() +
+  theme_rFAMS_manual() +
   theme(legend.position = "top")+
   guides(color=guide_legend(title="Slot limit"))
 ```

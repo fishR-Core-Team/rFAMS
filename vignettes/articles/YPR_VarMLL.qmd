@@ -97,23 +97,7 @@ head(Res_1)
 
 # Plot results
 
-We will now create a series of figures to aid in interpreting the output. First, a custom theme is created to use across all plots.
-
-```{r}
-#| label: create custom plot
-# Custom theme for plots (to make look nice)
-theme_FAMS <- function(...) {
- theme_bw() +
- theme(
-   panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-   axis.text=element_text(size=14,color="black"),
-   axis.title=element_text(size=16,color="black"),
-   axis.title.y=element_text(angle=90),
-   axis.line=element_line(color="black"),
-   panel.border=element_blank()
- )
-}
-```
+We will now create a series of figures to aid in interpreting the output.
 
 ## Yield as a function of exploitation
 
@@ -132,7 +116,7 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Exploitation (u)") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 ```
 
 This next graph plots yield curves as a function of exploitation with multiple minimum lengths for a specified conditional natural morality `cm`. The example below uses `cm` = 0.30, as above. 
@@ -150,8 +134,7 @@ ggplot(data=plot_dat,mapping=aes(y=yield,x=u,group=minLL,color=minLL)) +
   geom_line(linewidth=1) +
   scale_color_gradient2(high="black") +
   labs(y="Total yield (g)",x="Exploitation (u)",color="Min Length Limit") +
-  theme_FAMS()
-
+  theme_rFAMS_manual()
 ```
 
 ## Number of fish that reach a specified size as a function of exploitation
@@ -167,7 +150,7 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 450 mm`)) +
   geom_point() +
   geom_line() +
   labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 ```
 
 The next example graph plots the number of fish reaching all the lengths of interests we monitored as a function of exploitation with conditional natural mortality `cm` of 0.30 which was filtered out above.
@@ -185,7 +168,7 @@ ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
  scale_color_discrete(name="Yield",labels=c("N at 400 mm", "N at 450 mm", "N at 500 mm", "N at 550 mm"))+
  geom_line() +
  labs(y="Number of fish",x="Exploitation (u)") +
- theme_FAMS() +
+ theme_rFAMS_manual() +
  theme(legend.position = "top")+
  guides(color=guide_legend(title="Length of interest"))
 ```
@@ -206,12 +189,12 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=yield)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)") +
   ylab("Minimum length limit (mm)") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 # Same isopleth as previous but using number harvested instead of yield
 ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=Nharvest)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)")+
   ylab("Minimum length limit (mm)")+
-  theme_FAMS()
+  theme_rFAMS_manual()
 ```

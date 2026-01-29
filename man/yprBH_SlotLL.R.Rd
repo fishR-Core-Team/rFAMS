@@ -144,7 +144,7 @@ ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
   geom_point() +
   geom_line() +
   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 
 # Yield under, in, and above the slot limit vs Conditional Natural Mortality (cm)
@@ -159,7 +159,7 @@ ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Under SL"))+
   geom_line() +
   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
-  theme_FAMS() +
+  theme_rFAMS_manual() +
   theme(legend.position = "top")+
   guides(color=guide_legend(title="Yield"))
 

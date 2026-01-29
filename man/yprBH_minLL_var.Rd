@@ -110,7 +110,7 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Yield (g)",x="Exploitation (u)") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 # Yield curves by varying minimum lengths, using cm=40
 plot_dat <- Res_1 |> filter(cm==0.40)
@@ -120,7 +120,7 @@ ggplot(data=plot_dat,mapping=aes(y=yield,x=u,
   geom_line(linewidth=1) +
   scale_color_gradient2(high="black") +
   labs(y="Yield (g)",x="Exploitation (u)",color="Min Length Limit") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 # Yield isopleths for varying minLL and exploitation with cm=0.40
 # # Using same data as previous example
@@ -128,14 +128,14 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=yield)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)") +
   ylab("Minimum length limit (mm)") +
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 # Same as previous but using number harvested isopleths
 ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=Nharvest)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)")+
   ylab("Minimum length limit (mm)")+
-  theme_FAMS()
+  theme_rFAMS_manual()
 
 
 }

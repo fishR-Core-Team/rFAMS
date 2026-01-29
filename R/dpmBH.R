@@ -83,20 +83,6 @@
 #' library(dplyr)
 #' library(ggplot2)
 #'
-#'# Setting a custom theme for plots (to make look nice)
-#' # Optional for plotting
-#' theme_FAMS <- function(...) {
-#'   theme_bw() +
-#'     theme(
-#'       panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-#'       axis.text=element_text(size=14,color="black"),
-#'       axis.title=element_text(size=16,color="black"),
-#'       axis.title.y=element_text(angle=90),
-#'       axis.line=element_line(color="black"),
-#'       panel.border=element_blank()
-#'     )
-#' }
-#'
 #' # Example of simulating yield with the dynamic pool model,
 #'
 #' lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
@@ -115,14 +101,14 @@
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="PSD",x="Year") +
-#'   theme_FAMS()
+#'   theme_rFAMS_manual()
 #'
 #' #Use summary by year data frame to plot yield vs year
 #' ggplot(data=out[[2]],mapping=aes(x=year,y=Yield_age_1plus)) +
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Total yield (g)",x="Year") +
-#'   theme_FAMS()
+#'   theme_rFAMS_manual()
 #'
 #' #Plot date using summary by age
 #' #filter for year class = 1
@@ -132,14 +118,14 @@
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Total yield (g)",x="Age") +
-#'   theme_FAMS()
+#'   theme_rFAMS_manual()
 #'
 #' #Plot Number harvested vs age
 #' ggplot(data=plotdat,mapping=aes(x=age,y=N_harvest)) +
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Number harvested",x="Age") +
-#'   theme_FAMS()
+#'   theme_rFAMS_manual()
 #'
 #'
 #' #Recruitment based on a normal distribution
@@ -156,14 +142,14 @@
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="PSD",x="Year") +
-#'   theme_FAMS()
+#'   theme_rFAMS_manual()
 #'
 #' #Use summary by year data frame to plot yield vs year
 #' ggplot(data=out_2[[2]],mapping=aes(x=year,y=Yield_age_1plus)) +
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Total yield (g)",x="Year") +
-#'   theme_FAMS()
+#'   theme_rFAMS_manual()
 #'
 #' #Plot date using summary by age
 #' #Plot yield vs age for each year class
@@ -171,14 +157,14 @@
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Total yield (g)",x="Age") +
-#'   theme_FAMS()
+#'   theme_rFAMS_manual()
 #'
 #' #Plot Number harvested vs age
 #' ggplot(data=out_2[[1]],mapping=aes(x=age,y=N_harvest,group=yc,color=yc)) +
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Number harvested",x="Age") +
-#'   theme_FAMS()
+#'   theme_rFAMS_manual()
 #'
 #'
 #' @rdname dpmBH

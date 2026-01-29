@@ -1,8 +1,8 @@
 # rFAMS 0.0.2.9000
-*This is the start of the next version
+* `theme_rFAMS_manual()`: Added.
 
 # rFAMS 0.0.2
-*Addressed comments in DESCRIPTION file from CRAN reviewer.
+* Addressed comments in DESCRIPTION file from CRAN reviewer.
 
 # rFAMS 0.0.1
 
