@@ -71,9 +71,8 @@ est_natmort <- function(lhparms=NULL,method="rFAMS",incl.avg=FALSE,...) {
   # if method is not null then get methods that can use rFAMS lhparms
   if (length(method)==1) {
     if (method=="rFAMS")
-      method <- c("HoenigNLS","HoenigO","HoenigOF","HoenigOM","HoenigOC",
-                  "HoenigO2","HoenigO2F","HoenigO2M","HoenigO2C",
-                  "HoenigLM","HewittHoenig","tmax1","PaulyLNoT","K1","K2",
+      method <- c("HoenigNLS","HoenigO","HoenigO2","HoenigLM","HewittHoenig",
+                  "tmax1","PaulyLNoT","K1","K2","HamelCope",
                   "JensenK1","JensenK2","AlversonCarney","ChenWatanabe")
   }
   margs$method <- method
