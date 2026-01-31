@@ -15,18 +15,19 @@ test_that("Two types of lhparams of yprBH_func() match",{
 test_that("yprBH_func() messages",{
   ## Tests are not exhaustive, see test_internals for more
   ## check for some missing values
-  expect_error(yprBH_func(),"Need to specify a minimum length")
-  # expect_error(yprBH_func(minLL=355,cm=0.25,lhparms=LH),
-  #              "Need to specify a conditional fishing mortality in 'cf'.")
-  # expect_error(yprBH_func(,minLL=355,cf=0.45,lhparms=LH),
-  #              "Need to specify a conditional natural mortality in 'cm'.")
+  expect_error(yprBH_func(cf=0.45,cm=0.25,lhparms=LH),"Need to specify a minimum length")
+  #expect_error(yprBH_func(minLL=355,cf=0.45,cm=0.25),"Need to specify a minimum length")
+  expect_error(yprBH_func(minLL=355,cm=0.25,lhparms=LH),
+               "Need to specify a conditional fishing mortality in 'cf'.")
+  expect_error(yprBH_func(minLL=355,cf=0.45,lhparms=LH),
+               "Need to specify a conditional natural mortality in 'cm'.")
   expect_warning(yprBH_func(minLL=35,cf=0.45,cm=0.25,lhparms=LH),
                  "A minimum length limit of harvest of 35 mm seems too small")
-  # yprBH_func(minLL=2235,cf=0.45,cm=0.25,lhparms=LH) |>
-  #   expect_warning("A minimum length limit of harvest of 2235 mm seems too large") |>
-  #   expect_warning("The set mininmum length limit of harvest")
+  yprBH_func(minLL=2235,cf=0.45,cm=0.25,lhparms=LH) |>
+    expect_warning("A minimum length limit of harvest of 2235 mm seems too large") |>
+    expect_warning("The set mininmum length limit of harvest")
 
-  ## Errors when using the named vector/list
+  # # Errors when using the named vector/list
   # tmp <- c(N0=100,tmax=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,derek=7)
   # expect_error(yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=tmp),
   #              "'lhparms' should have only 7")
