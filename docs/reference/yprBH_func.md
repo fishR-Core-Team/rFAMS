@@ -8,7 +8,7 @@ length limit for harvest (`minLL`).
 ## Usage
 
 ``` r
-yprBH_func(minLL, cf, cm, loi = NA, lhparms, matchRicker = FALSE)
+yprBH_func(minLL, cf, cm, loi = NULL, lhparms, matchRicker = FALSE)
 ```
 
 ## Arguments
@@ -67,6 +67,9 @@ A data.frame with the following calculated values:
 - `tr` is the time for a fish to recruit to a minimum length limit
   (i.e., time to enter fishery).
 
+- `N at xxx mm` is the number that reach the length of interest
+  supplied. There will be one column for each length of interest.
+
 - `F` is the instantaneous rate of fishing mortality.
 
 - `M` is the instantaneous rate of natural mortality.
@@ -74,9 +77,6 @@ A data.frame with the following calculated values:
 - `Z` is the instantaneous rate of total mortality.
 
 - `S` is the (total) annual rate of survival.
-
-- `N at xxx mm` is the number that reach the length of interest
-  supplied. There will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values
 (`minLL`, `cf`, `cm`, `N0`, `Linf`, `K`, `t0`, `LWalpha`, `LWbeta`, and
@@ -169,8 +169,10 @@ Res_1 <- yprBH_func(minLL=355,cf=0.45,cm=0.25,
 Res_1
 #>     yield         u Nharvest     Ndie    avgwt   avglen       Nt       tr
 #> 1 19606.5 0.3966366  19.7239 9.491238 994.0479 402.5024 29.21514 4.277232
-#>          F         M         Z      S   cf   cm minLL  N0 Linf   K   t0 LWalpha
-#> 1 0.597837 0.2876821 0.8855191 0.4125 0.45 0.25   355 100  592 0.2 -0.3  -5.528
-#>   LWbeta tmax notes N at 200 mm N at 250 mm N at 300 mm N at 325 mm N at 350 mm
-#> 1  3.273   15           60.2497    49.51249    39.44369    34.67882    30.10579
+#>   N at 200 mm N at 250 mm N at 300 mm N at 325 mm N at 350 mm        F
+#> 1     60.2497    49.51249    39.44369    34.67882    30.10579 0.597837
+#>           M         Z      S   cf   cm minLL  N0 Linf   K   t0 LWalpha LWbeta
+#> 1 0.2876821 0.8855191 0.4125 0.45 0.25   355 100  592 0.2 -0.3  -5.528  3.273
+#>   tmax notes
+#> 1   15      
 ```

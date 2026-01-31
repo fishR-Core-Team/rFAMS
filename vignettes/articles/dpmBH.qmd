@@ -67,11 +67,11 @@ cm <- matrix(rep(c(rep(0,1), rep(0.18,(LH$tmax))), simyears),nrow=simyears,byrow
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(LH$tmax))), simyears),nrow=simyears,byrow=TRUE)
 ```
 
-Recruitment must be a vector of length `simyears` and contain a single value for each year. Users can specify the vector manually or use the `genRecruits()` function which allows the user to specify different trends in recruitment. This example assumes recruitment is fixed at 1000 each year.
+Recruitment must be a vector of length `simyears` and contain a single value for each year. Users can specify the vector manually or use the `genRecruits()` function which allows the user to specify different trends in recruitment. This example sets recruitment to a fixed 1000 individuals each year.
 
 ```{r}
 #| label: DPM setup - rec
-rec <- genRecruits(method = "fixed", Nrec = 1000, simyears = simyears)
+rec <- genRecruits(method = "fixed", nR = 1000, simyears = simyears)
 ```
 
 # Run the dynamic pool model

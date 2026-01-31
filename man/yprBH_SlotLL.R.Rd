@@ -14,7 +14,7 @@ yprBH_SlotLL(
   cmmin,
   cmmax,
   cminc,
-  loi = NA,
+  loi = NULL,
   lhparms,
   matchRicker = FALSE
 )
@@ -72,9 +72,10 @@ A data.frame with the following calculated values:
 \item trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 \item trIn is the time for a fish to recruit to a lower length limit of the slot limit
 \item trOver is the time for a fish to recruit to a upper length limit of the slot limit
-\item NtUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
-\item NtIn is the number of fish at time trIn (time they reach the lower slot limit size)
-\item NtAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
+\item NrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
+\item NrIn is the number of fish at time trIn (time they reach the lower slot limit size)
+\item NrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
+\item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 \item FUnder is the estimated instantaneous rate of fishing mortality under the slot limit
 \item FIn is the estimated instantaneous rate of fishing mortality within the slot limit
 \item FAbove is the estimated instantaneous rate of fishing mortality above the slot limit
@@ -100,8 +101,7 @@ A data.frame with the following calculated values:
 \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
 \item tmax An integer representing maximum age in the population in years
-\item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
-#' }
+}
 }
 \description{
 Main wrapper function to estimate yield using the Beverton-Holt YPR model. This main function accepts a range of values for cf, cm, recruitment length, lower slot limit length, and upper slot limit length.
@@ -111,22 +111,9 @@ Details will be filled out later
 }
 \examples{
 #Load other required packages for organizing output and plotting
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
-# Custom theme for plots (to make look nice)
-theme_FAMS <- function(...) {
-  theme_bw() +
-  theme(
-    panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-    axis.text=element_text(size=14,color="black"),
-    axis.title=element_text(size=16,color="black"),
-    axis.title.y=element_text(angle=90),
-    axis.line=element_line(color="black"),
-    panel.border=element_blank()
-  )
-}
+library(ggplot2)  #for plotting
+library(dplyr)    #for select
+library(tidyr)    #for pivot_longer
 
 # Life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
@@ -144,13 +131,13 @@ ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
   geom_point() +
   geom_line() +
   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
-  theme_FAMS()
+  theme_bw()
 
 
 # Yield under, in, and above the slot limit vs Conditional Natural Mortality (cm)
 # Select columns for plotting
-plot_data <- Res_1 \%>\%
-  select(cm, yieldUnder, yieldIn, yieldAbove) \%>\%
+plot_data <- Res_1 |>
+  select(cm, yieldUnder, yieldIn, yieldAbove) |>
   pivot_longer(!cm, names_to="YieldCat",values_to="Yield")
 
 # Generate plot
@@ -159,11 +146,16 @@ ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Under SL"))+
   geom_line() +
   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
-  theme_FAMS() +
+  theme_bw() +
   theme(legend.position = "top")+
   guides(color=guide_legend(title="Yield"))
 
 
+}
+\seealso{
+\href{https://fishr-core-team.github.io/rFAMS/articles/YPR_slotLimit.html}{this demonstration page} for more plotting examples
+
+#'See \href{https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html}{this demonstration page} for more plotting examples
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}

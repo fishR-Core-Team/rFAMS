@@ -260,7 +260,8 @@ iCheckrec <- function(rec) {
 
 # Check length of interest "loi" input
 iCheckloi <- function(loi){
-  if(any(is.na(loi))){return(NULL)}
+  #if(any(is.na(loi))){return(NULL)}
+  if(is.null(loi)){return(NULL)}
   if(!is.vector(loi))
     STOP("loi must be a vector")
   if(!is.numeric(loi))
@@ -389,8 +390,8 @@ iCheckspecies <- function(x) {
   if (is.null(x)) STOP("Need to specify a species name in ",nm,". See the FSA::PSDlit function for a list of available species")
 }
 
-# Check Nrec
-iCheckNrec <- function(x) {
+# Check nR
+iChecknR <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the number of fixed recruits per year in ",nm,".")
   if (is.null(x)) STOP("Need to specify the number of fixed recruits per year in ",nm,".")
@@ -398,8 +399,8 @@ iCheckNrec <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check MinR with uniform distribution
-iCheckMinR <- function(x) {
+# Check minR with uniform distribution
+iCheckminR <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the minimum number of recruits for the uniform method in ",nm,".")
   if (is.null(x)) STOP("Need to specify the minimum number of recruits for the uniform method in ",nm,".")
@@ -407,8 +408,8 @@ iCheckMinR <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check MaxR with uniform distribution
-iCheckMaxR <- function(x) {
+# Check maxR with uniform distribution
+iCheckmaxR <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the maximum number of recruits for the uniform method in ",nm,".")
   if (is.null(x)) STOP("Need to specify the maximum number of recruits for the uniform method in ",nm,".")
@@ -416,8 +417,8 @@ iCheckMaxR <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check MinR with normal distribution
-iCheckMinRNorm <- function(x) {
+# Check minR with normal distribution
+iCheckminRNorm <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the minimum number of recruits for the normal method in ",nm,".")
   if (is.null(x)) STOP("Need to specify the minimum number of recruits for the normal method in ",nm,".")
@@ -425,8 +426,8 @@ iCheckMinRNorm <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check MaxR with normal distribution
-iCheckMaxRNorm <- function(x) {
+# Check maxR with normal distribution
+iCheckmaxRNorm <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the maximum number of recruits for the normal method in ",nm,".")
   if (is.null(x)) STOP("Need to specify the maximum number of recruits for the normal method in ",nm,".")
@@ -461,8 +462,8 @@ iCheckmeanRNth <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check Nthyr with StrYC_Nth
-iCheckNthyr <- function(x) {
+# Check nStr with StrYC_Nth
+iChecknStr <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the Nth year that a strong year class will occur in ",nm,".")
   if (is.null(x)) STOP("Need to specify the Nth year that a strong year class will occur in ",nm,".")

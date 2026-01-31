@@ -4,7 +4,7 @@
 \alias{yprBH_func}
 \title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for single input parameters}
 \usage{
-yprBH_func(minLL, cf, cm, loi = NA, lhparms, matchRicker = FALSE)
+yprBH_func(minLL, cf, cm, loi = NULL, lhparms, matchRicker = FALSE)
 }
 \arguments{
 \item{minLL}{A single numeric representing the minimum length limit for harvest in mm.}
@@ -30,11 +30,11 @@ A data.frame with the following calculated values:
 \item \code{avgwt} is the average weight of fish harvested.
 \item \code{avglen} is the average length of fish harvested.
 \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
+\item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 \item \code{F} is the instantaneous rate of fishing mortality.
 \item \code{M} is the instantaneous rate of natural mortality.
 \item \code{Z} is the instantaneous rate of total mortality.
 \item \code{S} is the (total) annual rate of survival.
-\item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 }
 
 For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{tmax}).

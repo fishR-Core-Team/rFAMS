@@ -12,7 +12,7 @@ yprBH_slot_func(
   cfin,
   cfabove,
   cm,
-  loi = NA,
+  loi = NULL,
   lhparms,
   matchRicker = FALSE
 )
@@ -70,6 +70,7 @@ the following calculated and input values in a data.frame
 \item NrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
 \item NrIn is the number of fish at time trIn (time they reach the lower slot limit size)
 \item NrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
+\item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 \item FUnder is the estimated instantaneous rate of fishing mortality under the slot limit
 \item FIn is the estimated instantaneous rate of fishing mortality within the slot limit
 \item FAbove is the estimated instantaneous rate of fishing mortality above the slot limit
@@ -95,7 +96,6 @@ the following calculated and input values in a data.frame
 \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
 \item tmax An integer representing maximum age in the population in years
-\item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 #' }
 }
 \description{

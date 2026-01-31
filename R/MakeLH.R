@@ -13,6 +13,8 @@
 #'
 #' @details Use of this function for putting life history parameters into a list or vector is recommended as (i) values for `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta` can be extracted from objects from appropriate model fitting and (ii) checks for impossible or improbable values for each parameter are performed; i.e.,
 #'
+#' @seealso \href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{this demonstration page} for more plotting examples
+#'
 #' @author Derek Ogle
 #'
 #' ```R

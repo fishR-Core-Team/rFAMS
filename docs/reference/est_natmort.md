@@ -80,47 +80,37 @@ est_natmort(tmp)
 #>            method          M         cm                  givens
 #> 1       HoenigNLS 0.41002265 0.33636478                 tmax=15
 #> 2         HoenigO 0.29543534 0.25579246                 tmax=15
-#> 3        HoenigOF 0.27939445 0.24375845                 tmax=15
-#> 4        HoenigOM 0.35947963 0.30196053                 tmax=15
-#> 5        HoenigOC 0.24095916 0.21412628                 tmax=15
-#> 6        HoenigO2 0.29631969 0.25645032                 tmax=15
-#> 7       HoenigO2F 0.25683005 0.22650034                 tmax=15
-#> 8       HoenigO2M 0.35214421 0.29682129                 tmax=15
-#> 9       HoenigO2C 0.31107738 0.26734282                 tmax=15
-#> 10       HoenigLM 0.36126963 0.30320890                 tmax=15
-#> 11   HewittHoenig 0.28133333 0.24522330                 tmax=15
-#> 12          tmax1 0.34060000 0.28865661                 tmax=15
-#> 13      PaulyLNoT 0.47024562 0.37515122          K=0.3, Linf=50
-#> 14             K1 0.50760000 0.39806150                   K=0.3
-#> 15             K2 0.56300000 0.43050200                   K=0.3
-#> 16       JensenK1 0.45000000 0.36237185                   K=0.3
-#> 17       JensenK2 0.65100000 0.47847601                   K=0.3
-#> 18 AlversonCarney 0.19872105 0.18022146          tmax=15, K=0.3
-#> 19   ChenWatanabe 0.07181977 0.06930138 tmax=15, K=0.3, t0=-0.5
+#> 3        HoenigO2 0.29631969 0.25645032                 tmax=15
+#> 4        HoenigLM 0.36126963 0.30320890                 tmax=15
+#> 5    HewittHoenig 0.28133333 0.24522330                 tmax=15
+#> 6           tmax1 0.34060000 0.28865661                 tmax=15
+#> 7       PaulyLNoT 0.47024562 0.37515122          K=0.3, Linf=50
+#> 8              K1 0.50760000 0.39806150                   K=0.3
+#> 9              K2 0.56300000 0.43050200                   K=0.3
+#> 10      HamelCope 0.36000000 0.30232367                 tmax=15
+#> 11       JensenK1 0.45000000 0.36237185                   K=0.3
+#> 12       JensenK2 0.65100000 0.47847601                   K=0.3
+#> 13 AlversonCarney 0.19872105 0.18022146          tmax=15, K=0.3
+#> 14   ChenWatanabe 0.07181977 0.06930138 tmax=15, K=0.3, t0=-0.5
 
 # Same but including the average in the last row
 est_natmort(tmp,incl.avg=TRUE)
 #>            method          M         cm                  givens
 #> 1       HoenigNLS 0.41002265 0.33636478                 tmax=15
 #> 2         HoenigO 0.29543534 0.25579246                 tmax=15
-#> 3        HoenigOF 0.27939445 0.24375845                 tmax=15
-#> 4        HoenigOM 0.35947963 0.30196053                 tmax=15
-#> 5        HoenigOC 0.24095916 0.21412628                 tmax=15
-#> 6        HoenigO2 0.29631969 0.25645032                 tmax=15
-#> 7       HoenigO2F 0.25683005 0.22650034                 tmax=15
-#> 8       HoenigO2M 0.35214421 0.29682129                 tmax=15
-#> 9       HoenigO2C 0.31107738 0.26734282                 tmax=15
-#> 10       HoenigLM 0.36126963 0.30320890                 tmax=15
-#> 11   HewittHoenig 0.28133333 0.24522330                 tmax=15
-#> 12          tmax1 0.34060000 0.28865661                 tmax=15
-#> 13      PaulyLNoT 0.47024562 0.37515122          K=0.3, Linf=50
-#> 14             K1 0.50760000 0.39806150                   K=0.3
-#> 15             K2 0.56300000 0.43050200                   K=0.3
-#> 16       JensenK1 0.45000000 0.36237185                   K=0.3
-#> 17       JensenK2 0.65100000 0.47847601                   K=0.3
-#> 18 AlversonCarney 0.19872105 0.18022146          tmax=15, K=0.3
-#> 19   ChenWatanabe 0.07181977 0.06930138 tmax=15, K=0.3, t0=-0.5
-#> 20        AVERAGE 0.35248695 0.29106797                        
+#> 3        HoenigO2 0.29631969 0.25645032                 tmax=15
+#> 4        HoenigLM 0.36126963 0.30320890                 tmax=15
+#> 5    HewittHoenig 0.28133333 0.24522330                 tmax=15
+#> 6           tmax1 0.34060000 0.28865661                 tmax=15
+#> 7       PaulyLNoT 0.47024562 0.37515122          K=0.3, Linf=50
+#> 8              K1 0.50760000 0.39806150                   K=0.3
+#> 9              K2 0.56300000 0.43050200                   K=0.3
+#> 10      HamelCope 0.36000000 0.30232367                 tmax=15
+#> 11       JensenK1 0.45000000 0.36237185                   K=0.3
+#> 12       JensenK2 0.65100000 0.47847601                   K=0.3
+#> 13 AlversonCarney 0.19872105 0.18022146          tmax=15, K=0.3
+#> 14   ChenWatanabe 0.07181977 0.06930138 tmax=15, K=0.3, t0=-0.5
+#> 15        AVERAGE 0.37552622 0.30586468                        
 
 # Selecting just one method
 est_natmort(tmp,method="HoenigNLS")

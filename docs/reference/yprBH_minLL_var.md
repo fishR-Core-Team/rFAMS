@@ -18,7 +18,7 @@ yprBH_minLL_var(
   cmmin,
   cmmax,
   cminc,
-  loi = NA,
+  loi = NULL,
   lhparms,
   matchRicker = FALSE
 )
@@ -108,6 +108,9 @@ A data.frame with the following calculated values:
 - `tr` is the time for a fish to recruit to a minimum length limit
   (i.e., time to enter fishery).
 
+- `N at xxx mm` is the number that reach the length of interest
+  supplied. There will be one column for each length of interest.
+
 - `F` is the instantaneous rate of fishing mortality.
 
 - `M` is the instantaneous rate of natural mortality.
@@ -115,9 +118,6 @@ A data.frame with the following calculated values:
 - `Z` is the instantaneous rate of total mortality.
 
 - `S` is the (total) annual rate of survival.
-
-- `N at xxx mm` is the number that reach the length of interest
-  supplied. There will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values
 (`minLL` derived from `lengthmin`, `lengthmax`, and `lengthinc`; `cf`
@@ -143,6 +143,10 @@ for estimating yield from single values of `cf`, `cm`, and `minLL`, and
 for simulating yield with multiple values of `cf` and `cm` but a fixed
 value for `minLL`.
 
+See [this demonstration
+page](https://fishr-core-team.github.io/rFAMS/articles/YPR_VarMLL.html)
+for more plotting examples
+
 ## Author
 
 Jason C. Doll, <jason.doll@fmarion.edu>
@@ -150,6 +154,11 @@ Jason C. Doll, <jason.doll@fmarion.edu>
 ## Examples
 
 ``` r
+# Load other required packages for organizing output and plotting
+library(dplyr)    ## for filter
+library(ggplot2)  ## for ggplot et al.
+library(metR)     ## geom_text_contour
+
 # Life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
@@ -161,36 +170,8 @@ Res_1 <- yprBH_minLL_var(lengthmin=200,lengthinc=50,lengthmax=550,
                        cmmin=0.1,cmmax=0.9,cminc=0.1,
                        loi=c(400,450,500,550),lhparms=LH)
 
-# Load other required packages for organizing output and plotting
-library(dplyr)    ## for filter
-library(ggplot2)  ## for ggplot et al.
-library(metR)     ## geom_text_contour
-
-# Custom theme for plots (to make look nice)
-theme_FAMS <- function(...) {
-  theme_bw() +
-  theme(
-    panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-    axis.text=element_text(size=14,color="black"),
-    axis.title=element_text(size=16,color="black"),
-    axis.title.y=element_text(angle=90),
-    axis.line=element_line(color="black"),
-    panel.border=element_blank()
-  )
-}
-
-# Yield curve (yield vs exploitation)
-# Extract results for cm=0.40 and minimum length limit=400
-plot_dat <- Res_1 |> dplyr::filter(cm==0.40,minLL==400)
-
-ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
-  geom_point() +
-  geom_line() +
-  labs(y="Yield (g)",x="Exploitation (u)") +
-  theme_FAMS()
-
-
-# Yield curves by varying minimum lengths, using cm=40
+# Yield curves (yield vs exploitation) by varying minimum lengths,
+# using cm=40
 plot_dat <- Res_1 |> filter(cm==0.40)
 
 ggplot(data=plot_dat,mapping=aes(y=yield,x=u,
@@ -198,7 +179,7 @@ ggplot(data=plot_dat,mapping=aes(y=yield,x=u,
   geom_line(linewidth=1) +
   scale_color_gradient2(high="black") +
   labs(y="Yield (g)",x="Exploitation (u)",color="Min Length Limit") +
-  theme_FAMS()
+  theme_bw()
 
 
 # Yield isopleths for varying minLL and exploitation with cm=0.40
@@ -207,15 +188,7 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=yield)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)") +
   ylab("Minimum length limit (mm)") +
-  theme_FAMS()
-
-
-# Same as previous but using number harvested isopleths
-ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=Nharvest)) +
-  geom_contour2(aes(label = after_stat(level))) +
-  xlab("Exploitation (u)")+
-  ylab("Minimum length limit (mm)")+
-  theme_FAMS()
+  theme_bw()
 
 
 ```

@@ -149,6 +149,15 @@ of the Fisheries Research Board of Canada. Was (is?) from
 Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling
 simulator. v1.64. American Fisheries Society, Bethesda, MD.
 
+## See also
+
+[`yprBH_func`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.md)
+for simulating yield using the dynamic pool model.
+
+See [this demonstration
+page](file:///C:/Users/jason.doll/Documents/fishRCoreTeam/rFAMS/docs/articles/dpmBH.md)
+for more plotting examples
+
 ## Author
 
 Jason C. Doll, <jason.doll@fmarion.edu>

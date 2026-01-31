@@ -65,7 +65,7 @@
       <h1>Estimate yield based on a slot limit</h1>
 
       <p class="author">Jason Doll</p>
-      <p class="date">2026-01-29</p>
+      <p class="date">2026-01-31</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/YPR_slotLimit.qmd" class="external-link"><code>vignettes/articles/YPR_slotLimit.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -111,24 +111,19 @@
 <span><span class="co">#&gt;            method         M         cm                  givens</span></span>
 <span><span class="co">#&gt; 1       HoenigNLS 0.4100226 0.33636478                 tmax=15</span></span>
 <span><span class="co">#&gt; 2         HoenigO 0.2954353 0.25579246                 tmax=15</span></span>
-<span><span class="co">#&gt; 3        HoenigOF 0.2793944 0.24375845                 tmax=15</span></span>
-<span><span class="co">#&gt; 4        HoenigOM 0.3594796 0.30196053                 tmax=15</span></span>
-<span><span class="co">#&gt; 5        HoenigOC 0.2409592 0.21412628                 tmax=15</span></span>
-<span><span class="co">#&gt; 6        HoenigO2 0.2963197 0.25645032                 tmax=15</span></span>
-<span><span class="co">#&gt; 7       HoenigO2F 0.2568301 0.22650034                 tmax=15</span></span>
-<span><span class="co">#&gt; 8       HoenigO2M 0.3521442 0.29682129                 tmax=15</span></span>
-<span><span class="co">#&gt; 9       HoenigO2C 0.3110774 0.26734282                 tmax=15</span></span>
-<span><span class="co">#&gt; 10       HoenigLM 0.3612696 0.30320890                 tmax=15</span></span>
-<span><span class="co">#&gt; 11   HewittHoenig 0.2813333 0.24522330                 tmax=15</span></span>
-<span><span class="co">#&gt; 12          tmax1 0.3406000 0.28865661                 tmax=15</span></span>
-<span><span class="co">#&gt; 13      PaulyLNoT 0.3308050 0.28165477        K=0.2, Linf=59.2</span></span>
-<span><span class="co">#&gt; 14             K1 0.3384000 0.28708993                   K=0.2</span></span>
-<span><span class="co">#&gt; 15             K2 0.4080000 0.33502112                   K=0.2</span></span>
-<span><span class="co">#&gt; 16       JensenK1 0.3000000 0.25918178                   K=0.2</span></span>
-<span><span class="co">#&gt; 17       JensenK2 0.5040000 0.39589062                   K=0.2</span></span>
-<span><span class="co">#&gt; 18 AlversonCarney 0.2821182 0.24581544          tmax=15, K=0.2</span></span>
-<span><span class="co">#&gt; 19   ChenWatanabe 0.1018740 0.09685666 tmax=15, K=0.2, t0=-0.3</span></span>
-<span><span class="co">#&gt; 20        AVERAGE 0.3184244 0.27040613</span></span></code></pre></div>
+<span><span class="co">#&gt; 3        HoenigO2 0.2963197 0.25645032                 tmax=15</span></span>
+<span><span class="co">#&gt; 4        HoenigLM 0.3612696 0.30320890                 tmax=15</span></span>
+<span><span class="co">#&gt; 5    HewittHoenig 0.2813333 0.24522330                 tmax=15</span></span>
+<span><span class="co">#&gt; 6           tmax1 0.3406000 0.28865661                 tmax=15</span></span>
+<span><span class="co">#&gt; 7       PaulyLNoT 0.3308050 0.28165477        K=0.2, Linf=59.2</span></span>
+<span><span class="co">#&gt; 8              K1 0.3384000 0.28708993                   K=0.2</span></span>
+<span><span class="co">#&gt; 9              K2 0.4080000 0.33502112                   K=0.2</span></span>
+<span><span class="co">#&gt; 10      HamelCope 0.3600000 0.30232367                 tmax=15</span></span>
+<span><span class="co">#&gt; 11       JensenK1 0.3000000 0.25918178                   K=0.2</span></span>
+<span><span class="co">#&gt; 12       JensenK2 0.5040000 0.39589062                   K=0.2</span></span>
+<span><span class="co">#&gt; 13 AlversonCarney 0.2821182 0.24581544          tmax=15, K=0.2</span></span>
+<span><span class="co">#&gt; 14   ChenWatanabe 0.1018740 0.09685666 tmax=15, K=0.2, t0=-0.3</span></span>
+<span><span class="co">#&gt; 15        AVERAGE 0.3292984 0.27782360</span></span></code></pre></div>
 </div>
 <p>Once you have decided the range of cf and cm and decided what minimum length limit to consider, you can now proceed to estimating yield. The following example uses the life history object created above with a minimum length limit of 200mm, cf from 0.1 to 0.9 with increments of 0.1, cm from 0.1 to 0.9 with increments of 0.1, monitors lengths of 200, 250, 300, and 350mm.</p>
 <div class="cell" data-layout-align="center">
@@ -194,13 +189,13 @@
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Res_1</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    cm TotalYield TotalNharv TotalNdie yieldUnder   yieldIn yieldAbove    uUnder</span></span>
-<span><span class="co">#&gt; 1 0.1  29156.293  65.545400  16.65337  2134.0226 12847.795 14174.4754 0.2378792</span></span>
-<span><span class="co">#&gt; 2 0.2  16399.451  44.983766  22.37093  1661.3174  9009.265  5728.8686 0.2252683</span></span>
-<span><span class="co">#&gt; 3 0.3   9587.852  30.319080  23.01694  1251.5389  6037.309  2299.0040 0.2120703</span></span>
-<span><span class="co">#&gt; 4 0.4   5611.796  19.682869  20.98520   903.2554  3813.586   894.9547 0.1981511</span></span>
-<span><span class="co">#&gt; 5 0.5   3163.191  12.040623  17.45903   614.9004  2223.163   325.1268 0.1833156</span></span>
-<span><span class="co">#&gt; 6 0.6   1643.192   6.727817  13.18526   384.7347  1154.658   103.7991 0.1672608</span></span>
+<span><span class="co">#&gt;   TotalYield TotalNharv TotalNdie yieldUnder   yieldIn yieldAbove    uUnder</span></span>
+<span><span class="co">#&gt; 1  29156.293  65.545400  16.65337  2134.0226 12847.795 14174.4754 0.2378792</span></span>
+<span><span class="co">#&gt; 2  16399.451  44.983766  22.37093  1661.3174  9009.265  5728.8686 0.2252683</span></span>
+<span><span class="co">#&gt; 3   9587.852  30.319080  23.01694  1251.5389  6037.309  2299.0040 0.2120703</span></span>
+<span><span class="co">#&gt; 4   5611.796  19.682869  20.98520   903.2554  3813.586   894.9547 0.1981511</span></span>
+<span><span class="co">#&gt; 5   3163.191  12.040623  17.45903   614.9004  2223.163   325.1268 0.1833156</span></span>
+<span><span class="co">#&gt; 6   1643.192   6.727817  13.18526   384.7347  1154.658   103.7991 0.1672608</span></span>
 <span><span class="co">#&gt;         uIn     uAbove NharvestUnder NharvestIn NharvestAbove    N0die</span></span>
 <span><span class="co">#&gt; 1 0.5739983 0.14257140     14.300192  40.888026    10.3571826 16.93639</span></span>
 <span><span class="co">#&gt; 2 0.5468307 0.13484863     11.186560  28.960251     4.8369557 32.49751</span></span>
@@ -222,6 +217,13 @@
 <span><span class="co">#&gt; 4 303.7327   920.1343 1.761224 2.443479 3.68129 40.67005 23.587233  4.0317725</span></span>
 <span><span class="co">#&gt; 5 299.2950   830.7556 1.761224 2.443479 3.68129 29.49978 15.107731  2.0606627</span></span>
 <span><span class="co">#&gt; 6 294.1178   760.2978 1.761224 2.443479 3.68129 19.91308  8.757933  0.9062605</span></span>
+<span><span class="co">#&gt;   N at 200 mm N at 250 mm N at 300 mm N at 350 mm N at 450 mm  N at 550 mm  cm</span></span>
+<span><span class="co">#&gt; 1    83.06361   63.526126   28.333814  15.7236087   7.6991996 1.506094e+00 0.1</span></span>
+<span><span class="co">#&gt; 2    67.50249   47.638955   19.359309   9.6183528   3.4406800 3.284670e-01 0.2</span></span>
+<span><span class="co">#&gt; 3    53.35596   34.376376   12.570645   5.5094637   1.3806140 5.843904e-02 0.3</span></span>
+<span><span class="co">#&gt; 4    40.67005   23.587233    7.636027   2.8956814   0.4811312 7.964081e-03 0.4</span></span>
+<span><span class="co">#&gt; 5    29.49978   15.107731    4.234615   1.3531307   0.1382899 7.540266e-04 0.5</span></span>
+<span><span class="co">#&gt; 6    19.91308    8.757933    2.057926   0.5332727   0.0300664 4.211329e-05 0.6</span></span>
 <span><span class="co">#&gt;      FUnder       FIn    FAbove    MUnder       MIn    MAbove    ZUnder</span></span>
 <span><span class="co">#&gt; 1 0.2876821 0.9162907 0.1625189 0.1053605 0.1053605 0.1053605 0.3930426</span></span>
 <span><span class="co">#&gt; 2 0.2876821 0.9162907 0.1625189 0.2231436 0.2231436 0.2231436 0.5108256</span></span>
@@ -236,20 +238,13 @@
 <span><span class="co">#&gt; 4 1.427116 0.6733446  0.450 0.24  0.510    0.25  0.6   0.15           200</span></span>
 <span><span class="co">#&gt; 5 1.609438 0.8556661  0.375 0.20  0.425    0.25  0.6   0.15           200</span></span>
 <span><span class="co">#&gt; 6 1.832581 1.0788097  0.300 0.16  0.340    0.25  0.6   0.15           200</span></span>
-<span><span class="co">#&gt;   lowerSL upperSL  N0 Linf   K   t0 LWalpha LWbeta tmax N at 200 mm N at 250 mm</span></span>
-<span><span class="co">#&gt; 1     250     325 100  592 0.2 -0.3  -5.528  3.273   15    83.06361   63.526126</span></span>
-<span><span class="co">#&gt; 2     250     325 100  592 0.2 -0.3  -5.528  3.273   15    67.50249   47.638955</span></span>
-<span><span class="co">#&gt; 3     250     325 100  592 0.2 -0.3  -5.528  3.273   15    53.35596   34.376376</span></span>
-<span><span class="co">#&gt; 4     250     325 100  592 0.2 -0.3  -5.528  3.273   15    40.67005   23.587233</span></span>
-<span><span class="co">#&gt; 5     250     325 100  592 0.2 -0.3  -5.528  3.273   15    29.49978   15.107731</span></span>
-<span><span class="co">#&gt; 6     250     325 100  592 0.2 -0.3  -5.528  3.273   15    19.91308    8.757933</span></span>
-<span><span class="co">#&gt;   N at 300 mm N at 350 mm N at 450 mm  N at 550 mm</span></span>
-<span><span class="co">#&gt; 1   28.333814  15.7236087   7.6991996 1.506094e+00</span></span>
-<span><span class="co">#&gt; 2   19.359309   9.6183528   3.4406800 3.284670e-01</span></span>
-<span><span class="co">#&gt; 3   12.570645   5.5094637   1.3806140 5.843904e-02</span></span>
-<span><span class="co">#&gt; 4    7.636027   2.8956814   0.4811312 7.964081e-03</span></span>
-<span><span class="co">#&gt; 5    4.234615   1.3531307   0.1382899 7.540266e-04</span></span>
-<span><span class="co">#&gt; 6    2.057926   0.5332727   0.0300664 4.211329e-05</span></span></code></pre></div>
+<span><span class="co">#&gt;   lowerSL upperSL  N0 Linf   K   t0 LWalpha LWbeta tmax</span></span>
+<span><span class="co">#&gt; 1     250     325 100  592 0.2 -0.3  -5.528  3.273   15</span></span>
+<span><span class="co">#&gt; 2     250     325 100  592 0.2 -0.3  -5.528  3.273   15</span></span>
+<span><span class="co">#&gt; 3     250     325 100  592 0.2 -0.3  -5.528  3.273   15</span></span>
+<span><span class="co">#&gt; 4     250     325 100  592 0.2 -0.3  -5.528  3.273   15</span></span>
+<span><span class="co">#&gt; 5     250     325 100  592 0.2 -0.3  -5.528  3.273   15</span></span>
+<span><span class="co">#&gt; 6     250     325 100  592 0.2 -0.3  -5.528  3.273   15</span></span></code></pre></div>
 </div>
 </section><section class="section level2"><h2 id="plot-results">Plot results<a class="anchor" aria-label="anchor" href="#plot-results"></a>
 </h2>

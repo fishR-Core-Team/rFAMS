@@ -92,11 +92,11 @@ Recruitment must be a vector of length `simyears` and contain a single
 value for each year. Users can specify the vector manually or use the
 [`genRecruits()`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
 function which allows the user to specify different trends in
-recruitment. This example assumes recruitment is fixed at 1000 each
-year.
+recruitment. This example sets recruitment to a fixed 1000 individuals
+each year.
 
 ``` r
-rec <- genRecruits(method = "fixed", Nrec = 1000, simyears = simyears)
+rec <- genRecruits(method = "fixed", nR = 1000, simyears = simyears)
 ```
 
 ## Run the dynamic pool model

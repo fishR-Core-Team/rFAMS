@@ -87,8 +87,7 @@ Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
   : Compute meta-analytic estimates of instantaneous and conditional
   natural mortality
 - [`genRecruits()`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
-  : Generate a vector of recruitment abundance for the dynamic pool
-  model.
+  : Generate a vector of number of recruits for the dynamic pool model.
 - [`makeLH()`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   : Make a list or vector of life history parameters for
   yield-per-recruit analyses.

@@ -24,11 +24,11 @@
 #' \item \code{avgwt} is the average weight of fish harvested.
 #' \item \code{avglen} is the average length of fish harvested.
 #' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
+#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 #' \item \code{F} is the instantaneous rate of fishing mortality.
 #' \item \code{M} is the instantaneous rate of natural mortality.
 #' \item \code{Z} is the instantaneous rate of total mortality.
 #' \item \code{S} is the (total) annual rate of survival.
-#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 #' }
 #'
 #' For convenience the data.frame also contains the model input values (\code{minLL}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax}).
@@ -37,9 +37,15 @@
 #'
 #' @seealso \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{yprBH_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 #'
+#' See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_fixedMLL.html}{this demonstration page} for more plotting examples
+#'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #' @examples
+#' # Load other required packages for organizing output and plotting
+#' library(dplyr)    ## for filter
+#' library(ggplot2)  ## for ggplot et al.
+#'
 #' # Life history parameters to be used below
 #' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 #'
@@ -51,23 +57,6 @@
 #'                          cmmin=0.1,cmmax=0.9,cminc=0.1,
 #'                          loi=c(200,250,300,350),lhparms=LH)
 #'
-#' # Load other required packages for organizing output and plotting
-#' library(dplyr)    ## for filter
-#' library(ggplot2)  ## for ggplot et al.
-#' library(tidyr)    ## for pivot_longer
-#'
-#' # Custom theme for plots (to make look nice)
-#' theme_FAMS <- function(...) {
-#'   theme_bw() +
-#'   theme(
-#'     panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-#'     axis.text=element_text(size=14,color="black"),
-#'     axis.title=element_text(size=16,color="black"),
-#'     axis.title.y=element_text(angle=90),
-#'     axis.line=element_line(color="black"),
-#'     panel.border=element_blank()
-#'   )
-#' }
 #'
 #' # Yield curve (yield vs exploitation)
 #' # Extract results for cm=0.40
@@ -77,36 +66,18 @@
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Yield (g)",x="Exploitation (u)") +
-#'   theme_FAMS()
+#'   theme_bw()
 #'
 #' # Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
 #' ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
-#'   theme_FAMS()
-#'
-#' # Plot number of fish reaching multiple monitored lengths as a
-#' # function of exploitation with cm = 0.40
-#' # Select columns for plotting and convert to long
-#' plot_data_long <- plot_dat %>%
-#'   select(u,`N at 200 mm`, `N at 250 mm`, `N at 300 mm`, `N at 350 mm`) %>%
-#'   pivot_longer(!u, names_to="loi",values_to="number")
-#'
-#' # Generate plot
-#' ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
-#'   geom_point() +
-#'   scale_color_discrete(name="Yield",labels=c("N at 200 mm",
-#'                        "N at 250 mm", "N at 300 mm", "N at 350 mm"))+
-#'   geom_line() +
-#'   labs(y="Number of fish",x="Exploitation (u)") +
-#'   theme_FAMS() +
-#'   theme(legend.position = "top")+
-#'   guides(color=guide_legend(title="Length of interest"))
+#'   theme_bw()
 #'
 #' @rdname yprBH_minLL_fixed
 #' @export
-yprBH_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,loi=NA,
+yprBH_minLL_fixed<-function(minLL,cfmin,cfmax,cfinc,cmmin,cmmax,cminc,loi=NULL,
                             lhparms,matchRicker=FALSE){
 
   # ---- Check inputs

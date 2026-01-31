@@ -69,6 +69,9 @@ waeLH <- makeLH(N0=100,tmax=15,Linf=fit1,LWalpha=fit2)
 waeLH
 
 }
+\seealso{
+\href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{this demonstration page} for more plotting examples
+}
 \author{
 Derek Ogle
 

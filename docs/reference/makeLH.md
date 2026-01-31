@@ -78,6 +78,12 @@ and `LWbeta` can be extracted from objects from appropriate model
 fitting and (ii) checks for impossible or improbable values for each
 parameter are performed; i.e.,
 
+## See also
+
+[this demonstration
+page](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html) for
+more plotting examples
+
 ## Author
 
 Derek Ogle

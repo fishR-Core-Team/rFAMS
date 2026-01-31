@@ -58,7 +58,7 @@
 <span>  <span class="va">cfin</span>,</span>
 <span>  <span class="va">cfabove</span>,</span>
 <span>  <span class="va">cm</span>,</span>
-<span>  loi <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  loi <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">lhparms</span>,</span>
 <span>  matchRicker <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -139,6 +139,7 @@
 <li><p>NrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)</p></li>
 <li><p>NrIn is the number of fish at time trIn (time they reach the lower slot limit size)</p></li>
 <li><p>NrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)</p></li>
+<li><p><code>N at xxx mm</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.</p></li>
 <li><p>FUnder is the estimated instantaneous rate of fishing mortality under the slot limit</p></li>
 <li><p>FIn is the estimated instantaneous rate of fishing mortality within the slot limit</p></li>
 <li><p>FAbove is the estimated instantaneous rate of fishing mortality above the slot limit</p></li>
@@ -163,8 +164,7 @@
 <li><p>t0 A numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model</p></li>
 <li><p>LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.</p></li>
 <li><p>LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.</p></li>
-<li><p>tmax An integer representing maximum age in the population in years</p></li>
-<li><p><code>N at xxx mm</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.
+<li><p>tmax An integer representing maximum age in the population in years
 #'</p></li>
 </ul></div>
     <div class="section level2">
@@ -186,22 +186,22 @@
 <span class="r-in"><span>                       cfunder<span class="op">=</span><span class="fl">0.25</span>,cfin<span class="op">=</span><span class="fl">0.6</span>,cfabove<span class="op">=</span><span class="fl">0.15</span>,cm<span class="op">=</span><span class="fl">0.4</span>,</span></span>
 <span class="r-in"><span>                       loi<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">250</span>,<span class="fl">300</span>,<span class="fl">325</span>,<span class="fl">350</span><span class="op">)</span>,lhparms<span class="op">=</span><span class="va">LH</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Res_1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    cm TotalYield TotalNharv TotalNdie yieldUnder  yieldIn yieldAbove    uUnder</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4   5611.796   19.68287   20.9852   903.2554 3813.586   894.9547 0.1981511</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   TotalYield TotalNharv TotalNdie yieldUnder  yieldIn yieldAbove    uUnder</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   5611.796   19.68287   20.9852   903.2554 3813.586   894.9547 0.1981511</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         uIn    uAbove NharvestUnder NharvestIn NharvestAbove    N0die NdieUnder</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4879637 0.1182668      6.154504   12.55573     0.9726349 59.32995  10.92831</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     NdieIn NdieAbove avglenUnder avglenIn avglenAbove avgwtUnder  avgwtIn</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 6.999731  3.057163    224.3558 280.1859    393.1118   146.7633 303.7327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   avgwtAbove  trUnder     trIn  trOver  NrUnder     NrIn  NrAbove    FUnder</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   920.1343 1.761224 2.443479 3.68129 40.67005 23.58723 4.031773 0.2876821</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         FIn    FAbove    MUnder       MIn    MAbove    ZUnder      ZIn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.9162907 0.1625189 0.5108256 0.5108256 0.5108256 0.7985077 1.427116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      ZAbove SUnder  SIn SAbove cfUnder cfIn cfOver recruitmentTL lowerSL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.6733446   0.45 0.24   0.51    0.25  0.6   0.15           200     250</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   upperSL  N0 Linf   K   t0 LWalpha LWbeta tmax N at 200 mm N at 250 mm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     325 100  592 0.2 -0.3  -5.528  3.273   15    40.67005    23.58723</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   N at 300 mm N at 325 mm N at 350 mm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    7.636027    4.031773    2.895681</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   avgwtAbove  trUnder     trIn  trOver  NrUnder     NrIn  NrAbove N at 200 mm</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   920.1343 1.761224 2.443479 3.68129 40.67005 23.58723 4.031773    40.67005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   N at 250 mm N at 300 mm N at 325 mm N at 350 mm  cm    FUnder       FIn</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    23.58723    7.636027    4.031773    2.895681 0.4 0.2876821 0.9162907</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      FAbove    MUnder       MIn    MAbove    ZUnder      ZIn    ZAbove SUnder</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.1625189 0.5108256 0.5108256 0.5108256 0.7985077 1.427116 0.6733446   0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    SIn SAbove cfUnder cfIn cfOver recruitmentTL lowerSL upperSL  N0 Linf   K</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.24   0.51    0.25  0.6   0.15           200     250     325 100  592 0.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     t0 LWalpha LWbeta tmax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.3  -5.528  3.273   15</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
