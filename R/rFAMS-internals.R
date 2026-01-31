@@ -287,9 +287,9 @@ iCheckN0 <- function(x) {
     iErrMore1(x,nm)
     iErrNotNumeric(x,nm)
     iErrLT(x,0,nm)
-    if (!is.wholenumber(x))
-      WARN("The initial number in the population is not a whole number,\n",
-           "  please check value in ",nm,".")
+    # if (!is.wholenumber(x))
+    #   WARN("The initial number in the population is not a whole number,\n",
+    #        "  please check value in ",nm,".")
   }
 }
 

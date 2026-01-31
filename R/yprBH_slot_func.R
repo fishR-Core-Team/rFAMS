@@ -92,15 +92,7 @@
 
 yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
                             loi=NULL,lhparms,matchRicker=FALSE){
-  # ---- Check inputs
-  # iCheckN0(N0)
-  # iCheckLinf(Linf)
-  # iCheckK(K)
-  # iCheckt0(t0)
-  # iCheckLWa(LWalpha)
-  # iCheckLWb(LWbeta)
-  # iCheckMaxAge(tmax)
-  iCheckloi(loi)
+
 
   # Extract individual life history values
   N0 <- lhparms[["N0"]]
@@ -111,9 +103,24 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
 
-  #Can't use ypr_func because it calculates Nr based on natural mortality only because below length limit M the only source of mortality
-  #And Nr in ypr_func is calculated only with M
-  #Nr is need for number entering slot but when fishing mort occurs below slot Nr must include M and F
+  # ---- Check inputs
+  iCheckN0(N0)
+  iCheckMaxAge(tmax)
+  iCheckLinf(Linf)
+  iCheckK(K)
+  iCheckt0(t0)
+  iCheckLWa(LWalpha)
+  iCheckLWb(LWbeta)
+  iCheckloi(loi)
+  iCheckcm(cm)
+  iCheckcfunder(cfunder)
+  iCheckcfin(cfin)
+  iCheckcfabove(cfabove)
+  iCheckrecruitTL(recruitmentTL)
+  iChecklowerSLTL(lowerSL)
+  iCheckupperSLTL(upperSL)
+
+
 
   # Maximum theoretical weight derived from L-inf and weight to length regression
   #   log10 transformation to linearize it

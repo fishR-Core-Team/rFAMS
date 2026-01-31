@@ -5,7 +5,7 @@
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
 #' @param cf A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
 #' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
-#' @param rec A numeric vector of length `simyears` to specify recruitment each year. The vector can be geneated using the `genRecruits()` function.
+#' @param rec A single numeric representing number of recruits.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
 #'
@@ -84,6 +84,17 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
   t0 <- lhparms[["t0"]]
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
+
+  iCheckN0(N0)
+  iCheckMaxAge(tmax)
+  iCheckLinf(Linf)
+  iCheckK(K)
+  iCheckt0(t0)
+  iCheckLWa(LWalpha)
+  iCheckLWb(LWbeta)
+  #iCheckcf(cf)
+  #iCheckcm(cm)
+
 
   # prepare vectors for holding results
   notes <- NULL

@@ -149,8 +149,8 @@ dpmBH <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,species=NUL
   iCheckLLinf(minLL,lhparms$Linf)
   iCheckspecies(species)
   iChecksimyears(simyears)
-  iCheckcfcm_dpm(cf)
-  iCheckcfcm_dpm(cm)
+  # iCheckcfcm_dpm(cf)
+  # iCheckcfcm_dpm(cm)
   iCheckrec(rec)
 
 

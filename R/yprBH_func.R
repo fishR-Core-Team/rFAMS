@@ -68,28 +68,7 @@
 #' @export
 
 yprBH_func <- function(minLL,cf,cm,loi=NULL,lhparms,matchRicker=FALSE){
-  # ---- Check inputs
-  iCheckMLH(minLL)
-  #iCheckcf(cf)
-  #iCheckcm(cm)
-  # iCheckN0(N0)    # initial check if vector/list
-  # if (length(N0)>1) {
-  #   Linf <- N0[["Linf"]]
-  #   K <- N0[["K"]]
-  #   t0 <- N0[["t0"]]
-  #   LWalpha <- N0[["LWalpha"]]
-  #   LWbeta <- N0[["LWbeta"]]
-  #   tmax <- N0[["tmax"]]
-  #   N0 <- N0[["N0"]]
-  #   iCheckN0(N0)  # second check of single value of N0
-  # }
-  # iCheckLinf(Linf)
-  # iCheckK(K)
-  # iCheckt0(t0)
-  # iCheckLWa(LWalpha)
-  # iCheckLWb(LWbeta)
-  # iChecktmax(tmax)
-  iCheckloi(loi)
+
 
   # Extract individual life history values
   N0 <- lhparms[["N0"]]
@@ -99,6 +78,20 @@ yprBH_func <- function(minLL,cf,cm,loi=NULL,lhparms,matchRicker=FALSE){
   t0 <- lhparms[["t0"]]
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
+
+  # ---- Check inputs
+  iCheckMLH(minLL)
+  iCheckcf(cf)
+  iCheckcm(cm)
+  iCheckloi(loi)
+  iCheckN0(N0)
+  iCheckMaxAge(tmax)
+  iCheckLinf(Linf)
+  iCheckK(K)
+  iCheckt0(t0)
+  iCheckLWa(LWalpha)
+  iCheckLWb(LWbeta)
+
 
   # prepare notes vector
   notes <- NULL
