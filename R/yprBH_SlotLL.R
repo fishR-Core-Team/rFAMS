@@ -19,35 +19,36 @@
 #'
 #' @return A data.frame with the following calculated values:
 #' \itemize{
-#' \item cm A numeric representing conditional natural mortality
-#' \item TotalYield is the calculated total yield
-#' \item TotalHarvest is the calculated total number of harvested fish
-#' \item TotalNdie is the calculated total number of fish that die of natural death
+#' \item yieldTotal is the calculated total yield
 #' \item yieldUnder is the calculated yield under the slot limit
-#' \item yieldIn is the calculated yied within the slot limit
+#' \item yieldIn is the calculated yield within the slot limit
 #' \item yieldAbove is the calculated yield above the slot limit
-#' \item exploitationUnder is the exploitation rate under the slot limit
-#' \item exploitationIn is the exploitation rate within the slot limit
-#' \item exploitationAbove is the exploitation rate above the slot limit
-#' \item NharvestUnder is the number of harvested fish under the slot limit
-#' \item NharvestIn is the number of harvested fish within the slot limit
-#' \item NharvestAbove is the number of harvested fish above the slot limit
-#' \item NdieUnder is the number of fish that die of natural death under the slot limit
-#' \item NdieIn is the number of fish that die of natural deaths within the slot limit
-#' \item NdieAbove is the number of fish that die of natural deaths above the slot limit
+#' \item nharvTotal is the calculated total number of harvested fish
+#' \item ndieTotal is the calculated total number of fish that die of natural death
+#' \item nharvestUnder is the number of harvested fish under the slot limit
+#' \item nharvestIn is the number of harvested fish within the slot limit
+#' \item nharvestAbove is the number of harvested fish above the slot limit
+#' \item n0die is the number of fish that die of natural death before entering the fishery at a minimum length
+#' \item ndieUnder is the number of fish that die of natural death between entering the fishery and the lower slot limit
+#' \item ndieIn is the number of fish that die of natural deaths within the slot limit
+#' \item ndieAbove is the number of fish that die of natural deaths above the slot limit
+#' \item nrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
+#' \item nrIn is the number of fish at time trIn (time they reach the lower slot limit size)
+#' \item nrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
+#' \item trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
+#' \item trIn is the time for a fish to recruit to a lower length limit of the slot limit
+#' \item trOver is the time for a fish to recruit to a upper length limit of the slot limit
 #' \item avglenUnder is the average length of fish harvested under the slot limit
 #' \item avglenIn is the average length of fish harvested within the slot limit
 #' \item avglenAbove is the average length of fish harvested above the slot limit
 #' \item avgwtUnder is the average weight of fish harvested under the slot limit
 #' \item avgwtIn is the average weight of fish harvested within the slot limit
 #' \item avgwtAbove is the average weight of fish harvested above the slot limit
-#' \item trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
-#' \item trIn is the time for a fish to recruit to a lower length limit of the slot limit
-#' \item trOver is the time for a fish to recruit to a upper length limit of the slot limit
-#' \item NrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
-#' \item NrIn is the number of fish at time trIn (time they reach the lower slot limit size)
-#' \item NrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
-#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item \code{nAtxxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item cm A numeric representing conditional natural mortality
+#' \item expUnder is the exploitation rate under the slot limit
+#' \item expIn is the exploitation rate within the slot limit
+#' \item expAbove is the exploitation rate above the slot limit
 #' \item FUnder is the estimated instantaneous rate of fishing mortality under the slot limit
 #' \item FIn is the estimated instantaneous rate of fishing mortality within the slot limit
 #' \item FAbove is the estimated instantaneous rate of fishing mortality above the slot limit
