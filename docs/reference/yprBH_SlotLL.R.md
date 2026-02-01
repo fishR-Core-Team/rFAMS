@@ -89,41 +89,54 @@ yprBH_SlotLL(
 
 A data.frame with the following calculated values:
 
-- cm A numeric representing conditional natural mortality
-
-- TotalYield is the calculated total yield
-
-- TotalHarvest is the calculated total number of harvested fish
-
-- TotalNdie is the calculated total number of fish that die of natural
-  death
+- yieldTotal is the calculated total yield
 
 - yieldUnder is the calculated yield under the slot limit
 
-- yieldIn is the calculated yied within the slot limit
+- yieldIn is the calculated yield within the slot limit
 
 - yieldAbove is the calculated yield above the slot limit
 
-- exploitationUnder is the exploitation rate under the slot limit
+- nharvTotal is the calculated total number of harvested fish
 
-- exploitationIn is the exploitation rate within the slot limit
+- ndieTotal is the calculated total number of fish that die of natural
+  death
 
-- exploitationAbove is the exploitation rate above the slot limit
+- nharvestUnder is the number of harvested fish under the slot limit
 
-- NharvestUnder is the number of harvested fish under the slot limit
+- nharvestIn is the number of harvested fish within the slot limit
 
-- NharvestIn is the number of harvested fish within the slot limit
+- nharvestAbove is the number of harvested fish above the slot limit
 
-- NharvestAbove is the number of harvested fish above the slot limit
+- n0die is the number of fish that die of natural death before entering
+  the fishery at a minimum length
 
-- NdieUnder is the number of fish that die of natural death under the
+- ndieUnder is the number of fish that die of natural death between
+  entering the fishery and the lower slot limit
+
+- ndieIn is the number of fish that die of natural deaths within the
   slot limit
 
-- NdieIn is the number of fish that die of natural deaths within the
+- ndieAbove is the number of fish that die of natural deaths above the
   slot limit
 
-- NdieAbove is the number of fish that die of natural deaths above the
+- nrUnder is the number of fish at time trUnder (time they become
+  harvestable size under the slot limit)
+
+- nrIn is the number of fish at time trIn (time they reach the lower
+  slot limit size)
+
+- nrAbove is the number of fish at time trAbove (time they reach the
+  upper slot limit size)
+
+- trUnder is the time for a fish to recruit to a minimum length limit
+  (i.e., time to enter fishery)
+
+- trIn is the time for a fish to recruit to a lower length limit of the
   slot limit
+
+- trOver is the time for a fish to recruit to a upper length limit of
+  the slot limit
 
 - avglenUnder is the average length of fish harvested under the slot
   limit
@@ -141,26 +154,16 @@ A data.frame with the following calculated values:
 - avgwtAbove is the average weight of fish harvested above the slot
   limit
 
-- trUnder is the time for a fish to recruit to a minimum length limit
-  (i.e., time to enter fishery)
+- `nAtxxx` is the number that reach the length of interest supplied.
+  There will be one column for each length of interest.
 
-- trIn is the time for a fish to recruit to a lower length limit of the
-  slot limit
+- cm A numeric representing conditional natural mortality
 
-- trOver is the time for a fish to recruit to a upper length limit of
-  the slot limit
+- expUnder is the exploitation rate under the slot limit
 
-- NrUnder is the number of fish at time trUnder (time they become
-  harvestable size under the slot limit)
+- expIn is the exploitation rate within the slot limit
 
-- NrIn is the number of fish at time trIn (time they reach the lower
-  slot limit size)
-
-- NrAbove is the number of fish at time trAbove (time they reach the
-  upper slot limit size)
-
-- `N at xxx mm` is the number that reach the length of interest
-  supplied. There will be one column for each length of interest.
+- expAbove is the exploitation rate above the slot limit
 
 - FUnder is the estimated instantaneous rate of fishing mortality under
   the slot limit

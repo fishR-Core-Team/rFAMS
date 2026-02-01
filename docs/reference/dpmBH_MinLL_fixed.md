@@ -8,7 +8,7 @@ harvest (`minLL`).
 ## Usage
 
 ``` r
-dpmBH_MinLL_fixed(
+dpmBH_minLL_fixed(
   simyears,
   minLL,
   cf,
@@ -271,7 +271,7 @@ rec <- genRecruits(method = "fixed", nR = 100, simyears = simyears)
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
-out<-dpmBH_MinLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
+out<-dpmBH_minLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
                        cm = cm, rec = rec, lhparms = lhparms,
                        matchRicker=FALSE,species="Striped Bass",group="landlocked")
 
@@ -300,7 +300,7 @@ rec <- genRecruits(method = "normal", simyears = simyears,
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
-out_2<-dpmBH_MinLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
+out_2<-dpmBH_minLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
                          cm = cm, rec = rec, lhparms = lhparms,
                          matchRicker=FALSE,species="Striped Bass",group="landlocked")
 

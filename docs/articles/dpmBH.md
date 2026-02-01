@@ -10,7 +10,7 @@ The objective of this article is to demonstrate how to use rFAMS to
 simulate a population and estimate population characteristics using the
 dynamic pool model. The dynamic pool model projects a population forward
 based on recruitment, life history parameters, and mortality. The
-[`dpmBH_MinLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL_fixed.md)
+[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_minLL_fixed.md)
 function requires the following arguments:
 
 - simyears: A single numeric for the lower limit of minimum length limit
@@ -101,7 +101,7 @@ rec <- genRecruits(method = "fixed", nR = 1000, simyears = simyears)
 
 ## Run the dynamic pool model
 
-The `dpmBH_MinLL_fixed` function will use all the arguments above to
+The `dpmBH_minLL_fixed` function will use all the arguments above to
 simulate the population and generate a list with two data.frame object.
 The first list item contains a data.frame with a summary by age and the
 second list item contains a data.frame with a summary by year. The
@@ -113,7 +113,7 @@ information about PSD categories.
 
 ``` r
 #run dynamic pool simulations
-out1<-dpmBH_MinLL_fixed(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = LH,
+out1<-dpmBH_minLL_fixed(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = LH,
            matchRicker=FALSE,species="Striped Bass",group="landlocked")
 ```
 

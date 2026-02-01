@@ -120,35 +120,36 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data.frame with the following calculated values:</p><ul><li><p>cm A numeric representing conditional natural mortality</p></li>
-<li><p>TotalYield is the calculated total yield</p></li>
-<li><p>TotalHarvest is the calculated total number of harvested fish</p></li>
-<li><p>TotalNdie is the calculated total number of fish that die of natural death</p></li>
+    <p>A data.frame with the following calculated values:</p><ul><li><p>yieldTotal is the calculated total yield</p></li>
 <li><p>yieldUnder is the calculated yield under the slot limit</p></li>
-<li><p>yieldIn is the calculated yied within the slot limit</p></li>
+<li><p>yieldIn is the calculated yield within the slot limit</p></li>
 <li><p>yieldAbove is the calculated yield above the slot limit</p></li>
-<li><p>exploitationUnder is the exploitation rate under the slot limit</p></li>
-<li><p>exploitationIn is the exploitation rate within the slot limit</p></li>
-<li><p>exploitationAbove is the exploitation rate above the slot limit</p></li>
-<li><p>NharvestUnder is the number of harvested fish under the slot limit</p></li>
-<li><p>NharvestIn is the number of harvested fish within the slot limit</p></li>
-<li><p>NharvestAbove is the number of harvested fish above the slot limit</p></li>
-<li><p>NdieUnder is the number of fish that die of natural death under the slot limit</p></li>
-<li><p>NdieIn is the number of fish that die of natural deaths within the slot limit</p></li>
-<li><p>NdieAbove is the number of fish that die of natural deaths above the slot limit</p></li>
+<li><p>nharvTotal is the calculated total number of harvested fish</p></li>
+<li><p>ndieTotal is the calculated total number of fish that die of natural death</p></li>
+<li><p>nharvestUnder is the number of harvested fish under the slot limit</p></li>
+<li><p>nharvestIn is the number of harvested fish within the slot limit</p></li>
+<li><p>nharvestAbove is the number of harvested fish above the slot limit</p></li>
+<li><p>n0die is the number of fish that die of natural death before entering the fishery at a minimum length</p></li>
+<li><p>ndieUnder is the number of fish that die of natural death between entering the fishery and the lower slot limit</p></li>
+<li><p>ndieIn is the number of fish that die of natural deaths within the slot limit</p></li>
+<li><p>ndieAbove is the number of fish that die of natural deaths above the slot limit</p></li>
+<li><p>nrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)</p></li>
+<li><p>nrIn is the number of fish at time trIn (time they reach the lower slot limit size)</p></li>
+<li><p>nrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)</p></li>
+<li><p>trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)</p></li>
+<li><p>trIn is the time for a fish to recruit to a lower length limit of the slot limit</p></li>
+<li><p>trOver is the time for a fish to recruit to a upper length limit of the slot limit</p></li>
 <li><p>avglenUnder is the average length of fish harvested under the slot limit</p></li>
 <li><p>avglenIn is the average length of fish harvested within the slot limit</p></li>
 <li><p>avglenAbove is the average length of fish harvested above the slot limit</p></li>
 <li><p>avgwtUnder is the average weight of fish harvested under the slot limit</p></li>
 <li><p>avgwtIn is the average weight of fish harvested within the slot limit</p></li>
 <li><p>avgwtAbove is the average weight of fish harvested above the slot limit</p></li>
-<li><p>trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)</p></li>
-<li><p>trIn is the time for a fish to recruit to a lower length limit of the slot limit</p></li>
-<li><p>trOver is the time for a fish to recruit to a upper length limit of the slot limit</p></li>
-<li><p>NrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)</p></li>
-<li><p>NrIn is the number of fish at time trIn (time they reach the lower slot limit size)</p></li>
-<li><p>NrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)</p></li>
-<li><p><code>N at xxx mm</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.</p></li>
+<li><p><code>nAtxxx</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.</p></li>
+<li><p>cm A numeric representing conditional natural mortality</p></li>
+<li><p>expUnder is the exploitation rate under the slot limit</p></li>
+<li><p>expIn is the exploitation rate within the slot limit</p></li>
+<li><p>expAbove is the exploitation rate above the slot limit</p></li>
 <li><p>FUnder is the estimated instantaneous rate of fishing mortality under the slot limit</p></li>
 <li><p>FIn is the estimated instantaneous rate of fishing mortality within the slot limit</p></li>
 <li><p>FAbove is the estimated instantaneous rate of fishing mortality above the slot limit</p></li>
