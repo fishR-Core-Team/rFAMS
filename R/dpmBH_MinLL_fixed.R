@@ -95,7 +95,7 @@
 #' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
-#' out<-dpmBH_MinLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
+#' out<-dpmBH_minLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
 #'                        cm = cm, rec = rec, lhparms = lhparms,
 #'                        matchRicker=FALSE,species="Striped Bass",group="landlocked")
 #'
@@ -122,7 +122,7 @@
 #' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
-#' out_2<-dpmBH_MinLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
+#' out_2<-dpmBH_minLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
 #'                          cm = cm, rec = rec, lhparms = lhparms,
 #'                          matchRicker=FALSE,species="Striped Bass",group="landlocked")
 #'
@@ -141,10 +141,10 @@
 #'   labs(y="Total yield (g)",x="Age") +
 #'   theme_bw()
 #'
-#' @rdname dpmBH_MinLL_fixed
+#' @rdname dpmBH_minLL_fixed
 #' @export
 
-dpmBH_MinLL_fixed <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,species=NULL, group=NULL){
+dpmBH_minLL_fixed <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,species=NULL, group=NULL){
 
   # ---- Check inputs
   iCheckMLH(minLL)

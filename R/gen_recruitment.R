@@ -17,7 +17,7 @@
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #'
-#' @returns A vector that contains the number of recruits for each simulation that can be used directly in the dynamic pool model (e.g., \code{\link{dpmBH_MinLL_fixed}}).
+#' @returns A vector that contains the number of recruits for each simulation that can be used directly in the dynamic pool model (e.g., \code{\link{dpmBH_minLL_fixed}}).
 #'
 #' @examples
 #' # Genearte recruits based on a fixed number
