@@ -111,14 +111,14 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.frame with the following calculated values:</p><ul><li><p><code>yield</code> is the estimated yield (in g).</p></li>
-<li><p><code>exploitation</code> is the exploitation rate.</p></li>
-<li><p><code>Nharvest</code> is the number of harvested fish.</p></li>
-<li><p><code>Ndie</code> is the number of fish that die of natural deaths.</p></li>
-<li><p><code>Nt</code> is the number of fish at time tr (time they become harvestable size).</p></li>
+<li><p><code>nharvest</code> is the number of harvested fish.</p></li>
+<li><p><code>ndie</code> is the number of fish that die of natural deaths.</p></li>
+<li><p><code>nt</code> is the number of fish at time tr (time they become harvestable size).</p></li>
+<li><p><code>tr</code> is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).</p></li>
 <li><p><code>avgwt</code> is the average weight of fish harvested.</p></li>
 <li><p><code>avglen</code> is the average length of fish harvested.</p></li>
-<li><p><code>tr</code> is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).</p></li>
-<li><p><code>N at xxx mm</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.</p></li>
+<li><p><code>N at xxx</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.</p></li>
+<li><p><code>exploitation</code> is the exploitation rate.</p></li>
 <li><p><code>F</code> is the instantaneous rate of fishing mortality.</p></li>
 <li><p><code>M</code> is the instantaneous rate of natural mortality.</p></li>
 <li><p><code>Z</code> is the instantaneous rate of total mortality.</p></li>
@@ -162,7 +162,7 @@
 <span class="r-in"><span><span class="co"># Extract results for cm=0.40</span></span></span>
 <span class="r-in"><span><span class="va">plot_dat</span> <span class="op">&lt;-</span> <span class="va">Res_1</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cm</span><span class="op">==</span><span class="fl">0.40</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">yield</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">exploitation</span>,y<span class="op">=</span><span class="va">yield</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Yield (g)"</span>,x<span class="op">=</span><span class="st">"Exploitation (u)"</span><span class="op">)</span> <span class="op">+</span></span></span>
@@ -170,7 +170,7 @@
 <span class="r-plt img"><img src="yprBH_minLL_fixed-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">`N at 300 mm`</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">exploitation</span>,y<span class="op">=</span><span class="va">`nAt300`</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Number of fish at 300 mm"</span>,x<span class="op">=</span><span class="st">"Exploitation (u)"</span><span class="op">)</span> <span class="op">+</span></span></span>

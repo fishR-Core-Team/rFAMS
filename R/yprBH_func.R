@@ -14,14 +14,14 @@
 #' @return A data.frame with the following calculated values:
 #' \itemize{
 #' \item \code{yield} is the estimated yield (in g).
-#' \item \code{exploitation} is the exploitation rate.
-#' \item \code{Nharvest} is the number of harvested fish.
-#' \item \code{Ndie} is the number of fish that die of natural deaths.
-#' \item \code{Nt} is the number of fish at time tr (time they become harvestable size).
+#' \item \code{nharvest} is the number of harvested fish.
+#' \item \code{ndie} is the number of fish that die of natural deaths.
+#' \item \code{nt} is the number of fish at time tr (time they become harvestable size).
+#' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
 #' \item \code{avgwt} is the average weight of fish harvested.
 #' \item \code{avglen} is the average length of fish harvested.
-#' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
-#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item \code{nAtxxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item \code{exploitation} is the exploitation rate.
 #' \item \code{F} is the instantaneous rate of fishing mortality.
 #' \item \code{M} is the instantaneous rate of natural mortality.
 #' \item \code{Z} is the instantaneous rate of total mortality.
@@ -157,7 +157,7 @@ if(!is.null(loi[1])){
   }
 
   #assign column names
-  names(Nloi) <- paste0("N at ", loi, " mm")
+  names(Nloi) <- paste0("nAt", loi)
 }
 
   # Amount of time (years) to recruit to the fishery (r) ... defined in FAMS
@@ -240,14 +240,14 @@ if(!is.null(loi[1])){
   # ---- Return data.frame with both output values and input parameters
   tmp1 <- data.frame(
     yield=Y,
-    u=exploitation,
-    Nharvest=Nharv,
-    Ndie=Ndie,
+    nharvest=Nharv,
+    ndie=Ndie,
+    nt= Nt,
+    tr=tr,
     avgwt=avgwt,
-    avglen=avglen,
-    Nt= Nt,
-    tr=tr)
+    avglen=avglen)
   tmp2 <- data.frame(
+    exploitation=exploitation,
     F=F,
     M=M,
     Z=Z,

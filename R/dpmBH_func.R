@@ -92,8 +92,6 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
   iCheckt0(t0)
   iCheckLWa(LWalpha)
   iCheckLWb(LWbeta)
-  #iCheckcf(cf)
-  #iCheckcm(cm)
 
 
   # prepare vectors for holding results
@@ -144,10 +142,7 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
     F[x] <- -1*log(1-cf[x])
     M[x] <- -1*log(1-cm[x])
     Z[x] <- F[x]+M[x]
-    # print(F[x])
-    # print(M[x])
-    # print(cf[x])
-    # print(cm[x])
+
     # Annual survival rate (S)
     S[x] <- exp(-Z[x])
     # Exploitation rate (u) ... rearrange of FAMS equation 4:14
@@ -211,9 +206,7 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
       #Remove fish from natural mortality first then fishing
       removed_under <- abundvec[x]- (abundvec[x] * exp(-M[x] * r))
       remain_for_harvest <-(abundvec[x]-removed_under)
-      # N_harvest[x] <- remain_for_harvest - (remain_for_harvest *exp(-F[x]* (x-tr))) #1-r is simply number of years in the fishery
-      # remain_for_harvest <- remain_for_harvest-N_harvest[x]
-      # N_die[x]<- remain_for_harvest - (remain_for_harvest*exp(-M[x]*(x-tr))) + removed_under
+
       #Calculate remaining loss to harvest and natural deaths
       if(F[x] == 0){
         N_harvest[x] = 0
@@ -234,16 +227,6 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
       }
       N_die[x] <- (abundvec[x] - (abundvec[x]*exp(-Z[x]))) * (M[x]/Z[x])
     }
-
-    # if(x == (floor(tr)+1) && r > 0){
-    #   #When age at entering fishery is between x and x+1
-    #   N_harvest[x] <- (Nr - (Nr*exp(-Z[x]* (1-r)))) * (F[x]/Z[x]) #1-r is simply number of years in the fishery
-    #   N_die[x] <- (Nr - (Nr*exp(-Z[x]* (1-r)))) * (M[x]/Z[x])
-    # }else{
-    #   #When age at entering fishery is x
-    #   N_harvest[x] <- (Nr - (Nr*exp(-Z[x]* (1)))) * (F[x]/Z[x]) #1-r is simply number of years in the fishery
-    #   N_die[x] <- (Nr - (Nr*exp(-Z[x]* (1)))) * (M[x]/Z[x])
-    # }
 
   }
 
@@ -267,25 +250,13 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
     age[x] <- x-1
 }
 
-  #Calculate number of fish that reach harvestable size
-  #Nt = N0
-  # for(y in 1:(floor(tr))){
-  #   Nt = Nt *exp(-M[y])
-  # }
-  # Nt = Nt * exp(-M[floor(tr)] * r)
-  # Nt = N0 - Nt
-  #
-  # for(y in 1:((floor(tr))-1)){
-  #   Nt <- Nt - N_die[y] #Number of fish that reach harvestable size
-  # }
-  # Nt <- Nt - N_die[floor(tr)]
 
   # ---- Return data.frame with both output values and input parameters
   data.frame(
     age = age,
     length=length,
     weight=weight,
-    N_start=abundvec,
+    nstart=abundvec,
     exploitation=exploitation,
     expect_nat_death=expect_nat_death,
     cf=cf,
@@ -294,11 +265,9 @@ dpmBH_func <- function(minLL,cf,cm,rec,lhparms,matchRicker=FALSE){
     M = M,
     Z = Z,
     S=S,
-    #tr=rep(tr,length(age)),
-    #Nt=rep(Nt,length(age)),
     biomass= biomass,
-    N_harvest=N_harvest,
-    N_die=N_die,
+    nharvest=N_harvest,
+    ndie=N_die,
     yield=yield,
     minLL=minLL,
     N0=N0,

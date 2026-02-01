@@ -106,9 +106,9 @@ values:
 
 - yield is the estimated yield (in g).
 - exploitation is the exploitation rate.
-- Nharvest is the number of harvested fish.
-- Ndie is the number of fish that die of natural deaths.
-- Nt is the number of fish at time tr (time they become harvestable
+- nharvest is the number of harvested fish.
+- ndie is the number of fish that die of natural deaths.
+- nt is the number of fish at time tr (time they become harvestable
   size).
 - avgwt is the average weight of fish harvested.
 - avglen is the average length of fish harvested.
@@ -118,8 +118,8 @@ values:
 - M is the instantaneous rate of natural mortality.
 - Z is the instantaneous rate of total mortality.
 - S is the (total) annual rate of survival.
-- N at xxx mm is the number that reach the length of interest supplied.
-  There will be one column for each length of interest.
+- nAtxxx is the number that reach the length of interest supplied. There
+  will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values
 (minLL derived from lengthmin, lengthmax, and lengthinc; cf derived from
@@ -130,27 +130,27 @@ View the first few rows of the output
 
 ``` r
 head(Res_1)
-#>      yield     u Nharvest     Ndie     avgwt   avglen       Nt       tr
-#> 1 40818.31 0.095 41.53181 41.53181  982.8204 401.1080 83.06361 1.761224
-#> 2 42961.98 0.095 38.65116 38.65116 1111.5316 416.4771 77.30232 2.443479
-#> 3 44833.10 0.095 35.56322 35.56322 1260.6592 432.8090 71.12644 3.233764
-#> 4 45992.30 0.095 32.21300 32.21300 1427.7562 449.5853 64.42599 4.172845
-#> 5 45715.51 0.095 28.51544 28.51544 1603.1847 465.7891 57.03087 5.330056
-#> 6 42738.81 0.095 24.32552 24.32552 1756.9537 479.0075 48.65103 6.838398
-#>   N at 400 mm N at 450 mm N at 500 mm N at 550 mm         F         M        Z
-#> 1    39.15698    28.49531    18.03716    7.895417 0.1053605 0.1053605 0.210721
-#> 2    42.07533    30.61904    19.38146    8.483857 0.1053605 0.1053605 0.210721
-#> 3    45.72871    33.27768    21.06435    9.220507 0.1053605 0.1053605 0.210721
-#> 4    50.48460    36.73864    23.25508   10.179461 0.1053605 0.1053605 0.210721
-#> 5    57.03087    41.50249    26.27054   11.499418 0.1053605 0.1053605 0.210721
-#> 6    57.03087    48.65103    30.79548   13.480121 0.1053605 0.1053605 0.210721
-#>      S  cf  cm minLL  N0 Linf   K   t0 LWalpha LWbeta tmax notes
-#> 1 0.81 0.1 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 2 0.81 0.1 0.1   250 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 3 0.81 0.1 0.1   300 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 4 0.81 0.1 0.1   350 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 5 0.81 0.1 0.1   400 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 6 0.81 0.1 0.1   450 100  592 0.2 -0.3  -5.528  3.273   15
+#>      yield nharvest     ndie       nt       tr     avgwt   avglen   nAt400
+#> 1 40818.31 41.53181 41.53181 83.06361 1.761224  982.8204 401.1080 39.15698
+#> 2 42961.98 38.65116 38.65116 77.30232 2.443479 1111.5316 416.4771 42.07533
+#> 3 44833.10 35.56322 35.56322 71.12644 3.233764 1260.6592 432.8090 45.72871
+#> 4 45992.30 32.21300 32.21300 64.42599 4.172845 1427.7562 449.5853 50.48460
+#> 5 45715.51 28.51544 28.51544 57.03087 5.330056 1603.1847 465.7891 57.03087
+#> 6 42738.81 24.32552 24.32552 48.65103 6.838398 1756.9537 479.0075 57.03087
+#>     nAt450   nAt500    nAt550 exploitation         F         M        Z    S
+#> 1 28.49531 18.03716  7.895417        0.095 0.1053605 0.1053605 0.210721 0.81
+#> 2 30.61904 19.38146  8.483857        0.095 0.1053605 0.1053605 0.210721 0.81
+#> 3 33.27768 21.06435  9.220507        0.095 0.1053605 0.1053605 0.210721 0.81
+#> 4 36.73864 23.25508 10.179461        0.095 0.1053605 0.1053605 0.210721 0.81
+#> 5 41.50249 26.27054 11.499418        0.095 0.1053605 0.1053605 0.210721 0.81
+#> 6 48.65103 30.79548 13.480121        0.095 0.1053605 0.1053605 0.210721 0.81
+#>    cf  cm minLL  N0 Linf   K   t0 LWalpha LWbeta tmax notes
+#> 1 0.1 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 2 0.1 0.1   250 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 3 0.1 0.1   300 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 4 0.1 0.1   350 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 5 0.1 0.1   400 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 6 0.1 0.1   450 100  592 0.2 -0.3  -5.528  3.273   15
 ```
 
 ## Plot results
@@ -188,7 +188,7 @@ Res_1$cm <- round(Res_1$cm,8)
 # Extract results for cm=0.40 and minimum length limit=400
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30,minLL==400)
 
-ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Exploitation (u)") +
@@ -209,7 +209,7 @@ Res_1$cm <- round(Res_1$cm,8)
 # Extract results for cm=0.40 and minimum length limit=400
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
-ggplot(data=plot_dat,mapping=aes(y=yield,x=u,group=minLL,color=minLL)) +
+ggplot(data=plot_dat,mapping=aes(y=yield,x=exploitation,group=minLL,color=minLL)) +
   geom_line(linewidth=1) +
   scale_color_gradient2(high="black") +
   labs(y="Total yield (g)",x="Exploitation (u)",color="Min Length Limit") +
@@ -230,10 +230,10 @@ code block above.
 # Extract results for cm=0.40 and minimum length limit=400
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30,minLL==400)
 
-ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 450 mm`)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=`nAt450`)) +
   geom_point() +
   geom_line() +
-  labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
+  labs(y="Number of fish at 450 mm",x="Exploitation (u)") +
   theme_FAMS()
 ```
 
@@ -246,11 +246,11 @@ natural mortality `cm` of 0.30 which was filtered out above.
 ``` r
 # Select columns for plotting and convert to long
 plot_data_long <- plot_dat %>%
- select(u,`N at 400 mm`, `N at 450 mm`, `N at 500 mm`, `N at 550 mm`) %>%
- pivot_longer(!u, names_to="loi",values_to="number")
+ select(exploitation,`nAt400`, `nAt450`, `nAt500`, `nAt550`) %>%
+ pivot_longer(!exploitation, names_to="loi",values_to="number")
 
 # Generate plot
-ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
+ggplot(data=plot_data_long,mapping=aes(x=exploitation,y=number,group=loi,color=loi)) +
  geom_point() +
  scale_color_discrete(name="Yield",labels=c("N at 400 mm", "N at 450 mm", "N at 500 mm", "N at 550 mm"))+
  geom_line() +
@@ -274,7 +274,7 @@ plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
 # Yield isopleths for varying minLL and exploitation with cm=0.40
 # Using same data as previous example
-ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)") +
   ylab("Minimum length limit (mm)") +
@@ -286,7 +286,7 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=yield)) +
 ``` r
 
 # Same isopleth as previous but using number harvested instead of yield
-ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=Nharvest)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=nharvest)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)")+
   ylab("Minimum length limit (mm)")+

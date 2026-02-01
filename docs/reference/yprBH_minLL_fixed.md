@@ -79,24 +79,24 @@ A data.frame with the following calculated values:
 
 - `yield` is the estimated yield (in g).
 
-- `exploitation` is the exploitation rate.
+- `nharvest` is the number of harvested fish.
 
-- `Nharvest` is the number of harvested fish.
+- `ndie` is the number of fish that die of natural deaths.
 
-- `Ndie` is the number of fish that die of natural deaths.
-
-- `Nt` is the number of fish at time tr (time they become harvestable
+- `nt` is the number of fish at time tr (time they become harvestable
   size).
+
+- `tr` is the time for a fish to recruit to a minimum length limit
+  (i.e., time to enter fishery).
 
 - `avgwt` is the average weight of fish harvested.
 
 - `avglen` is the average length of fish harvested.
 
-- `tr` is the time for a fish to recruit to a minimum length limit
-  (i.e., time to enter fishery).
+- `N at xxx` is the number that reach the length of interest supplied.
+  There will be one column for each length of interest.
 
-- `N at xxx mm` is the number that reach the length of interest
-  supplied. There will be one column for each length of interest.
+- `exploitation` is the exploitation rate.
 
 - `F` is the instantaneous rate of fishing mortality.
 
@@ -159,7 +159,7 @@ Res_1 <- yprBH_minLL_fixed(minLL=200,
 # Extract results for cm=0.40
 plot_dat <- Res_1 |> dplyr::filter(cm==0.40)
 
-ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Yield (g)",x="Exploitation (u)") +
@@ -167,7 +167,7 @@ ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
 
 
 # Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
-ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=`nAt300`)) +
   geom_point() +
   geom_line() +
   labs(y="Number of fish at 300 mm",x="Exploitation (u)") +

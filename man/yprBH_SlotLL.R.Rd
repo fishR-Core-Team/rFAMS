@@ -127,7 +127,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
 # Plot results
 # Total Yield vs Conditional Natural Mortality (cm)
-ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
+ggplot(data=Res_1,mapping=aes(x=cm,y=yieldTotal)) +
   geom_point() +
   geom_line() +
   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +

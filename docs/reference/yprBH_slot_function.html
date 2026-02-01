@@ -110,36 +110,36 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>the following calculated and input values in a data.frame</p><ul><li><p>cm A numeric representing conditional natural mortality</p></li>
-<li><p>TotalYield is the calculated total yield</p></li>
-<li><p>TotalHarvest is the calculated total number of harvested fish</p></li>
-<li><p>TotalNdie is the calculated total number of fish that die of natural death</p></li>
+    <p>the following calculated and input values in a data.frame</p><ul><li><p>yieldTotal is the calculated total yield</p></li>
 <li><p>yieldUnder is the calculated yield under the slot limit</p></li>
 <li><p>yieldIn is the calculated yield within the slot limit</p></li>
 <li><p>yieldAbove is the calculated yield above the slot limit</p></li>
-<li><p>uUnder is the exploitation rate under the slot limit</p></li>
-<li><p>uIn is the exploitation rate within the slot limit</p></li>
-<li><p>uAbove is the exploitation rate above the slot limit</p></li>
-<li><p>NharvestUnder is the number of harvested fish under the slot limit</p></li>
-<li><p>NharvestIn is the number of harvested fish within the slot limit</p></li>
-<li><p>NharvestAbove is the number of harvested fish above the slot limit</p></li>
-<li><p>N0die is the number of fish that die of natural death before entering the fishery at a minimum length</p></li>
-<li><p>NdieUnder is the number of fish that die of natural death between entering the fishery and the lower slot limit</p></li>
-<li><p>NdieIn is the number of fish that die of natural deaths within the slot limit</p></li>
-<li><p>NdieAbove is the number of fish that die of natural deaths above the slot limit</p></li>
+<li><p>nharvTotal is the calculated total number of harvested fish</p></li>
+<li><p>ndieTotal is the calculated total number of fish that die of natural death</p></li>
+<li><p>nharvestUnder is the number of harvested fish under the slot limit</p></li>
+<li><p>nharvestIn is the number of harvested fish within the slot limit</p></li>
+<li><p>nharvestAbove is the number of harvested fish above the slot limit</p></li>
+<li><p>n0die is the number of fish that die of natural death before entering the fishery at a minimum length</p></li>
+<li><p>ndieUnder is the number of fish that die of natural death between entering the fishery and the lower slot limit</p></li>
+<li><p>ndieIn is the number of fish that die of natural deaths within the slot limit</p></li>
+<li><p>ndieAbove is the number of fish that die of natural deaths above the slot limit</p></li>
+<li><p>nrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)</p></li>
+<li><p>nrIn is the number of fish at time trIn (time they reach the lower slot limit size)</p></li>
+<li><p>nrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)</p></li>
+<li><p>trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)</p></li>
+<li><p>trIn is the time for a fish to recruit to a lower length limit of the slot limit</p></li>
+<li><p>trOver is the time for a fish to recruit to a upper length limit of the slot limit</p></li>
 <li><p>avglenUnder is the average length of fish harvested under the slot limit</p></li>
 <li><p>avglenIn is the average length of fish harvested within the slot limit</p></li>
 <li><p>avglenAbove is the average length of fish harvested above the slot limit</p></li>
 <li><p>avgwtUnder is the average weight of fish harvested under the slot limit</p></li>
 <li><p>avgwtIn is the average weight of fish harvested within the slot limit</p></li>
 <li><p>avgwtAbove is the average weight of fish harvested above the slot limit</p></li>
-<li><p>trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)</p></li>
-<li><p>trIn is the time for a fish to recruit to a lower length limit of the slot limit</p></li>
-<li><p>trOver is the time for a fish to recruit to a upper length limit of the slot limit</p></li>
-<li><p>NrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)</p></li>
-<li><p>NrIn is the number of fish at time trIn (time they reach the lower slot limit size)</p></li>
-<li><p>NrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)</p></li>
-<li><p><code>N at xxx mm</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.</p></li>
+<li><p><code>nAtxxx</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.</p></li>
+<li><p>cm A numeric representing conditional natural mortality</p></li>
+<li><p>expUnder is the exploitation rate under the slot limit</p></li>
+<li><p>expIn is the exploitation rate within the slot limit</p></li>
+<li><p>expAbove is the exploitation rate above the slot limit</p></li>
 <li><p>FUnder is the estimated instantaneous rate of fishing mortality under the slot limit</p></li>
 <li><p>FIn is the estimated instantaneous rate of fishing mortality within the slot limit</p></li>
 <li><p>FAbove is the estimated instantaneous rate of fishing mortality above the slot limit</p></li>
@@ -186,22 +186,22 @@
 <span class="r-in"><span>                       cfunder<span class="op">=</span><span class="fl">0.25</span>,cfin<span class="op">=</span><span class="fl">0.6</span>,cfabove<span class="op">=</span><span class="fl">0.15</span>,cm<span class="op">=</span><span class="fl">0.4</span>,</span></span>
 <span class="r-in"><span>                       loi<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">250</span>,<span class="fl">300</span>,<span class="fl">325</span>,<span class="fl">350</span><span class="op">)</span>,lhparms<span class="op">=</span><span class="va">LH</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Res_1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   TotalYield TotalNharv TotalNdie yieldUnder  yieldIn yieldAbove    uUnder</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   5611.796   19.68287   20.9852   903.2554 3813.586   894.9547 0.1981511</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         uIn    uAbove NharvestUnder NharvestIn NharvestAbove    N0die NdieUnder</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4879637 0.1182668      6.154504   12.55573     0.9726349 59.32995  10.92831</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     NdieIn NdieAbove avglenUnder avglenIn avglenAbove avgwtUnder  avgwtIn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 6.999731  3.057163    224.3558 280.1859    393.1118   146.7633 303.7327</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   avgwtAbove  trUnder     trIn  trOver  NrUnder     NrIn  NrAbove N at 200 mm</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   920.1343 1.761224 2.443479 3.68129 40.67005 23.58723 4.031773    40.67005</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   N at 250 mm N at 300 mm N at 325 mm N at 350 mm  cm    FUnder       FIn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    23.58723    7.636027    4.031773    2.895681 0.4 0.2876821 0.9162907</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      FAbove    MUnder       MIn    MAbove    ZUnder      ZIn    ZAbove SUnder</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.1625189 0.5108256 0.5108256 0.5108256 0.7985077 1.427116 0.6733446   0.45</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    SIn SAbove cfUnder cfIn cfOver recruitmentTL lowerSL upperSL  N0 Linf   K</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.24   0.51    0.25  0.6   0.15           200     250     325 100  592 0.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     t0 LWalpha LWbeta tmax</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 -0.3  -5.528  3.273   15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   yieldTotal yieldUnder  yieldIn yieldAbove nharvTotal ndieTotal nharvestUnder</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   5611.796   903.2554 3813.586   894.9547   19.68287   20.9852      6.154504</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   nharvestIn nharvestAbove    n0die ndieUnder   ndieIn ndieAbove  nrUnder</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   12.55573     0.9726349 59.32995  10.92831 6.999731  3.057163 40.67005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       nrIn  nrAbove  trUnder     trIn  trOver avglenUnder avglenIn avglenAbove</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 23.58723 4.031773 1.761224 2.443479 3.68129    224.3558 280.1859    393.1118</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   avgwtUnder  avgwtIn avgwtAbove   nAt200   nAt250   nAt300   nAt325   nAt350</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   146.7633 303.7327   920.1343 40.67005 23.58723 7.636027 4.031773 2.895681</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    cm  expUnder     expIn  expAbove    FUnder       FIn    FAbove    MUnder</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4 0.1981511 0.4879637 0.1182668 0.2876821 0.9162907 0.1625189 0.5108256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         MIn    MAbove    ZUnder      ZIn    ZAbove SUnder  SIn SAbove cfUnder</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.5108256 0.5108256 0.7985077 1.427116 0.6733446   0.45 0.24   0.51    0.25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   cfIn cfOver recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha LWbeta</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.6   0.15           200     250     325 100  592 0.2 -0.3  -5.528  3.273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   tmax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   15</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

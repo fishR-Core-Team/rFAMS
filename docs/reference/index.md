@@ -2,12 +2,12 @@
 
 ## All functions
 
-- [`dpmBH()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH.md)
+- [`dpmBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_func.md)
+  : Simulate yield using the dynamic pool model.
+- [`dpmBH_MinLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL_fixed.md)
   : Main function to simulate expected yield using the Dynamic Pool
   model for a range of input parameters, including minimum length limits
   for harvest
-- [`dpmBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_func.md)
-  : Simulate yield using the dynamic pool model.
 - [`est_natmort()`](https://fishr-core-team.github.io/rFAMS/reference/est_natmort.md)
   : Compute meta-analytic estimates of instantaneous and conditional
   natural mortality

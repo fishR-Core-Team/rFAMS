@@ -13,8 +13,7 @@ history object that is used in all of rFAMS core functions
 \[[`yprBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.md),
 [`yprBH_minLL_var()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_var.md),
 [`yprBH_SlotLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.R.md)\]
-and dynamic pool modeling
-\[[`dpmBH()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH.md)\].
+and dynamic pool modeling \[`dpmBH()`\].
 
 ## Build a life history parameter object from user specified values
 

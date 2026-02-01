@@ -174,7 +174,7 @@ Res_1 <- yprBH_minLL_var(lengthmin=200,lengthinc=50,lengthmax=550,
 # using cm=40
 plot_dat <- Res_1 |> filter(cm==0.40)
 
-ggplot(data=plot_dat,mapping=aes(y=yield,x=u,
+ggplot(data=plot_dat,mapping=aes(y=yield,x=exploitation,
                                  group=minLL,color=minLL)) +
   geom_line(linewidth=1) +
   scale_color_gradient2(high="black") +
@@ -184,7 +184,7 @@ ggplot(data=plot_dat,mapping=aes(y=yield,x=u,
 
 # Yield isopleths for varying minLL and exploitation with cm=0.40
 # # Using same data as previous example
-ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)") +
   ylab("Minimum length limit (mm)") +

@@ -17,14 +17,14 @@
 #' @return  A data.frame with the following calculated values:
 #' \itemize{
 #' \item \code{yield} is the estimated yield (in g).
-#' \item \code{exploitation} is the exploitation rate.
-#' \item \code{Nharvest} is the number of harvested fish.
-#' \item \code{Ndie} is the number of fish that die of natural deaths.
-#' \item \code{Nt} is the number of fish at time tr (time they become harvestable size).
+#' \item \code{nharvest} is the number of harvested fish.
+#' \item \code{ndie} is the number of fish that die of natural deaths.
+#' \item \code{nt} is the number of fish at time tr (time they become harvestable size).
+#' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
 #' \item \code{avgwt} is the average weight of fish harvested.
 #' \item \code{avglen} is the average length of fish harvested.
-#' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
-#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item \code{N at xxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item \code{exploitation} is the exploitation rate.
 #' \item \code{F} is the instantaneous rate of fishing mortality.
 #' \item \code{M} is the instantaneous rate of natural mortality.
 #' \item \code{Z} is the instantaneous rate of total mortality.
@@ -62,14 +62,14 @@
 #' # Extract results for cm=0.40
 #' plot_dat <- Res_1 |> dplyr::filter(cm==0.40)
 #'
-#' ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
+#' ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Yield (g)",x="Exploitation (u)") +
 #'   theme_bw()
 #'
 #' # Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
-#' ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
+#' ggplot(data=plot_dat,mapping=aes(x=exploitation,y=`nAt300`)) +
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Number of fish at 300 mm",x="Exploitation (u)") +

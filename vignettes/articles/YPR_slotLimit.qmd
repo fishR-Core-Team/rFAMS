@@ -72,21 +72,22 @@ Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325, #Set recruitmen
 The output object will be a data.frame with the following calculated values:
 
 - cm A numeric representing conditional natural mortality
-- TotalYield is the calculated total yield
-- TotalHarvest is the calculated total number of harvested fish
-- TotalNdie is the calculated total number of fish that die of natural death
+- yieldTotal is the calculated total yield
+- nharvTotal is the calculated total number of harvested fish
+- ndieTotal is the calculated total number of fish that die of natural death
 - yieldUnder is the calculated yield under the slot limit
 - yieldIn is the calculated yied within the slot limit
 - yieldAbove is the calculated yield above the slot limit
 - exploitationUnder is the exploitation rate under the slot limit
 - exploitationIn is the exploitation rate within the slot limit
 - exploitationAbove is the exploitation rate above the slot limit
-- NharvestUnder is the number of harvested fish under the slot limit
-- NharvestIn is the number of harvested fish within the slot limit
-- NharvestAbove is the number of harvested fish above the slot limit
-- NdieUnder is the number of fish that die of natural death under the slot limit
-- NdieIn is the number of fish that die of natural deaths within the slot limit
-- NdieAbove is the number of fish that die of natural deaths above the slot limit
+- nharvestUnder is the number of harvested fish under the slot limit
+- nharvestIn is the number of harvested fish within the slot limit
+- nharvestAbove is the number of harvested fish above the slot limit
+- n0die is the number of fish that die of natural death before entering the fishery at a minimum length
+- ndieUnder is the number of fish that die of natural death under the slot limit
+- ndieIn is the number of fish that die of natural deaths within the slot limit
+- ndieAbove is the number of fish that die of natural deaths above the slot limit
 - avglenUnder is the average length of fish harvested under the slot limit
 - avglenIn is the average length of fish harvested within the slot limit
 - avglenAbove is the average length of fish harvested above the slot limit
@@ -96,9 +97,9 @@ The output object will be a data.frame with the following calculated values:
 - trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 - trIn is the time for a fish to recruit to a lower length limit of the slot limit
 - trOver is the time for a fish to recruit to a upper length limit of the slot limit
-- NtUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
-- NtIn is the number of fish at time trIn (time they reach the lower slot limit size)
-- NtAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
+- nrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
+- nrIn is the number of fish at time trIn (time they reach the lower slot limit size)
+- nrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
 - FUnder is the estimated instantaneous rate of fishing mortality under the slot limit
 - FIn is the estimated instantaneous rate of fishing mortality within the slot limit
 - FAbove is the estimated instantaneous rate of fishing mortality above the slot limit
@@ -117,7 +118,7 @@ The output object will be a data.frame with the following calculated values:
 - recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 - lowerSL A numeric representing the length of the lower slot limit in mm.
 - upperSL A numeric representing the length of the upper slot limit in mm.
-- N at xxx mm is the number that reach the length of interest supplied. There will be one column for each length of interest.
+- nAtxxx is the number that reach the length of interest supplied. There will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values (cf derived from cfUnder, cfIn, and cfOver; recruitmentTL; lowerSL; upperSL; cm derived from cmmin, cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).
 
@@ -155,7 +156,7 @@ The first figure will be a yield curve that displays the relationship between yi
 ```{r}
 #| label: generate yield plot
 # Total Yield vs Conditional Natural Mortality (cm)
-ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
+ggplot(data=Res_1,mapping=aes(x=cm,y=yieldTotal)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Conditional natural mortality (cm)") +
@@ -169,7 +170,7 @@ The next figure demonstrates how to explore the number of fish reaching a specif
 ```{r}
 #| label: Plot of fish reaching 350mm
 #Plot number of fish reaching 350 mm as a function of cm
-ggplot(data=Res_1,mapping=aes(x=cm ,y=`N at 350 mm`)) +
+ggplot(data=Res_1,mapping=aes(x=cm ,y=`nAt350`)) +
   geom_point() +
   geom_line() +
   labs(y="Number of fish at 450 mm",x="Conditional natural mortality (cm )") +

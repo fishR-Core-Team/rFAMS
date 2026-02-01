@@ -51,24 +51,24 @@ A data.frame with the following calculated values:
 
 - `yield` is the estimated yield (in g).
 
-- `exploitation` is the exploitation rate.
+- `nharvest` is the number of harvested fish.
 
-- `Nharvest` is the number of harvested fish.
+- `ndie` is the number of fish that die of natural deaths.
 
-- `Ndie` is the number of fish that die of natural deaths.
-
-- `Nt` is the number of fish at time tr (time they become harvestable
+- `nt` is the number of fish at time tr (time they become harvestable
   size).
+
+- `tr` is the time for a fish to recruit to a minimum length limit
+  (i.e., time to enter fishery).
 
 - `avgwt` is the average weight of fish harvested.
 
 - `avglen` is the average length of fish harvested.
 
-- `tr` is the time for a fish to recruit to a minimum length limit
-  (i.e., time to enter fishery).
+- `nAtxxx` is the number that reach the length of interest supplied.
+  There will be one column for each length of interest.
 
-- `N at xxx mm` is the number that reach the length of interest
-  supplied. There will be one column for each length of interest.
+- `exploitation` is the exploitation rate.
 
 - `F` is the instantaneous rate of fishing mortality.
 
@@ -167,12 +167,10 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 Res_1 <- yprBH_func(minLL=355,cf=0.45,cm=0.25,
                     loi=c(200,250,300,325,350),lhparms=LH)
 Res_1
-#>     yield         u Nharvest     Ndie    avgwt   avglen       Nt       tr
-#> 1 19606.5 0.3966366  19.7239 9.491238 994.0479 402.5024 29.21514 4.277232
-#>   N at 200 mm N at 250 mm N at 300 mm N at 325 mm N at 350 mm        F
-#> 1     60.2497    49.51249    39.44369    34.67882    30.10579 0.597837
-#>           M         Z      S   cf   cm minLL  N0 Linf   K   t0 LWalpha LWbeta
-#> 1 0.2876821 0.8855191 0.4125 0.45 0.25   355 100  592 0.2 -0.3  -5.528  3.273
-#>   tmax notes
-#> 1   15      
+#>     yield nharvest     ndie       nt       tr    avgwt   avglen  nAt200
+#> 1 19606.5  19.7239 9.491238 29.21514 4.277232 994.0479 402.5024 60.2497
+#>     nAt250   nAt300   nAt325   nAt350 exploitation        F         M         Z
+#> 1 49.51249 39.44369 34.67882 30.10579    0.3966366 0.597837 0.2876821 0.8855191
+#>        S   cf   cm minLL  N0 Linf   K   t0 LWalpha LWbeta tmax notes
+#> 1 0.4125 0.45 0.25   355 100  592 0.2 -0.3  -5.528  3.273   15      
 ```

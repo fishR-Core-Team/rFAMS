@@ -39,7 +39,7 @@ genRecruits(
 \item{avgFreq}{A single numeric that sets the average frequency of a strong year class. Used when \code{method="StrYC_randInt"}.}
 }
 \value{
-A vector that contains the number of recruits for each simulation that can be used directly in the dynamic pool model (e.g., \code{\link{dpmBH}}).
+A vector that contains the number of recruits for each simulation that can be used directly in the dynamic pool model (e.g., \code{\link{dpmBH_MinLL_fixed}}).
 }
 \description{
 This function is used to generate number of recruits across multiple years using different random functions.

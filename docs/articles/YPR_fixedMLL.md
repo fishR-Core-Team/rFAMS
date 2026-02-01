@@ -109,9 +109,9 @@ values:
 
 - yield is the estimated yield (in g).
 - exploitation is the exploitation rate.
-- Nharvest is the number of harvested fish.
-- Ndie is the number of fish that die of natural deaths.
-- Nt is the number of fish at time tr (time they become harvestable
+- nharvest is the number of harvested fish.
+- ndie is the number of fish that die of natural deaths.
+- nt is the number of fish at time tr (time they become harvestable
   size).
 - avgwt is the average weight of fish harvested.
 - avglen is the average length of fish harvested.
@@ -121,8 +121,8 @@ values:
 - M is the instantaneous rate of natural mortality.
 - Z is the instantaneous rate of total mortality.
 - S is the (total) annual rate of survival.
-- N at xxx mm is the number that reach the length of interest supplied.
-  There will be one column for each length of interest.
+- Natxxx is the number that reach the length of interest supplied. There
+  will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values
 (minLL; cf derived from cfmin, cfmax, and cfinc; cm derived from cmmin,
@@ -132,27 +132,27 @@ View the first few rows of the output
 
 ``` r
 head(Res_1)
-#>      yield         u Nharvest      Ndie    avgwt   avglen       Nt       tr
-#> 1 40818.31 0.0950000 41.53181 41.531806 982.8204 401.1080 83.06361 1.761224
-#> 2 43838.62 0.1901961 56.42277 26.640842 776.9668 373.3149 83.06361 1.761224
-#> 3 38000.03 0.2856268 64.12215 18.941457 592.6194 343.6662 83.06361 1.761224
-#> 4 31527.25 0.3813455 68.86072 14.202892 457.8408 317.6133 83.06361 1.761224
-#> 5 26155.89 0.4774293 72.10364 10.959976 362.7542 295.8074 83.06361 1.761224
-#> 6 21929.40 0.5739983 74.49745  8.566157 294.3644 277.5167 83.06361 1.761224
-#>   N at 200 mm N at 250 mm N at 300 mm N at 350 mm         F         M         Z
-#> 1    83.06361    71.94063    60.90477   49.970236 0.1053605 0.1053605 0.2107210
-#> 2    83.06361    66.38579    51.20675   37.614122 0.2231436 0.1053605 0.3285041
-#> 3    83.06361    60.60519    42.06605   27.258148 0.3566749 0.1053605 0.4620355
-#> 4    83.06361    54.55505    33.52354   18.795163 0.5108256 0.1053605 0.6161861
-#> 5    83.06361    48.17405    25.63022   12.108518 0.6931472 0.1053605 0.7985077
-#> 6    83.06361    41.37097    18.45221    7.069371 0.9162907 0.1053605 1.0216512
-#>      S  cf  cm minLL  N0 Linf   K   t0 LWalpha LWbeta tmax notes
-#> 1 0.81 0.1 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 2 0.72 0.2 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 3 0.63 0.3 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 4 0.54 0.4 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 5 0.45 0.5 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
-#> 6 0.36 0.6 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15
+#>      yield nharvest      ndie       nt       tr    avgwt   avglen   nAt200
+#> 1 40818.31 41.53181 41.531806 83.06361 1.761224 982.8204 401.1080 83.06361
+#> 2 43838.62 56.42277 26.640842 83.06361 1.761224 776.9668 373.3149 83.06361
+#> 3 38000.03 64.12215 18.941457 83.06361 1.761224 592.6194 343.6662 83.06361
+#> 4 31527.25 68.86072 14.202892 83.06361 1.761224 457.8408 317.6133 83.06361
+#> 5 26155.89 72.10364 10.959976 83.06361 1.761224 362.7542 295.8074 83.06361
+#> 6 21929.40 74.49745  8.566157 83.06361 1.761224 294.3644 277.5167 83.06361
+#>     nAt250   nAt300    nAt350 exploitation         F         M         Z    S
+#> 1 71.94063 60.90477 49.970236    0.0950000 0.1053605 0.1053605 0.2107210 0.81
+#> 2 66.38579 51.20675 37.614122    0.1901961 0.2231436 0.1053605 0.3285041 0.72
+#> 3 60.60519 42.06605 27.258148    0.2856268 0.3566749 0.1053605 0.4620355 0.63
+#> 4 54.55505 33.52354 18.795163    0.3813455 0.5108256 0.1053605 0.6161861 0.54
+#> 5 48.17405 25.63022 12.108518    0.4774293 0.6931472 0.1053605 0.7985077 0.45
+#> 6 41.37097 18.45221  7.069371    0.5739983 0.9162907 0.1053605 1.0216512 0.36
+#>    cf  cm minLL  N0 Linf   K   t0 LWalpha LWbeta tmax notes
+#> 1 0.1 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 2 0.2 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 3 0.3 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 4 0.4 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 5 0.5 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 6 0.6 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15
 ```
 
 ## Plot results
@@ -190,7 +190,7 @@ Res_1$cm <- round(Res_1$cm,8)
 # Extract results for cm=0.30
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
-ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
  geom_point() +
  geom_line() +
  labs(y="Yield (g)",x="Exploitation (u)") +
@@ -208,7 +208,7 @@ a conditional natural mortality `cm` of 0.30 which was filtered out in
 the code block above.
 
 ``` r
-ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=`nAt300`)) +
  geom_point() +
  geom_line() +
  labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
@@ -224,11 +224,11 @@ conditional natural mortality `cm` of 0.30 which was filtered out above.
 ``` r
 # Select columns for plotting and convert to long
 plot_data_long <- plot_dat %>%
- select(u,`N at 200 mm`, `N at 250 mm`, `N at 300 mm`, `N at 350 mm`) %>%
- pivot_longer(!u, names_to="loi",values_to="number")
+ select(exploitation,`nAt200`, `nAt250`, `nAt300`, `nAt350`) %>%
+ pivot_longer(!exploitation, names_to="loi",values_to="number")
 
 # Generate plot
-ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
+ggplot(data=plot_data_long,mapping=aes(x=exploitation,y=number,group=loi,color=loi)) +
  geom_point() +
  scale_color_discrete(name="Yield",labels=c("N at 200 mm", "N at 250 mm", "N at 300 mm", "N at 350 mm"))+
  geom_line() +

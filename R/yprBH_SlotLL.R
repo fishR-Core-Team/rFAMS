@@ -99,7 +99,7 @@
 #'
 #' # Plot results
 #' # Total Yield vs Conditional Natural Mortality (cm)
-#' ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
+#' ggplot(data=Res_1,mapping=aes(x=cm,y=yieldTotal)) +
 #'   geom_point() +
 #'   geom_line() +
 #'   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +

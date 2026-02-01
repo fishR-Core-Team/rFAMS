@@ -17,36 +17,36 @@
 #'
 #' @return the following calculated and input values in a data.frame
 #' \itemize{
-#' \item cm A numeric representing conditional natural mortality
-#' \item TotalYield is the calculated total yield
-#' \item TotalHarvest is the calculated total number of harvested fish
-#' \item TotalNdie is the calculated total number of fish that die of natural death
+#' \item yieldTotal is the calculated total yield
 #' \item yieldUnder is the calculated yield under the slot limit
 #' \item yieldIn is the calculated yield within the slot limit
 #' \item yieldAbove is the calculated yield above the slot limit
-#' \item uUnder is the exploitation rate under the slot limit
-#' \item uIn is the exploitation rate within the slot limit
-#' \item uAbove is the exploitation rate above the slot limit
-#' \item NharvestUnder is the number of harvested fish under the slot limit
-#' \item NharvestIn is the number of harvested fish within the slot limit
-#' \item NharvestAbove is the number of harvested fish above the slot limit
-#' \item N0die is the number of fish that die of natural death before entering the fishery at a minimum length
-#' \item NdieUnder is the number of fish that die of natural death between entering the fishery and the lower slot limit
-#' \item NdieIn is the number of fish that die of natural deaths within the slot limit
-#' \item NdieAbove is the number of fish that die of natural deaths above the slot limit
+#' \item nharvTotal is the calculated total number of harvested fish
+#' \item ndieTotal is the calculated total number of fish that die of natural death
+#' \item nharvestUnder is the number of harvested fish under the slot limit
+#' \item nharvestIn is the number of harvested fish within the slot limit
+#' \item nharvestAbove is the number of harvested fish above the slot limit
+#' \item n0die is the number of fish that die of natural death before entering the fishery at a minimum length
+#' \item ndieUnder is the number of fish that die of natural death between entering the fishery and the lower slot limit
+#' \item ndieIn is the number of fish that die of natural deaths within the slot limit
+#' \item ndieAbove is the number of fish that die of natural deaths above the slot limit
+#' \item nrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
+#' \item nrIn is the number of fish at time trIn (time they reach the lower slot limit size)
+#' \item nrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
+#' \item trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
+#' \item trIn is the time for a fish to recruit to a lower length limit of the slot limit
+#' \item trOver is the time for a fish to recruit to a upper length limit of the slot limit
 #' \item avglenUnder is the average length of fish harvested under the slot limit
 #' \item avglenIn is the average length of fish harvested within the slot limit
 #' \item avglenAbove is the average length of fish harvested above the slot limit
 #' \item avgwtUnder is the average weight of fish harvested under the slot limit
 #' \item avgwtIn is the average weight of fish harvested within the slot limit
 #' \item avgwtAbove is the average weight of fish harvested above the slot limit
-#' \item trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
-#' \item trIn is the time for a fish to recruit to a lower length limit of the slot limit
-#' \item trOver is the time for a fish to recruit to a upper length limit of the slot limit
-#' \item NrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
-#' \item NrIn is the number of fish at time trIn (time they reach the lower slot limit size)
-#' \item NrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
-#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item \code{nAtxxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item cm A numeric representing conditional natural mortality
+#' \item expUnder is the exploitation rate under the slot limit
+#' \item expIn is the exploitation rate within the slot limit
+#' \item expAbove is the exploitation rate above the slot limit
 #' \item FUnder is the estimated instantaneous rate of fishing mortality under the slot limit
 #' \item FIn is the estimated instantaneous rate of fishing mortality within the slot limit
 #' \item FAbove is the estimated instantaneous rate of fishing mortality above the slot limit
@@ -309,42 +309,42 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
     }
 
     #assign column names
-    names(Nloi) <- paste0("N at ", loi, " mm")
+    names(Nloi) <- paste0("nAt", loi)
   }
 
   #Combinde dataframe for output
   tmp1 <- data.frame(
-    TotalYield = Y_under+Y_in+Y_above,
-    TotalNharv = Nharv_under+Nharv_in+Nharv_above,
-    TotalNdie = Ndie_under+Ndie_in+Ndie_above,
+    yieldTotal = Y_under+Y_in+Y_above,
     yieldUnder=Y_under,
     yieldIn=Y_in,
     yieldAbove=Y_above,
-    uUnder=exploitation_under,
-    uIn=exploitation_in,
-    uAbove=exploitation_above,
-    NharvestUnder=Nharv_under,
-    NharvestIn=Nharv_in,
-    NharvestAbove=Nharv_above,
-    N0die=N0die,
-    NdieUnder=Ndie_under,
-    NdieIn=Ndie_in,
-    NdieAbove=Ndie_above,
+    nharvTotal = Nharv_under+Nharv_in+Nharv_above,
+    ndieTotal = Ndie_under+Ndie_in+Ndie_above,
+    nharvestUnder=Nharv_under,
+    nharvestIn=Nharv_in,
+    nharvestAbove=Nharv_above,
+    n0die=N0die,
+    ndieUnder=Ndie_under,
+    ndieIn=Ndie_in,
+    ndieAbove=Ndie_above,
+    nrUnder=Nr_under,
+    nrIn=Nr_in,
+    nrAbove=Nr_above,
+    trUnder=tr,
+    trIn=tmax_lowerSL,
+    trOver=tmax_upperSL,
     avglenUnder=avglen_under,
     avglenIn=avglen_in,
     avglenAbove=avglen_above,
     avgwtUnder=avgwt_under,
     avgwtIn=avgwt_in,
-    avgwtAbove=avgwt_above,
-    trUnder=tr,
-    trIn=tmax_lowerSL,
-    trOver=tmax_upperSL,
-    NrUnder=Nr_under,
-    NrIn=Nr_in,
-    NrAbove=Nr_above
+    avgwtAbove=avgwt_above
   )
   tmp2 <- data.frame(
     cm=cm,
+    expUnder=exploitation_under,
+    expIn=exploitation_in,
+    expAbove=exploitation_above,
     FUnder=F_under,
     FIn=F_in,
     FAbove=F_above,

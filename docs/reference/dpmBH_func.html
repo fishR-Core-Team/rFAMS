@@ -70,7 +70,7 @@
 
 
 <dt id="arg-rec">rec<a class="anchor" aria-label="anchor" href="#arg-rec"></a></dt>
-<dd><p>A numeric vector of length <code>simyears</code> to specify recruitment each year. The vector can be geneated using the <code><a href="genRecruits.html">genRecruits()</a></code> function.</p></dd>
+<dd><p>A single numeric representing number of recruits.</p></dd>
 
 
 <dt id="arg-lhparms">lhparms<a class="anchor" aria-label="anchor" href="#arg-lhparms"></a></dt>
@@ -141,7 +141,7 @@
 <span class="r-in"><span><span class="va">Res_1</span> <span class="op">&lt;-</span> <span class="fu">dpmBH_func</span><span class="op">(</span>minLL<span class="op">=</span><span class="fl">400</span>,cm<span class="op">=</span><span class="va">cm</span>,cf<span class="op">=</span><span class="va">cf</span>,rec<span class="op">=</span><span class="fl">1000</span>,lhparms<span class="op">=</span><span class="va">lhparms</span>,matchRicker<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">Res_1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    age    length      weight      N_start exploitation expect_nat_death   cf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    age    length      weight       nstart exploitation expect_nat_death   cf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1    0    0.0000     0.00000 1.000000e+03    0.0000000        0.1800000 0.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2    1  133.0349    30.35037 8.200000e+02    0.0000000        0.1800000 0.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3    2  260.8383   253.58225 6.724000e+02    0.0000000        0.1800000 0.00</span>
@@ -173,7 +173,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 29  28 1288.7538 39054.03278 1.901232e-04    0.3012967        0.1493033 0.33</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 30  29 1295.1359 39667.08149 1.044537e-04    0.3012967        0.1493033 0.33</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 31  30 1300.8474 40221.26576 5.738685e-05    0.3012967        0.1493033 0.33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      cm         F         M         Z      S      biomass    N_harvest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      cm         F         M         Z      S      biomass     nharvest</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.18 0.0000000 0.1984509 0.1984509 0.8200 0.000000e+00 0.000000e+00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.18 0.0000000 0.1984509 0.1984509 0.8200 2.488730e+04 0.000000e+00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.18 0.0000000 0.1984509 0.1984509 0.8200 1.705087e+05 0.000000e+00</span>
@@ -205,7 +205,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 29 0.18 0.4004776 0.1984509 0.5989285 0.5494 7.425077e+00 5.728349e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 30 0.18 0.4004776 0.1984509 0.5989285 0.5494 4.143372e+00 3.147155e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 31 0.18 0.4004776 0.1984509 0.5989285 0.5494 2.308172e+00 1.729047e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           N_die        yield minLL   N0   Linf     K    t0 LWalpha LWbeta tmax</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            ndie        yield minLL   N0   Linf     K    t0 LWalpha LWbeta tmax</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1.800000e+02 0.000000e+00   400 1000 1349.5 0.111 0.065 -5.2147  3.153   30</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2  1.476000e+02 0.000000e+00   400 1000 1349.5 0.111 0.065 -5.2147  3.153   30</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  1.210320e+02 0.000000e+00   400 1000 1349.5 0.111 0.065 -5.2147  3.153   30</span>

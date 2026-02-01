@@ -14,7 +14,7 @@
 #'
 #' @details Details
 #'
-#' @return  A list with two data.frame object. The first list item contains a data.frame with the following calculated values in a summary by age:
+#' @return  A list with two data.frame object. The first list item named `sumbyAge` contains a data.frame with the following calculated values in a summary by age:
 #' \itemize{
 #' \item \code{year} is the year number for the simulation
 #' \item \code{yc}is the year class number for the simulation
@@ -52,7 +52,7 @@
 #' \item \code{agvglen<minLL}: The average length of harvested fish was less than the given minimum length limit being explored, which is not possible (with only legal harvest). The average length was set to the minimum length limit.
 #' }
 #'
-#' The second list item contains a data.frame with the following calculated values in a summary by year:
+#' The second list item named `sumbyYear` contains a data.frame with the following calculated values in a summary by year:
 #' \itemize{
 #' \item \code{year} is the year number for the simulation
 #' \item \code{substock} is the number of substock sized fish at age and year at the beginning of the year.
@@ -95,8 +95,9 @@
 #' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
-#' out<-dpmBH(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = lhparms,
-#'            matchRicker=FALSE,species="Striped Bass",group="landlocked")
+#' out<-dpmBH_MinLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
+#'                        cm = cm, rec = rec, lhparms = lhparms,
+#'                        matchRicker=FALSE,species="Striped Bass",group="landlocked")
 #'
 #' #Use summary by year data frame to plot yield vs year
 #' ggplot(data=out[[2]],mapping=aes(x=year,y=Yield_age_1plus)) +
@@ -121,8 +122,9 @@
 #' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
-#' out_2<-dpmBH(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = lhparms,
-#'              matchRicker=FALSE,species="Striped Bass",group="landlocked")
+#' out_2<-dpmBH_MinLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
+#'                          cm = cm, rec = rec, lhparms = lhparms,
+#'                          matchRicker=FALSE,species="Striped Bass",group="landlocked")
 #'
 #' #Use summary by year data frame to plot yield vs year
 #' ggplot(data=out_2[[2]],mapping=aes(x=year,y=PSD)) +
@@ -139,10 +141,10 @@
 #'   labs(y="Total yield (g)",x="Age") +
 #'   theme_bw()
 #'
-#' @rdname dpmBH
+#' @rdname dpmBH_MinLL_fixed
 #' @export
 
-dpmBH <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,species=NULL, group=NULL){
+dpmBH_MinLL_fixed <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,species=NULL, group=NULL){
 
   # ---- Check inputs
   iCheckMLH(minLL)
@@ -169,7 +171,7 @@ dpmBH <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,species=NUL
 
   res<-subset(res,res$year<=simyears)
 
-  res <- list(res,isum_by_year(res,species=species,group=group))
+  res <- list(sumbyAge=res,sumbyYear=isum_by_year(res,species=species,group=group))
   # ---- Return data.frame with both output values and input parameters.
   # ---- Contains a summary by age and summary by year
   return(res)

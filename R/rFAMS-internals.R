@@ -510,7 +510,7 @@ iChecksizeStrRrandInt <- function(x) {
 
 #Summarize dynamic pool model by year
 isum_by_year <- function(res,species,group){
-  year<-gcat<-N_start<-count<-quality<-stock<-preferred<-memorable<-trophy<-age<-yield<-biomass<-N_harvest<-N_die<-age_1plus<-Yield_age_1plus<-Total_biomass<-N_harvest_age_1plus<-N_die_age_1plus<-NULL
+  year<-gcat<-nstart<-count<-quality<-stock<-preferred<-memorable<-trophy<-age<-yield<-biomass<-nharvest<-ndie<-age_1plus<-Yield_age_1plus<-Total_biomass<-nharvest_age_1plus<-ndie_age_1plus<-NULL
   #Calculate PSD's based on number of individuals at length at the start of the year
   #Return a simplified object for calculation of PSD
   if(is.null(group)){
@@ -547,7 +547,7 @@ isum_by_year <- function(res,species,group){
   # Add length category to output
   year_summary <- psd_calc |>
     dplyr::group_by(year,gcat,length) |>
-    dplyr::summarise(count = floor(sum(N_start))) |>
+    dplyr::summarise(count = floor(sum(nstart))) |>
     tidyr::uncount(count)
 
   psd_crosstab <- stats::xtabs(~year + gcat, data = year_summary) #create crosstab
@@ -580,11 +580,11 @@ isum_by_year <- function(res,species,group){
   Year_Summary <- res |>
     dplyr::filter(age > 0) |>
     dplyr::group_by(year) |>
-    dplyr::summarize(age_1plus = sum(N_start), Yield_age_1plus = sum(yield),
-                     Total_biomass = sum(biomass), N_harvest_age_1plus = sum(N_harvest),
-                     N_die_age_1plus = sum(N_die)) |>
+    dplyr::summarize(age_1plus = sum(nstart), Yield_age_1plus = sum(yield),
+                     Total_biomass = sum(biomass), nharvest_age_1plus = sum(nharvest),
+                     ndie_age_1plus = sum(ndie)) |>
     dplyr::right_join(psd_summary, by = "year") |>
-    dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, N_harvest_age_1plus, N_die_age_1plus), ~dplyr::coalesce(., 0)))
+    dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, nharvest_age_1plus, ndie_age_1plus), ~dplyr::coalesce(., 0)))
 
   # merged_df <- dplyr::left_join(psd_summary,Year_Summary, by = "year") |>
   #   dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, N_harvest_age_1plus, N_die_age_1plus), ~dplyr::coalesce(., 0)))

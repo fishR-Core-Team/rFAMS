@@ -118,9 +118,9 @@ The output object will be a data.frame with the following calculated
 values:
 
 - cm A numeric representing conditional natural mortality
-- TotalYield is the calculated total yield
-- TotalHarvest is the calculated total number of harvested fish
-- TotalNdie is the calculated total number of fish that die of natural
+- yieldTotal is the calculated total yield
+- nharvTotal is the calculated total number of harvested fish
+- ndieTotal is the calculated total number of fish that die of natural
   death
 - yieldUnder is the calculated yield under the slot limit
 - yieldIn is the calculated yied within the slot limit
@@ -128,14 +128,16 @@ values:
 - exploitationUnder is the exploitation rate under the slot limit
 - exploitationIn is the exploitation rate within the slot limit
 - exploitationAbove is the exploitation rate above the slot limit
-- NharvestUnder is the number of harvested fish under the slot limit
-- NharvestIn is the number of harvested fish within the slot limit
-- NharvestAbove is the number of harvested fish above the slot limit
-- NdieUnder is the number of fish that die of natural death under the
+- nharvestUnder is the number of harvested fish under the slot limit
+- nharvestIn is the number of harvested fish within the slot limit
+- nharvestAbove is the number of harvested fish above the slot limit
+- n0die is the number of fish that die of natural death before entering
+  the fishery at a minimum length
+- ndieUnder is the number of fish that die of natural death under the
   slot limit
-- NdieIn is the number of fish that die of natural deaths within the
+- ndieIn is the number of fish that die of natural deaths within the
   slot limit
-- NdieAbove is the number of fish that die of natural deaths above the
+- ndieAbove is the number of fish that die of natural deaths above the
   slot limit
 - avglenUnder is the average length of fish harvested under the slot
   limit
@@ -153,11 +155,11 @@ values:
   slot limit
 - trOver is the time for a fish to recruit to a upper length limit of
   the slot limit
-- NtUnder is the number of fish at time trUnder (time they become
+- nrUnder is the number of fish at time trUnder (time they become
   harvestable size under the slot limit)
-- NtIn is the number of fish at time trIn (time they reach the lower
+- nrIn is the number of fish at time trIn (time they reach the lower
   slot limit size)
-- NtAbove is the number of fish at time trAbove (time they reach the
+- nrAbove is the number of fish at time trAbove (time they reach the
   upper slot limit size)
 - FUnder is the estimated instantaneous rate of fishing mortality under
   the slot limit
@@ -189,8 +191,8 @@ values:
   mm.
 - upperSL A numeric representing the length of the upper slot limit in
   mm.
-- N at xxx mm is the number that reach the length of interest supplied.
-  There will be one column for each length of interest.
+- nAtxxx is the number that reach the length of interest supplied. There
+  will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values (cf
 derived from cfUnder, cfIn, and cfOver; recruitmentTL; lowerSL; upperSL;
@@ -201,41 +203,41 @@ View the first few rows of the output
 
 ``` r
 head(Res_1)
-#>   TotalYield TotalNharv TotalNdie yieldUnder   yieldIn yieldAbove    uUnder
-#> 1  29156.293  65.545400  16.65337  2134.0226 12847.795 14174.4754 0.2378792
-#> 2  16399.451  44.983766  22.37093  1661.3174  9009.265  5728.8686 0.2252683
-#> 3   9587.852  30.319080  23.01694  1251.5389  6037.309  2299.0040 0.2120703
-#> 4   5611.796  19.682869  20.98520   903.2554  3813.586   894.9547 0.1981511
-#> 5   3163.191  12.040623  17.45903   614.9004  2223.163   325.1268 0.1833156
-#> 6   1643.192   6.727817  13.18526   384.7347  1154.658   103.7991 0.1672608
-#>         uIn     uAbove NharvestUnder NharvestIn NharvestAbove    N0die
-#> 1 0.5739983 0.14257140     14.300192  40.888026    10.3571826 16.93639
-#> 2 0.5468307 0.13484863     11.186560  28.960251     4.8369557 32.49751
-#> 3 0.5182617 0.12677377      8.473698  19.625646     2.2197362 46.64404
-#> 4 0.4879637 0.11826676      6.154504  12.555729     0.9726349 59.32995
-#> 5 0.4554588 0.10921127      4.221259   7.428002     0.3913628 70.50022
-#> 6 0.4200000 0.09942671      2.665456   3.925836     0.1365243 80.08692
-#>   NdieUnder   NdieIn NdieAbove avglenUnder avglenIn avglenAbove avgwtUnder
-#> 1  5.237294 4.701546 6.7145292    225.5013 283.1066    443.8067   149.2303
-#> 2  8.676970 7.052667 6.6412908    225.1683 282.2425    424.6353   148.5101
-#> 3 10.505888 7.639471 4.8715819    224.7908 281.2776    407.5833   147.6969
-#> 4 10.928309 6.999731 3.0571627    224.3558 280.1859    393.1118   146.7633
-#> 5 10.170789 5.619066 1.6691717    223.8426 278.9287    381.0284   145.6675
-#> 6  8.489694 3.925836 0.7697317    223.2179 277.4456    370.8494   144.3410
-#>    avgwtIn avgwtAbove  trUnder     trIn  trOver  NrUnder      NrIn    NrAbove
-#> 1 314.2190  1368.5648 1.761224 2.443479 3.68129 83.06361 63.526126 17.9365533
-#> 2 311.0907  1184.3955 1.761224 2.443479 3.68129 67.50249 47.638955 11.6260378
-#> 3 307.6235  1035.7105 1.761224 2.443479 3.68129 53.35596 34.376376  7.1112601
-#> 4 303.7327   920.1343 1.761224 2.443479 3.68129 40.67005 23.587233  4.0317725
-#> 5 299.2950   830.7556 1.761224 2.443479 3.68129 29.49978 15.107731  2.0606627
-#> 6 294.1178   760.2978 1.761224 2.443479 3.68129 19.91308  8.757933  0.9062605
-#>   N at 200 mm N at 250 mm N at 300 mm N at 350 mm N at 450 mm  N at 550 mm  cm
-#> 1    83.06361   63.526126   28.333814  15.7236087   7.6991996 1.506094e+00 0.1
-#> 2    67.50249   47.638955   19.359309   9.6183528   3.4406800 3.284670e-01 0.2
-#> 3    53.35596   34.376376   12.570645   5.5094637   1.3806140 5.843904e-02 0.3
-#> 4    40.67005   23.587233    7.636027   2.8956814   0.4811312 7.964081e-03 0.4
-#> 5    29.49978   15.107731    4.234615   1.3531307   0.1382899 7.540266e-04 0.5
-#> 6    19.91308    8.757933    2.057926   0.5332727   0.0300664 4.211329e-05 0.6
+#>   yieldTotal yieldUnder   yieldIn yieldAbove nharvTotal ndieTotal nharvestUnder
+#> 1  29156.293  2134.0226 12847.795 14174.4754  65.545400  16.65337     14.300192
+#> 2  16399.451  1661.3174  9009.265  5728.8686  44.983766  22.37093     11.186560
+#> 3   9587.852  1251.5389  6037.309  2299.0040  30.319080  23.01694      8.473698
+#> 4   5611.796   903.2554  3813.586   894.9547  19.682869  20.98520      6.154504
+#> 5   3163.191   614.9004  2223.163   325.1268  12.040623  17.45903      4.221259
+#> 6   1643.192   384.7347  1154.658   103.7991   6.727817  13.18526      2.665456
+#>   nharvestIn nharvestAbove    n0die ndieUnder   ndieIn ndieAbove  nrUnder
+#> 1  40.888026    10.3571826 16.93639  5.237294 4.701546 6.7145292 83.06361
+#> 2  28.960251     4.8369557 32.49751  8.676970 7.052667 6.6412908 67.50249
+#> 3  19.625646     2.2197362 46.64404 10.505888 7.639471 4.8715819 53.35596
+#> 4  12.555729     0.9726349 59.32995 10.928309 6.999731 3.0571627 40.67005
+#> 5   7.428002     0.3913628 70.50022 10.170789 5.619066 1.6691717 29.49978
+#> 6   3.925836     0.1365243 80.08692  8.489694 3.925836 0.7697317 19.91308
+#>        nrIn    nrAbove  trUnder     trIn  trOver avglenUnder avglenIn
+#> 1 63.526126 17.9365533 1.761224 2.443479 3.68129    225.5013 283.1066
+#> 2 47.638955 11.6260378 1.761224 2.443479 3.68129    225.1683 282.2425
+#> 3 34.376376  7.1112601 1.761224 2.443479 3.68129    224.7908 281.2776
+#> 4 23.587233  4.0317725 1.761224 2.443479 3.68129    224.3558 280.1859
+#> 5 15.107731  2.0606627 1.761224 2.443479 3.68129    223.8426 278.9287
+#> 6  8.757933  0.9062605 1.761224 2.443479 3.68129    223.2179 277.4456
+#>   avglenAbove avgwtUnder  avgwtIn avgwtAbove   nAt200    nAt250    nAt300
+#> 1    443.8067   149.2303 314.2190  1368.5648 83.06361 63.526126 28.333814
+#> 2    424.6353   148.5101 311.0907  1184.3955 67.50249 47.638955 19.359309
+#> 3    407.5833   147.6969 307.6235  1035.7105 53.35596 34.376376 12.570645
+#> 4    393.1118   146.7633 303.7327   920.1343 40.67005 23.587233  7.636027
+#> 5    381.0284   145.6675 299.2950   830.7556 29.49978 15.107731  4.234615
+#> 6    370.8494   144.3410 294.1178   760.2978 19.91308  8.757933  2.057926
+#>       nAt350    nAt450       nAt550  cm  expUnder     expIn   expAbove
+#> 1 15.7236087 7.6991996 1.506094e+00 0.1 0.2378792 0.5739983 0.14257140
+#> 2  9.6183528 3.4406800 3.284670e-01 0.2 0.2252683 0.5468307 0.13484863
+#> 3  5.5094637 1.3806140 5.843904e-02 0.3 0.2120703 0.5182617 0.12677377
+#> 4  2.8956814 0.4811312 7.964081e-03 0.4 0.1981511 0.4879637 0.11826676
+#> 5  1.3531307 0.1382899 7.540266e-04 0.5 0.1833156 0.4554588 0.10921127
+#> 6  0.5332727 0.0300664 4.211329e-05 0.6 0.1672608 0.4200000 0.09942671
 #>      FUnder       FIn    FAbove    MUnder       MIn    MAbove    ZUnder
 #> 1 0.2876821 0.9162907 0.1625189 0.1053605 0.1053605 0.1053605 0.3930426
 #> 2 0.2876821 0.9162907 0.1625189 0.2231436 0.2231436 0.2231436 0.5108256
@@ -286,7 +288,7 @@ between yield as a function of conditional natural mortality.
 
 ``` r
 # Total Yield vs Conditional Natural Mortality (cm)
-ggplot(data=Res_1,mapping=aes(x=cm,y=TotalYield)) +
+ggplot(data=Res_1,mapping=aes(x=cm,y=yieldTotal)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Conditional natural mortality (cm)") +
@@ -303,7 +305,7 @@ fish reaching 350mm as a function of conditional natural mortality.
 
 ``` r
 #Plot number of fish reaching 350 mm as a function of cm
-ggplot(data=Res_1,mapping=aes(x=cm ,y=`N at 350 mm`)) +
+ggplot(data=Res_1,mapping=aes(x=cm ,y=`nAt350`)) +
   geom_point() +
   geom_line() +
   labs(y="Number of fish at 450 mm",x="Conditional natural mortality (cm )") +

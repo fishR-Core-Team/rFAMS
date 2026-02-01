@@ -65,7 +65,7 @@
       <h1>Create life history object</h1>
 
       <p class="author">Jason Doll</p>
-      <p class="date">2026-01-31</p>
+      <p class="date">2026-02-01</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/MakeLH.qmd" class="external-link"><code>vignettes/articles/MakeLH.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -83,7 +83,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fishr-core-team.github.io/FSAdata/" class="external-link">FSAdata</a></span><span class="op">)</span> <span class="co">## for data used in example</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>   <span class="co">## for mutate</span></span></code></pre></div>
 </div>
-<p>The objective of this article is to demonstrate how to build a life history object that is used in all of rFAMS core functions (yield-per-recruit modeling [<code><a href="../reference/yprBH_minLL_fixed.html">yprBH_minLL_fixed()</a></code>, <code><a href="../reference/yprBH_minLL_var.html">yprBH_minLL_var()</a></code>, <code><a href="../reference/yprBH_SlotLL.R.html">yprBH_SlotLL()</a></code>] and dynamic pool modeling [<code><a href="../reference/dpmBH.html">dpmBH()</a></code>].</p>
+<p>The objective of this article is to demonstrate how to build a life history object that is used in all of rFAMS core functions (yield-per-recruit modeling [<code><a href="../reference/yprBH_minLL_fixed.html">yprBH_minLL_fixed()</a></code>, <code><a href="../reference/yprBH_minLL_var.html">yprBH_minLL_var()</a></code>, <code><a href="../reference/yprBH_SlotLL.R.html">yprBH_SlotLL()</a></code>] and dynamic pool modeling [<code>dpmBH()</code>].</p>
 <section class="section level2"><h2 id="build-a-life-history-parameter-object-from-user-specified-values">Build a life history parameter object from user specified values<a class="anchor" aria-label="anchor" href="#build-a-life-history-parameter-object-from-user-specified-values"></a>
 </h2>
 <p>Life history parameters required for yield-per-recruit and dynamic pool modeling include the initial number of recruits, maximum age, von Bertalanffy growth model parameters (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>∞</mi></msub><annotation encoding="application/x-tex">L_\infty</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>0</mn></msub><annotation encoding="application/x-tex">t_0</annotation></semantics></math>) and parameters from the log10-transformed weight length model (alpha and beta). These must be stored in a list or vector, by default <code><a href="../reference/makeLH.html">makeLH()</a></code> returns values in list. Users have the option of building a list manually but the <code><a href="../reference/makeLH.html">makeLH()</a></code> function contains a series of checks that can identify potential errors.</p>
