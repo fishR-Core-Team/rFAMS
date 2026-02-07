@@ -74,24 +74,19 @@ est_natmort(LH, incl.avg = TRUE)
 #>            method         M         cm                  givens
 #> 1       HoenigNLS 0.4100226 0.33636478                 tmax=15
 #> 2         HoenigO 0.2954353 0.25579246                 tmax=15
-#> 3        HoenigOF 0.2793944 0.24375845                 tmax=15
-#> 4        HoenigOM 0.3594796 0.30196053                 tmax=15
-#> 5        HoenigOC 0.2409592 0.21412628                 tmax=15
-#> 6        HoenigO2 0.2963197 0.25645032                 tmax=15
-#> 7       HoenigO2F 0.2568301 0.22650034                 tmax=15
-#> 8       HoenigO2M 0.3521442 0.29682129                 tmax=15
-#> 9       HoenigO2C 0.3110774 0.26734282                 tmax=15
-#> 10       HoenigLM 0.3612696 0.30320890                 tmax=15
-#> 11   HewittHoenig 0.2813333 0.24522330                 tmax=15
-#> 12          tmax1 0.3406000 0.28865661                 tmax=15
-#> 13      PaulyLNoT 0.3308050 0.28165477        K=0.2, Linf=59.2
-#> 14             K1 0.3384000 0.28708993                   K=0.2
-#> 15             K2 0.4080000 0.33502112                   K=0.2
-#> 16       JensenK1 0.3000000 0.25918178                   K=0.2
-#> 17       JensenK2 0.5040000 0.39589062                   K=0.2
-#> 18 AlversonCarney 0.2821182 0.24581544          tmax=15, K=0.2
-#> 19   ChenWatanabe 0.1018740 0.09685666 tmax=15, K=0.2, t0=-0.3
-#> 20        AVERAGE 0.3184244 0.27040613
+#> 3        HoenigO2 0.2963197 0.25645032                 tmax=15
+#> 4        HoenigLM 0.3612696 0.30320890                 tmax=15
+#> 5    HewittHoenig 0.2813333 0.24522330                 tmax=15
+#> 6           tmax1 0.3406000 0.28865661                 tmax=15
+#> 7       PaulyLNoT 0.3308050 0.28165477        K=0.2, Linf=59.2
+#> 8              K1 0.3384000 0.28708993                   K=0.2
+#> 9              K2 0.4080000 0.33502112                   K=0.2
+#> 10      HamelCope 0.3600000 0.30232367                 tmax=15
+#> 11       JensenK1 0.3000000 0.25918178                   K=0.2
+#> 12       JensenK2 0.5040000 0.39589062                   K=0.2
+#> 13 AlversonCarney 0.2821182 0.24581544          tmax=15, K=0.2
+#> 14   ChenWatanabe 0.1018740 0.09685666 tmax=15, K=0.2, t0=-0.3
+#> 15        AVERAGE 0.3292984 0.27782360
 ```
 
 Once you have decided the range of cf and cm and decided what minimum
@@ -114,9 +109,9 @@ values:
 
 - yield is the estimated yield (in g).
 - exploitation is the exploitation rate.
-- Nharvest is the number of harvested fish.
-- Ndie is the number of fish that die of natural deaths.
-- Nt is the number of fish at time tr (time they become harvestable
+- nharvest is the number of harvested fish.
+- ndie is the number of fish that die of natural deaths.
+- nt is the number of fish at time tr (time they become harvestable
   size).
 - avgwt is the average weight of fish harvested.
 - avglen is the average length of fish harvested.
@@ -126,8 +121,8 @@ values:
 - M is the instantaneous rate of natural mortality.
 - Z is the instantaneous rate of total mortality.
 - S is the (total) annual rate of survival.
-- N at xxx mm is the number that reach the length of interest supplied.
-  There will be one column for each length of interest.
+- Natxxx is the number that reach the length of interest supplied. There
+  will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values
 (minLL; cf derived from cfmin, cfmax, and cfinc; cm derived from cmmin,
@@ -137,27 +132,27 @@ View the first few rows of the output
 
 ``` r
 head(Res_1)
-#>      yield         u Nharvest      Ndie    avgwt   avglen       Nt       tr
-#> 1 40818.31 0.0950000 41.53181 41.531806 982.8204 401.1080 83.06361 1.761224
-#> 2 43838.62 0.1901961 56.42277 26.640842 776.9668 373.3149 83.06361 1.761224
-#> 3 38000.03 0.2856268 64.12215 18.941457 592.6194 343.6662 83.06361 1.761224
-#> 4 31527.25 0.3813455 68.86072 14.202892 457.8408 317.6133 83.06361 1.761224
-#> 5 26155.89 0.4774293 72.10364 10.959976 362.7542 295.8074 83.06361 1.761224
-#> 6 21929.40 0.5739983 74.49745  8.566157 294.3644 277.5167 83.06361 1.761224
-#>           F         M         Z    S  cf  cm minLL  N0 Linf   K   t0 LWalpha
-#> 1 0.1053605 0.1053605 0.2107210 0.81 0.1 0.1   200 100  592 0.2 -0.3  -5.528
-#> 2 0.2231436 0.1053605 0.3285041 0.72 0.2 0.1   200 100  592 0.2 -0.3  -5.528
-#> 3 0.3566749 0.1053605 0.4620355 0.63 0.3 0.1   200 100  592 0.2 -0.3  -5.528
-#> 4 0.5108256 0.1053605 0.6161861 0.54 0.4 0.1   200 100  592 0.2 -0.3  -5.528
-#> 5 0.6931472 0.1053605 0.7985077 0.45 0.5 0.1   200 100  592 0.2 -0.3  -5.528
-#> 6 0.9162907 0.1053605 1.0216512 0.36 0.6 0.1   200 100  592 0.2 -0.3  -5.528
-#>   LWbeta tmax notes N at 200 mm N at 250 mm N at 300 mm N at 350 mm
-#> 1  3.273   15          83.06361    71.94063    60.90477   49.970236
-#> 2  3.273   15          83.06361    66.38579    51.20675   37.614122
-#> 3  3.273   15          83.06361    60.60519    42.06605   27.258148
-#> 4  3.273   15          83.06361    54.55505    33.52354   18.795163
-#> 5  3.273   15          83.06361    48.17405    25.63022   12.108518
-#> 6  3.273   15          83.06361    41.37097    18.45221    7.069371
+#>      yield nharvest      ndie       nt       tr    avgwt   avglen   nAt200
+#> 1 40818.31 41.53181 41.531806 83.06361 1.761224 982.8204 401.1080 83.06361
+#> 2 43838.62 56.42277 26.640842 83.06361 1.761224 776.9668 373.3149 83.06361
+#> 3 38000.03 64.12215 18.941457 83.06361 1.761224 592.6194 343.6662 83.06361
+#> 4 31527.25 68.86072 14.202892 83.06361 1.761224 457.8408 317.6133 83.06361
+#> 5 26155.89 72.10364 10.959976 83.06361 1.761224 362.7542 295.8074 83.06361
+#> 6 21929.40 74.49745  8.566157 83.06361 1.761224 294.3644 277.5167 83.06361
+#>     nAt250   nAt300    nAt350 exploitation         F         M         Z    S
+#> 1 71.94063 60.90477 49.970236    0.0950000 0.1053605 0.1053605 0.2107210 0.81
+#> 2 66.38579 51.20675 37.614122    0.1901961 0.2231436 0.1053605 0.3285041 0.72
+#> 3 60.60519 42.06605 27.258148    0.2856268 0.3566749 0.1053605 0.4620355 0.63
+#> 4 54.55505 33.52354 18.795163    0.3813455 0.5108256 0.1053605 0.6161861 0.54
+#> 5 48.17405 25.63022 12.108518    0.4774293 0.6931472 0.1053605 0.7985077 0.45
+#> 6 41.37097 18.45221  7.069371    0.5739983 0.9162907 0.1053605 1.0216512 0.36
+#>    cf  cm minLL  N0 Linf   K   t0 LWalpha LWbeta tmax notes
+#> 1 0.1 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 2 0.2 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 3 0.3 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 4 0.4 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 5 0.5 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      
+#> 6 0.6 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15
 ```
 
 ## Plot results
@@ -195,7 +190,7 @@ Res_1$cm <- round(Res_1$cm,8)
 # Extract results for cm=0.30
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
-ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
  geom_point() +
  geom_line() +
  labs(y="Yield (g)",x="Exploitation (u)") +
@@ -213,7 +208,7 @@ a conditional natural mortality `cm` of 0.30 which was filtered out in
 the code block above.
 
 ``` r
-ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=`nAt300`)) +
  geom_point() +
  geom_line() +
  labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
@@ -229,11 +224,11 @@ conditional natural mortality `cm` of 0.30 which was filtered out above.
 ``` r
 # Select columns for plotting and convert to long
 plot_data_long <- plot_dat %>%
- select(u,`N at 200 mm`, `N at 250 mm`, `N at 300 mm`, `N at 350 mm`) %>%
- pivot_longer(!u, names_to="loi",values_to="number")
+ select(exploitation,`nAt200`, `nAt250`, `nAt300`, `nAt350`) %>%
+ pivot_longer(!exploitation, names_to="loi",values_to="number")
 
 # Generate plot
-ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
+ggplot(data=plot_data_long,mapping=aes(x=exploitation,y=number,group=loi,color=loi)) +
  geom_point() +
  scale_color_discrete(name="Yield",labels=c("N at 200 mm", "N at 250 mm", "N at 300 mm", "N at 350 mm"))+
  geom_line() +

@@ -34,10 +34,7 @@ dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker = FALSE)
 
 - rec:
 
-  A numeric vector of length `simyears` to specify recruitment each
-  year. The vector can be geneated using the
-  [`genRecruits()`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
-  function.
+  A single numeric representing number of recruits.
 
 - lhparms:
 
@@ -149,6 +146,15 @@ of the Fisheries Research Board of Canada. Was (is?) from
 Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling
 simulator. v1.64. American Fisheries Society, Bethesda, MD.
 
+## See also
+
+[`yprBH_func`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.md)
+for simulating yield using the dynamic pool model.
+
+See [this demonstration
+page](file:///C:/Users/jason.doll/Documents/fishRCoreTeam/rFAMS/docs/articles/dpmBH.md)
+for more plotting examples
+
 ## Author
 
 Jason C. Doll, <jason.doll@fmarion.edu>
@@ -165,7 +171,7 @@ cf <- c(rep(0,3), rep(0.33,(lhparms$tmax+1) - 3))
 Res_1 <- dpmBH_func(minLL=400,cm=cm,cf=cf,rec=1000,lhparms=lhparms,matchRicker=FALSE)
 
 Res_1
-#>    age    length      weight      N_start exploitation expect_nat_death   cf
+#>    age    length      weight       nstart exploitation expect_nat_death   cf
 #> 1    0    0.0000     0.00000 1.000000e+03    0.0000000        0.1800000 0.00
 #> 2    1  133.0349    30.35037 8.200000e+02    0.0000000        0.1800000 0.00
 #> 3    2  260.8383   253.58225 6.724000e+02    0.0000000        0.1800000 0.00
@@ -197,7 +203,7 @@ Res_1
 #> 29  28 1288.7538 39054.03278 1.901232e-04    0.3012967        0.1493033 0.33
 #> 30  29 1295.1359 39667.08149 1.044537e-04    0.3012967        0.1493033 0.33
 #> 31  30 1300.8474 40221.26576 5.738685e-05    0.3012967        0.1493033 0.33
-#>      cm         F         M         Z      S      biomass    N_harvest
+#>      cm         F         M         Z      S      biomass     nharvest
 #> 1  0.18 0.0000000 0.1984509 0.1984509 0.8200 0.000000e+00 0.000000e+00
 #> 2  0.18 0.0000000 0.1984509 0.1984509 0.8200 2.488730e+04 0.000000e+00
 #> 3  0.18 0.0000000 0.1984509 0.1984509 0.8200 1.705087e+05 0.000000e+00
@@ -229,7 +235,7 @@ Res_1
 #> 29 0.18 0.4004776 0.1984509 0.5989285 0.5494 7.425077e+00 5.728349e-05
 #> 30 0.18 0.4004776 0.1984509 0.5989285 0.5494 4.143372e+00 3.147155e-05
 #> 31 0.18 0.4004776 0.1984509 0.5989285 0.5494 2.308172e+00 1.729047e-05
-#>           N_die        yield minLL   N0   Linf     K    t0 LWalpha LWbeta tmax
+#>            ndie        yield minLL   N0   Linf     K    t0 LWalpha LWbeta tmax
 #> 1  1.800000e+02 0.000000e+00   400 1000 1349.5 0.111 0.065 -5.2147  3.153   30
 #> 2  1.476000e+02 0.000000e+00   400 1000 1349.5 0.111 0.065 -5.2147  3.153   30
 #> 3  1.210320e+02 0.000000e+00   400 1000 1349.5 0.111 0.065 -5.2147  3.153   30

@@ -16,7 +16,7 @@ yprBH_minLL_fixed(
   cmmin,
   cmmax,
   cminc,
-  loi = NA,
+  loi = NULL,
   lhparms,
   matchRicker = FALSE
 )
@@ -79,21 +79,24 @@ A data.frame with the following calculated values:
 
 - `yield` is the estimated yield (in g).
 
-- `exploitation` is the exploitation rate.
+- `nharvest` is the number of harvested fish.
 
-- `Nharvest` is the number of harvested fish.
+- `ndie` is the number of fish that die of natural deaths.
 
-- `Ndie` is the number of fish that die of natural deaths.
-
-- `Nt` is the number of fish at time tr (time they become harvestable
+- `nt` is the number of fish at time tr (time they become harvestable
   size).
+
+- `tr` is the time for a fish to recruit to a minimum length limit
+  (i.e., time to enter fishery).
 
 - `avgwt` is the average weight of fish harvested.
 
 - `avglen` is the average length of fish harvested.
 
-- `tr` is the time for a fish to recruit to a minimum length limit
-  (i.e., time to enter fishery).
+- `N at xxx` is the number that reach the length of interest supplied.
+  There will be one column for each length of interest.
+
+- `exploitation` is the exploitation rate.
 
 - `F` is the instantaneous rate of fishing mortality.
 
@@ -102,9 +105,6 @@ A data.frame with the following calculated values:
 - `Z` is the instantaneous rate of total mortality.
 
 - `S` is the (total) annual rate of survival.
-
-- `N at xxx mm` is the number that reach the length of interest
-  supplied. There will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values
 (`minLL`; `cf` derived from `cfmin`, `cfmax`, and `cfinc`; `cm` derived
@@ -128,6 +128,10 @@ for estimating yield from single values of `cf`, `cm`, and `minLL`, and
 [`yprBH_minLL_var`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_var.md)
 for simulating yield with multiple values of `cf`, `cm`, and `minLL`.
 
+See [this demonstration
+page](https://fishr-core-team.github.io/rFAMS/articles/YPR_fixedMLL.html)
+for more plotting examples
+
 ## Author
 
 Jason C. Doll, <jason.doll@fmarion.edu>
@@ -135,6 +139,10 @@ Jason C. Doll, <jason.doll@fmarion.edu>
 ## Examples
 
 ``` r
+# Load other required packages for organizing output and plotting
+library(dplyr)    ## for filter
+library(ggplot2)  ## for ggplot et al.
+
 # Life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
@@ -146,59 +154,23 @@ Res_1 <- yprBH_minLL_fixed(minLL=200,
                          cmmin=0.1,cmmax=0.9,cminc=0.1,
                          loi=c(200,250,300,350),lhparms=LH)
 
-# Load other required packages for organizing output and plotting
-library(dplyr)    ## for filter
-library(ggplot2)  ## for ggplot et al.
-library(tidyr)    ## for pivot_longer
-
-# Custom theme for plots (to make look nice)
-theme_FAMS <- function(...) {
-  theme_bw() +
-  theme(
-    panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-    axis.text=element_text(size=14,color="black"),
-    axis.title=element_text(size=16,color="black"),
-    axis.title.y=element_text(angle=90),
-    axis.line=element_line(color="black"),
-    panel.border=element_blank()
-  )
-}
 
 # Yield curve (yield vs exploitation)
 # Extract results for cm=0.40
 plot_dat <- Res_1 |> dplyr::filter(cm==0.40)
 
-ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Yield (g)",x="Exploitation (u)") +
-  theme_FAMS()
+  theme_bw()
 
 
 # Plot number of fish reaching 300 mm as a function of exploitation with cm = 0.40
-ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=`nAt300`)) +
   geom_point() +
   geom_line() +
   labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
-  theme_FAMS()
-
-
-# Plot number of fish reaching multiple monitored lengths as a
-# function of exploitation with cm = 0.40
-# Select columns for plotting and convert to long
-plot_data_long <- plot_dat %>%
-  select(u,`N at 200 mm`, `N at 250 mm`, `N at 300 mm`, `N at 350 mm`) %>%
-  pivot_longer(!u, names_to="loi",values_to="number")
-
-# Generate plot
-ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
-  geom_point() +
-  scale_color_discrete(name="Yield",labels=c("N at 200 mm",
-                       "N at 250 mm", "N at 300 mm", "N at 350 mm"))+
-  geom_line() +
-  labs(y="Number of fish",x="Exploitation (u)") +
-  theme_FAMS() +
-  theme(legend.position = "top")+
-  guides(color=guide_legend(title="Length of interest"))
+  theme_bw()
 
 ```

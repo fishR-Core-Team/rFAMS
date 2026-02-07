@@ -260,7 +260,8 @@ iCheckrec <- function(rec) {
 
 # Check length of interest "loi" input
 iCheckloi <- function(loi){
-  if(any(is.na(loi))){return(NULL)}
+  #if(any(is.na(loi))){return(NULL)}
+  if(is.null(loi)){return(NULL)}
   if(!is.vector(loi))
     STOP("loi must be a vector")
   if(!is.numeric(loi))
@@ -286,9 +287,9 @@ iCheckN0 <- function(x) {
     iErrMore1(x,nm)
     iErrNotNumeric(x,nm)
     iErrLT(x,0,nm)
-    if (!is.wholenumber(x))
-      WARN("The initial number in the population is not a whole number,\n",
-           "  please check value in ",nm,".")
+    # if (!is.wholenumber(x))
+    #   WARN("The initial number in the population is not a whole number,\n",
+    #        "  please check value in ",nm,".")
   }
 }
 
@@ -389,8 +390,8 @@ iCheckspecies <- function(x) {
   if (is.null(x)) STOP("Need to specify a species name in ",nm,". See the FSA::PSDlit function for a list of available species")
 }
 
-# Check Nrec
-iCheckNrec <- function(x) {
+# Check nR
+iChecknR <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the number of fixed recruits per year in ",nm,".")
   if (is.null(x)) STOP("Need to specify the number of fixed recruits per year in ",nm,".")
@@ -398,8 +399,8 @@ iCheckNrec <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check MinR with uniform distribution
-iCheckMinR <- function(x) {
+# Check minR with uniform distribution
+iCheckminR <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the minimum number of recruits for the uniform method in ",nm,".")
   if (is.null(x)) STOP("Need to specify the minimum number of recruits for the uniform method in ",nm,".")
@@ -407,8 +408,8 @@ iCheckMinR <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check MaxR with uniform distribution
-iCheckMaxR <- function(x) {
+# Check maxR with uniform distribution
+iCheckmaxR <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the maximum number of recruits for the uniform method in ",nm,".")
   if (is.null(x)) STOP("Need to specify the maximum number of recruits for the uniform method in ",nm,".")
@@ -416,8 +417,8 @@ iCheckMaxR <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check MinR with normal distribution
-iCheckMinRNorm <- function(x) {
+# Check minR with normal distribution
+iCheckminRNorm <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the minimum number of recruits for the normal method in ",nm,".")
   if (is.null(x)) STOP("Need to specify the minimum number of recruits for the normal method in ",nm,".")
@@ -425,8 +426,8 @@ iCheckMinRNorm <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check MaxR with normal distribution
-iCheckMaxRNorm <- function(x) {
+# Check maxR with normal distribution
+iCheckmaxRNorm <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the maximum number of recruits for the normal method in ",nm,".")
   if (is.null(x)) STOP("Need to specify the maximum number of recruits for the normal method in ",nm,".")
@@ -461,8 +462,8 @@ iCheckmeanRNth <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check Nthyr with StrYC_Nth
-iCheckNthyr <- function(x) {
+# Check nStr with StrYC_Nth
+iChecknStr <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify the Nth year that a strong year class will occur in ",nm,".")
   if (is.null(x)) STOP("Need to specify the Nth year that a strong year class will occur in ",nm,".")
@@ -509,7 +510,7 @@ iChecksizeStrRrandInt <- function(x) {
 
 #Summarize dynamic pool model by year
 isum_by_year <- function(res,species,group){
-  year<-gcat<-N_start<-count<-quality<-stock<-preferred<-memorable<-trophy<-age<-yield<-biomass<-N_harvest<-N_die<-age_1plus<-Yield_age_1plus<-Total_biomass<-N_harvest_age_1plus<-N_die_age_1plus<-NULL
+  year<-gcat<-nstart<-count<-quality<-stock<-preferred<-memorable<-trophy<-age<-yield<-biomass<-nharvest<-ndie<-age_1plus<-Yield_age_1plus<-Total_biomass<-nharvest_age_1plus<-ndie_age_1plus<-NULL
   #Calculate PSD's based on number of individuals at length at the start of the year
   #Return a simplified object for calculation of PSD
   if(is.null(group)){
@@ -546,7 +547,7 @@ isum_by_year <- function(res,species,group){
   # Add length category to output
   year_summary <- psd_calc |>
     dplyr::group_by(year,gcat,length) |>
-    dplyr::summarise(count = floor(sum(N_start))) |>
+    dplyr::summarise(count = floor(sum(nstart))) |>
     tidyr::uncount(count)
 
   psd_crosstab <- stats::xtabs(~year + gcat, data = year_summary) #create crosstab
@@ -579,11 +580,11 @@ isum_by_year <- function(res,species,group){
   Year_Summary <- res |>
     dplyr::filter(age > 0) |>
     dplyr::group_by(year) |>
-    dplyr::summarize(age_1plus = sum(N_start), Yield_age_1plus = sum(yield),
-                     Total_biomass = sum(biomass), N_harvest_age_1plus = sum(N_harvest),
-                     N_die_age_1plus = sum(N_die)) |>
+    dplyr::summarize(age_1plus = sum(nstart), Yield_age_1plus = sum(yield),
+                     Total_biomass = sum(biomass), nharvest_age_1plus = sum(nharvest),
+                     ndie_age_1plus = sum(ndie)) |>
     dplyr::right_join(psd_summary, by = "year") |>
-    dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, N_harvest_age_1plus, N_die_age_1plus), ~dplyr::coalesce(., 0)))
+    dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, nharvest_age_1plus, ndie_age_1plus), ~dplyr::coalesce(., 0)))
 
   # merged_df <- dplyr::left_join(psd_summary,Year_Summary, by = "year") |>
   #   dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, N_harvest_age_1plus, N_die_age_1plus), ~dplyr::coalesce(., 0)))

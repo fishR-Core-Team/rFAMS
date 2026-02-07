@@ -17,35 +17,36 @@
 #'
 #' @return the following calculated and input values in a data.frame
 #' \itemize{
-#' \item cm A numeric representing conditional natural mortality
-#' \item TotalYield is the calculated total yield
-#' \item TotalHarvest is the calculated total number of harvested fish
-#' \item TotalNdie is the calculated total number of fish that die of natural death
+#' \item yieldTotal is the calculated total yield
 #' \item yieldUnder is the calculated yield under the slot limit
 #' \item yieldIn is the calculated yield within the slot limit
 #' \item yieldAbove is the calculated yield above the slot limit
-#' \item uUnder is the exploitation rate under the slot limit
-#' \item uIn is the exploitation rate within the slot limit
-#' \item uAbove is the exploitation rate above the slot limit
-#' \item NharvestUnder is the number of harvested fish under the slot limit
-#' \item NharvestIn is the number of harvested fish within the slot limit
-#' \item NharvestAbove is the number of harvested fish above the slot limit
-#' \item N0die is the number of fish that die of natural death before entering the fishery at a minimum length
-#' \item NdieUnder is the number of fish that die of natural death between entering the fishery and the lower slot limit
-#' \item NdieIn is the number of fish that die of natural deaths within the slot limit
-#' \item NdieAbove is the number of fish that die of natural deaths above the slot limit
+#' \item nharvTotal is the calculated total number of harvested fish
+#' \item ndieTotal is the calculated total number of fish that die of natural death
+#' \item nharvestUnder is the number of harvested fish under the slot limit
+#' \item nharvestIn is the number of harvested fish within the slot limit
+#' \item nharvestAbove is the number of harvested fish above the slot limit
+#' \item n0die is the number of fish that die of natural death before entering the fishery at a minimum length
+#' \item ndieUnder is the number of fish that die of natural death between entering the fishery and the lower slot limit
+#' \item ndieIn is the number of fish that die of natural deaths within the slot limit
+#' \item ndieAbove is the number of fish that die of natural deaths above the slot limit
+#' \item nrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
+#' \item nrIn is the number of fish at time trIn (time they reach the lower slot limit size)
+#' \item nrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
+#' \item trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
+#' \item trIn is the time for a fish to recruit to a lower length limit of the slot limit
+#' \item trOver is the time for a fish to recruit to a upper length limit of the slot limit
 #' \item avglenUnder is the average length of fish harvested under the slot limit
 #' \item avglenIn is the average length of fish harvested within the slot limit
 #' \item avglenAbove is the average length of fish harvested above the slot limit
 #' \item avgwtUnder is the average weight of fish harvested under the slot limit
 #' \item avgwtIn is the average weight of fish harvested within the slot limit
 #' \item avgwtAbove is the average weight of fish harvested above the slot limit
-#' \item trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
-#' \item trIn is the time for a fish to recruit to a lower length limit of the slot limit
-#' \item trOver is the time for a fish to recruit to a upper length limit of the slot limit
-#' \item NrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
-#' \item NrIn is the number of fish at time trIn (time they reach the lower slot limit size)
-#' \item NrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
+#' \item \code{nAtxxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item cm A numeric representing conditional natural mortality
+#' \item expUnder is the exploitation rate under the slot limit
+#' \item expIn is the exploitation rate within the slot limit
+#' \item expAbove is the exploitation rate above the slot limit
 #' \item FUnder is the estimated instantaneous rate of fishing mortality under the slot limit
 #' \item FIn is the estimated instantaneous rate of fishing mortality within the slot limit
 #' \item FAbove is the estimated instantaneous rate of fishing mortality above the slot limit
@@ -71,7 +72,6 @@
 #' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 #' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
 #' \item tmax An integer representing maximum age in the population in years
-#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 #' #' }
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
@@ -91,16 +91,8 @@
 #' @export
 
 yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
-                            loi=NA,lhparms,matchRicker=FALSE){
-  # ---- Check inputs
-  # iCheckN0(N0)
-  # iCheckLinf(Linf)
-  # iCheckK(K)
-  # iCheckt0(t0)
-  # iCheckLWa(LWalpha)
-  # iCheckLWb(LWbeta)
-  # iCheckMaxAge(tmax)
-  iCheckloi(loi)
+                            loi=NULL,lhparms,matchRicker=FALSE){
+
 
   # Extract individual life history values
   N0 <- lhparms[["N0"]]
@@ -111,9 +103,24 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
 
-  #Can't use ypr_func because it calculates Nr based on natural mortality only because below length limit M the only source of mortality
-  #And Nr in ypr_func is calculated only with M
-  #Nr is need for number entering slot but when fishing mort occurs below slot Nr must include M and F
+  # ---- Check inputs
+  iCheckN0(N0)
+  iCheckMaxAge(tmax)
+  iCheckLinf(Linf)
+  iCheckK(K)
+  iCheckt0(t0)
+  iCheckLWa(LWalpha)
+  iCheckLWb(LWbeta)
+  iCheckloi(loi)
+  iCheckcm(cm)
+  iCheckcfunder(cfunder)
+  iCheckcfin(cfin)
+  iCheckcfabove(cfabove)
+  iCheckrecruitTL(recruitmentTL)
+  iChecklowerSLTL(lowerSL)
+  iCheckupperSLTL(upperSL)
+
+
 
   # Maximum theoretical weight derived from L-inf and weight to length regression
   #   log10 transformation to linearize it
@@ -264,7 +271,7 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
 
   #Find out where tloi is in relation to time to lower slot and upper slot.
   #I think this might work.. needs to be tested
-  if(!is.na(loi[1])){
+  if(!is.null(loi[1])){
     #Get vector of time to length's of interest
     tloi <- rep(NA,length(loi))
     Nloi <- rep(NA,length(loi))
@@ -272,61 +279,72 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
     Nr_under <- N0*exp(-M_under*tr)
     for(x in 1:length(loi)){
       #Time to length of interest
-      tloi[x] <- ((log(1-loi[x]/Linf))/-K)+t0
-      if(tloi[x] < tmax_lowerSL){ #time to reach length of interest is less than time to recruit then only M applied
-        if(tloi[x] < tr){
-          Nloi[x] <- N0*exp(-Z_under*tloi[x])
-        } else {
-          Nloi[x] <- Nr_under*exp(-Z_under*(tloi[x]-tr))
-        }
+      if(loi[x] > Linf){
+        WARN("Specified length of interest, loi = ", loi[x]," is greater than\n",
+             "Linf of ",Linf," this produces an error. Please select a length\n",
+             "of interest below Linf")
+        notes <- c(notes,paste0("loi=",loi[x],">Linf"))
 
-      } else if (tloi[x] < tmax_upperSL) { #else apply M and F
-        #Nloi[x] <- Nr_in*exp(-Z_under*tmax_lowerSL)
-        #Nloi[x] <- Nloi[x]*exp(-Z_in*(tloi[x]-tmax_lowerSL))
-        Nloi[x] <- Nr_in*exp(-Z_in*(tloi[x]-tmax_lowerSL))
       } else {
-        # Nloi[x] <- N0*exp(-Z_under*tmax_lowerSL)
-        # Nloi[x] <- Nloi[x]*exp(-Z_in*(tmax_upperSL))
-        # Nloi[x] <- Nloi[x]*exp(-Z_above*(tloi[x]-tmax_upperSL))
-        Nloi[x] <- Nr_above*exp(-Z_above*(tloi[x]-tmax_upperSL))
+
+        tloi[x] <- ((log(1-loi[x]/Linf))/-K)+t0
+        if(tloi[x] < tmax_lowerSL){ #time to reach length of interest is less than time to recruit then only M applied
+          if(tloi[x] < tr){
+            Nloi[x] <- N0*exp(-Z_under*tloi[x])
+          } else {
+            Nloi[x] <- Nr_under*exp(-Z_under*(tloi[x]-tr))
+          }
+
+        } else if (tloi[x] < tmax_upperSL) { #else apply M and F
+          #Nloi[x] <- Nr_in*exp(-Z_under*tmax_lowerSL)
+          #Nloi[x] <- Nloi[x]*exp(-Z_in*(tloi[x]-tmax_lowerSL))
+          Nloi[x] <- Nr_in*exp(-Z_in*(tloi[x]-tmax_lowerSL))
+        } else {
+          # Nloi[x] <- N0*exp(-Z_under*tmax_lowerSL)
+          # Nloi[x] <- Nloi[x]*exp(-Z_in*(tmax_upperSL))
+          # Nloi[x] <- Nloi[x]*exp(-Z_above*(tloi[x]-tmax_upperSL))
+          Nloi[x] <- Nr_above*exp(-Z_above*(tloi[x]-tmax_upperSL))
+        }
       }
     }
 
-    #Create a vector for new columns to store number at length of interest
-    Nloi_cols <- paste0("N at ", loi[1:length(loi)], " mm")
+    #assign column names
+    names(Nloi) <- paste0("nAt", loi)
   }
 
   #Combinde dataframe for output
-  outdf<-data.frame(
-    cm=cm,
-    TotalYield = Y_under+Y_in+Y_above,
-    TotalNharv = Nharv_under+Nharv_in+Nharv_above,
-    TotalNdie = Ndie_under+Ndie_in+Ndie_above,
+  tmp1 <- data.frame(
+    yieldTotal = Y_under+Y_in+Y_above,
     yieldUnder=Y_under,
     yieldIn=Y_in,
     yieldAbove=Y_above,
-    uUnder=exploitation_under,
-    uIn=exploitation_in,
-    uAbove=exploitation_above,
-    NharvestUnder=Nharv_under,
-    NharvestIn=Nharv_in,
-    NharvestAbove=Nharv_above,
-    N0die=N0die,
-    NdieUnder=Ndie_under,
-    NdieIn=Ndie_in,
-    NdieAbove=Ndie_above,
+    nharvTotal = Nharv_under+Nharv_in+Nharv_above,
+    ndieTotal = Ndie_under+Ndie_in+Ndie_above,
+    nharvestUnder=Nharv_under,
+    nharvestIn=Nharv_in,
+    nharvestAbove=Nharv_above,
+    n0die=N0die,
+    ndieUnder=Ndie_under,
+    ndieIn=Ndie_in,
+    ndieAbove=Ndie_above,
+    nrUnder=Nr_under,
+    nrIn=Nr_in,
+    nrAbove=Nr_above,
+    trUnder=tr,
+    trIn=tmax_lowerSL,
+    trOver=tmax_upperSL,
     avglenUnder=avglen_under,
     avglenIn=avglen_in,
     avglenAbove=avglen_above,
     avgwtUnder=avgwt_under,
     avgwtIn=avgwt_in,
-    avgwtAbove=avgwt_above,
-    trUnder=tr,
-    trIn=tmax_lowerSL,
-    trOver=tmax_upperSL,
-    NrUnder=Nr_under,
-    NrIn=Nr_in,
-    NrAbove=Nr_above,
+    avgwtAbove=avgwt_above
+  )
+  tmp2 <- data.frame(
+    cm=cm,
+    expUnder=exploitation_under,
+    expIn=exploitation_in,
+    expAbove=exploitation_above,
     FUnder=F_under,
     FIn=F_in,
     FAbove=F_above,
@@ -354,9 +372,9 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
     tmax=tmax
   )
 
-  if(!is.na(loi[1])){
-    outdf[Nloi_cols] <- Nloi
-  }
+  if (!is.null(loi[1])) outdf <- cbind(tmp1,t(Nloi),tmp2)
+  else outdf <- cbind(tmp1,tmp2)
+
   outdf
 
 }

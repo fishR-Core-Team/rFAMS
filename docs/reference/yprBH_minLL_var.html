@@ -60,7 +60,7 @@
 <span>  <span class="va">cmmin</span>,</span>
 <span>  <span class="va">cmmax</span>,</span>
 <span>  <span class="va">cminc</span>,</span>
-<span>  loi <span class="op">=</span> <span class="cn">NA</span>,</span>
+<span>  loi <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">lhparms</span>,</span>
 <span>  matchRicker <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -128,11 +128,11 @@
 <li><p><code>avgwt</code> is the average weight of fish harvested.</p></li>
 <li><p><code>avglen</code> is the average length of fish harvested.</p></li>
 <li><p><code>tr</code> is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).</p></li>
+<li><p><code>N at xxx mm</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.</p></li>
 <li><p><code>F</code> is the instantaneous rate of fishing mortality.</p></li>
 <li><p><code>M</code> is the instantaneous rate of natural mortality.</p></li>
 <li><p><code>Z</code> is the instantaneous rate of total mortality.</p></li>
 <li><p><code>S</code> is the (total) annual rate of survival.</p></li>
-<li><p><code>N at xxx mm</code> is the number that reach the length of interest supplied. There will be one column for each length of interest.</p></li>
 </ul><p>For convenience the data.frame also contains the model input values (<code>minLL</code> derived from <code>lengthmin</code>, <code>lengthmax</code>, and <code>lengthinc</code>; <code>cf</code> derived from <code>cfmin</code>, <code>cfmax</code>, and <code>cfinc</code>; <code>cm</code> derived from <code>cmmin</code>, <code>cmmax</code>, and <code>cminc</code>; <code>N0</code>; <code>Linf</code>; <code>K</code>; <code>t0</code>; <code>LWalpha</code>; <code>LWbeta</code>; and <code>tmax</code>).</p>
 <p>The data.frame also contains a <code>notes</code> value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are defined under "values" in the documentation for <code><a href="yprBH_func.html">yprBH_func</a></code>.</p>
     </div>
@@ -142,7 +142,8 @@
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="yprBH_func.html">yprBH_func</a></code> for estimating yield from single values of <code>cf</code>, <code>cm</code>, and <code>minLL</code>, and <code><a href="yprBH_minLL_fixed.html">yprBH_minLL_fixed</a></code> for simulating yield with multiple values of <code>cf</code> and <code>cm</code> but a fixed value for <code>minLL</code>.</p></div>
+    <div class="dont-index"><p><code><a href="yprBH_func.html">yprBH_func</a></code> for estimating yield from single values of <code>cf</code>, <code>cm</code>, and <code>minLL</code>, and <code><a href="yprBH_minLL_fixed.html">yprBH_minLL_fixed</a></code> for simulating yield with multiple values of <code>cf</code> and <code>cm</code> but a fixed value for <code>minLL</code>.</p>
+<p>See <a href="https://fishr-core-team.github.io/rFAMS/articles/YPR_VarMLL.html">this demonstration page</a> for more plotting examples</p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
@@ -151,7 +152,12 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Life history parameters to be used below</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load other required packages for organizing output and plotting</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>    <span class="co">## for filter</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co">## for ggplot et al.</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://eliocamp.github.io/metR/" class="external-link">metR</a></span><span class="op">)</span>     <span class="co">## geom_text_contour</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Life history parameters to be used below</span></span></span>
 <span class="r-in"><span><span class="va">LH</span> <span class="op">&lt;-</span> <span class="fu"><a href="makeLH.html">makeLH</a></span><span class="op">(</span>N0<span class="op">=</span><span class="fl">100</span>,tmax<span class="op">=</span><span class="fl">15</span>,Linf<span class="op">=</span><span class="fl">592</span>,K<span class="op">=</span><span class="fl">0.20</span>,t0<span class="op">=</span><span class="op">-</span><span class="fl">0.3</span>,LWalpha<span class="op">=</span><span class="op">-</span><span class="fl">5.528</span>,LWbeta<span class="op">=</span><span class="fl">3.273</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Estimate yield for multiple values of minLL, cf, and cm</span></span></span>
@@ -162,62 +168,26 @@
 <span class="r-in"><span>                       cmmin<span class="op">=</span><span class="fl">0.1</span>,cmmax<span class="op">=</span><span class="fl">0.9</span>,cminc<span class="op">=</span><span class="fl">0.1</span>,</span></span>
 <span class="r-in"><span>                       loi<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span>,<span class="fl">450</span>,<span class="fl">500</span>,<span class="fl">550</span><span class="op">)</span>,lhparms<span class="op">=</span><span class="va">LH</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Load other required packages for organizing output and plotting</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>    <span class="co">## for filter</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co">## for ggplot et al.</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://eliocamp.github.io/metR/" class="external-link">metR</a></span><span class="op">)</span>     <span class="co">## geom_text_contour</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Custom theme for plots (to make look nice)</span></span></span>
-<span class="r-in"><span><span class="va">theme_FAMS</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    panel.grid.major<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,panel.grid.minor<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    axis.text<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">14</span>,color<span class="op">=</span><span class="st">"black"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    axis.title<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">16</span>,color<span class="op">=</span><span class="st">"black"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    axis.title.y<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle<span class="op">=</span><span class="fl">90</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    axis.line<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>color<span class="op">=</span><span class="st">"black"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    panel.border<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Yield curve (yield vs exploitation)</span></span></span>
-<span class="r-in"><span><span class="co"># Extract results for cm=0.40 and minimum length limit=400</span></span></span>
-<span class="r-in"><span><span class="va">plot_dat</span> <span class="op">&lt;-</span> <span class="va">Res_1</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cm</span><span class="op">==</span><span class="fl">0.40</span>,<span class="va">minLL</span><span class="op">==</span><span class="fl">400</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">yield</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Yield (g)"</span>,x<span class="op">=</span><span class="st">"Exploitation (u)"</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu">theme_FAMS</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="yprBH_minLL_var-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Yield curves by varying minimum lengths, using cm=40</span></span></span>
+<span class="r-in"><span><span class="co"># Yield curves (yield vs exploitation) by varying minimum lengths,</span></span></span>
+<span class="r-in"><span><span class="co"># using cm=40</span></span></span>
 <span class="r-in"><span><span class="va">plot_dat</span> <span class="op">&lt;-</span> <span class="va">Res_1</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cm</span><span class="op">==</span><span class="fl">0.40</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">yield</span>,x<span class="op">=</span><span class="va">u</span>,</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">yield</span>,x<span class="op">=</span><span class="va">exploitation</span>,</span></span>
 <span class="r-in"><span>                                 group<span class="op">=</span><span class="va">minLL</span>,color<span class="op">=</span><span class="va">minLL</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradient2</a></span><span class="op">(</span>high<span class="op">=</span><span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Yield (g)"</span>,x<span class="op">=</span><span class="st">"Exploitation (u)"</span>,color<span class="op">=</span><span class="st">"Min Length Limit"</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu">theme_FAMS</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="yprBH_minLL_var-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="yprBH_minLL_var-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Yield isopleths for varying minLL and exploitation with cm=0.40</span></span></span>
 <span class="r-in"><span><span class="co"># # Using same data as previous example</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">minLL</span>,z<span class="op">=</span><span class="va">yield</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">exploitation</span>,y<span class="op">=</span><span class="va">minLL</span>,z<span class="op">=</span><span class="va">yield</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://eliocamp.github.io/metR/reference/geom_contour2.html" class="external-link">geom_contour2</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html" class="external-link">after_stat</a></span><span class="op">(</span><span class="va">level</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Exploitation (u)"</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Minimum length limit (mm)"</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu">theme_FAMS</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="yprBH_minLL_var-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Same as previous but using number harvested isopleths</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">minLL</span>,z<span class="op">=</span><span class="va">Nharvest</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://eliocamp.github.io/metR/reference/geom_contour2.html" class="external-link">geom_contour2</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html" class="external-link">after_stat</a></span><span class="op">(</span><span class="va">level</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Exploitation (u)"</span><span class="op">)</span><span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Minimum length limit (mm)"</span><span class="op">)</span><span class="op">+</span></span></span>
-<span class="r-in"><span>  <span class="fu">theme_FAMS</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="yprBH_minLL_var-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="yprBH_minLL_var-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

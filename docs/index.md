@@ -50,12 +50,13 @@ package](https://fishr-core-team.github.io/FSA/index.html)
 
 ### Installation
 
-The [development version](https://github.com/fishR-Core-Team/rFAMS) may
-be installed from GitHub with
+The [development
+version](https://github.com/fishR-Core-Team/rFAMS/tree/dev) may be
+installed from GitHub with
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("fishR-Core-Team/rFAMS")
+devtools::install_github("fishR-Core-Team/rFAMS@dev")
 ```
 
 You may need R Tools installed on your system to install the development

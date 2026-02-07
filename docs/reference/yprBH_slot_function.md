@@ -15,7 +15,7 @@ yprBH_slot_func(
   cfin,
   cfabove,
   cm,
-  loi = NA,
+  loi = NULL,
   lhparms,
   matchRicker = FALSE
 )
@@ -77,14 +77,7 @@ yprBH_slot_func(
 
 the following calculated and input values in a data.frame
 
-- cm A numeric representing conditional natural mortality
-
-- TotalYield is the calculated total yield
-
-- TotalHarvest is the calculated total number of harvested fish
-
-- TotalNdie is the calculated total number of fish that die of natural
-  death
+- yieldTotal is the calculated total yield
 
 - yieldUnder is the calculated yield under the slot limit
 
@@ -92,29 +85,46 @@ the following calculated and input values in a data.frame
 
 - yieldAbove is the calculated yield above the slot limit
 
-- uUnder is the exploitation rate under the slot limit
+- nharvTotal is the calculated total number of harvested fish
 
-- uIn is the exploitation rate within the slot limit
+- ndieTotal is the calculated total number of fish that die of natural
+  death
 
-- uAbove is the exploitation rate above the slot limit
+- nharvestUnder is the number of harvested fish under the slot limit
 
-- NharvestUnder is the number of harvested fish under the slot limit
+- nharvestIn is the number of harvested fish within the slot limit
 
-- NharvestIn is the number of harvested fish within the slot limit
+- nharvestAbove is the number of harvested fish above the slot limit
 
-- NharvestAbove is the number of harvested fish above the slot limit
-
-- N0die is the number of fish that die of natural death before entering
+- n0die is the number of fish that die of natural death before entering
   the fishery at a minimum length
 
-- NdieUnder is the number of fish that die of natural death between
+- ndieUnder is the number of fish that die of natural death between
   entering the fishery and the lower slot limit
 
-- NdieIn is the number of fish that die of natural deaths within the
+- ndieIn is the number of fish that die of natural deaths within the
   slot limit
 
-- NdieAbove is the number of fish that die of natural deaths above the
+- ndieAbove is the number of fish that die of natural deaths above the
   slot limit
+
+- nrUnder is the number of fish at time trUnder (time they become
+  harvestable size under the slot limit)
+
+- nrIn is the number of fish at time trIn (time they reach the lower
+  slot limit size)
+
+- nrAbove is the number of fish at time trAbove (time they reach the
+  upper slot limit size)
+
+- trUnder is the time for a fish to recruit to a minimum length limit
+  (i.e., time to enter fishery)
+
+- trIn is the time for a fish to recruit to a lower length limit of the
+  slot limit
+
+- trOver is the time for a fish to recruit to a upper length limit of
+  the slot limit
 
 - avglenUnder is the average length of fish harvested under the slot
   limit
@@ -132,23 +142,16 @@ the following calculated and input values in a data.frame
 - avgwtAbove is the average weight of fish harvested above the slot
   limit
 
-- trUnder is the time for a fish to recruit to a minimum length limit
-  (i.e., time to enter fishery)
+- `nAtxxx` is the number that reach the length of interest supplied.
+  There will be one column for each length of interest.
 
-- trIn is the time for a fish to recruit to a lower length limit of the
-  slot limit
+- cm A numeric representing conditional natural mortality
 
-- trOver is the time for a fish to recruit to a upper length limit of
-  the slot limit
+- expUnder is the exploitation rate under the slot limit
 
-- NrUnder is the number of fish at time trUnder (time they become
-  harvestable size under the slot limit)
+- expIn is the exploitation rate within the slot limit
 
-- NrIn is the number of fish at time trIn (time they reach the lower
-  slot limit size)
-
-- NrAbove is the number of fish at time trAbove (time they reach the
-  upper slot limit size)
+- expAbove is the exploitation rate above the slot limit
 
 - FUnder is the estimated instantaneous rate of fishing mortality under
   the slot limit
@@ -219,9 +222,7 @@ the following calculated and input values in a data.frame
   length-weight regression on the log10 scale.
 
 - tmax An integer representing maximum age in the population in years
-
-- `N at xxx mm` is the number that reach the length of interest
-  supplied. There will be one column for each length of interest. \#'
+  \#'
 
 ## Details
 
@@ -242,21 +243,21 @@ Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
                        cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
                        loi=c(200,250,300,325,350),lhparms=LH)
 Res_1
-#>    cm TotalYield TotalNharv TotalNdie yieldUnder  yieldIn yieldAbove    uUnder
-#> 1 0.4   5611.796   19.68287   20.9852   903.2554 3813.586   894.9547 0.1981511
-#>         uIn    uAbove NharvestUnder NharvestIn NharvestAbove    N0die NdieUnder
-#> 1 0.4879637 0.1182668      6.154504   12.55573     0.9726349 59.32995  10.92831
-#>     NdieIn NdieAbove avglenUnder avglenIn avglenAbove avgwtUnder  avgwtIn
-#> 1 6.999731  3.057163    224.3558 280.1859    393.1118   146.7633 303.7327
-#>   avgwtAbove  trUnder     trIn  trOver  NrUnder     NrIn  NrAbove    FUnder
-#> 1   920.1343 1.761224 2.443479 3.68129 40.67005 23.58723 4.031773 0.2876821
-#>         FIn    FAbove    MUnder       MIn    MAbove    ZUnder      ZIn
-#> 1 0.9162907 0.1625189 0.5108256 0.5108256 0.5108256 0.7985077 1.427116
-#>      ZAbove SUnder  SIn SAbove cfUnder cfIn cfOver recruitmentTL lowerSL
-#> 1 0.6733446   0.45 0.24   0.51    0.25  0.6   0.15           200     250
-#>   upperSL  N0 Linf   K   t0 LWalpha LWbeta tmax N at 200 mm N at 250 mm
-#> 1     325 100  592 0.2 -0.3  -5.528  3.273   15    40.67005    23.58723
-#>   N at 300 mm N at 325 mm N at 350 mm
-#> 1    7.636027    4.031773    2.895681
+#>   yieldTotal yieldUnder  yieldIn yieldAbove nharvTotal ndieTotal nharvestUnder
+#> 1   5611.796   903.2554 3813.586   894.9547   19.68287   20.9852      6.154504
+#>   nharvestIn nharvestAbove    n0die ndieUnder   ndieIn ndieAbove  nrUnder
+#> 1   12.55573     0.9726349 59.32995  10.92831 6.999731  3.057163 40.67005
+#>       nrIn  nrAbove  trUnder     trIn  trOver avglenUnder avglenIn avglenAbove
+#> 1 23.58723 4.031773 1.761224 2.443479 3.68129    224.3558 280.1859    393.1118
+#>   avgwtUnder  avgwtIn avgwtAbove   nAt200   nAt250   nAt300   nAt325   nAt350
+#> 1   146.7633 303.7327   920.1343 40.67005 23.58723 7.636027 4.031773 2.895681
+#>    cm  expUnder     expIn  expAbove    FUnder       FIn    FAbove    MUnder
+#> 1 0.4 0.1981511 0.4879637 0.1182668 0.2876821 0.9162907 0.1625189 0.5108256
+#>         MIn    MAbove    ZUnder      ZIn    ZAbove SUnder  SIn SAbove cfUnder
+#> 1 0.5108256 0.5108256 0.7985077 1.427116 0.6733446   0.45 0.24   0.51    0.25
+#>   cfIn cfOver recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha LWbeta
+#> 1  0.6   0.15           200     250     325 100  592 0.2 -0.3  -5.528  3.273
+#>   tmax
+#> 1   15
 
 ```

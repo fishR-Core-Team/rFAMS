@@ -100,47 +100,37 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>            method          M         cm                  givens</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1       HoenigNLS 0.41002265 0.33636478                 tmax=15</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         HoenigO 0.29543534 0.25579246                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        HoenigOF 0.27939445 0.24375845                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        HoenigOM 0.35947963 0.30196053                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        HoenigOC 0.24095916 0.21412628                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        HoenigO2 0.29631969 0.25645032                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7       HoenigO2F 0.25683005 0.22650034                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       HoenigO2M 0.35214421 0.29682129                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9       HoenigO2C 0.31107738 0.26734282                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       HoenigLM 0.36126963 0.30320890                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   HewittHoenig 0.28133333 0.24522330                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12          tmax1 0.34060000 0.28865661                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      PaulyLNoT 0.47024562 0.37515122          K=0.3, Linf=50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14             K1 0.50760000 0.39806150                   K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15             K2 0.56300000 0.43050200                   K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16       JensenK1 0.45000000 0.36237185                   K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17       JensenK2 0.65100000 0.47847601                   K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18 AlversonCarney 0.19872105 0.18022146          tmax=15, K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   ChenWatanabe 0.07181977 0.06930138 tmax=15, K=0.3, t0=-0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        HoenigO2 0.29631969 0.25645032                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        HoenigLM 0.36126963 0.30320890                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    HewittHoenig 0.28133333 0.24522330                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6           tmax1 0.34060000 0.28865661                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       PaulyLNoT 0.47024562 0.37515122          K=0.3, Linf=50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8              K1 0.50760000 0.39806150                   K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9              K2 0.56300000 0.43050200                   K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      HamelCope 0.36000000 0.30232367                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       JensenK1 0.45000000 0.36237185                   K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12       JensenK2 0.65100000 0.47847601                   K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 AlversonCarney 0.19872105 0.18022146          tmax=15, K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14   ChenWatanabe 0.07181977 0.06930138 tmax=15, K=0.3, t0=-0.5</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Same but including the average in the last row</span></span></span>
 <span class="r-in"><span><span class="fu">est_natmort</span><span class="op">(</span><span class="va">tmp</span>,incl.avg<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            method          M         cm                  givens</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1       HoenigNLS 0.41002265 0.33636478                 tmax=15</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2         HoenigO 0.29543534 0.25579246                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3        HoenigOF 0.27939445 0.24375845                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4        HoenigOM 0.35947963 0.30196053                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5        HoenigOC 0.24095916 0.21412628                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6        HoenigO2 0.29631969 0.25645032                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7       HoenigO2F 0.25683005 0.22650034                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8       HoenigO2M 0.35214421 0.29682129                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9       HoenigO2C 0.31107738 0.26734282                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10       HoenigLM 0.36126963 0.30320890                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11   HewittHoenig 0.28133333 0.24522330                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12          tmax1 0.34060000 0.28865661                 tmax=15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13      PaulyLNoT 0.47024562 0.37515122          K=0.3, Linf=50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14             K1 0.50760000 0.39806150                   K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15             K2 0.56300000 0.43050200                   K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16       JensenK1 0.45000000 0.36237185                   K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17       JensenK2 0.65100000 0.47847601                   K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18 AlversonCarney 0.19872105 0.18022146          tmax=15, K=0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19   ChenWatanabe 0.07181977 0.06930138 tmax=15, K=0.3, t0=-0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20        AVERAGE 0.35248695 0.29106797                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3        HoenigO2 0.29631969 0.25645032                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        HoenigLM 0.36126963 0.30320890                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    HewittHoenig 0.28133333 0.24522330                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6           tmax1 0.34060000 0.28865661                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       PaulyLNoT 0.47024562 0.37515122          K=0.3, Linf=50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8              K1 0.50760000 0.39806150                   K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9              K2 0.56300000 0.43050200                   K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      HamelCope 0.36000000 0.30232367                 tmax=15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11       JensenK1 0.45000000 0.36237185                   K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12       JensenK2 0.65100000 0.47847601                   K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 AlversonCarney 0.19872105 0.18022146          tmax=15, K=0.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14   ChenWatanabe 0.07181977 0.06930138 tmax=15, K=0.3, t0=-0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15        AVERAGE 0.37552622 0.30586468                        </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Selecting just one method</span></span></span>
 <span class="r-in"><span><span class="fu">est_natmort</span><span class="op">(</span><span class="va">tmp</span>,method<span class="op">=</span><span class="st">"HoenigNLS"</span><span class="op">)</span></span></span>

@@ -14,18 +14,18 @@
 #' @return A data.frame with the following calculated values:
 #' \itemize{
 #' \item \code{yield} is the estimated yield (in g).
-#' \item \code{exploitation} is the exploitation rate.
-#' \item \code{Nharvest} is the number of harvested fish.
-#' \item \code{Ndie} is the number of fish that die of natural deaths.
-#' \item \code{Nt} is the number of fish at time tr (time they become harvestable size).
+#' \item \code{nharvest} is the number of harvested fish.
+#' \item \code{ndie} is the number of fish that die of natural deaths.
+#' \item \code{nt} is the number of fish at time tr (time they become harvestable size).
+#' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
 #' \item \code{avgwt} is the average weight of fish harvested.
 #' \item \code{avglen} is the average length of fish harvested.
-#' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
+#' \item \code{nAtxxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item \code{exploitation} is the exploitation rate.
 #' \item \code{F} is the instantaneous rate of fishing mortality.
 #' \item \code{M} is the instantaneous rate of natural mortality.
 #' \item \code{Z} is the instantaneous rate of total mortality.
 #' \item \code{S} is the (total) annual rate of survival.
-#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 #' }
 #'
 #' For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, \code{cm}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{tmax}).
@@ -67,29 +67,8 @@
 #' @rdname yprBH_func
 #' @export
 
-yprBH_func <- function(minLL,cf,cm,loi=NA,lhparms,matchRicker=FALSE){
-  # ---- Check inputs
-  iCheckMLH(minLL)
-  #iCheckcf(cf)
-  #iCheckcm(cm)
-  # iCheckN0(N0)    # initial check if vector/list
-  # if (length(N0)>1) {
-  #   Linf <- N0[["Linf"]]
-  #   K <- N0[["K"]]
-  #   t0 <- N0[["t0"]]
-  #   LWalpha <- N0[["LWalpha"]]
-  #   LWbeta <- N0[["LWbeta"]]
-  #   tmax <- N0[["tmax"]]
-  #   N0 <- N0[["N0"]]
-  #   iCheckN0(N0)  # second check of single value of N0
-  # }
-  # iCheckLinf(Linf)
-  # iCheckK(K)
-  # iCheckt0(t0)
-  # iCheckLWa(LWalpha)
-  # iCheckLWb(LWbeta)
-  # iChecktmax(tmax)
-  iCheckloi(loi)
+yprBH_func <- function(minLL,cf,cm,loi=NULL,lhparms,matchRicker=FALSE){
+
 
   # Extract individual life history values
   N0 <- lhparms[["N0"]]
@@ -99,6 +78,20 @@ yprBH_func <- function(minLL,cf,cm,loi=NA,lhparms,matchRicker=FALSE){
   t0 <- lhparms[["t0"]]
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
+
+  # ---- Check inputs
+  iCheckMLH(minLL)
+  iCheckcf(cf)
+  iCheckcm(cm)
+  iCheckloi(loi)
+  iCheckN0(N0)
+  iCheckMaxAge(tmax)
+  iCheckLinf(Linf)
+  iCheckK(K)
+  iCheckt0(t0)
+  iCheckLWa(LWalpha)
+  iCheckLWb(LWbeta)
+
 
   # prepare notes vector
   notes <- NULL
@@ -139,7 +132,7 @@ yprBH_func <- function(minLL,cf,cm,loi=NA,lhparms,matchRicker=FALSE){
     notes <- c(notes,"tr<t0")
   }
 
-if(!is.na(loi[1])){
+if(!is.null(loi[1])){
   #Get vector of time to length's of interest
   tloi <- rep(NA,length(loi))
   Nloi <- rep(NA,length(loi))
@@ -150,22 +143,21 @@ if(!is.na(loi[1])){
       WARN("Specified length of interest, loi = ", loi[x]," is greater than\n",
            "Linf of ",Linf," this produces an error. Please select a length\n",
            "of interest below Linf")
-      notes <- c(notes,"loi<Linf")
-      Nloi[x] <- NA
-      break
-    }
+      notes <- c(notes,paste0("loi=",loi[x],">Linf"))
+    } else {
 
-    tloi[x] <- ((log(1-loi[x]/Linf))/-K)+t0
-    if(tloi[x] < tr){ #time to reach length of interest is less than time to recruit then only M applied
-      Nloi[x] <- N0*exp(-M*tloi[x])
-    } else { #else apply M and F
-      Nloi[x] <- N0*exp(-M*tr)
-      Nloi[x] <- Nloi[x]*exp(-(F+M)*(tloi[x]-tr))
+      tloi[x] <- ((log(1-loi[x]/Linf))/-K)+t0
+      if(tloi[x] < tr){ #time to reach length of interest is less than time to recruit then only M applied
+        Nloi[x] <- N0*exp(-M*tloi[x])
+      } else { #else apply M and F
+        Nloi[x] <- N0*exp(-M*tr)
+        Nloi[x] <- Nloi[x]*exp(-(F+M)*(tloi[x]-tr))
+      }
     }
   }
 
-  #Create a vector for new columns to store number at length of interest
-  Nloi_cols <- paste0("N at ", loi[1:length(loi)], " mm")
+  #assign column names
+  names(Nloi) <- paste0("nAt", loi)
 }
 
   # Amount of time (years) to recruit to the fishery (r) ... defined in FAMS
@@ -246,33 +238,34 @@ if(!is.na(loi[1])){
   }
 
   # ---- Return data.frame with both output values and input parameters
-  outdf<-data.frame(
-                  yield=Y,
-                  u=exploitation,
-                  Nharvest=Nharv,
-                  Ndie=Ndie,
-                  avgwt=avgwt,
-                  avglen=avglen,
-                  Nt= Nt,
-                  tr=tr,
-                  F=F,
-                  M=M,
-                  Z=Z,
-                  S=S,
-                  cf=cf,
-                  cm=cm,
-                  minLL=minLL,
-                  N0=N0,
-                  Linf=Linf,
-                  K=K,
-                  t0=t0,
-                  LWalpha=LWalpha,
-                  LWbeta=LWbeta,
-                  tmax=tmax,
-                  notes=paste(notes,collapse="; ")
-                )
-  if(!is.na(loi[1])){
-     outdf[Nloi_cols] <- Nloi
-  }
-     outdf
+  tmp1 <- data.frame(
+    yield=Y,
+    nharvest=Nharv,
+    ndie=Ndie,
+    nt= Nt,
+    tr=tr,
+    avgwt=avgwt,
+    avglen=avglen)
+  tmp2 <- data.frame(
+    exploitation=exploitation,
+    F=F,
+    M=M,
+    Z=Z,
+    S=S,
+    cf=cf,
+    cm=cm,
+    minLL=minLL,
+    N0=N0,
+    Linf=Linf,
+    K=K,
+    t0=t0,
+    LWalpha=LWalpha,
+    LWbeta=LWbeta,
+    tmax=tmax,
+    notes=paste(notes,collapse="; "))
+
+  if (!is.null(loi[1])) outdf <- cbind(tmp1,t(Nloi),tmp2)
+  else outdf <- cbind(tmp1,tmp2)
+
+  outdf
 }

@@ -27,7 +27,7 @@ library(ggplot2)  ## to make figures
 library(dplyr)    ## for filter
 ```
 
-The objective of this article is to demonstrate how to use rFAMS to simulate a population and estimate population characteristics using the dynamic pool model. The dynamic pool model projects a population forward based on recruitment, life history parameters, and mortality. The `dpmBH()` function requires the following arguments:
+The objective of this article is to demonstrate how to use rFAMS to simulate a population and estimate population characteristics using the dynamic pool model. The dynamic pool model projects a population forward based on recruitment, life history parameters, and mortality. The `dpmBH_minLL_fixed()` function requires the following arguments:
 
 
 - simyears: A single numeric for the lower limit of minimum length limit for harvest in mm. 
@@ -36,7 +36,7 @@ The objective of this article is to demonstrate how to use rFAMS to simulate a p
 - cm: A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
 - rec: A numeric vector of length `simyears` to specify recruitment each year. The vector can be geneated using the `genRecruits()` function.
 - lhparms: A named vector or list that contains values for each N0, tmax, Linf, K, t0, LWalpha, and LWbeta. See makeLH for definitions of these life history parameters. Also see details.
-- matchRicker: A logical that indicates whether the yield function should match that in Ricker (). Defaults to TRUE. The only reason to changed to FALSE is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
+- matchRicker: A logical that indicates whether the yield function should match that in Ricker (). Defaults to TRUE. The only reason to changed to FALSE is to try to match output from FAMS. See the [YPR_FAMSvRICKER article](YPR_FAMSvRICKER.html).
 - species: is a single character to specify the species used in the simulation and will define the length for stock, quality, preferred, memorable, and trophy. Length categories are obtained from the FSA package, see the PSDlit documentation.
 - group: is a single character to specify the sub-group name of a species used in the simulation and will define the length for stock, quality, preferred, memorable, and trophy. Length categories are obtained from the FSA package, see the PSDlit documentation.
 
@@ -51,7 +51,7 @@ simyears <- 50
 minLL <- 400
 ```
 
-The `lhparms` requires a list or vector that is created with the `makeLH()` function. The `makeLH()` function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters ($L_\infty$, $K$, and $t_0$), and parameters from the log10-transformed weight length model (alpha and beta). By default, the `makeLH()` returns a list. Growth length-weight model paramaters can be generated from functions in the [FSA package](https://fishr-core-team.github.io/FSA/index.html). See the [Make Life History object article(MakeLH.html)] for more details. The example below uses the following life history parameters:
+The `lhparms` requires a list or vector that is created with the `makeLH()` function. The `makeLH()` function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters ($L_\infty$, $K$, and $t_0$), and parameters from the log10-transformed weight length model (alpha and beta). By default, the `makeLH()` returns a list. Growth length-weight model paramaters can be generated from functions in the [FSA package](https://fishr-core-team.github.io/FSA/index.html). See the [Make Life History object article](MakeLH.html) for more details. The example below uses the following life history parameters:
 
 ```{r}
 #| label: Create life history object
@@ -67,21 +67,21 @@ cm <- matrix(rep(c(rep(0,1), rep(0.18,(LH$tmax))), simyears),nrow=simyears,byrow
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(LH$tmax))), simyears),nrow=simyears,byrow=TRUE)
 ```
 
-Recruitment must be a vector of length `simyears` and contain a single value for each year. Users can specify the vector manually or use the `genRecruits()` function which allows the user to specify different trends in recruitment. This example assumes recruitment is fixed at 1000 each year.
+Recruitment must be a vector of length `simyears` and contain a single value for each year. Users can specify the vector manually or use the `genRecruits()` function which allows the user to specify different trends in recruitment. This example sets recruitment to a fixed 1000 individuals each year.
 
 ```{r}
 #| label: DPM setup - rec
-rec <- genRecruits(method = "fixed", Nrec = 1000, simyears = simyears)
+rec <- genRecruits(method = "fixed", nR = 1000, simyears = simyears)
 ```
 
 # Run the dynamic pool model
 
-The `dpmBH` function will use all the arguments above to simulate the population and generate a list with two data.frame object. The first list item contains a data.frame with a summary by age and the second list item contains a data.frame with a summary by year. The example used here specifies "Striped Bass" that are in the group "landlocked". The species and group are used to assign appropriate PSD categories see [FSA package](https://fishr-core-team.github.io/FSA/index.html) for more information about PSD categories.
+The `dpmBH_minLL_fixed` function will use all the arguments above to simulate the population and generate a list with two data.frame object. The first list item contains a data.frame with a summary by age and the second list item contains a data.frame with a summary by year. The example used here specifies "Striped Bass" that are in the group "landlocked". The species and group are used to assign appropriate PSD categories see [FSA package](https://fishr-core-team.github.io/FSA/index.html) for more information about PSD categories.
 
 ```{r}
 #| label: DPM simulation
 #run dynamic pool simulations
-out1<-dpmBH(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = LH,
+out1<-dpmBH_minLL_fixed(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = LH,
            matchRicker=FALSE,species="Striped Bass",group="landlocked")
 ```
 
@@ -129,7 +129,7 @@ ggplot(data=plotdat,mapping=aes(x=age,y=yield)) +
   theme_FAMS()
 
 #Plot Number harvested vs age
-ggplot(data=plotdat,mapping=aes(x=age,y=N_harvest)) +
+ggplot(data=plotdat,mapping=aes(x=age,y=nharvest)) +
   geom_point() +
   geom_line() +
   labs(y="Number harvested",x="Age") +

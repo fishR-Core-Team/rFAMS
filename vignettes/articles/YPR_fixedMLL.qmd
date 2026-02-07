@@ -73,9 +73,9 @@ The output object will be a data.frame with the following calculated values:
 
 - yield is the estimated yield (in g).
 - exploitation is the exploitation rate.
-- Nharvest is the number of harvested fish.
-- Ndie is the number of fish that die of natural deaths.
-- Nt is the number of fish at time tr (time they become harvestable size).
+- nharvest is the number of harvested fish.
+- ndie is the number of fish that die of natural deaths.
+- nt is the number of fish at time tr (time they become harvestable size).
 - avgwt is the average weight of fish harvested.
 - avglen is the average length of fish harvested.
 - tr is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
@@ -83,7 +83,7 @@ The output object will be a data.frame with the following calculated values:
 - M is the instantaneous rate of natural mortality.
 - Z is the instantaneous rate of total mortality.
 - S is the (total) annual rate of survival.
-- N at xxx mm is the number that reach the length of interest supplied. There will be one column for each length of interest.
+- Natxxx is the number that reach the length of interest supplied. There will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values (minLL; cf derived from cfmin, cfmax, and cfinc; cm derived from cmmin, cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).
 
@@ -127,7 +127,7 @@ Res_1$cm <- round(Res_1$cm,8)
 # Extract results for cm=0.30
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
-ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
  geom_point() +
  geom_line() +
  labs(y="Yield (g)",x="Exploitation (u)") +
@@ -140,7 +140,7 @@ The next figure demonstrates how to explore the number of fish reaching a specif
 
 ```{r}
 #| label: Plot of fish reaching 300mm
-ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 300 mm`)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=`nAt300`)) +
  geom_point() +
  geom_line() +
  labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
@@ -153,11 +153,11 @@ The last example figure plots the number of fish reaching all the lengths of int
 #| label: Plot of fish reaching all sizes
 # Select columns for plotting and convert to long
 plot_data_long <- plot_dat %>%
- select(u,`N at 200 mm`, `N at 250 mm`, `N at 300 mm`, `N at 350 mm`) %>%
- pivot_longer(!u, names_to="loi",values_to="number")
+ select(exploitation,`nAt200`, `nAt250`, `nAt300`, `nAt350`) %>%
+ pivot_longer(!exploitation, names_to="loi",values_to="number")
 
 # Generate plot
-ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
+ggplot(data=plot_data_long,mapping=aes(x=exploitation,y=number,group=loi,color=loi)) +
  geom_point() +
  scale_color_discrete(name="Yield",labels=c("N at 200 mm", "N at 250 mm", "N at 300 mm", "N at 350 mm"))+
  geom_line() +

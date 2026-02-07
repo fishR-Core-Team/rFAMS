@@ -10,7 +10,7 @@ The objective of this article is to demonstrate how to use rFAMS to
 simulate a population and estimate population characteristics using the
 dynamic pool model. The dynamic pool model projects a population forward
 based on recruitment, life history parameters, and mortality. The
-[`dpmBH()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH.md)
+[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_minLL_fixed.md)
 function requires the following arguments:
 
 - simyears: A single numeric for the lower limit of minimum length limit
@@ -33,7 +33,8 @@ function requires the following arguments:
 - matchRicker: A logical that indicates whether the yield function
   should match that in Ricker (). Defaults to TRUE. The only reason to
   changed to FALSE is to try to match output from FAMS. See the
-  “YPR_FAMSvRICKER” article.
+  [YPR_FAMSvRICKER
+  article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.md).
 - species: is a single character to specify the species used in the
   simulation and will define the length for stock, quality, preferred,
   memorable, and trophy. Length categories are obtained from the FSA
@@ -67,8 +68,10 @@ length model (alpha and beta). By default, the
 returns a list. Growth length-weight model paramaters can be generated
 from functions in the [FSA
 package](https://fishr-core-team.github.io/FSA/index.html). See the
-\[Make Life History object article(MakeLH.html)\] for more details. The
-example below uses the following life history parameters:
+[Make Life History object
+article](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.md) for
+more details. The example below uses the following life history
+parameters:
 
 ``` r
 # create life history parameter object
@@ -92,27 +95,28 @@ Recruitment must be a vector of length `simyears` and contain a single
 value for each year. Users can specify the vector manually or use the
 [`genRecruits()`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
 function which allows the user to specify different trends in
-recruitment. This example assumes recruitment is fixed at 1000 each
-year.
+recruitment. This example sets recruitment to a fixed 1000 individuals
+each year.
 
 ``` r
-rec <- genRecruits(method = "fixed", Nrec = 1000, simyears = simyears)
+rec <- genRecruits(method = "fixed", nR = 1000, simyears = simyears)
 ```
 
 ## Run the dynamic pool model
 
-The `dpmBH` function will use all the arguments above to simulate the
-population and generate a list with two data.frame object. The first
-list item contains a data.frame with a summary by age and the second
-list item contains a data.frame with a summary by year. The example used
-here specifies “Striped Bass” that are in the group “landlocked”. The
-species and group are used to assign appropriate PSD categories see [FSA
+The `dpmBH_minLL_fixed` function will use all the arguments above to
+simulate the population and generate a list with two data.frame object.
+The first list item contains a data.frame with a summary by age and the
+second list item contains a data.frame with a summary by year. The
+example used here specifies “Striped Bass” that are in the group
+“landlocked”. The species and group are used to assign appropriate PSD
+categories see [FSA
 package](https://fishr-core-team.github.io/FSA/index.html) for more
 information about PSD categories.
 
 ``` r
 #run dynamic pool simulations
-out1<-dpmBH(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = LH,
+out1<-dpmBH_minLL_fixed(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = LH,
            matchRicker=FALSE,species="Striped Bass",group="landlocked")
 ```
 
@@ -120,14 +124,14 @@ View the first few lines of each summary
 
 ``` r
 head(out1[[1]])  #Summary by age
-#>   year yc age   length     weight   N_start exploitation expect_nat_death   cf
+#>   year yc age   length     weight    nstart exploitation expect_nat_death   cf
 #> 1    1  1   0   0.0000    0.00000 1000.0000    0.0000000        0.0000000 0.00
 #> 2    2  1   1 133.0349   30.35037 1000.0000    0.0000000        0.1800000 0.33
 #> 3    3  1   2 260.8383  253.58225  820.0000    0.0000000        0.1800000 0.33
 #> 4    4  1   3 375.2145  798.00101  672.4000    0.3012967        0.1493033 0.33
 #> 5    5  1   4 477.5741 1707.32249  405.4091    0.3012967        0.1493033 0.33
 #> 6    6  1   5 569.1797 2968.94019  222.7318    0.3012967        0.1493033 0.33
-#>     cm         F         M         Z      S   biomass N_harvest     N_die
+#>     cm         F         M         Z      S   biomass  nharvest      ndie
 #> 1 0.00 0.0000000 0.0000000 0.0000000 1.0000      0.00   0.00000   0.00000
 #> 2 0.18 0.0000000 0.1984509 0.1984509 0.8200  30350.37   0.00000 180.00000
 #> 3 0.18 0.0000000 0.1984509 0.1984509 0.8200 207937.44   0.00000 147.60000
@@ -143,15 +147,15 @@ head(out1[[1]])  #Summary by age
 #> 6 245109.6   400 1000 1349.5 0.111 0.065 -5.2147  3.153   15
 head(out1[[2]])  #Summary by year
 #> # A tibble: 6 × 16
-#>    year age_1plus Yield_age_1plus Total_biomass N_harvest_age_1plus
-#>   <int>     <dbl>           <dbl>         <dbl>               <dbl>
-#> 1     2     1000               0         30350.                  0 
-#> 2     3     1820               0        238288.                  0 
-#> 3     4     2492.         205139.       774864.                158.
-#> 4     5     2898.         479709.      1467028.                280.
-#> 5     6     3121.         724818.      2128305.                348.
-#> 6     7     3243.         921629.      2683609.                384.
-#> # ℹ 11 more variables: N_die_age_1plus <dbl>, memorable <int>, preferred <int>,
+#>    year age_1plus Yield_age_1plus Total_biomass nharvest_age_1plus
+#>   <int>     <dbl>           <dbl>         <dbl>              <dbl>
+#> 1     2     1000               0         30350.                 0 
+#> 2     3     1820               0        238288.                 0 
+#> 3     4     2492.         205139.       774864.               158.
+#> 4     5     2898.         479709.      1467028.               280.
+#> 5     6     3121.         724818.      2128305.               348.
+#> 6     7     3243.         921629.      2683609.               384.
+#> # ℹ 11 more variables: ndie_age_1plus <dbl>, memorable <int>, preferred <int>,
 #> #   quality <int>, stock <int>, substock <int>, trophy <dbl>, PSD <dbl>,
 #> #   PSD_P <dbl>, PSD_M <dbl>, PSD_T <dbl>
 ```
@@ -205,7 +209,7 @@ ggplot(data=plotdat,mapping=aes(x=age,y=yield)) +
 ``` r
 
 #Plot Number harvested vs age
-ggplot(data=plotdat,mapping=aes(x=age,y=N_harvest)) +
+ggplot(data=plotdat,mapping=aes(x=age,y=nharvest)) +
   geom_point() +
   geom_line() +
   labs(y="Number harvested",x="Age") +

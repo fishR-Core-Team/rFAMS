@@ -74,9 +74,9 @@ The output object will be a data.frame with the following calculated values:
 
 - yield is the estimated yield (in g).
 - exploitation is the exploitation rate.
-- Nharvest is the number of harvested fish.
-- Ndie is the number of fish that die of natural deaths.
-- Nt is the number of fish at time tr (time they become harvestable size).
+- nharvest is the number of harvested fish.
+- ndie is the number of fish that die of natural deaths.
+- nt is the number of fish at time tr (time they become harvestable size).
 - avgwt is the average weight of fish harvested.
 - avglen is the average length of fish harvested.
 - tr is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
@@ -84,7 +84,7 @@ The output object will be a data.frame with the following calculated values:
 - M is the instantaneous rate of natural mortality.
 - Z is the instantaneous rate of total mortality.
 - S is the (total) annual rate of survival.
-- N at xxx mm is the number that reach the length of interest supplied. There will be one column for each length of interest.
+- nAtxxx is the number that reach the length of interest supplied. There will be one column for each length of interest.
 
 For convenience the data.frame also contains the model input values (minLL derived from lengthmin, lengthmax, and lengthinc; cf derived from cfmin, cfmax, and cfinc; cm derived from cmmin, cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).
 
@@ -128,7 +128,7 @@ Res_1$cm <- round(Res_1$cm,8)
 # Extract results for cm=0.40 and minimum length limit=400
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30,minLL==400)
 
-ggplot(data=plot_dat,mapping=aes(x=u,y=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Exploitation (u)") +
@@ -146,7 +146,7 @@ Res_1$cm <- round(Res_1$cm,8)
 # Extract results for cm=0.40 and minimum length limit=400
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
-ggplot(data=plot_dat,mapping=aes(y=yield,x=u,group=minLL,color=minLL)) +
+ggplot(data=plot_dat,mapping=aes(y=yield,x=exploitation,group=minLL,color=minLL)) +
   geom_line(linewidth=1) +
   scale_color_gradient2(high="black") +
   labs(y="Total yield (g)",x="Exploitation (u)",color="Min Length Limit") +
@@ -163,10 +163,10 @@ The next graph demonstrates how to explore the number of fish reaching a specifi
 # Extract results for cm=0.40 and minimum length limit=400
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30,minLL==400)
 
-ggplot(data=plot_dat,mapping=aes(x=u,y=`N at 450 mm`)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=`nAt450`)) +
   geom_point() +
   geom_line() +
-  labs(y="Number of fish at 300 mm",x="Exploitation (u)") +
+  labs(y="Number of fish at 450 mm",x="Exploitation (u)") +
   theme_FAMS()
 ```
 
@@ -176,11 +176,11 @@ The next example graph plots the number of fish reaching all the lengths of inte
 #| label: Plot of fish reaching all sizes
 # Select columns for plotting and convert to long
 plot_data_long <- plot_dat %>%
- select(u,`N at 400 mm`, `N at 450 mm`, `N at 500 mm`, `N at 550 mm`) %>%
- pivot_longer(!u, names_to="loi",values_to="number")
+ select(exploitation,`nAt400`, `nAt450`, `nAt500`, `nAt550`) %>%
+ pivot_longer(!exploitation, names_to="loi",values_to="number")
 
 # Generate plot
-ggplot(data=plot_data_long,mapping=aes(x=u,y=number,group=loi,color=loi)) +
+ggplot(data=plot_data_long,mapping=aes(x=exploitation,y=number,group=loi,color=loi)) +
  geom_point() +
  scale_color_discrete(name="Yield",labels=c("N at 400 mm", "N at 450 mm", "N at 500 mm", "N at 550 mm"))+
  geom_line() +
@@ -202,14 +202,14 @@ plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
 # Yield isopleths for varying minLL and exploitation with cm=0.40
 # Using same data as previous example
-ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=yield)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)") +
   ylab("Minimum length limit (mm)") +
   theme_FAMS()
 
 # Same isopleth as previous but using number harvested instead of yield
-ggplot(data=plot_dat,mapping=aes(x=u,y=minLL,z=Nharvest)) +
+ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=nharvest)) +
   geom_contour2(aes(label = after_stat(level))) +
   xlab("Exploitation (u)")+
   ylab("Minimum length limit (mm)")+

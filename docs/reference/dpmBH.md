@@ -153,7 +153,7 @@ were adjusted for. The possible abbreviates are as follows:
   This also assures that the time it takes to recruit to the fishery is
   greater than 0.
 
-- `Y=Infinite`: The calculated yield (Y) was inifinity, which is
+- `Y=Infinite`: The calculated yield (Y) was infinity, which is
   impossible and suggests some other propblem. Yield was set to NA.
 
 - `Y<0`: The calculated yield (Y) was negative, which is impossible.
@@ -237,6 +237,10 @@ for estimating yield from single values of `cf`, `cm`, and `minLL`, and
 for simulating yield with multiple values of `cf` and `cm` but a fixed
 value for `minLL`.
 
+See [this demonstration
+page](file:///C:/Users/jason.doll/Documents/fishRCoreTeam/rFAMS/docs/articles/dpmBH.md)
+for more plotting examples
+
 ## Author
 
 Jason C. Doll, <jason.doll@fmarion.edu>
@@ -256,47 +260,25 @@ library(dplyr)
 #>     intersect, setdiff, setequal, union
 library(ggplot2)
 
-# Setting a custom theme for plots (to make look nice)
-# Optional for plotting
-theme_FAMS <- function(...) {
-  theme_bw() +
-    theme(
-      panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
-      axis.text=element_text(size=14,color="black"),
-      axis.title=element_text(size=16,color="black"),
-      axis.title.y=element_text(angle=90),
-      axis.line=element_line(color="black"),
-      panel.border=element_blank()
-    )
-}
-
 # Example of simulating yield with the dynamic pool model,
 
 lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
             LWalpha=-5.2147,LWbeta=3.153)
 simyears <- 50
 minLL <- 400
-rec <- genRecruits(method = "fixed", Nrec = 100, simyears = simyears)
+rec <- genRecruits(method = "fixed", nR = 100, simyears = simyears)
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
 out<-dpmBH(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = lhparms,
            matchRicker=FALSE,species="Striped Bass",group="landlocked")
 
-#Use summary by year data frame to plot PSD vs year
-ggplot(data=out[[2]],mapping=aes(x=year,y=PSD)) +
-  geom_point() +
-  geom_line() +
-  labs(y="PSD",x="Year") +
-  theme_FAMS()
-
-
 #Use summary by year data frame to plot yield vs year
 ggplot(data=out[[2]],mapping=aes(x=year,y=Yield_age_1plus)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Year") +
-  theme_FAMS()
+  theme_bw()
 
 
 #Plot date using summary by age
@@ -307,41 +289,24 @@ ggplot(data=plotdat,mapping=aes(x=age,y=yield)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Age") +
-  theme_FAMS()
-
-
-#Plot Number harvested vs age
-ggplot(data=plotdat,mapping=aes(x=age,y=N_harvest)) +
-  geom_point() +
-  geom_line() +
-  labs(y="Number harvested",x="Age") +
-  theme_FAMS()
-
+  theme_bw()
 
 
 #Recruitment based on a normal distribution
 rec <- genRecruits(method = "normal", simyears = simyears,
-                   meanR = 1000, sdR = 500, MinR = 100, MaxR =2500)
+                   meanR = 1000, sdR = 500, minR = 100, maxR =2500)
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
 out_2<-dpmBH(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = lhparms,
              matchRicker=FALSE,species="Striped Bass",group="landlocked")
 
-#Use summary by year data frame to plot PSD vs year
+#Use summary by year data frame to plot yield vs year
 ggplot(data=out_2[[2]],mapping=aes(x=year,y=PSD)) +
   geom_point() +
   geom_line() +
   labs(y="PSD",x="Year") +
-  theme_FAMS()
-
-
-#Use summary by year data frame to plot yield vs year
-ggplot(data=out_2[[2]],mapping=aes(x=year,y=Yield_age_1plus)) +
-  geom_point() +
-  geom_line() +
-  labs(y="Total yield (g)",x="Year") +
-  theme_FAMS()
+  theme_bw()
 
 
 #Plot date using summary by age
@@ -350,15 +315,6 @@ ggplot(data=out_2[[1]],mapping=aes(x=age,y=yield,group=yc,color=yc)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Age") +
-  theme_FAMS()
-
-
-#Plot Number harvested vs age
-ggplot(data=out_2[[1]],mapping=aes(x=age,y=N_harvest,group=yc,color=yc)) +
-  geom_point() +
-  geom_line() +
-  labs(y="Number harvested",x="Age") +
-  theme_FAMS()
-
+  theme_bw()
 
 ```

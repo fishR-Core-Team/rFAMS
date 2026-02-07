@@ -13,7 +13,7 @@ dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker = FALSE)
 
 \item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.}
 
-\item{rec}{A numeric vector of length \code{simyears} to specify recruitment each year. The vector can be geneated using the \code{genRecruits()} function.}
+\item{rec}{A single numeric representing number of recruits.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
@@ -78,6 +78,11 @@ Res_1
 Ricker, W.E. 1975. Computation and interpretation of biological statistics of fish populations. Technical Report Bulletin 191, Bulletin of the Fisheries Research Board of Canada. Was (is?) from \url{https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/1485.pdf}.
 
 Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling simulator. v1.64. American Fisheries Society, Bethesda, MD.
+}
+\seealso{
+\code{\link{yprBH_func}} for simulating yield using the dynamic pool model.
+
+See \href{file:///C:/Users/jason.doll/Documents/fishRCoreTeam/rFAMS/docs/articles/dpmBH.html}{this demonstration page} for more plotting examples
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}

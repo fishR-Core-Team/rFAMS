@@ -2,18 +2,17 @@
 
 ## All functions
 
-- [`dpmBH()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH.md)
+- [`dpmBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_func.md)
+  : Simulate yield using the dynamic pool model.
+- [`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_minLL_fixed.md)
   : Main function to simulate expected yield using the Dynamic Pool
   model for a range of input parameters, including minimum length limits
   for harvest
-- [`dpmBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_func.md)
-  : Simulate yield using the dynamic pool model.
 - [`est_natmort()`](https://fishr-core-team.github.io/rFAMS/reference/est_natmort.md)
   : Compute meta-analytic estimates of instantaneous and conditional
   natural mortality
 - [`genRecruits()`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
-  : Generate a vector of recruitment abundance for the dynamic pool
-  model.
+  : Generate a vector of number of recruits for the dynamic pool model.
 - [`makeLH()`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   : Make a list or vector of life history parameters for
   yield-per-recruit analyses.

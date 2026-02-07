@@ -65,7 +65,7 @@
       <h1>Estimate yield based on multiple minimum length limits</h1>
 
       <p class="author">Jason Doll</p>
-      <p class="date">2026-01-29</p>
+      <p class="date">2026-02-07</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/YPR_VarMLL.qmd" class="external-link"><code>vignettes/articles/YPR_VarMLL.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -103,24 +103,19 @@
 <span><span class="co">#&gt;            method         M         cm                  givens</span></span>
 <span><span class="co">#&gt; 1       HoenigNLS 0.4100226 0.33636478                 tmax=15</span></span>
 <span><span class="co">#&gt; 2         HoenigO 0.2954353 0.25579246                 tmax=15</span></span>
-<span><span class="co">#&gt; 3        HoenigOF 0.2793944 0.24375845                 tmax=15</span></span>
-<span><span class="co">#&gt; 4        HoenigOM 0.3594796 0.30196053                 tmax=15</span></span>
-<span><span class="co">#&gt; 5        HoenigOC 0.2409592 0.21412628                 tmax=15</span></span>
-<span><span class="co">#&gt; 6        HoenigO2 0.2963197 0.25645032                 tmax=15</span></span>
-<span><span class="co">#&gt; 7       HoenigO2F 0.2568301 0.22650034                 tmax=15</span></span>
-<span><span class="co">#&gt; 8       HoenigO2M 0.3521442 0.29682129                 tmax=15</span></span>
-<span><span class="co">#&gt; 9       HoenigO2C 0.3110774 0.26734282                 tmax=15</span></span>
-<span><span class="co">#&gt; 10       HoenigLM 0.3612696 0.30320890                 tmax=15</span></span>
-<span><span class="co">#&gt; 11   HewittHoenig 0.2813333 0.24522330                 tmax=15</span></span>
-<span><span class="co">#&gt; 12          tmax1 0.3406000 0.28865661                 tmax=15</span></span>
-<span><span class="co">#&gt; 13      PaulyLNoT 0.3308050 0.28165477        K=0.2, Linf=59.2</span></span>
-<span><span class="co">#&gt; 14             K1 0.3384000 0.28708993                   K=0.2</span></span>
-<span><span class="co">#&gt; 15             K2 0.4080000 0.33502112                   K=0.2</span></span>
-<span><span class="co">#&gt; 16       JensenK1 0.3000000 0.25918178                   K=0.2</span></span>
-<span><span class="co">#&gt; 17       JensenK2 0.5040000 0.39589062                   K=0.2</span></span>
-<span><span class="co">#&gt; 18 AlversonCarney 0.2821182 0.24581544          tmax=15, K=0.2</span></span>
-<span><span class="co">#&gt; 19   ChenWatanabe 0.1018740 0.09685666 tmax=15, K=0.2, t0=-0.3</span></span>
-<span><span class="co">#&gt; 20        AVERAGE 0.3184244 0.27040613</span></span></code></pre></div>
+<span><span class="co">#&gt; 3        HoenigO2 0.2963197 0.25645032                 tmax=15</span></span>
+<span><span class="co">#&gt; 4        HoenigLM 0.3612696 0.30320890                 tmax=15</span></span>
+<span><span class="co">#&gt; 5    HewittHoenig 0.2813333 0.24522330                 tmax=15</span></span>
+<span><span class="co">#&gt; 6           tmax1 0.3406000 0.28865661                 tmax=15</span></span>
+<span><span class="co">#&gt; 7       PaulyLNoT 0.3308050 0.28165477        K=0.2, Linf=59.2</span></span>
+<span><span class="co">#&gt; 8              K1 0.3384000 0.28708993                   K=0.2</span></span>
+<span><span class="co">#&gt; 9              K2 0.4080000 0.33502112                   K=0.2</span></span>
+<span><span class="co">#&gt; 10      HamelCope 0.3600000 0.30232367                 tmax=15</span></span>
+<span><span class="co">#&gt; 11       JensenK1 0.3000000 0.25918178                   K=0.2</span></span>
+<span><span class="co">#&gt; 12       JensenK2 0.5040000 0.39589062                   K=0.2</span></span>
+<span><span class="co">#&gt; 13 AlversonCarney 0.2821182 0.24581544          tmax=15, K=0.2</span></span>
+<span><span class="co">#&gt; 14   ChenWatanabe 0.1018740 0.09685666 tmax=15, K=0.2, t0=-0.3</span></span>
+<span><span class="co">#&gt; 15        AVERAGE 0.3292984 0.27782360</span></span></code></pre></div>
 </div>
 <p>Once you have decided the range of cf and cm and decided what minimum length limit to consider, you can now proceed to estimating yield. The following example uses the life history object created above with a minimum length limit of 200mm, cf from 0.1 to 0.9 with increments of 0.1, cm from 0.1 to 0.9 with increments of 0.1, monitors lengths of 200, 250, 300, and 350mm.</p>
 <div class="cell" data-layout-align="center">
@@ -135,9 +130,9 @@
 <ul>
 <li>yield is the estimated yield (in g).</li>
 <li>exploitation is the exploitation rate.</li>
-<li>Nharvest is the number of harvested fish.</li>
-<li>Ndie is the number of fish that die of natural deaths.</li>
-<li>Nt is the number of fish at time tr (time they become harvestable size).</li>
+<li>nharvest is the number of harvested fish.</li>
+<li>ndie is the number of fish that die of natural deaths.</li>
+<li>nt is the number of fish at time tr (time they become harvestable size).</li>
 <li>avgwt is the average weight of fish harvested.</li>
 <li>avglen is the average length of fish harvested.</li>
 <li>tr is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).</li>
@@ -145,34 +140,34 @@
 <li>M is the instantaneous rate of natural mortality.</li>
 <li>Z is the instantaneous rate of total mortality.</li>
 <li>S is the (total) annual rate of survival.</li>
-<li>N at xxx mm is the number that reach the length of interest supplied. There will be one column for each length of interest.</li>
+<li>nAtxxx is the number that reach the length of interest supplied. There will be one column for each length of interest.</li>
 </ul>
 <p>For convenience the data.frame also contains the model input values (minLL derived from lengthmin, lengthmax, and lengthinc; cf derived from cfmin, cfmax, and cfinc; cm derived from cmmin, cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).</p>
 <p>View the first few rows of the output</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Res_1</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      yield     u Nharvest     Ndie     avgwt   avglen       Nt       tr</span></span>
-<span><span class="co">#&gt; 1 40818.31 0.095 41.53181 41.53181  982.8204 401.1080 83.06361 1.761224</span></span>
-<span><span class="co">#&gt; 2 42961.98 0.095 38.65116 38.65116 1111.5316 416.4771 77.30232 2.443479</span></span>
-<span><span class="co">#&gt; 3 44833.10 0.095 35.56322 35.56322 1260.6592 432.8090 71.12644 3.233764</span></span>
-<span><span class="co">#&gt; 4 45992.30 0.095 32.21300 32.21300 1427.7562 449.5853 64.42599 4.172845</span></span>
-<span><span class="co">#&gt; 5 45715.51 0.095 28.51544 28.51544 1603.1847 465.7891 57.03087 5.330056</span></span>
-<span><span class="co">#&gt; 6 42738.81 0.095 24.32552 24.32552 1756.9537 479.0075 48.65103 6.838398</span></span>
-<span><span class="co">#&gt;           F         M        Z    S  cf  cm minLL  N0 Linf   K   t0 LWalpha</span></span>
-<span><span class="co">#&gt; 1 0.1053605 0.1053605 0.210721 0.81 0.1 0.1   200 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 2 0.1053605 0.1053605 0.210721 0.81 0.1 0.1   250 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 3 0.1053605 0.1053605 0.210721 0.81 0.1 0.1   300 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 4 0.1053605 0.1053605 0.210721 0.81 0.1 0.1   350 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 5 0.1053605 0.1053605 0.210721 0.81 0.1 0.1   400 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 6 0.1053605 0.1053605 0.210721 0.81 0.1 0.1   450 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt;   LWbeta tmax notes N at 400 mm N at 450 mm N at 500 mm N at 550 mm</span></span>
-<span><span class="co">#&gt; 1  3.273   15          39.15698    28.49531    18.03716    7.895417</span></span>
-<span><span class="co">#&gt; 2  3.273   15          42.07533    30.61904    19.38146    8.483857</span></span>
-<span><span class="co">#&gt; 3  3.273   15          45.72871    33.27768    21.06435    9.220507</span></span>
-<span><span class="co">#&gt; 4  3.273   15          50.48460    36.73864    23.25508   10.179461</span></span>
-<span><span class="co">#&gt; 5  3.273   15          57.03087    41.50249    26.27054   11.499418</span></span>
-<span><span class="co">#&gt; 6  3.273   15          57.03087    48.65103    30.79548   13.480121</span></span></code></pre></div>
+<span><span class="co">#&gt;      yield nharvest     ndie       nt       tr     avgwt   avglen   nAt400</span></span>
+<span><span class="co">#&gt; 1 40818.31 41.53181 41.53181 83.06361 1.761224  982.8204 401.1080 39.15698</span></span>
+<span><span class="co">#&gt; 2 42961.98 38.65116 38.65116 77.30232 2.443479 1111.5316 416.4771 42.07533</span></span>
+<span><span class="co">#&gt; 3 44833.10 35.56322 35.56322 71.12644 3.233764 1260.6592 432.8090 45.72871</span></span>
+<span><span class="co">#&gt; 4 45992.30 32.21300 32.21300 64.42599 4.172845 1427.7562 449.5853 50.48460</span></span>
+<span><span class="co">#&gt; 5 45715.51 28.51544 28.51544 57.03087 5.330056 1603.1847 465.7891 57.03087</span></span>
+<span><span class="co">#&gt; 6 42738.81 24.32552 24.32552 48.65103 6.838398 1756.9537 479.0075 57.03087</span></span>
+<span><span class="co">#&gt;     nAt450   nAt500    nAt550 exploitation         F         M        Z    S</span></span>
+<span><span class="co">#&gt; 1 28.49531 18.03716  7.895417        0.095 0.1053605 0.1053605 0.210721 0.81</span></span>
+<span><span class="co">#&gt; 2 30.61904 19.38146  8.483857        0.095 0.1053605 0.1053605 0.210721 0.81</span></span>
+<span><span class="co">#&gt; 3 33.27768 21.06435  9.220507        0.095 0.1053605 0.1053605 0.210721 0.81</span></span>
+<span><span class="co">#&gt; 4 36.73864 23.25508 10.179461        0.095 0.1053605 0.1053605 0.210721 0.81</span></span>
+<span><span class="co">#&gt; 5 41.50249 26.27054 11.499418        0.095 0.1053605 0.1053605 0.210721 0.81</span></span>
+<span><span class="co">#&gt; 6 48.65103 30.79548 13.480121        0.095 0.1053605 0.1053605 0.210721 0.81</span></span>
+<span><span class="co">#&gt;    cf  cm minLL  N0 Linf   K   t0 LWalpha LWbeta tmax notes</span></span>
+<span><span class="co">#&gt; 1 0.1 0.1   200 100  592 0.2 -0.3  -5.528  3.273   15      </span></span>
+<span><span class="co">#&gt; 2 0.1 0.1   250 100  592 0.2 -0.3  -5.528  3.273   15      </span></span>
+<span><span class="co">#&gt; 3 0.1 0.1   300 100  592 0.2 -0.3  -5.528  3.273   15      </span></span>
+<span><span class="co">#&gt; 4 0.1 0.1   350 100  592 0.2 -0.3  -5.528  3.273   15      </span></span>
+<span><span class="co">#&gt; 5 0.1 0.1   400 100  592 0.2 -0.3  -5.528  3.273   15      </span></span>
+<span><span class="co">#&gt; 6 0.1 0.1   450 100  592 0.2 -0.3  -5.528  3.273   15</span></span></code></pre></div>
 </div>
 </section><section class="section level2"><h2 id="plot-results">Plot results<a class="anchor" aria-label="anchor" href="#plot-results"></a>
 </h2>
@@ -204,7 +199,7 @@
 <span><span class="co"># Extract results for cm=0.40 and minimum length limit=400</span></span>
 <span><span class="va">plot_dat</span> <span class="op">&lt;-</span> <span class="va">Res_1</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cm</span><span class="op">==</span><span class="fl">0.30</span>,<span class="va">minLL</span><span class="op">==</span><span class="fl">400</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">yield</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">exploitation</span>,y<span class="op">=</span><span class="va">yield</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Total yield (g)"</span>,x<span class="op">=</span><span class="st">"Exploitation (u)"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -226,7 +221,7 @@
 <span><span class="co"># Extract results for cm=0.40 and minimum length limit=400</span></span>
 <span><span class="va">plot_dat</span> <span class="op">&lt;-</span> <span class="va">Res_1</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cm</span><span class="op">==</span><span class="fl">0.30</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">yield</span>,x<span class="op">=</span><span class="va">u</span>,group<span class="op">=</span><span class="va">minLL</span>,color<span class="op">=</span><span class="va">minLL</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y<span class="op">=</span><span class="va">yield</span>,x<span class="op">=</span><span class="va">exploitation</span>,group<span class="op">=</span><span class="va">minLL</span>,color<span class="op">=</span><span class="va">minLL</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradient2</a></span><span class="op">(</span>high<span class="op">=</span><span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Total yield (g)"</span>,x<span class="op">=</span><span class="st">"Exploitation (u)"</span>,color<span class="op">=</span><span class="st">"Min Length Limit"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -246,10 +241,10 @@
 <code class="sourceCode R"><span><span class="co"># Extract results for cm=0.40 and minimum length limit=400</span></span>
 <span><span class="va">plot_dat</span> <span class="op">&lt;-</span> <span class="va">Res_1</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cm</span><span class="op">==</span><span class="fl">0.30</span>,<span class="va">minLL</span><span class="op">==</span><span class="fl">400</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">`N at 450 mm`</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">exploitation</span>,y<span class="op">=</span><span class="va">`nAt450`</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Number of fish at 300 mm"</span>,x<span class="op">=</span><span class="st">"Exploitation (u)"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y<span class="op">=</span><span class="st">"Number of fish at 450 mm"</span>,x<span class="op">=</span><span class="st">"Exploitation (u)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_FAMS</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -263,11 +258,11 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select columns for plotting and convert to long</span></span>
 <span><span class="va">plot_data_long</span> <span class="op">&lt;-</span> <span class="va">plot_dat</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">u</span>,<span class="va">`N at 400 mm`</span>, <span class="va">`N at 450 mm`</span>, <span class="va">`N at 500 mm`</span>, <span class="va">`N at 550 mm`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="op">!</span><span class="va">u</span>, names_to<span class="op">=</span><span class="st">"loi"</span>,values_to<span class="op">=</span><span class="st">"number"</span><span class="op">)</span></span>
+<span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">exploitation</span>,<span class="va">`nAt400`</span>, <span class="va">`nAt450`</span>, <span class="va">`nAt500`</span>, <span class="va">`nAt550`</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span><span class="op">!</span><span class="va">exploitation</span>, names_to<span class="op">=</span><span class="st">"loi"</span>,values_to<span class="op">=</span><span class="st">"number"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Generate plot</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_data_long</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">number</span>,group<span class="op">=</span><span class="va">loi</span>,color<span class="op">=</span><span class="va">loi</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_data_long</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">exploitation</span>,y<span class="op">=</span><span class="va">number</span>,group<span class="op">=</span><span class="va">loi</span>,color<span class="op">=</span><span class="va">loi</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html" class="external-link">scale_color_discrete</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"Yield"</span>,labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"N at 400 mm"</span>, <span class="st">"N at 450 mm"</span>, <span class="st">"N at 500 mm"</span>, <span class="st">"N at 550 mm"</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span>
 <span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -292,7 +287,7 @@
 <span></span>
 <span><span class="co"># Yield isopleths for varying minLL and exploitation with cm=0.40</span></span>
 <span><span class="co"># Using same data as previous example</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">minLL</span>,z<span class="op">=</span><span class="va">yield</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">exploitation</span>,y<span class="op">=</span><span class="va">minLL</span>,z<span class="op">=</span><span class="va">yield</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://eliocamp.github.io/metR/reference/geom_contour2.html" class="external-link">geom_contour2</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html" class="external-link">after_stat</a></span><span class="op">(</span><span class="va">level</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Exploitation (u)"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Minimum length limit (mm)"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -306,7 +301,7 @@
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Same isopleth as previous but using number harvested instead of yield</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">u</span>,y<span class="op">=</span><span class="va">minLL</span>,z<span class="op">=</span><span class="va">Nharvest</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">plot_dat</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">exploitation</span>,y<span class="op">=</span><span class="va">minLL</span>,z<span class="op">=</span><span class="va">nharvest</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://eliocamp.github.io/metR/reference/geom_contour2.html" class="external-link">geom_contour2</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes_eval.html" class="external-link">after_stat</a></span><span class="op">(</span><span class="va">level</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"Exploitation (u)"</span><span class="op">)</span><span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Minimum length limit (mm)"</span><span class="op">)</span><span class="op">+</span></span>
