@@ -4,6 +4,8 @@
 
 - [Simulate a population using the dynamic pool
   model](https://fishr-core-team.github.io/rFAMS/articles/dpmBH.md):
+- [Quick Introduction to ggplot2 for
+  rFAMS](https://fishr-core-team.github.io/rFAMS/articles/ggplot_for_rFAMS.md):
 - [Create life history
   object](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.md):
 - [Comparing FAMS and Ricker YPR

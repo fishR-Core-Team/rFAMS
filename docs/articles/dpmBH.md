@@ -33,7 +33,8 @@ function requires the following arguments:
 - matchRicker: A logical that indicates whether the yield function
   should match that in Ricker (). Defaults to TRUE. The only reason to
   changed to FALSE is to try to match output from FAMS. See the
-  “YPR_FAMSvRICKER” article.
+  [YPR_FAMSvRICKER
+  article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.md).
 - species: is a single character to specify the species used in the
   simulation and will define the length for stock, quality, preferred,
   memorable, and trophy. Length categories are obtained from the FSA
@@ -67,8 +68,10 @@ length model (alpha and beta). By default, the
 returns a list. Growth length-weight model paramaters can be generated
 from functions in the [FSA
 package](https://fishr-core-team.github.io/FSA/index.html). See the
-\[Make Life History object article(MakeLH.html)\] for more details. The
-example below uses the following life history parameters:
+[Make Life History object
+article](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.md) for
+more details. The example below uses the following life history
+parameters:
 
 ``` r
 # create life history parameter object

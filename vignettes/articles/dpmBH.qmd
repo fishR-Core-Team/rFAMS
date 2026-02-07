@@ -36,7 +36,7 @@ The objective of this article is to demonstrate how to use rFAMS to simulate a p
 - cm: A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
 - rec: A numeric vector of length `simyears` to specify recruitment each year. The vector can be geneated using the `genRecruits()` function.
 - lhparms: A named vector or list that contains values for each N0, tmax, Linf, K, t0, LWalpha, and LWbeta. See makeLH for definitions of these life history parameters. Also see details.
-- matchRicker: A logical that indicates whether the yield function should match that in Ricker (). Defaults to TRUE. The only reason to changed to FALSE is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
+- matchRicker: A logical that indicates whether the yield function should match that in Ricker (). Defaults to TRUE. The only reason to changed to FALSE is to try to match output from FAMS. See the [YPR_FAMSvRICKER article](YPR_FAMSvRICKER.html).
 - species: is a single character to specify the species used in the simulation and will define the length for stock, quality, preferred, memorable, and trophy. Length categories are obtained from the FSA package, see the PSDlit documentation.
 - group: is a single character to specify the sub-group name of a species used in the simulation and will define the length for stock, quality, preferred, memorable, and trophy. Length categories are obtained from the FSA package, see the PSDlit documentation.
 
@@ -51,7 +51,7 @@ simyears <- 50
 minLL <- 400
 ```
 
-The `lhparms` requires a list or vector that is created with the `makeLH()` function. The `makeLH()` function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters ($L_\infty$, $K$, and $t_0$), and parameters from the log10-transformed weight length model (alpha and beta). By default, the `makeLH()` returns a list. Growth length-weight model paramaters can be generated from functions in the [FSA package](https://fishr-core-team.github.io/FSA/index.html). See the [Make Life History object article(MakeLH.html)] for more details. The example below uses the following life history parameters:
+The `lhparms` requires a list or vector that is created with the `makeLH()` function. The `makeLH()` function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters ($L_\infty$, $K$, and $t_0$), and parameters from the log10-transformed weight length model (alpha and beta). By default, the `makeLH()` returns a list. Growth length-weight model paramaters can be generated from functions in the [FSA package](https://fishr-core-team.github.io/FSA/index.html). See the [Make Life History object article](MakeLH.html) for more details. The example below uses the following life history parameters:
 
 ```{r}
 #| label: Create life history object
