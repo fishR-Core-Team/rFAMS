@@ -13,8 +13,8 @@ knitr:
     collapse: true
     comment: '#>'
     echo: true
-    fig-width: 3.5
-    fig-height: 3.5
+    fig-width: 7.5
+    fig-height: 4.5
     fig-align: center
 ---
 

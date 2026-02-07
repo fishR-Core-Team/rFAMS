@@ -1058,7 +1058,7 @@ that meet AFS publication requirements.
 ### Returned Lists of data.frames
 
 The dynamic pool model implemented in
-[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_minLL_fixed.md)
+[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL_fixed.md)
 returns an object that is a list of two data.frames, which is more
 complex than what is returned from other functions in `rFAMS`. However,
 accessing these two data.frames is fairly simple and is illustrated
@@ -1067,7 +1067,7 @@ here.
 The code below is copied from this [this
 article](https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html)
 that demonstrates how to use
-[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_minLL_fixed.md).[^35]
+[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL_fixed.md).[^35]
 The results were assigned to `minLL_2` in the last line.
 
 ``` r

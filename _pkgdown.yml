@@ -30,6 +30,8 @@ navbar:
         href: articles/YPR_slotLimit.html
       - text: Simulate a population using the dynamic pool model
         href: articles/dpmBH.html
+      - text: ggplot2 for rFAMS
+        href: articles/ggplot_for_rFAMS.html
     - text: Explanations
       menu:
       - text: Comparing FAMS and Ricker YPR Equations

@@ -82,7 +82,7 @@ genRecruits(
 
 A vector that contains the number of recruits for each simulation that
 can be used directly in the dynamic pool model (e.g.,
-[`dpmBH_minLL_fixed`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_minLL_fixed.md)).
+[`dpmBH_minLL_fixed`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL_fixed.md)).
 
 ## Author
 

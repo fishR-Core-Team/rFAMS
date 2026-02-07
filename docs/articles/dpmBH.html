@@ -40,6 +40,7 @@
     <li><a class="dropdown-item" href="../articles/YPR_VarMLL.html">Estimate yield based on multiple minimum length limit</a></li>
     <li><a class="dropdown-item" href="../articles/YPR_slotLimit.html">Estimate yield based on a slot length limit</a></li>
     <li><a class="dropdown-item" href="../articles/dpmBH.html">Simulate a population using the dynamic pool model</a></li>
+    <li><a class="dropdown-item" href="../articles/ggplot_for_rFAMS.html">ggplot2 for rFAMS</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -82,7 +83,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co">## to make figures</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>    <span class="co">## for filter</span></span></code></pre></div>
 </div>
-<p>The objective of this article is to demonstrate how to use rFAMS to simulate a population and estimate population characteristics using the dynamic pool model. The dynamic pool model projects a population forward based on recruitment, life history parameters, and mortality. The <code><a href="../reference/dpmBH_minLL_fixed.html">dpmBH_minLL_fixed()</a></code> function requires the following arguments:</p>
+<p>The objective of this article is to demonstrate how to use rFAMS to simulate a population and estimate population characteristics using the dynamic pool model. The dynamic pool model projects a population forward based on recruitment, life history parameters, and mortality. The <code><a href="../reference/dpmBH_MinLL_fixed.html">dpmBH_minLL_fixed()</a></code> function requires the following arguments:</p>
 <ul>
 <li>simyears: A single numeric for the lower limit of minimum length limit for harvest in mm.</li>
 <li>minLL:A single numeric representing the minimum length limit for harvest in mm.</li>
@@ -125,7 +126,7 @@
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#run dynamic pool simulations</span></span>
-<span><span class="va">out1</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dpmBH_minLL_fixed.html">dpmBH_minLL_fixed</a></span><span class="op">(</span>simyears <span class="op">=</span> <span class="va">simyears</span>, minLL <span class="op">=</span> <span class="va">minLL</span>, cf <span class="op">=</span> <span class="va">cf</span>, cm <span class="op">=</span> <span class="va">cm</span>, rec <span class="op">=</span> <span class="va">rec</span>, lhparms <span class="op">=</span> <span class="va">LH</span>,</span>
+<span><span class="va">out1</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/dpmBH_MinLL_fixed.html">dpmBH_minLL_fixed</a></span><span class="op">(</span>simyears <span class="op">=</span> <span class="va">simyears</span>, minLL <span class="op">=</span> <span class="va">minLL</span>, cf <span class="op">=</span> <span class="va">cf</span>, cm <span class="op">=</span> <span class="va">cm</span>, rec <span class="op">=</span> <span class="va">rec</span>, lhparms <span class="op">=</span> <span class="va">LH</span>,</span>
 <span>           matchRicker<span class="op">=</span><span class="cn">FALSE</span>,species<span class="op">=</span><span class="st">"Striped Bass"</span>,group<span class="op">=</span><span class="st">"landlocked"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>View the first few lines of each summary</p>

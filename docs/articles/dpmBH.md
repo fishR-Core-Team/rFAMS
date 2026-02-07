@@ -10,7 +10,7 @@ The objective of this article is to demonstrate how to use rFAMS to
 simulate a population and estimate population characteristics using the
 dynamic pool model. The dynamic pool model projects a population forward
 based on recruitment, life history parameters, and mortality. The
-[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_minLL_fixed.md)
+[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL_fixed.md)
 function requires the following arguments:
 
 - simyears: A single numeric for the lower limit of minimum length limit
