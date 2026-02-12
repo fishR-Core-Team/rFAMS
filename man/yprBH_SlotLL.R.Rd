@@ -5,15 +5,13 @@
 \title{Main function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for a slot limit}
 \usage{
 yprBH_SlotLL(
-  recruitmentTL,
+  recruitmentTL = NULL,
   lowerSL,
   upperSL,
   cfunder,
   cfin,
   cfabove,
-  cmmin,
-  cmmax,
-  cminc,
+  cm,
   loi = NULL,
   lhparms,
   matchRicker = FALSE
@@ -32,11 +30,7 @@ yprBH_SlotLL(
 
 \item{cfabove}{Single value, conditional fishing mortality over the upper slot limit.}
 
-\item{cmmin}{Single value, minimum conditional natural mortality}
-
-\item{cmmax}{Single value, maximum conditional natural mortality}
-
-\item{cminc}{Single value, increment to cycle from minimum to maximum conditional natural mortality}
+\item{cm}{A numeric vector of conditional natural mortality.}
 
 \item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
 
@@ -118,10 +112,14 @@ library(tidyr)    #for pivot_longer
 
 # Life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
+# conditional natural mortality vector
+cm <- seq(from = 0.1, to = 0.9, by = 0.1)
+# length of interest vector
+loi <- c(200,250,300,325,350)
 
-#Estimate yield
+#Estimate yield based on a protected slot limit
  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
-                       cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
+                       cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
                        loi=c(200,250,300,325,350),lhparms=LH)
 
  Res_1

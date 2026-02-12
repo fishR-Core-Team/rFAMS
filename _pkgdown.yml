@@ -22,12 +22,10 @@ navbar:
       menu:
       - text: Create life history object
         href: articles/MakeLH.html
-      - text: Estimate yield based on a single minimum length limit
-        href: articles/YPR_fixedMLL.html
-      - text: Estimate yield based on multiple minimum length limit
-        href: articles/YPR_VarMLL.html
+      - text: Estimate yield based on one or more minimum length limits
+        href: articles/YPR_MinLL.html
       - text: Estimate yield based on a slot length limit
-        href: articles/YPR_slotLimit.html
+        href: articles/YPR_SlotLL.html
       - text: Simulate a population using the dynamic pool model
         href: articles/dpmBH.html
       - text: ggplot2 for rFAMS

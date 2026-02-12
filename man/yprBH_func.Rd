@@ -77,7 +77,7 @@ Ricker, W.E. 1975. Computation and interpretation of biological statistics of fi
 Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling simulator. v1.64. American Fisheries Society, Bethesda, MD.
 }
 \seealso{
-\code{\link{yprBH_minLL_fixed}} and \code{\link{yprBH_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
+\code{\link{yprBH_MinLL}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}

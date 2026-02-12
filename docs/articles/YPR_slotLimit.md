@@ -8,14 +8,17 @@ library(dplyr)    ## for filter
 ```
 
 The objective of this article is to demonstrate how to use rFAMS to
-calculate yield based on a slot length limit with multiple values of
-conditional fishing and conditional natural mortality. Separate
-conditional fishing mortality for fish under slot, within slot, and
-above slot must be specified. This allows the user to investigate a
-protective slot where fish are protected from harvest within a length
-range and an inverted slot where small fish under the slot and large
-fish over the slot limit are protected while harvesting is allowed
-within the slot limit.
+calculate yield based on a protective slot length limit with multiple
+values of conditional natural mortality. Separate conditional fishing
+mortality for fish under slot, within slot, and above slot must be
+specified. This allows the user to investigate a protective slot where
+fish are protected from harvest within a length range (i.e., conditional
+fishing mortality within `cfin` = 0) and an inverted slot where small
+fish under the slot and large fish over the slot limit are protected
+while harvesting is allowed within the slot limit (i.e., conditional
+fishing mortality under `cfunder` = 0, conditional fishing moratlity in
+`cfin` = desired level of fishing mortality, and conditional fishing
+mortality above `cfabove` = 0).
 
 ## Build a life history parameter list
 
@@ -66,8 +69,8 @@ slot limit); lower slot limit `lowerSL`; upper slot limit `upperSL`;
 conditional fishing mortality under the slot limit but above recruitment
 length `cfunder`; conditional fishing mortality within the slot limit
 `cfin`; conditional fishing mortality above the slot limit `cfabove`;
-specified range of conditional natural mortality by setting the minimum
-`cmmin`, maximum `cmmax`, and increment `cminc`; set any length of
+specified conditional natural mortality `cm` by supplying a vector of
+one or more conditional natural mortality values; set any length of
 interest to monitor `loi`; and the life history parameters `lhparams`.
 
 rFAMS includes a function
@@ -99,18 +102,27 @@ est_natmort(LH, incl.avg = TRUE)
 #> 15        AVERAGE 0.3292984 0.27782360
 ```
 
-Once you have decided the range of cf and cm and decided what minimum
-length limit to consider, you can now proceed to estimating yield. The
-following example uses the life history object created above with a
-minimum length limit of 200mm, cf from 0.1 to 0.9 with increments of
-0.1, cm from 0.1 to 0.9 with increments of 0.1, monitors lengths of 200,
-250, 300, and 350mm.
+To estimate yield with a slot limit the user must specify the lower slot
+limit `lowerSL`, upper slot limit `upperSL`, and recruitment length
+limit `recruitmentTL` which is the minimum length fish could be
+harvested at if harvest is allowed under the slot limit. The user must
+also specify conditional fishing mortality under, within, and above the
+slot. Here is where the user will determine if the slot limit is a
+protective slot (set `cfin` = 0) with harvest under and above the slot,
+or an inverse slot (set `cfunder` and `cfabove` = 0) with harvest within
+the slot. In the example below, there is a protective slot and cm values
+range from 0.1 to 0.9 in increments of 0.1. It also monitors lengths of
+200, 250, 300, and 350mm.
 
 ``` r
+# conditional natural mortality vector
+cm <- seq(from = 0.1, to = 0.9, by = 0.1)
+# length of interest vector
+loi <- c(200,250,300,325,350)
+
 Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325, #Set recruitment and slot limit length
-                      cfunder=0.25,cfin=0.6,cfabove=0.15,        #Set cf under, in, and above slot limit
-                      cmmin=0.1,cmmax=0.9,cminc=0.1,             #creates vector of cm values
-                      loi=c(200,250,300,350,450,550),         #sets lengths of interest to monitor
+                      cfunder=0.45,cfin=0,cfabove=0.25,        #Set cf under, in, and above slot limit
+                      cm=cm,loi=loi,                  # vector of cm and lengths of interests
                       lhparms=LH)                     #Specifies life history parameters
 ```
 
@@ -123,7 +135,7 @@ values:
 - ndieTotal is the calculated total number of fish that die of natural
   death
 - yieldUnder is the calculated yield under the slot limit
-- yieldIn is the calculated yied within the slot limit
+- yieldIn is the calculated yield within the slot limit
 - yieldAbove is the calculated yield above the slot limit
 - exploitationUnder is the exploitation rate under the slot limit
 - exploitationIn is the exploitation rate within the slot limit
@@ -203,62 +215,62 @@ View the first few rows of the output
 
 ``` r
 head(Res_1)
-#>   yieldTotal yieldUnder   yieldIn yieldAbove nharvTotal ndieTotal nharvestUnder
-#> 1  29156.293  2134.0226 12847.795 14174.4754  65.545400  16.65337     14.300192
-#> 2  16399.451  1661.3174  9009.265  5728.8686  44.983766  22.37093     11.186560
-#> 3   9587.852  1251.5389  6037.309  2299.0040  30.319080  23.01694      8.473698
-#> 4   5611.796   903.2554  3813.586   894.9547  19.682869  20.98520      6.154504
-#> 5   3163.191   614.9004  2223.163   325.1268  12.040623  17.45903      4.221259
-#> 6   1643.192   384.7347  1154.658   103.7991   6.727817  13.18526      2.665456
+#>   yieldTotal yieldUnder yieldIn yieldAbove nharvTotal ndieTotal nharvestUnder
+#> 1  42308.228  3964.9645       0 38343.2634  59.552529  22.98342     26.910336
+#> 2  20226.339  3091.0064       0 17135.3322  37.501897  29.91042     21.080642
+#> 3   9822.674  2332.2837       0  7490.3901  23.975727  29.36807     15.993708
+#> 4   4809.573  1686.3402       0  3123.2330  15.291391  25.37745     11.637517
+#> 5   2347.811  1150.4916       0  1197.3190   9.519571  19.98013      7.999040
+#> 6   1120.509   721.7631       0   398.7459   5.608765  14.30432      5.063981
 #>   nharvestIn nharvestAbove    n0die ndieUnder   ndieIn ndieAbove  nrUnder
-#> 1  40.888026    10.3571826 16.93639  5.237294 4.701546 6.7145292 83.06361
-#> 2  28.960251     4.8369557 32.49751  8.676970 7.052667 6.6412908 67.50249
-#> 3  19.625646     2.2197362 46.64404 10.505888 7.639471 4.8715819 53.35596
-#> 4  12.555729     0.9726349 59.32995 10.928309 6.999731 3.0571627 40.67005
-#> 5   7.428002     0.3913628 70.50022 10.170789 5.619066 1.6691717 29.49978
-#> 6   3.925836     0.1365243 80.08692  8.489694 3.925836 0.7697317 19.91308
-#>        nrIn    nrAbove  trUnder     trIn  trOver avglenUnder avglenIn
-#> 1 63.526126 17.9365533 1.761224 2.443479 3.68129    225.5013 283.1066
-#> 2 47.638955 11.6260378 1.761224 2.443479 3.68129    225.1683 282.2425
-#> 3 34.376376  7.1112601 1.761224 2.443479 3.68129    224.7908 281.2776
-#> 4 23.587233  4.0317725 1.761224 2.443479 3.68129    224.3558 280.1859
-#> 5 15.107731  2.0606627 1.761224 2.443479 3.68129    223.8426 278.9287
-#> 6  8.757933  0.9062605 1.761224 2.443479 3.68129    223.2179 277.4456
-#>   avglenAbove avgwtUnder  avgwtIn avgwtAbove   nAt200    nAt250    nAt300
-#> 1    443.8067   149.2303 314.2190  1368.5648 83.06361 63.526126 28.333814
-#> 2    424.6353   148.5101 311.0907  1184.3955 67.50249 47.638955 19.359309
-#> 3    407.5833   147.6969 307.6235  1035.7105 53.35596 34.376376 12.570645
-#> 4    393.1118   146.7633 303.7327   920.1343 40.67005 23.587233  7.636027
-#> 5    381.0284   145.6675 299.2950   830.7556 29.49978 15.107731  4.234615
-#> 6    370.8494   144.3410 294.1178   760.2978 19.91308  8.757933  2.057926
-#>       nAt350    nAt450       nAt550  cm  expUnder     expIn   expAbove
-#> 1 15.7236087 7.6991996 1.506094e+00 0.1 0.2378792 0.5739983 0.14257140
-#> 2  9.6183528 3.4406800 3.284670e-01 0.2 0.2252683 0.5468307 0.13484863
-#> 3  5.5094637 1.3806140 5.843904e-02 0.3 0.2120703 0.5182617 0.12677377
-#> 4  2.8956814 0.4811312 7.964081e-03 0.4 0.1981511 0.4879637 0.11826676
-#> 5  1.3531307 0.1382899 7.540266e-04 0.5 0.1833156 0.4554588 0.10921127
-#> 6  0.5332727 0.0300664 4.211329e-05 0.6 0.1672608 0.4200000 0.09942671
-#>      FUnder       FIn    FAbove    MUnder       MIn    MAbove    ZUnder
-#> 1 0.2876821 0.9162907 0.1625189 0.1053605 0.1053605 0.1053605 0.3930426
-#> 2 0.2876821 0.9162907 0.1625189 0.2231436 0.2231436 0.2231436 0.5108256
-#> 3 0.2876821 0.9162907 0.1625189 0.3566749 0.3566749 0.3566749 0.6443570
-#> 4 0.2876821 0.9162907 0.1625189 0.5108256 0.5108256 0.5108256 0.7985077
-#> 5 0.2876821 0.9162907 0.1625189 0.6931472 0.6931472 0.6931472 0.9808293
-#> 6 0.2876821 0.9162907 0.1625189 0.9162907 0.9162907 0.9162907 1.2039728
-#>        ZIn    ZAbove SUnder  SIn SAbove cfUnder cfIn cfOver recruitmentTL
-#> 1 1.021651 0.2678794  0.675 0.36  0.765    0.25  0.6   0.15           200
-#> 2 1.139434 0.3856625  0.600 0.32  0.680    0.25  0.6   0.15           200
-#> 3 1.272966 0.5191939  0.525 0.28  0.595    0.25  0.6   0.15           200
-#> 4 1.427116 0.6733446  0.450 0.24  0.510    0.25  0.6   0.15           200
-#> 5 1.609438 0.8556661  0.375 0.20  0.425    0.25  0.6   0.15           200
-#> 6 1.832581 1.0788097  0.300 0.16  0.340    0.25  0.6   0.15           200
-#>   lowerSL upperSL  N0 Linf   K   t0 LWalpha LWbeta tmax
-#> 1     250     325 100  592 0.2 -0.3  -5.528  3.273   15
-#> 2     250     325 100  592 0.2 -0.3  -5.528  3.273   15
-#> 3     250     325 100  592 0.2 -0.3  -5.528  3.273   15
-#> 4     250     325 100  592 0.2 -0.3  -5.528  3.273   15
-#> 5     250     325 100  592 0.2 -0.3  -5.528  3.273   15
-#> 6     250     325 100  592 0.2 -0.3  -5.528  3.273   15
+#> 1          0    32.6421933 16.93639  4.742575 6.285991 11.954858 83.06361
+#> 2          0    16.4212547 32.49751  7.868381 9.304722 12.737315 67.50249
+#> 3          0     7.9820193 46.64404  9.541990 9.929784  9.896294 53.35596
+#> 4          0     3.6538739 59.32995  9.943750 8.945661  6.488039 40.67005
+#> 5          0     1.5205306 70.50022  9.274288 7.042243  3.663598 29.49978
+#> 6          0     0.5447837 80.08692  7.761445 4.807692  1.735180 19.91308
+#>        nrIn   nrAbove  trUnder     trIn  trOver avglenUnder avglenIn
+#> 1 51.410701 45.124710 1.761224 2.443479 3.68129    224.6247      NaN
+#> 2 38.553462 29.248740 1.761224 2.443479 3.68129    224.2924      NaN
+#> 3 27.820264 17.890480 1.761224 2.443479 3.68129    223.9166      NaN
+#> 4 19.088779 10.143117 1.761224 2.443479 3.68129    223.4842      NaN
+#> 5 12.226450  5.184207 1.761224 2.443479 3.68129    222.9755      NaN
+#> 6  7.087658  2.279967 1.761224 2.443479 3.68129    222.3578      NaN
+#>   avglenAbove avgwtUnder avgwtIn avgwtAbove   nAt200    nAt250    nAt300
+#> 1    423.5651   147.3398     NaN  1174.6534 83.06361 51.410701 47.303370
+#> 2    408.5157   146.6277     NaN  1043.4850 67.50249 38.553462 32.320412
+#> 3    395.4809   145.8251     NaN   938.4079 53.35596 27.820264 20.986722
+#> 4    384.3607   144.9055     NaN   854.7731 40.67005 19.088779 12.748365
+#> 5    374.8445   143.8287     NaN   787.4350 29.49978 12.226450  7.069700
+#> 6    366.5665   142.5288     NaN   731.9345 19.91308  7.087658  3.435713
+#>      nAt325    nAt350  cm  expUnder expIn  expAbove   FUnder FIn    FAbove
+#> 1 45.124710 37.196999 0.1 0.4293355     0 0.2378792 0.597837   0 0.2876821
+#> 2 29.248740 22.753928 0.2 0.4077913     0 0.2252683 0.597837   0 0.2876821
+#> 3 17.890480 13.033618 0.3 0.3851914     0 0.2120703 0.597837   0 0.2876821
+#> 4 10.143117  6.850250 0.4 0.3612919     0 0.1981511 0.597837   0 0.2876821
+#> 5  5.184207  3.201072 0.5 0.3357375     0 0.1833156 0.597837   0 0.2876821
+#> 6  2.279967  1.261552 0.6 0.3079746     0 0.1672608 0.597837   0 0.2876821
+#>      MUnder       MIn    MAbove    ZUnder       ZIn    ZAbove SUnder SIn SAbove
+#> 1 0.1053605 0.1053605 0.1053605 0.7031975 0.1053605 0.3930426  0.495 0.9  0.675
+#> 2 0.2231436 0.2231436 0.2231436 0.8209806 0.2231436 0.5108256  0.440 0.8  0.600
+#> 3 0.3566749 0.3566749 0.3566749 0.9545119 0.3566749 0.6443570  0.385 0.7  0.525
+#> 4 0.5108256 0.5108256 0.5108256 1.1086626 0.5108256 0.7985077  0.330 0.6  0.450
+#> 5 0.6931472 0.6931472 0.6931472 1.2909842 0.6931472 0.9808293  0.275 0.5  0.375
+#> 6 0.9162907 0.9162907 0.9162907 1.5141277 0.9162907 1.2039728  0.220 0.4  0.300
+#>   cfUnder cfIn cfOver recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha
+#> 1    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 2    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 3    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 4    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 5    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 6    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#>   LWbeta tmax
+#> 1  3.273   15
+#> 2  3.273   15
+#> 3  3.273   15
+#> 4  3.273   15
+#> 5  3.273   15
+#> 6  3.273   15
 ```
 
 ## Plot results

@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The `rFAMS` package documentation and demonsration articles display a
+The `rFAMS` package documentation and demonstration articles display a
 number of graphs that were created with `ggplot2`. Those sources are not
 meant to teach how to make the graphs but rather to show what kind of
 visualizations may come from `rFAMS` output. In this article, we provide
@@ -40,14 +40,12 @@ library(metR)    # for geom_contour2 & geom_contour_fill
 This article will use the results from modeling a single minimum length
 limit to a population across varying conditional natural and fishing
 mortality rates as produced by
-[`yprBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.md)
+[`yprBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md)
 from `rFAMS`. Specifics for this function are not described here as the
 focus here is on graphing those results. See [this
-documentation](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.html)
-and [this
-article](https://fishr-core-team.github.io/rFAMS/articles/YPR_fixedMLL.html)
+documentation](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.html)
 for a complete description of how to use
-[`yprBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.md)
+[`yprBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md)
 and interpret the results that are returned. The code below produces a
 wide array of results (yield; numbers of fish harvested, died, at
 various lengths; etc.) along with given values for the simulation that
@@ -56,14 +54,17 @@ are stored in a data.frame assigned to the name `minLL_1`.
 ``` r
 # Declare life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
+# Declare minimum length limit
+minLL <- 225
+# Declare vectors of conditional fishing and conditional natural mortality
+cf <- seq(from = 0.0, to = 0.5, by = 0.1)
+cm <- seq(from = 0.2, to = 0.6, by = 0.1)
 # Declare lengths-of-interest to monitor
 lois <- c(200,250,300,350)
 
 # Estimate yield for minimum length limit of 225 & various mortality rates
-minLL_1 <- yprBH_minLL_fixed(minLL=225,
-                             cfmin=0,cfmax=0.5,cfinc=0.1,
-                             cmmin=0.2,cmmax=0.6,cminc=0.1,
-                             loi=lois,lhparms=LH)
+minLL_1 <- yprBH_MinLL(minLL=minLL,cf=cf,cm=cm,
+                       loi=lois,lhparms=LH)
 ```
 
 The first six rows of this data.frame can be examined with
@@ -360,7 +361,7 @@ ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
 ## Data Consideration II
 
 All of the variables returned by
-[`yprBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.md)
+[`yprBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md)
 are numeric, except for `notes`.
 
 ``` r
@@ -1058,7 +1059,7 @@ that meet AFS publication requirements.
 ### Returned Lists of data.frames
 
 The dynamic pool model implemented in
-[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL_fixed.md)
+[`dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md)
 returns an object that is a list of two data.frames, which is more
 complex than what is returned from other functions in `rFAMS`. However,
 accessing these two data.frames is fairly simple and is illustrated
@@ -1067,7 +1068,7 @@ here.
 The code below is copied from this [this
 article](https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html)
 that demonstrates how to use
-[`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL_fixed.md).[^35]
+[`dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md).[^35]
 The results were assigned to `minLL_2` in the last line.
 
 ``` r
@@ -1084,9 +1085,9 @@ cf <- matrix(rep(c(rep(0,1), rep(0.33,(LH$tmax))), simyears),nrow=simyears,byrow
 rec <- genRecruits(method="fixed",nR=1000,simyears=simyears)
 # run the DPM model of a 400 mm minimum length limit for 40 years
 # assume this is for landlocked Striped Bass
-minLL_2 <- dpmBH_minLL_fixed(simyears=simyears,minLL=minLL,
-                             cf=cf,cm=cm,rec=rec,lhparms=LH,matchRicker=FALSE,
-                             species="Striped Bass",group="landlocked")
+minLL_2 <- dpmBH_MinLL(simyears=simyears,minLL=minLL,
+                       cf=cf,cm=cm,rec=rec,lhparms=LH,matchRicker=FALSE,
+                       species="Striped Bass",group="landlocked")
 ```
 
 The results in `minLL_2` consist of two data.frames – `sumbyAge` and
@@ -1304,7 +1305,7 @@ ggplot(data=tmpX,mapping=aes(x=age,y=nharvest)) +
     [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
 
 [^35]: See [the documentation for
-    `dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_minLL_fixed.html)
+    `dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.html)
     for more details).
 
 [^36]: See [here](https://ggplot2-book.org/individual-geoms.html) for

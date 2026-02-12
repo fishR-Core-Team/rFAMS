@@ -10,8 +10,8 @@
 \alias{iErrNotNumeric}
 \alias{iErrLT}
 \alias{iErrGt}
+\alias{iErrNotVector}
 \alias{iCheckMLH}
-\alias{iCheckMLHinc}
 \alias{iCheckrecruitTL}
 \alias{iChecklowerSLTL}
 \alias{iCheckupperSLTL}
@@ -19,6 +19,9 @@
 \alias{iCheckcf}
 \alias{iCheckcm}
 \alias{iCheckcfminc}
+\alias{iCheckminLL}
+\alias{iCheckcfVect}
+\alias{iCheckcmVect}
 \alias{iCheckloi}
 \alias{iCheckcfcm_dpm}
 \alias{iCheckN0}

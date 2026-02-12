@@ -57,15 +57,13 @@ package](https://fishr-core-team.github.io/FSA/index.html)
 
 ### Installation
 
-<!-- The [most recent stable version](https://cloud.r-project.org/package=rFAMS) from CRAN may be installed with -->
+The [most recent stable
+version](https://CRAN.R-project.org/package=rFAMS) from CRAN may be
+installed with
 
-<!-- ``` r -->
-
-<!-- install.packages("rFAMS") -->
-
-<!-- ``` -->
-
-<!-- -->
+``` r
+install.packages("rFAMS")
+```
 
 The [development
 version](https://github.com/fishR-Core-Team/rFAMS/tree/dev) may be

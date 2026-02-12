@@ -30,31 +30,31 @@ test_that("iIbeta() messages and results",{
   #expect_equal(df$rFAMS,df$spsh)
   #expect_equal(df$spsh,df$zipfR)
 })
-
-test_that("iCheckMLHinc() messages and values",{
-  expect_error(rFAMS:::iCheckMLHinc(),
-               "Need to specify an increment for minimum length")
-  ## Set MLHinc to value outside function to test that name is extracted
-  MLHmin <- 100; MLHmax <- 900
-  MLHinc <- -100
-  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),"must be >=0")
-  MLHinc <- "a"
-  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),"must be a number")
-  MLHinc <- c(300,500)
-  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),"Only use one value in")
-
-  ## Problems with MLHmin and MLHmax
-  MLHmin <- 900; MLHmax <- 100; MLHinc <- 100
-  expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),
-               "'MLHmin' must be equal to or less than 'MLHmax'")
-  MLHmin <- 100; MLHmax <- 900; MLHinc <- 1
-  expect_warning(tmp <- rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),
-                 "Choices of 'MLHmin', 'MLHmax', and 'MLHinc' resulted in")
-
-  ## Values returned
-  expect_equal(class(tmp),"numeric")
-  expect_equal(length(tmp),801)
-})
+#
+# test_that("iCheckMLHinc() messages and values",{
+#   expect_error(rFAMS:::iCheckMLHinc(),
+#                "Need to specify an increment for minimum length")
+#   ## Set MLHinc to value outside function to test that name is extracted
+#   MLHmin <- 100; MLHmax <- 900
+#   MLHinc <- -100
+#   expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),"must be >=0")
+#   MLHinc <- "a"
+#   expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),"must be a number")
+#   MLHinc <- c(300,500)
+#   expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),"Only use one value in")
+#
+#   ## Problems with MLHmin and MLHmax
+#   MLHmin <- 900; MLHmax <- 100; MLHinc <- 100
+#   expect_error(rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),
+#                "'MLHmin' must be equal to or less than 'MLHmax'")
+#   MLHmin <- 100; MLHmax <- 900; MLHinc <- 1
+#   expect_warning(tmp <- rFAMS:::iCheckMLHinc(MLHinc,MLHmin,MLHmax),
+#                  "Choices of 'MLHmin', 'MLHmax', and 'MLHinc' resulted in")
+#
+#   ## Values returned
+#   expect_equal(class(tmp),"numeric")
+#   expect_equal(length(tmp),801)
+# })
 
 test_that("iCheckcf() messages",{
   expect_error(rFAMS:::iCheckcf(),"Need to specify a conditional fishing mortality in")
@@ -92,32 +92,32 @@ test_that("iCheckcm() messages",{
   expect_error(rFAMS:::iCheckcf(cmmax),"'cmmax' must be a number")
 })
 
-test_that("iCheckcfminc() messages and values",{
-  expect_error(rFAMS:::iCheckcfminc(),
-               "Need to specify an increment for conditional natural mortality in")
-  ## Set cfinc to value outside function to test that name is extracted
-  cfmin <- 0.1; cfmax <- 0.9
-  cfinc <- -0.1
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"must be >=0")
-  cfinc <- 2
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"must be <=1")
-  cfinc <- "a"
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"must be a number")
-  cfinc <- c(0.3,0.5)
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"Only use one value in")
-
-  ## Problems with cfmin and cfmax
-  cfmin <- 0.9; cfmax <- 0.1; cfinc <- 0.1
-  expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),
-               "'cfmin' must be equal to or less than 'cfmax'")
-  cfmin <- 0.1; cfmax <- 0.9; cfinc <- 0.001
-  expect_warning(tmp <- rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),
-                        "Choices of 'cfmin', 'cfmax', and 'cfinc' resulted in")
-
-  ## Values returned
-  expect_equal(class(tmp),"numeric")
-  expect_equal(length(tmp),801)
-})
+# test_that("iCheckcfminc() messages and values",{
+#   expect_error(rFAMS:::iCheckcfminc(),
+#                "Need to specify an increment for conditional natural mortality in")
+#   ## Set cfinc to value outside function to test that name is extracted
+#   cfmin <- 0.1; cfmax <- 0.9
+#   cfinc <- -0.1
+#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"must be >=0")
+#   cfinc <- 2
+#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"must be <=1")
+#   cfinc <- "a"
+#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"must be a number")
+#   cfinc <- c(0.3,0.5)
+#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"Only use one value in")
+#
+#   ## Problems with cfmin and cfmax
+#   cfmin <- 0.9; cfmax <- 0.1; cfinc <- 0.1
+#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),
+#                "'cfmin' must be equal to or less than 'cfmax'")
+#   cfmin <- 0.1; cfmax <- 0.9; cfinc <- 0.001
+#   expect_warning(tmp <- rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),
+#                         "Choices of 'cfmin', 'cfmax', and 'cfinc' resulted in")
+#
+#   ## Values returned
+#   expect_equal(class(tmp),"numeric")
+#   expect_equal(length(tmp),801)
+# })
 
 test_that("iCheckN0() messages and values",{
   ## Test with just one value

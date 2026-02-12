@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +36,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-demonstrations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Demonstrations</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-demonstrations">
 <li><a class="dropdown-item" href="../articles/MakeLH.html">Create life history object</a></li>
-    <li><a class="dropdown-item" href="../articles/YPR_fixedMLL.html">Estimate yield based on a single minimum length limit</a></li>
-    <li><a class="dropdown-item" href="../articles/YPR_VarMLL.html">Estimate yield based on multiple minimum length limit</a></li>
-    <li><a class="dropdown-item" href="../articles/YPR_slotLimit.html">Estimate yield based on a slot length limit</a></li>
+    <li><a class="dropdown-item" href="../articles/YPR_MinLL.html">Estimate yield based on one or more minimum length limits</a></li>
+    <li><a class="dropdown-item" href="../articles/YPR_SlotLL.html">Estimate yield based on a slot length limit</a></li>
     <li><a class="dropdown-item" href="../articles/dpmBH.html">Simulate a population using the dynamic pool model</a></li>
     <li><a class="dropdown-item" href="../articles/ggplot_for_rFAMS.html">ggplot2 for rFAMS</a></li>
   </ul>
@@ -66,7 +65,7 @@
       <h1>Quick Introduction to ggplot2 for rFAMS</h1>
 
       <p class="author">Derek Ogle</p>
-      <p class="date">2026-02-07</p>
+      <p class="date">2026-02-12</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/ggplot_for_rFAMS.qmd" class="external-link"><code>vignettes/articles/ggplot_for_rFAMS.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -79,7 +78,7 @@
 
     <section class="section level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>The <code>rFAMS</code> package documentation and demonsration articles display a number of graphs that were created with <code>ggplot2</code>. Those sources are not meant to teach how to make the graphs but rather to show what kind of visualizations may come from <code>rFAMS</code> output. In this article, we provide a <strong>very quick</strong> introduction to <code>ggplot2</code> that we hope can help you get started understanding those examples and making your own graphics from <code>rFAMS</code> output.</p>
+<p>The <code>rFAMS</code> package documentation and demonstration articles display a number of graphs that were created with <code>ggplot2</code>. Those sources are not meant to teach how to make the graphs but rather to show what kind of visualizations may come from <code>rFAMS</code> output. In this article, we provide a <strong>very quick</strong> introduction to <code>ggplot2</code> that we hope can help you get started understanding those examples and making your own graphics from <code>rFAMS</code> output.</p>
 <p>Our descriptions here will be terse as we attempt to make this introduction very quick. The online <code>ggplot2</code> book (<a href="https://ggplot2-book.org/" class="external-link">here</a>) is an invaluable resource for in-depth learning of <code>ggplot2</code>. There is also a wealth of other <code>ggplot2</code> resources available that can be found with a quick internet search (or using an LLM). We do provide links to some specific parts of the <code>ggplot2</code> book in side notes.<a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;For example, &lt;a href="https://ggplot2-book.org/introduction.html" class="external-link"&gt;see here&lt;/a&gt; for the philosophy of &lt;code&gt;ggplot2&lt;/code&gt;.&lt;/p&gt;'><sup>1</sup></a></p>
 <p>The objective of this article is to provide a basic introduction to <code>ggplot2</code> for those with little to no experience using it. There is a lot of code in this article as we show how to build many of the graphs one step at a time. Thus, many code chunks are simply repeats of previous code chunks. Please keep in mind that most graphs can be constructed simply from the code at or near the end of each section.</p>
 </section><section class="section level2"><h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
@@ -93,19 +92,22 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span> <span class="co"># for plotting</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://eliocamp.github.io/metR/" class="external-link">metR</a></span><span class="op">)</span>    <span class="co"># for geom_contour2 &amp; geom_contour_fill</span></span></code></pre></div>
 </div>
-<p>This article will use the results from modeling a single minimum length limit to a population across varying conditional natural and fishing mortality rates as produced by <code><a href="../reference/yprBH_minLL_fixed.html">yprBH_minLL_fixed()</a></code> from <code>rFAMS</code>. Specifics for this function are not described here as the focus here is on graphing those results. See <a href="https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.html">this documentation</a> and <a href="https://fishr-core-team.github.io/rFAMS/articles/YPR_fixedMLL.html">this article</a> for a complete description of how to use <code><a href="../reference/yprBH_minLL_fixed.html">yprBH_minLL_fixed()</a></code> and interpret the results that are returned. The code below produces a wide array of results (yield; numbers of fish harvested, died, at various lengths; etc.) along with given values for the simulation that are stored in a data.frame assigned to the name <code>minLL_1</code>.</p>
+<p>This article will use the results from modeling a single minimum length limit to a population across varying conditional natural and fishing mortality rates as produced by <code><a href="../reference/yprBH_MinLL.html">yprBH_MinLL()</a></code> from <code>rFAMS</code>. Specifics for this function are not described here as the focus here is on graphing those results. See <a href="https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.html">this documentation</a> for a complete description of how to use <code><a href="../reference/yprBH_MinLL.html">yprBH_MinLL()</a></code> and interpret the results that are returned. The code below produces a wide array of results (yield; numbers of fish harvested, died, at various lengths; etc.) along with given values for the simulation that are stored in a data.frame assigned to the name <code>minLL_1</code>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Declare life history parameters to be used below</span></span>
 <span><span class="va">LH</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeLH.html">makeLH</a></span><span class="op">(</span>N0<span class="op">=</span><span class="fl">100</span>,tmax<span class="op">=</span><span class="fl">15</span>,Linf<span class="op">=</span><span class="fl">592</span>,K<span class="op">=</span><span class="fl">0.20</span>,t0<span class="op">=</span><span class="op">-</span><span class="fl">0.3</span>,LWalpha<span class="op">=</span><span class="op">-</span><span class="fl">5.528</span>,LWbeta<span class="op">=</span><span class="fl">3.273</span><span class="op">)</span></span>
+<span><span class="co"># Declare minimum length limit</span></span>
+<span><span class="va">minLL</span> <span class="op">&lt;-</span> <span class="fl">225</span></span>
+<span><span class="co"># Declare vectors of conditional fishing and conditional natural mortality</span></span>
+<span><span class="va">cf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0.0</span>, to <span class="op">=</span> <span class="fl">0.5</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
+<span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span>from <span class="op">=</span> <span class="fl">0.2</span>, to <span class="op">=</span> <span class="fl">0.6</span>, by <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span><span class="co"># Declare lengths-of-interest to monitor</span></span>
 <span><span class="va">lois</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">250</span>,<span class="fl">300</span>,<span class="fl">350</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Estimate yield for minimum length limit of 225 &amp; various mortality rates</span></span>
-<span><span class="va">minLL_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yprBH_minLL_fixed.html">yprBH_minLL_fixed</a></span><span class="op">(</span>minLL<span class="op">=</span><span class="fl">225</span>,</span>
-<span>                             cfmin<span class="op">=</span><span class="fl">0</span>,cfmax<span class="op">=</span><span class="fl">0.5</span>,cfinc<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span>                             cmmin<span class="op">=</span><span class="fl">0.2</span>,cmmax<span class="op">=</span><span class="fl">0.6</span>,cminc<span class="op">=</span><span class="fl">0.1</span>,</span>
-<span>                             loi<span class="op">=</span><span class="va">lois</span>,lhparms<span class="op">=</span><span class="va">LH</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">minLL_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yprBH_MinLL.html">yprBH_MinLL</a></span><span class="op">(</span>minLL<span class="op">=</span><span class="va">minLL</span>,cf<span class="op">=</span><span class="va">cf</span>,cm<span class="op">=</span><span class="va">cm</span>,</span>
+<span>                       loi<span class="op">=</span><span class="va">lois</span>,lhparms<span class="op">=</span><span class="va">LH</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The first six rows of this data.frame can be examined with <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code>. Take special note of the variable names in this output (e.g., <code>yield</code>, <code>nharvest</code>, <code>cf</code>).</p>
 <div class="cell" data-layout-align="center">
@@ -316,7 +318,7 @@
 </div>
 </section><section class="section level2"><h2 id="data-consideration-ii">Data Consideration II<a class="anchor" aria-label="anchor" href="#data-consideration-ii"></a>
 </h2>
-<p>All of the variables returned by <code><a href="../reference/yprBH_minLL_fixed.html">yprBH_minLL_fixed()</a></code> are numeric, except for <code>notes</code>.</p>
+<p>All of the variables returned by <code><a href="../reference/yprBH_MinLL.html">yprBH_MinLL()</a></code> are numeric, except for <code>notes</code>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">minLL_1</span><span class="op">)</span></span>
@@ -885,8 +887,8 @@
 <p><a href="https://fishr-core-team.github.io/fishR/blog/posts/2022-12-22_AFS_Style_Figures/" class="external-link">This fishR post</a> demonstrates how to build and use a custom theme for creating graphs that meet AFS publication requirements.</p>
 </section><section class="level2"><h3 id="returned-lists-of-data-frames">Returned Lists of data.frames<a class="anchor" aria-label="anchor" href="#returned-lists-of-data-frames"></a>
 </h3>
-<p>The dynamic pool model implemented in <code><a href="../reference/dpmBH_MinLL_fixed.html">dpmBH_minLL_fixed()</a></code> returns an object that is a list of two data.frames, which is more complex than what is returned from other functions in <code>rFAMS</code>. However, accessing these two data.frames is fairly simple and is illustrated here.</p>
-<p>The code below is copied from this <a href="https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html">this article</a> that demonstrates how to use <code><a href="../reference/dpmBH_MinLL_fixed.html">dpmBH_minLL_fixed()</a></code>.<a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;See &lt;a href="https://fishr-core-team.github.io/rFAMS/reference/dpmBH_minLL_fixed.html"&gt;the documentation for &lt;code&gt;dpmBH_minLL_fixed()&lt;/code&gt;&lt;/a&gt; for more details).&lt;/p&gt;'><sup>35</sup></a> The results were assigned to <code>minLL_2</code> in the last line.</p>
+<p>The dynamic pool model implemented in <code><a href="../reference/dpmBH_MinLL.html">dpmBH_MinLL()</a></code> returns an object that is a list of two data.frames, which is more complex than what is returned from other functions in <code>rFAMS</code>. However, accessing these two data.frames is fairly simple and is illustrated here.</p>
+<p>The code below is copied from this <a href="https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html">this article</a> that demonstrates how to use <code><a href="../reference/dpmBH_MinLL.html">dpmBH_MinLL()</a></code>.<a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;See &lt;a href="https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.html"&gt;the documentation for &lt;code&gt;dpmBH_MinLL()&lt;/code&gt;&lt;/a&gt; for more details).&lt;/p&gt;'><sup>35</sup></a> The results were assigned to <code>minLL_2</code> in the last line.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set number of simulation years</span></span>
@@ -902,9 +904,9 @@
 <span><span class="va">rec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/genRecruits.html">genRecruits</a></span><span class="op">(</span>method<span class="op">=</span><span class="st">"fixed"</span>,nR<span class="op">=</span><span class="fl">1000</span>,simyears<span class="op">=</span><span class="va">simyears</span><span class="op">)</span></span>
 <span><span class="co"># run the DPM model of a 400 mm minimum length limit for 40 years</span></span>
 <span><span class="co"># assume this is for landlocked Striped Bass</span></span>
-<span><span class="va">minLL_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dpmBH_MinLL_fixed.html">dpmBH_minLL_fixed</a></span><span class="op">(</span>simyears<span class="op">=</span><span class="va">simyears</span>,minLL<span class="op">=</span><span class="va">minLL</span>,</span>
-<span>                             cf<span class="op">=</span><span class="va">cf</span>,cm<span class="op">=</span><span class="va">cm</span>,rec<span class="op">=</span><span class="va">rec</span>,lhparms<span class="op">=</span><span class="va">LH</span>,matchRicker<span class="op">=</span><span class="cn">FALSE</span>,</span>
-<span>                             species<span class="op">=</span><span class="st">"Striped Bass"</span>,group<span class="op">=</span><span class="st">"landlocked"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">minLL_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/dpmBH_MinLL.html">dpmBH_MinLL</a></span><span class="op">(</span>simyears<span class="op">=</span><span class="va">simyears</span>,minLL<span class="op">=</span><span class="va">minLL</span>,</span>
+<span>                       cf<span class="op">=</span><span class="va">cf</span>,cm<span class="op">=</span><span class="va">cm</span>,rec<span class="op">=</span><span class="va">rec</span>,lhparms<span class="op">=</span><span class="va">LH</span>,matchRicker<span class="op">=</span><span class="cn">FALSE</span>,</span>
+<span>                       species<span class="op">=</span><span class="st">"Striped Bass"</span>,group<span class="op">=</span><span class="st">"landlocked"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The results in <code>minLL_2</code> consist of two data.frames – <code>sumbyAge</code> and <code>sumbyYear</code> – which are simulation summarized arranged by age and by year.</p>
 <div class="cell" data-layout-align="center">

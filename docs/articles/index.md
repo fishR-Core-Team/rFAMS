@@ -10,9 +10,7 @@
   object](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.md):
 - [Comparing FAMS and Ricker YPR
   Equations](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.md):
-- [Estimate yield based on a single minimum length
-  limit](https://fishr-core-team.github.io/rFAMS/articles/YPR_fixedMLL.md):
+- [Estimate yield based on one or more minimum length
+  limits](https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.md):
 - [Estimate yield based on a slot
-  limit](https://fishr-core-team.github.io/rFAMS/articles/YPR_slotLimit.md):
-- [Estimate yield based on multiple minimum length
-  limits](https://fishr-core-team.github.io/rFAMS/articles/YPR_VarMLL.md):
+  limit](https://fishr-core-team.github.io/rFAMS/articles/YPR_SlotLL.md):

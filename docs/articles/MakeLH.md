@@ -9,9 +9,8 @@ library(dplyr)   ## for mutate
 
 The objective of this article is to demonstrate how to build a life
 history object that is used in all of rFAMS core functions
-(yield-per-recruit modeling
-\[[`yprBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.md),
-[`yprBH_minLL_var()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_var.md),
+(yield-per-recruit modeling \[`yprBH_minLL_fixed()`,
+`yprBH_minLL_var()`,
 [`yprBH_SlotLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.R.md)\]
 and dynamic pool modeling \[`dpmBH()`\].
 

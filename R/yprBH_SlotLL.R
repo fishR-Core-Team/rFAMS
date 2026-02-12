@@ -10,9 +10,7 @@
 #' @param cfunder Single value, conditional fishing mortality under the lower slot limit.
 #' @param cfin Single value, conditional fishing mortality within the lower and upper slot limit.
 #' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
-#' @param cmmin Single value, minimum conditional natural mortality
-#' @param cmmax Single value, maximum conditional natural mortality
-#' @param cminc Single value, increment to cycle from minimum to maximum conditional natural mortality
+#' @param cm A numeric vector of conditional natural mortality.
 #' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
@@ -90,10 +88,14 @@
 #'
 #' # Life history parameters to be used below
 #' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
+#' # conditional natural mortality vector
+#' cm <- seq(from = 0.1, to = 0.9, by = 0.1)
+#' # length of interest vector
+#' loi <- c(200,250,300,325,350)
 #'
-#' #Estimate yield
+#' #Estimate yield based on a protected slot limit
 #'  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
-#'                        cfunder=0.25,cfin=0.6,cfabove=0.15,cmmin=0.3,cmmax=0.6,cminc=0.05,
+#'                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
 #'                        loi=c(200,250,300,325,350),lhparms=LH)
 #'
 #'  Res_1
@@ -126,10 +128,11 @@
 #'
 #' @rdname yprBH_SlotLL.R
 #' @export
-yprBH_SlotLL<-function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cmmin,cmmax,cminc,
+yprBH_SlotLL<-function(recruitmentTL=NULL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
                        loi=NULL,lhparms,matchRicker=FALSE){
 
   # ---- Check inputs
+  iCheckSlotType(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove)
   iCheckrecruitTL(recruitmentTL)
   iChecklowerSLTL(lowerSL)
   iCheckupperSLTL(upperSL)
@@ -140,15 +143,16 @@ yprBH_SlotLL<-function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cmmin,
   iCheckcfunder(cfunder)
   iCheckcfin(cfin)
   iCheckcfabove(cfabove)
-  iCheckcm(cmmin,"minimum")
-  iCheckcm(cmmax,"maximum")
-  cm <- iCheckcfminc(cminc,cmmin,cmmax)
+  iCheckcmVect(cm,"cm")
+  # iCheckcm(cmmin,"minimum")
+  # iCheckcm(cmmax,"maximum")
+  # cm <- iCheckcfminc(cminc,cmmin,cmmax)
   iCheckloi(loi)
 
   # Setup data.frame of input values (varying cf and cm, the rest constant)
   res <- expand.grid(recruitmentTL=recruitmentTL,lowerSL=lowerSL,upperSL=upperSL,
                      cfunder=cfunder,cfin=cfin,cfabove=cfabove,
-                     cm=seq(cmmin,cmmax,cminc))
+                     cm=cm)
   # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
   # output is by age
   res <- purrr::pmap_df(res,yprBH_slot_func,matchRicker=matchRicker,loi=loi,lhparms=lhparms)

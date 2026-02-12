@@ -45,7 +45,7 @@
 #' \itemize{
 #' \item \code{minLL>=Linf}: The minimum length limit (minLL) being explored was greater than the given asymptotic mean length (Linf). For the purpose (only) of computing the time at recruitment to the fishery (tr) the Linf was set to minLL+0.1.
 #' \item \code{tr<t0}: The age at recruitment to the fishery (tr) was less than the hypothetical time when the mean length is zero (t0). The fish can't recruit to the fishery prior to having length 0 so tr was set to t0. This also assures that the time it takes to recruit to the fishery is greater than 0.
-#' \item \code{Y=Infinite}: The calculated yield (Y) was infinity, which is impossible and suggests some other propblem. Yield was set to NA.
+#' \item \code{Y=Infinite}: The calculated yield (Y) was infinity, which is impossible and suggests some other problem. Yield was set to NA.
 #' \item \code{Y<0}: The calculated yield (Y) was negative, which is impossible. Yield was set to 0.
 #' \item \code{Nharv<0}: The calculated number of fish harvested (Nharv) was negative, which is not possible. Number harvested was set to 0.
 #' \item \code{Ndie<0}: The calculated number of fish recruiting to the fishery that died naturally (Ndie) was negative, which is not possible. Number that died was set to 0.
@@ -69,16 +69,16 @@
 #' \item \code{Yield_Age_1plus} is the total year of age-1 plus fish per year.
 #' \item \code{Total_biomass} is the total biomass of age-1 plus fish per year.
 #' \item \code{N_harvest_Age_1plus} is the number of age-1 plus fish that are harvested per year.
-#' \item \code{N_die_Age_1plus} is the nubmer of age-1 plus fish that die per year.
+#' \item \code{N_die_Age_1plus} is the number of age-1 plus fish that die per year.
 #' }
 #'
 #' PSD-X are calculated based on the number of fish in each category (`stock`, `quality`, `preferred`, `memorable`, and `trophy`) at the beginning of the year. That is, the length at age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality sized fish.
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{yprBH_minLL_fixed}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
+#' @seealso \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{yprBH_MinLL}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
 #'
-#' See \href{file:///C:/Users/jason.doll/Documents/fishRCoreTeam/rFAMS/docs/articles/dpmBH.html}{this demonstration page} for more plotting examples
+#' See \href{https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html}{this demonstration page} for more plotting examples
 #'
 #' @examples
 #' #load required library
@@ -95,9 +95,9 @@
 #' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
-#' out<-dpmBH_minLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
-#'                        cm = cm, rec = rec, lhparms = lhparms,
-#'                        matchRicker=FALSE,species="Striped Bass",group="landlocked")
+#' out<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
+#'                  cm = cm, rec = rec, lhparms = lhparms,
+#'                  matchRicker=FALSE,species="Striped Bass",group="landlocked")
 #'
 #' #Use summary by year data frame to plot yield vs year
 #' ggplot(data=out[[2]],mapping=aes(x=year,y=Yield_age_1plus)) +
@@ -122,9 +122,9 @@
 #' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
-#' out_2<-dpmBH_minLL_fixed(simyears = simyears, minLL = minLL, cf = cf,
-#'                          cm = cm, rec = rec, lhparms = lhparms,
-#'                          matchRicker=FALSE,species="Striped Bass",group="landlocked")
+#' out_2<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
+#'                    cm = cm, rec = rec, lhparms = lhparms,
+#'                    matchRicker=FALSE,species="Striped Bass",group="landlocked")
 #'
 #' #Use summary by year data frame to plot yield vs year
 #' ggplot(data=out_2[[2]],mapping=aes(x=year,y=PSD)) +
@@ -141,10 +141,10 @@
 #'   labs(y="Total yield (g)",x="Age") +
 #'   theme_bw()
 #'
-#' @rdname dpmBH_minLL_fixed
+#' @rdname dpmBH_MinLL
 #' @export
 
-dpmBH_minLL_fixed <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,species=NULL, group=NULL){
+dpmBH_MinLL <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,species=NULL, group=NULL){
 
   # ---- Check inputs
   iCheckMLH(minLL)

@@ -3,15 +3,9 @@
 #' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
 #'
 #' @inheritParams yprBH_func
-#' @param lengthmin A single numeric for the lower limit of minimum length limit for harvest in mm.
-#' @param lengthmax A single numeric for the upper limit of minimum length limit for harvest in mm.
-#' @param lengthinc A single numeric for the increment to cycle from lower to upper minimum length limit for harvest in mm.
-#' @param cfmin A single numeric for minimum conditional fishing mortality.
-#' @param cfmax A single numeric for maximum conditional fishing mortality.
-#' @param cfinc A single numeric for increment to cycle from minimum to maximum conditional fishing mortality.
-#' @param cmmin A single numeric for minimum conditional natural mortality.
-#' @param cmmax A single numeric for maximum conditional natural mortality.
-#' @param cminc A single numeric for increment to cycle from minimum to maximum conditional natural mortality.
+#' @param minLL A numeric vector of minimum length limits.
+#' @param cf A numeric vector of conditional fishing mortality.
+#' @param cm A numeric vector of conditional natural mortality.
 #' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #'
 #' @details Details will be filled out later
@@ -26,7 +20,7 @@
 #' \item \code{avgwt} is the average weight of fish harvested.
 #' \item \code{avglen} is the average length of fish harvested.
 #' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
-#' \item \code{N at xxx mm} is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item \code{nAtxxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 #' \item \code{F} is the instantaneous rate of fishing mortality.
 #' \item \code{M} is the instantaneous rate of natural mortality.
 #' \item \code{Z} is the instantaneous rate of total mortality.
@@ -39,9 +33,9 @@
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL}, and \code{\link{yprBH_minLL_fixed}} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
+#' @seealso \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
 #'
-#'See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_VarMLL.html}{this demonstration page} for more plotting examples
+#'See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_MLL.html}{this demonstration page} for more plotting examples
 #'
 #' @examples
 #' # Load other required packages for organizing output and plotting
@@ -53,12 +47,16 @@
 #' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 #'
 #' # Estimate yield for multiple values of minLL, cf, and cm
-#' # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
+#' # # This is a minimal example, increments for minLL, cf, and cm would likely be smaller
 #' # #   to produce finer-scaled results.
-#' Res_1 <- yprBH_minLL_var(lengthmin=200,lengthinc=50,lengthmax=550,
-#'                        cfmin=0.1,cfmax=0.9,cfinc=0.1,
-#'                        cmmin=0.1,cmmax=0.9,cminc=0.1,
-#'                        loi=c(400,450,500,550),lhparms=LH)
+#'
+#' minLL <- seq(from = 200, to = 550, by = 50)
+#' cf <- seq(from = 0.1, to = 0.9, by = 0.1)
+#' cm <- seq(from = 0.1, to = 0.9, by = 0.1)
+#' loi <- c(400,450,500,550)
+#'
+#' Res_1 <- yprBH_MinLL(minLL = minLL, cf = cf, cm = cm,
+#'                      loi=loi,lhparms=LH)
 #'
 #' # Yield curves (yield vs exploitation) by varying minimum lengths,
 #' # using cm=40
@@ -80,25 +78,27 @@
 #'   theme_bw()
 #'
 #'
-#' @rdname yprBH_minLL_var
+#' @rdname yprBH_MinLL
 #' @export
 
-yprBH_minLL_var <- function(lengthmin,lengthmax,lengthinc,
-                          cfmin,cfmax,cfinc,
-                          cmmin,cmmax,cminc,loi=NULL,
-                          lhparms,matchRicker=FALSE){
+yprBH_MinLL <- function(minLL,cf,cm,
+                        loi=NULL,lhparms,matchRicker=FALSE){
   # ---- Check inputs
-  iCheckMLH(lengthmin,"minimum")
-  iCheckMLH(lengthmax,"maximum")
-  minLL <- iCheckMLHinc(lengthinc,lengthmin,lengthmax)
-  iCheckLLinf(lengthmin,lhparms$Linf)
-  iCheckLLinf(lengthmax,lhparms$Linf)
-  iCheckcf(cfmin,"minimum")
-  iCheckcf(cfmax,"maximum")
-  cf <- iCheckcfminc(cfinc,cfmin,cfmax)
-  iCheckcm(cmmin,"minimum")
-  iCheckcm(cmmax,"maximum")
-  cm <- iCheckcfminc(cminc,cmmin,cmmax)
+  iCheckminLL(minLL,"minLL")
+  iCheckcfVect(cf,"cf")
+  iCheckcmVect(cm,"cm")
+  # iCheckMLH(lengthmin,"minimum")
+  # iCheckMLH(lengthmax,"maximum")
+  # minLL <- iCheckMLHinc(lengthinc,lengthmin,lengthmax)
+   iCheckLLinf(minLL,lhparms$Linf)
+   #iCheckLLinf(minLL,400)
+  # iCheckLLinf(lengthmax,lhparms$Linf)
+  # iCheckcf(cfmin,"minimum")
+  # iCheckcf(cfmax,"maximum")
+  # cf <- iCheckcfminc(cfinc,cfmin,cfmax)
+  # iCheckcm(cmmin,"minimum")
+  # iCheckcm(cmmax,"maximum")
+  # cm <- iCheckcfminc(cminc,cmmin,cmmax)
   iCheckloi(loi)
 
   # ---- Compute Yield et al. for varying minLL, cf, and cm
