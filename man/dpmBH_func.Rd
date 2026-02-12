@@ -82,7 +82,7 @@ Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling simulator. v
 \seealso{
 \code{\link{yprBH_func}} for simulating yield using the dynamic pool model.
 
-See \href{file:///C:/Users/jason.doll/Documents/fishRCoreTeam/rFAMS/docs/articles/dpmBH.html}{this demonstration page} for more plotting examples
+See \href{https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html}{this demonstration page} for more plotting examples
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}

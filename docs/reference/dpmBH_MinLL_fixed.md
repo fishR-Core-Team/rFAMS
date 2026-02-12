@@ -216,7 +216,7 @@ following calculated values in a summary by year:
 - `N_harvest_Age_1plus` is the number of age-1 plus fish that are
   harvested per year.
 
-- `N_die_Age_1plus` is the nubmer of age-1 plus fish that die per year.
+- `N_die_Age_1plus` is the number of age-1 plus fish that die per year.
 
 PSD-X are calculated based on the number of fish in each category
 (`stock`, `quality`, `preferred`, `memorable`, and `trophy`) at the
@@ -234,7 +234,7 @@ Details
 
 [`yprBH_func`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.md)
 for estimating yield from single values of `cf`, `cm`, and `minLL`, and
-[`yprBH_minLL_fixed`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.md)
+[`yprBH_minLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL.md)
 for simulating yield with multiple values of `cf` and `cm` but a fixed
 value for `minLL`.
 

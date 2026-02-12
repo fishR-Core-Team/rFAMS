@@ -48,7 +48,7 @@
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{yprBH_minLL_fixed}} and \code{\link{yprBH_minLL_var}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
+#' @seealso  \code{\link{yprBH_MinLL}} for simulating yield with multiple values of \code{cf}, \code{cm}, and \code{minLL}.
 #'
 #' @references
 #' Ricker, W.E. 1975. Computation and interpretation of biological statistics of fish populations. Technical Report Bulletin 191, Bulletin of the Fisheries Research Board of Canada. Was (is?) from \url{https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/1485.pdf}.

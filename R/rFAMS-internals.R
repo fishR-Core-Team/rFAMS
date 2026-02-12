@@ -4,7 +4,7 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iCheckMLH iCheckMLHinc iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckcfminc iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder
+#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckcfminc iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
@@ -51,8 +51,17 @@ iErrLT <- function(x,value,nm) if (x<value) STOP(nm," must be >=",value,".")
 # Error if greater than value
 iErrGT <- function(x,value,nm) if (x>value) STOP(nm," must be <=",value,".")
 
+# Error if not numeric
+iErrNotVector <- function(x,nm) if (!is.vector(x)) STOP(nm," must be a vector")
 
 # -- Specific Checks --
+
+# Check slot limit lengths and cf
+iCheckSlotType <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove) {
+  if(cfunder > 0 & is.null(recruitmentTL)){
+    WARN("cfunder is specified for harvest under the slot and no length is specified for recruitmentTL. Consider specifying a recruitmentTL to indicate what length fish are likely to beharvested")
+  }
+}
 
 # Check minimum length limit for harvest
 iCheckMLH <- function(x,type="") {
@@ -68,35 +77,36 @@ iCheckMLH <- function(x,type="") {
                    "  please check value in ",nm,".")
 }
 
-# Check min length at harvest increments (min/max should be checked prior),
-#   return sequence if everything looks good
-iCheckMLHinc <- function(xinc,xmin,xmax) {
-  ## checks of increment
-  nm <- paste0("'",deparse(substitute(xinc)),"'")
-  if (missing(xinc))
-    STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
-  if (is.null(xinc))
-    STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
-  iErrMore1(xinc,nm)
-  iErrNotNumeric(xinc,nm)
-  iErrLT(xinc,0,nm)
-  ## Check min vs max
-  nm1 <- paste0("'",deparse(substitute(xmin)),"'")
-  nm2 <- paste0("'",deparse(substitute(xmax)),"'")
-  if(xmin>xmax) STOP(nm1," must be equal to or less than ",nm2,".")
-  res <- seq(xmin,xmax,xinc)
-  if (length(res)>100)
-    WARN("Choices of ",nm1,", ",nm2,", and ",nm," resulted in ",length(res),
-         " values./n","  Depending on other choices the simulation may be slow.")
-  ## Return sequence
-  res
-}
+# # Check min length at harvest increments (min/max should be checked prior),
+# #   return sequence if everything looks good
+# iCheckMLHinc <- function(xinc,xmin,xmax) {
+#   ## checks of increment
+#   nm <- paste0("'",deparse(substitute(xinc)),"'")
+#   if (missing(xinc))
+#     STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
+#   if (is.null(xinc))
+#     STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
+#   iErrMore1(xinc,nm)
+#   iErrNotNumeric(xinc,nm)
+#   iErrLT(xinc,0,nm)
+#   ## Check min vs max
+#   nm1 <- paste0("'",deparse(substitute(xmin)),"'")
+#   nm2 <- paste0("'",deparse(substitute(xmax)),"'")
+#   if(xmin>xmax) STOP(nm1," must be equal to or less than ",nm2,".")
+#   res <- seq(xmin,xmax,xinc)
+#   if (length(res)>100)
+#     WARN("Choices of ",nm1,", ",nm2,", and ",nm," resulted in ",length(res),
+#          " values./n","  Depending on other choices the simulation may be slow.")
+#   ## Return sequence
+#   res
+# }
 
 # Check recruitment total length
 iCheckrecruitTL <- function(x,type="") {
+  if(is.null(x)) return()
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify a recruitment total length (mm) in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a recruitment total length (mm) in ",nm,".")
+  #if (missing(x)) STOP("Need to specify a recruitment total length (mm) in ",nm,".")
+  #if (is.null(x)) STOP("Need to specify a recruitment total length (mm) in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
@@ -140,8 +150,10 @@ iCheckslotOrder <- function(recruitmentTL, lowerSL, upperSL) {
   nm1 <- paste0("'",deparse(substitute(recruitmentTL)),"'")
   nm2 <- paste0("'",deparse(substitute(lowerSL)),"'")
   nm3 <- paste0("'",deparse(substitute(upperSL)),"'")
-  if(recruitmentTL>lowerSL) STOP(nm1," must be less than ",nm2,".")
-  if(recruitmentTL>upperSL) STOP(nm1," must be less than ",nm3,".")
+  if(!is.null(recruitmentTL)){
+    if(recruitmentTL>lowerSL) STOP(nm1," must be less than ",nm2,".")
+    if(recruitmentTL>upperSL) STOP(nm1," must be less than ",nm3,".")
+  }
   if(lowerSL>upperSL) STOP(nm2," must be less than ",nm3,".")
 }
 
@@ -257,6 +269,43 @@ iCheckrec <- function(rec) {
     STOP("rec must be a numeric data type")
 }
 
+# Check length of interest "mLL" input
+iCheckminLL <- function(x,type=NULL){
+  nm <- paste0("'",deparse(substitute(x)),"'")
+  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+  if (missing(x)) STOP("Need to specify a",type,
+                       " vector for minimum length limits in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a ",type,
+                       " vector for minimum length limits in ",nm,".")
+  iErrNotVector(x,nm)
+  iErrNotNumeric(x,nm)
+}
+
+# Check length of interest "mLL" input
+iCheckcfVect <- function(x,type=NULL){
+  nm <- paste0("'",deparse(substitute(x)),"'")
+  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+  if (missing(x)) STOP("Need to specify a",type,
+                       " conditional fishing mortality vector in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a ",type,
+                       " conditional fishing mortality vector in ",nm,".")
+  iErrNotVector(x,nm)
+  iErrNotNumeric(x,nm)
+}
+
+
+# Check length of interest "mLL" input
+iCheckcmVect <- function(x,type=NULL){
+  nm <- paste0("'",deparse(substitute(x)),"'")
+  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+  if (missing(x)) STOP("Need to specify a",type,
+                       " conditional natural mortality in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a ",type,
+                       " conditional natural mortality in ",nm,".")
+  iErrNotVector(x,nm)
+  iErrNotNumeric(x,nm)
+}
+
 
 # Check length of interest "loi" input
 iCheckloi <- function(loi){
@@ -296,7 +345,7 @@ iCheckN0 <- function(x) {
 # Check Linf > Minimum length
 iCheckLLinf <- function(x, Linf) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (x > Linf) STOP("Harvest length (", nm, ") can't be greater than Linf")
+  if (sum(x > Linf) >0 ) STOP("Harvest lengths in the vector (", nm, ") can't be greater than Linf")
 }
 
 # Check Linf

@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,9 +36,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-demonstrations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Demonstrations</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-demonstrations">
 <li><a class="dropdown-item" href="articles/MakeLH.html">Create life history object</a></li>
-    <li><a class="dropdown-item" href="articles/YPR_fixedMLL.html">Estimate yield based on a single minimum length limit</a></li>
-    <li><a class="dropdown-item" href="articles/YPR_VarMLL.html">Estimate yield based on multiple minimum length limit</a></li>
-    <li><a class="dropdown-item" href="articles/YPR_slotLimit.html">Estimate yield based on a slot length limit</a></li>
+    <li><a class="dropdown-item" href="articles/YPR_MinLL.html">Estimate yield based on one or more minimum length limits</a></li>
+    <li><a class="dropdown-item" href="articles/YPR_SlotLL.html">Estimate yield based on a slot length limit</a></li>
     <li><a class="dropdown-item" href="articles/dpmBH.html">Simulate a population using the dynamic pool model</a></li>
     <li><a class="dropdown-item" href="articles/ggplot_for_rFAMS.html">ggplot2 for rFAMS</a></li>
   </ul>
@@ -111,13 +110,11 @@
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<!-- The [most recent stable version](https://cloud.r-project.org/package=rFAMS) from CRAN may be installed with -->
-<!-- ``` r -->
-<!-- install.packages("rFAMS") -->
-<!-- ``` -->
-<!-- -->
-<p>The <a href="https://github.com/fishR-Core-Team/rFAMS/tree/dev" class="external-link">development version</a> may be installed from GitHub with</p>
+<p>The <a href="https://CRAN.R-project.org/package=rFAMS" class="external-link">most recent stable version</a> from CRAN may be installed with</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"rFAMS"</span><span class="op">)</span></span></code></pre></div>
+<p>The <a href="https://github.com/fishR-Core-Team/rFAMS/tree/dev" class="external-link">development version</a> may be installed from GitHub with</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"fishR-Core-Team/rFAMS@dev"</span><span class="op">)</span></span></code></pre></div>
 <p>You may need R Tools installed on your system to install the development version from GitHub. See the instructions for (<a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link">R Tools for Windows</a> or <a href="https://cran.r-project.org/bin/macosx/tools/" class="external-link">R Tools for Mac OS X</a>).</p>
@@ -133,6 +130,7 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=rFAMS" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/fishR-Core-Team/rFAMS/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/fishR-Core-Team/rFAMS/issues" class="external-link">Report a bug</a></li>
 </ul>

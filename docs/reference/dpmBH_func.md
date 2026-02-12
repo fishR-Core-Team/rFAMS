@@ -152,8 +152,8 @@ simulator. v1.64. American Fisheries Society, Bethesda, MD.
 for simulating yield using the dynamic pool model.
 
 See [this demonstration
-page](file:///C:/Users/jason.doll/Documents/fishRCoreTeam/rFAMS/docs/articles/dpmBH.md)
-for more plotting examples
+page](https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html) for
+more plotting examples
 
 ## Author
 

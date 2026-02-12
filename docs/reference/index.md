@@ -4,7 +4,7 @@
 
 - [`dpmBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_func.md)
   : Simulate yield using the dynamic pool model.
-- [`dpmBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL_fixed.md)
+- [`dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md)
   : Main function to simulate expected yield using the Dynamic Pool
   model for a range of input parameters, including minimum length limits
   for harvest
@@ -19,10 +19,7 @@
 - [`yprBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.md)
   : Simulate expected yield using the Beverton-Holt Yield-per-Recruit
   model for single input parameters
-- [`yprBH_minLL_fixed()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.md)
-  : Main function to simulate expected yield using the Beverton-Holt
-  Yield-per-Recruit model for a range of input parameters
-- [`yprBH_minLL_var()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_var.md)
+- [`yprBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md)
   : Main function to simulate expected yield using the Beverton-Holt
   Yield-per-Recruit model for a range of input parameters, including
   minimum length limits for harvest

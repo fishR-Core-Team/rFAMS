@@ -148,9 +148,7 @@ simulator. v1.64. American Fisheries Society, Bethesda, MD.
 
 ## See also
 
-[`yprBH_minLL_fixed`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_fixed.md)
-and
-[`yprBH_minLL_var`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_minLL_var.md)
+[`yprBH_MinLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md)
 for simulating yield with multiple values of `cf`, `cm`, and `minLL`.
 
 ## Author
