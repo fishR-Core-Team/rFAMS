@@ -101,6 +101,11 @@ yprBH_MinLL <- function(minLL,cf,cm,
   # cm <- iCheckcfminc(cminc,cmmin,cmmax)
   iCheckloi(loi)
 
+  #needed to account for rounding issues of sequences
+  minLL <- round(minLL,8)
+  cf <- round(cf,8)
+  cm <- round(cm,8)
+
   # ---- Compute Yield et al. for varying minLL, cf, and cm
   # Setup data.frame of input values ... minLL, cf, and cm sequences were
   #   created in checks above

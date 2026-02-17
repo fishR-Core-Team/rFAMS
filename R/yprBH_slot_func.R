@@ -120,7 +120,8 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   iChecklowerSLTL(lowerSL)
   iCheckupperSLTL(upperSL)
 
-
+  #needed to account for rounding issues of sequences
+  cm <- round(cm,8)
 
   # Maximum theoretical weight derived from L-inf and weight to length regression
   #   log10 transformation to linearize it

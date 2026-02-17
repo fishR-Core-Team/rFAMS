@@ -155,6 +155,9 @@ dpmBH_MinLL <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,speci
   # iCheckcfcm_dpm(cm)
   iCheckrec(rec)
 
+  #needed to account for rounding issues of sequences
+  cf <- round(cf,8)
+  cm <- round(cm,8)
 
   res<-dpmBH_func(minLL = minLL, cf = cf[1,], cm= cm[1,], rec = rec[1], lhparms = lhparms,matchRicker=FALSE)
   yearsum<-data.frame(year= seq(1:nrow(res)), yc = rep(1,length(seq(1:nrow(res)))))
