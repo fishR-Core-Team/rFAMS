@@ -5,6 +5,9 @@
 * Modified `ypr_BH_SlotLL()` to require vector input for cm. Instead of asking users to supply min, max, and increment for each, the user now supplies a single or multiple values in a vector. The vector can be of any sequence.
 * Renamed `dpmBH_MinLL_fixed()` to `dpmBH_MinLL()` for consistent function names.
 
+* `iErrGT()`: Modified to allow for checks on a vector rather than just a single value, which it still works for.
+* `iErrLT()`: Modified to allow for checks on a vector rather than just a single value, which it still works for.
+
 # rFAMS 0.0.2
 * Addressed comments in DESCRIPTION file from CRAN reviewer.
 

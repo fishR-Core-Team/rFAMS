@@ -45,11 +45,21 @@ iErrMore1 <- function(x,nm) if(length(x)>1) STOP("Only use one value in ",nm,"."
 # Error if not numeric
 iErrNotNumeric <- function(x,nm) if (!is.numeric(x)) STOP(nm," must be a number.")
 
-# Error if less than value
-iErrLT <- function(x,value,nm) if (x<value) STOP(nm," must be >=",value,".")
+# Error if (any items are) less than value
+iErrLT <- function(x,value,nm) {
+  if (any(x<value)) {
+    pre <- ifelse(length(x)>1,"All ","")
+    STOP(pre,nm," must be >=",value,".")
+  }
+}
 
-# Error if greater than value
-iErrGT <- function(x,value,nm) if (x>value) STOP(nm," must be <=",value,".")
+# Error if (any items are) greater than value
+iErrGT <- function(x,value,nm) {
+  if (any(x>value)) {
+    pre <- ifelse(length(x)>1,"All ","")
+    STOP(pre,nm," must be <=",value,".")
+  }
+}
 
 # Error if not numeric
 iErrNotVector <- function(x,nm) if (!is.vector(x)) STOP(nm," must be a vector")

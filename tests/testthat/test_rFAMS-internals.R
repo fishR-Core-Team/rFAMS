@@ -56,6 +56,22 @@ test_that("iIbeta() messages and results",{
 #   expect_equal(length(tmp),801)
 # })
 
+test_that("iErrGT() and iErrLT() messages",{
+  expect_error(rFAMS:::iErrGT(1.3,1,"junk"),"junk must be <=1")
+  expect_error(rFAMS:::iErrGT(c(0.3,1,1.3),1,"junk"),"All junk must be <=1")
+  expect_no_error(rFAMS:::iErrGT(0.3,1,"junk"))
+  expect_no_error(rFAMS:::iErrGT(1,1,"junk"))
+  expect_no_error(rFAMS:::iErrGT(c(0.3,0.1,0.9),1,"junk"))
+  expect_no_error(rFAMS:::iErrGT(c(0.3,0.1,1),1,"junk"))
+
+  expect_error(rFAMS:::iErrLT(-0.3,0,"junk"),"junk must be >=0")
+  expect_error(rFAMS:::iErrLT(c(-0.3,1,1.3),0,"junk"),"All junk must be >=0")
+  expect_no_error(rFAMS:::iErrLT(0.3,0,"junk"))
+  expect_no_error(rFAMS:::iErrLT(0,0,"junk"))
+  expect_no_error(rFAMS:::iErrLT(c(0.3,0.1,0.9),0,"junk"))
+  expect_no_error(rFAMS:::iErrLT(c(0.3,0.1,0),0,"junk"))
+})
+
 test_that("iCheckcf() messages",{
   expect_error(rFAMS:::iCheckcf(),"Need to specify a conditional fishing mortality in")
   ## Set cf to value outside function to test that name is extracted
