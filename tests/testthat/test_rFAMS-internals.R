@@ -72,6 +72,51 @@ test_that("iErrGT() and iErrLT() messages",{
   expect_no_error(rFAMS:::iErrLT(c(0.3,0.1,0),0,"junk"))
 })
 
+test_that("iCheckCondMort() messages",{
+  ## Set cf to value outside function to test that name is extracted
+  cf <- NULL
+  expect_error(rFAMS:::iCheckCondMort(cf),
+               "Need to specify a conditional fishing mortality in 'cf'")
+  cf <- -1
+  expect_error(rFAMS:::iCheckCondMort(cf),"'cf' must be >=0")
+  cf <- 2
+  expect_error(rFAMS:::iCheckCondMort(cf),"'cf' must be <=1")
+  cf <- "a"
+  expect_error(rFAMS:::iCheckCondMort(cf),"'cf' must be a number")
+  cf <- c(-0.3,0.5)
+  expect_error(rFAMS:::iCheckCondMort(cf),"All 'cf' must be >=0")
+  cf <- c(0.3,1.5)
+  expect_error(rFAMS:::iCheckCondMort(cf),"All 'cf' must be <=1")
+
+  cm <- NULL
+  expect_error(rFAMS:::iCheckCondMort(cm),
+               "Need to specify a conditional natural mortality in 'cm'")
+  cm <- -1
+  expect_error(rFAMS:::iCheckCondMort(cm),"'cm' must be >=0")
+  cm <- 2
+  expect_error(rFAMS:::iCheckCondMort(cm),"'cm' must be <=1")
+  cm <- "a"
+  expect_error(rFAMS:::iCheckCondMort(cm),"'cm' must be a number")
+  cm <- c(-0.3,0.5)
+  expect_error(rFAMS:::iCheckCondMort(cm),"All 'cm' must be >=0")
+  cm <- c(0.3,1.5)
+  expect_error(rFAMS:::iCheckCondMort(cm),"All 'cm' must be <=1")
+
+  cfunder <- NULL
+  expect_error(rFAMS:::iCheckCondMort(cfunder),
+               "Need to specify a conditional fishing mortality in 'cfunder'")
+  cfunder <- -1
+  expect_error(rFAMS:::iCheckCondMort(cfunder),"'cfunder' must be >=0")
+  cfunder <- 2
+  expect_error(rFAMS:::iCheckCondMort(cfunder),"'cfunder' must be <=1")
+  cfunder <- "a"
+  expect_error(rFAMS:::iCheckCondMort(cfunder),"'cfunder' must be a number")
+  cfunder <- c(-0.3,0.5)
+  expect_error(rFAMS:::iCheckCondMort(cfunder),"All 'cfunder' must be >=0")
+  cfunder <- c(0.3,1.5)
+  expect_error(rFAMS:::iCheckCondMort(cfunder),"All 'cfunder' must be <=1")
+})
+
 test_that("iCheckcf() messages",{
   expect_error(rFAMS:::iCheckcf(),"Need to specify a conditional fishing mortality in")
   ## Set cf to value outside function to test that name is extracted

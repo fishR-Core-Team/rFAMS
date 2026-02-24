@@ -5,8 +5,10 @@
 * Modified `ypr_BH_SlotLL()` to require vector input for cm. Instead of asking users to supply min, max, and increment for each, the user now supplies a single or multiple values in a vector. The vector can be of any sequence.
 * Renamed `dpmBH_MinLL_fixed()` to `dpmBH_MinLL()` for consistent function names.
 
+* `iCheckCondMort()`: Added. Currently only used in `showMorts()`. However, I think that this is more general than some other functions and, thus, could replace `iCheckcf()`, `iCheckcm()`, `iCheckcfVect()`, `iCheckcmVect()`, and possibly a few others.
 * `iErrGT()`: Modified to allow for checks on a vector rather than just a single value, which it still works for.
 * `iErrLT()`: Modified to allow for checks on a vector rather than just a single value, which it still works for.
+* `seeMorts()`: Added.
 
 # rFAMS 0.0.2
 * Addressed comments in DESCRIPTION file from CRAN reviewer.
