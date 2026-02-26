@@ -2,7 +2,6 @@
 #'
 #' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
 #'
-#' @inheritParams yprBH_func
 #' @param minLL A numeric vector of minimum length limits.
 #' @param cf A numeric vector of conditional fishing mortality.
 #' @param cm A numeric vector of conditional natural mortality.
