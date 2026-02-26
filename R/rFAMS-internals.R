@@ -4,7 +4,7 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckcfminc iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder iCheckCondMort iCheckLHparms
+#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder iCheckCondMort iCheckLHparms
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
@@ -208,31 +208,6 @@ iCheckcm <- function(x,type=NULL) {
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
   iErrGT(x,1,nm)
-}
-
-# Check conditional mortality increments (min/max should be checked prior),
-#   return sequence if everything looks good
-iCheckcfminc <- function(xinc,xmin,xmax) {
-  ## checks of increment
-  nm <- paste0("'",deparse(substitute(xinc)),"'")
-  if (missing(xinc))
-    STOP("Need to specify an increment for conditional natural mortality in ",nm,".")
-  if (is.null(xinc))
-    STOP("Need to specify an increment for conditional natural mortality in ",nm,".")
-  iErrMore1(xinc,nm)
-  iErrNotNumeric(xinc,nm)
-  iErrLT(xinc,0,nm)
-  iErrGT(xinc,1,nm)
-  ## Check min vs max
-  nm1 <- paste0("'",deparse(substitute(xmin)),"'")
-  nm2 <- paste0("'",deparse(substitute(xmax)),"'")
-  if(xmin>xmax) STOP(nm1," must be equal to or less than ",nm2,".")
-  res <- round(seq(xmin,xmax,xinc),8)
-  if (length(res)>100)
-    WARN("Choices of ",nm1,", ",nm2,", and ",nm," resulted in ",length(res),
-         " values.\n","  Depending on other choices the simulation may be slow.")
-  ## Return sequence
-  res
 }
 
 # Check conditional fishing mortality value under slot
@@ -706,3 +681,38 @@ iCheckLHparms <- function(x) {
     iCheckLWb(LWbeta)
   }
 }
+
+
+
+
+
+## =============================================================================
+## ==== OLD CAN PROBABLY BE DELETED
+## =============================================================================
+
+
+# # Check conditional mortality increments (min/max should be checked prior),
+# #   return sequence if everything looks good
+# iCheckcfminc <- function(xinc,xmin,xmax) {
+#   ## checks of increment
+#   nm <- paste0("'",deparse(substitute(xinc)),"'")
+#   if (missing(xinc))
+#     STOP("Need to specify an increment for conditional natural mortality in ",nm,".")
+#   if (is.null(xinc))
+#     STOP("Need to specify an increment for conditional natural mortality in ",nm,".")
+#   iErrMore1(xinc,nm)
+#   iErrNotNumeric(xinc,nm)
+#   iErrLT(xinc,0,nm)
+#   iErrGT(xinc,1,nm)
+#   ## Check min vs max
+#   nm1 <- paste0("'",deparse(substitute(xmin)),"'")
+#   nm2 <- paste0("'",deparse(substitute(xmax)),"'")
+#   if(xmin>xmax) STOP(nm1," must be equal to or less than ",nm2,".")
+#   res <- round(seq(xmin,xmax,xinc),8)
+#   if (length(res)>100)
+#     WARN("Choices of ",nm1,", ",nm2,", and ",nm," resulted in ",length(res),
+#          " values.\n","  Depending on other choices the simulation may be slow.")
+#   ## Return sequence
+#   res
+# }
+

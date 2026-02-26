@@ -18,7 +18,6 @@
 \alias{iCheckslotOrder}
 \alias{iCheckcf}
 \alias{iCheckcm}
-\alias{iCheckcfminc}
 \alias{iCheckminLL}
 \alias{iCheckcfVect}
 \alias{iCheckcmVect}
