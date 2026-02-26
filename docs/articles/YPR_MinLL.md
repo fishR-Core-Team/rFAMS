@@ -28,17 +28,21 @@ length model (alpha and beta). By default, the
 returns a list. Growth length-weight model paramaters can be generated
 from functions in the [FSA
 package](https://fishr-core-team.github.io/FSA/index.html). The example
-below uses the following life history parameters: - NO is the initial
-number of recruits, set to 100. - tmax is the maximum age in the
-population in years, set to 15. - Linf is the point estimate of
-asymptotic mean length from the von Bertalanffy growth model, set to
-592mm. - K (upper case) is the point estimate of the Brody growth
-coefficient from the von Bertalanffy growth model, set to 0.20. - t0 is
-the point estimate of the x-intercept (i.e., theoretical age at a mean
-length of 0) from the von Bertalanffy growth model, set to -0.3. -
-LWalpha is the point estimate of alpha from the length-weight regression
-on the log10 scale, set to -5.528. - LWbeta is the point estimate of
-beta from the length-weight regression on the log10 scale, set to 3.273.
+below uses the following life history parameters:
+
+- NO is the initial number of recruits, set to 100.
+- tmax is the maximum age in the population in years, set to 15.
+- Linf is the point estimate of asymptotic mean length from the von
+  Bertalanffy growth model, set to 592mm.
+- K (upper case) is the point estimate of the Brody growth coefficient
+  from the von Bertalanffy growth model, set to 0.20.
+- t0 is the point estimate of the x-intercept (i.e., theoretical age at
+  a mean length of 0) from the von Bertalanffy growth model, set to
+  -0.3.
+- LWalpha is the point estimate of alpha from the length-weight
+  regression on the log10 scale, set to -5.528.
+- LWbeta is the point estimate of beta from the length-weight regression
+  on the log10 scale, set to 3.273.
 
 ``` r
 # create life history parameter object
@@ -47,6 +51,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
 ## Estimate yield for multiple minimum length limit and multiple conditional fishing and conditional natural mortality.
 
+<<<<<<< HEAD
 The function
 [`yprBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md)
 function is used when yield is estimated with one or more minimum length
@@ -55,6 +60,14 @@ limit. This function requires a numeric vector of minimum length
 numeric vector of conditional natural mortality `cm`; a vector of length
 of interest to monitor `loi`; and the life history parameters
 `lhparams`.
+=======
+The function `yprBH_minLL()` function is used when yield is estimated
+with one or more minimum length limit. This function requires a numeric
+vector of minimum length `minLL`; a numeric vector of conditional
+fishing mortality `cf`; a numeric vector of conditional natural
+mortality `cm`; the life history parameters `lhparams`; and optionally,
+a vector of length of interest to monitor `loi`.
+>>>>>>> b0bcdeac8090c63fd2e892c9cc1fa2d0ad4d2326
 
 rFAMS includes a function
 [`est_natmort()`](https://fishr-core-team.github.io/rFAMS/reference/est_natmort.md)
@@ -109,7 +122,7 @@ cm <- seq(from = 0.1, to = 0.9, by = 0.1)
 loi <- c(400, 450, 500, 550)
 
 Res_1 <- yprBH_MinLL(minLL=minLL,cf = cf, cm = cm,
-                     loi=loi, lhparms=LH)   
+                     lhparms=LH, loi=loi)   
 ```
 
 The output object will be a data.frame with the following calculated
@@ -189,7 +202,8 @@ theme_FAMS <- function(...) {
 The first graph will be a yield curve that displays the relationship
 between yield as a function of exploitation for a specified conditional
 natural morality `cm`. The example below uses `cm` = 0.30, which is
-close to the estimated mean `cm` above of 0.27
+close to the estimated mean `cm` above of 0.27, and a minimum length
+limit of 400 mm.
 
 ``` r
 # Round cm to account for "floating point arithmetic inaccuracies"
@@ -210,7 +224,8 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=yield)) +
 
 This next graph plots yield curves as a function of exploitation with
 multiple minimum lengths for a specified conditional natural morality
-`cm`. The example below uses `cm` = 0.30, as above.
+`cm`. The example below uses `cm` = 0.30, as above, and a minimum length
+limit of 400 mm.
 
 ``` r
 # Round cm to account for "floating point arithmetic inaccuracies"
@@ -235,7 +250,7 @@ The next graph demonstrates how to explore the number of fish reaching a
 specified length. This figure creates a plot showing the number of fish
 reaching 450mm as a function of exploitation. Note this is based on a
 conditional natural mortality `cm` of 0.30 which was filtered out in the
-code block above.
+code block above, and a minimum length limit of 400 mm.
 
 ``` r
 # Extract results for cm=0.40 and minimum length limit=400
@@ -280,7 +295,7 @@ The final two graphs demonstrate how to construct isopleths using the
 is filtered for a conditional natural mortality `cm` of 0.30.
 
 ``` r
-# Extract results for cm=0.40 and minimum length limit=400
+# Extract results for cm=0.40
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
 # Yield isopleths for varying minLL and exploitation with cm=0.40

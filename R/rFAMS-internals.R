@@ -4,7 +4,7 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckcfminc iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder
+#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckcfminc iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder iCheckCondMort
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
@@ -45,11 +45,21 @@ iErrMore1 <- function(x,nm) if(length(x)>1) STOP("Only use one value in ",nm,"."
 # Error if not numeric
 iErrNotNumeric <- function(x,nm) if (!is.numeric(x)) STOP(nm," must be a number.")
 
-# Error if less than value
-iErrLT <- function(x,value,nm) if (x<value) STOP(nm," must be >=",value,".")
+# Error if (any items are) less than value
+iErrLT <- function(x,value,nm) {
+  if (any(x<value)) {
+    pre <- ifelse(length(x)>1,"All ","")
+    STOP(pre,nm," must be >=",value,".")
+  }
+}
 
-# Error if greater than value
-iErrGT <- function(x,value,nm) if (x>value) STOP(nm," must be <=",value,".")
+# Error if (any items are) greater than value
+iErrGT <- function(x,value,nm) {
+  if (any(x>value)) {
+    pre <- ifelse(length(x)>1,"All ","")
+    STOP(pre,nm," must be <=",value,".")
+  }
+}
 
 # Error if not numeric
 iErrNotVector <- function(x,nm) if (!is.vector(x)) STOP(nm," must be a vector")
@@ -59,8 +69,9 @@ iErrNotVector <- function(x,nm) if (!is.vector(x)) STOP(nm," must be a vector")
 # Check slot limit lengths and cf
 iCheckSlotType <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove) {
   if(cfunder > 0 & is.null(recruitmentTL)){
-    WARN("cfunder is specified for harvest under the slot and no length is specified for recruitmentTL. Consider specifying a recruitmentTL to indicate what length fish are likely to beharvested")
+    STOP("cfunder is specified for harvest under the slot and no length is specified for recruitmentTL. You must specify a recruitmentTL to indicate what length fish are likely to beharvested.")
   }
+
 }
 
 # Check minimum length limit for harvest
@@ -155,6 +166,20 @@ iCheckslotOrder <- function(recruitmentTL, lowerSL, upperSL) {
     if(recruitmentTL>upperSL) STOP(nm1," must be less than ",nm3,".")
   }
   if(lowerSL>upperSL) STOP(nm2," must be less than ",nm3,".")
+}
+
+# Check conditional mortality value(s)
+iCheckCondMort <- function(x) {
+  nm <- paste0("'",deparse(substitute(x)),"'")
+  tmpmsg <- paste0("Need to specify a conditional ",
+                   ifelse(startsWith(nm,"'cf"),"fishing","natural"),
+                   " mortality in ",nm,".")
+  if (missing(x)) STOP(tmpmsg)
+  if (is.null(x)) STOP(tmpmsg)
+  iErrNotVector(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  iErrGT(x,1,nm)
 }
 
 # Check conditional fishing mortality value

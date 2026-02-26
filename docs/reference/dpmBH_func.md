@@ -47,8 +47,8 @@ dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker = FALSE)
 
   A logical that indicates whether the yield function should match that
   in Ricker (). Defaults to `TRUE`. The only reason to changed to
-  `FALSE` is to try to match output from FAMS. See the "YPR_FAMSvRICKER"
-  article.
+  `FALSE` is to try to match output from FAMS. See the [FAMS vs Ricker
+  article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html).
 
 ## Value
 

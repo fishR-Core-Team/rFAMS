@@ -4,6 +4,7 @@
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/ggplot_for_rFAMS.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/index.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Mortality.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/YPR_SlotLL.html</loc></url>
@@ -19,9 +20,15 @@
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/index.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/makeLH.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/rFAMS-internals.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/seeMorts.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.html</loc></url>
+<<<<<<< HEAD
+=======
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.html</loc></url>
+>>>>>>> b0bcdeac8090c63fd2e892c9cc1fa2d0ad4d2326
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.R.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/yprBH_slot_func.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/yprBH_slot_function.html</loc></url>
 </urlset>
 

@@ -5,20 +5,18 @@
 \title{Main function to simulate expected yield using the Dynamic Pool model for a range of input parameters, including minimum length limits for harvest}
 \usage{
 dpmBH_MinLL(
-  simyears,
   minLL,
   cf,
   cm,
   rec,
   lhparms,
-  matchRicker = FALSE,
+  simyears,
   species = NULL,
-  group = NULL
+  group = NULL,
+  matchRicker = FALSE
 )
 }
 \arguments{
-\item{simyears}{A single numeric for the lower limit of minimum length limit for harvest in mm.}
-
 \item{minLL}{A single numeric representing the minimum length limit for harvest in mm.}
 
 \item{cf}{A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.}
@@ -29,11 +27,13 @@ dpmBH_MinLL(
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
-\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
+\item{simyears}{A single numeric for the lower limit of minimum length limit for harvest in mm.}
 
 \item{species}{is a single character to specify the species used in the simulation and will define the length for \code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy}. Length categories are obtained from the FSA package, see the \code{\link[FSA]{PSDlit}} documentation.}
 
 \item{group}{is a single character to specify the sub-group name of a species used in the simulation and will define the length for \code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy}. Length categories are obtained from the FSA package, see the \code{\link[FSA]{PSDlit}} documentation.}
+
+\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 }
 \value{
 A list with two data.frame object. The first list item named \code{sumbyAge} contains a data.frame with the following calculated values in a summary by age:
@@ -144,9 +144,9 @@ rec <- genRecruits(method = "normal", simyears = simyears,
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
-out_2<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
-                   cm = cm, rec = rec, lhparms = lhparms,
-                   matchRicker=FALSE,species="Striped Bass",group="landlocked")
+out_2<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
+                   rec = rec, lhparms = lhparms,simyears = simyears,
+                   species="Striped Bass",group="landlocked",matchRicker=FALSE)
 
 #Use summary by year data frame to plot yield vs year
 ggplot(data=out_2[[2]],mapping=aes(x=year,y=PSD)) +
