@@ -349,22 +349,12 @@ iCheckN0 <- function(x) {
     STOP("Need to specify an initial number of fish in the population in ",nm,".")
   if (is.null(x))
     STOP("Need to specify an initial number of fish in the population in ",nm,".")
-  if (length(x)>1) {
-    pnms <- c('N0','Linf','K','t0','LWalpha','LWbeta', 'maxage')
-    if (length(x)!=7) STOP(nm," must contain only one value for ",nm," or 7 named\n",
-                           "values for: ",paste(pnms,collapse=", "))
-    if (is.null(names(x))) STOP(nm," must have named values for: ",
-                                paste(pnms,collapse=", "))
-    if (!all(names(x) %in% pnms)) STOP(nm," must have named values for all of: ",
-                                       paste(pnms,collapse=", "))
-  } else {
-    iErrMore1(x,nm)
-    iErrNotNumeric(x,nm)
-    iErrLT(x,0,nm)
-    # if (!is.wholenumber(x))
-    #   WARN("The initial number in the population is not a whole number,\n",
-    #        "  please check value in ",nm,".")
-  }
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  # if (!is.wholenumber(x))
+  #   WARN("The initial number in the population is not a whole number,\n",
+  #        "  please check value in ",nm,".")
 }
 
 # Check Linf > Minimum length

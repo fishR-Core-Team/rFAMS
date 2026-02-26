@@ -180,34 +180,21 @@ test_that("iCheckcm() messages",{
 #   expect_equal(length(tmp),801)
 # })
 
-test_that("iCheckN0() messages and values",{
-  ## Test with just one value
-  expect_error(rFAMS:::iCheckN0(),
-               "Need to specify an initial number of fish in the population in")
-  ## Set MLHinc to value outside function to test that name is extracted
-  N0 <- -100
-  expect_error(rFAMS:::iCheckN0(N0),"must be >=0")
-  N0 <- "a"
-  expect_error(rFAMS:::iCheckN0(N0),"must be a number")
-  N0 <- c(300,500)
-  expect_error(rFAMS:::iCheckN0(N0),
-               "'N0' must contain only one value for 'N0' or 7 named")
+test_that("iCheckN0() messages",{
+  # ----- test that something was sent
+  rFAMS:::iCheckN0() |>
+    expect_error("Need to specify an initial number of fish in the population in")
 
-  ## Test as if using for life history parameters
-  N0 <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15)
-  expect_no_error(iCheckN0(N0))
-  N0 <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
-  expect_error(iCheckN0(N0),
-               "'N0' must contain only one value for 'N0' or 7 named")
-  N0 <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,maxage=15,derek=7)
-  expect_error(iCheckN0(N0),
-               "'N0' must contain only one value for 'N0' or 7 named")
-  N0 <- c(N0=100,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,MAXAGE=15)
-  expect_error(iCheckN0(N0),
-               "'N0' must have named values for all of")
-  N0 <- c(100,2000,0.50,-0.616,-5.453,3.10,15)
-  expect_error(iCheckN0(N0),
-               "'N0' must have named values for")
+  # ----- test wrong input types
+  N0 <- -100
+  rFAMS:::iCheckN0(N0) |>
+    expect_error("'N0' must be >=0")
+  N0 <- "a"
+  rFAMS:::iCheckN0(N0) |>
+    expect_error("'N0' must be a number")
+  N0 <- c(300,500)
+  rFAMS:::iCheckN0(N0) |>
+    expect_error("Only use one value in 'N0'")
 })
 
 ## Continue with the rest of the internals ##
