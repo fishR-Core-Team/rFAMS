@@ -417,7 +417,7 @@ iCheckLWb <- function(x) {
 # Check length-weight alpha
 iCheckLWa <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify a weight-length alpha coefficient in ",nm,".")
+  if (missing(x)) STOP("Need to specify a weight-length alpha coefficient.")
   if (is.null(x)) STOP("Need to specify a weight-length alpha coefficient in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)

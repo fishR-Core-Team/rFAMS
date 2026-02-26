@@ -196,6 +196,23 @@ test_that("iCheckLWb() messages",{
     expect_warning("A weight-length beta coefficient of 4.5 seems too large")
 })
 
+test_that("iCheckLWa() messages",{
+  # ----- test that something was sent
+  rFAMS:::iCheckLWa() |>
+    expect_error("Need to specify a weight-length alpha coefficient")
+  LWalpha <- NULL
+  rFAMS:::iCheckLWa(LWalpha) |>
+    expect_error("Need to specify a weight-length alpha coefficient in 'LWalpha'")
+
+  # ----- test wrong input types
+  LWalpha <- "a"
+  rFAMS:::iCheckLWa(LWalpha) |>
+    expect_error("'LWalpha' must be a number")
+  LWalpha <- c(0.3,0.5)
+  rFAMS:::iCheckLWa(LWalpha) |>
+    expect_error("Only use one value in 'LWalpha'")
+})
+
 
 
 test_that("iCheckCondMort() messages",{
