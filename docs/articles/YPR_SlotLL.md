@@ -60,7 +60,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 ## Estimate yield for one minimum length limit and variable conditional fishing and conditional natural mortality.
 
 The function
-[`yprBH_SlotLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.R.md)
+[`yprBH_SlotLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md)
 function is used when yield is estimated with a slot limit and
 conditional fishing mortality is specified below, within, and above the
 slot. This function requires a recruitment length `recruitmentTL` (i.e.,

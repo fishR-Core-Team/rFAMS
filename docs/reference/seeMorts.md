@@ -116,7 +116,7 @@ of the Fisheries Research Board of Canada. Was (is?) from
 ## See also
 
 [`yprBH_MinLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md),
-[`yprBH_SlotLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.R.md),
+[`yprBH_SlotLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md),
 and
 [`dpmBH_MinLL`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md)
 for functions that require the user to provide reasonable values of cf

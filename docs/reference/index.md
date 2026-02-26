@@ -27,9 +27,9 @@
   : Simulate expected yield using the Beverton-Holt Yield-per-Recruit
   model for a range of input parameters, including minimum length limits
   for harvest
-- [`yprBH_SlotLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.R.md)
+- [`yprBH_SlotLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md)
   : Simulate expected yield using the Beverton-Holt Yield Per Recruit
   model for a slot limit
-- [`yprBH_slot_func()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_slot_function.md)
+- [`yprBH_slot_func()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_slot_func.md)
   : Function to simulate expected yield using the Beverton-Holt Yield
   Per Recruit model for single input parameters

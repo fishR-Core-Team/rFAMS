@@ -68,7 +68,7 @@ makeLH(N0, tmax, Linf, K, t0, LWalpha, LWbeta, restype = c("list", "vector"))
 A named list or vector (depending on `restype`) that contains the given
 (or extracted) life history parameters values that can be used directly
 in the yield-per-recruit calculation functions (e.g.,
-[`yprBH_SlotLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.R.md)).
+[`yprBH_SlotLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md)).
 
 ## Details
 
