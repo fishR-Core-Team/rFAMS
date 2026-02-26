@@ -2,7 +2,7 @@
 % Please edit documentation in R/yprBH_SlotLL.R
 \name{yprBH_SlotLL}
 \alias{yprBH_SlotLL}
-\title{Main function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for a slot limit}
+\title{Simulate expected yield using the Beverton-Holt Yield Per Recruit model for a slot limit}
 \usage{
 yprBH_SlotLL(
   recruitmentTL = NULL,
@@ -12,8 +12,8 @@ yprBH_SlotLL(
   cfin,
   cfabove,
   cm,
-  loi = NULL,
   lhparms,
+  loi = NULL,
   matchRicker = FALSE
 )
 }
@@ -32,11 +32,11 @@ yprBH_SlotLL(
 
 \item{cm}{A numeric vector of conditional natural mortality.}
 
-\item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
-
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
-\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.}
+\item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
+
+\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 }
 \value{
 A data.frame with the following calculated values:
@@ -120,7 +120,7 @@ loi <- c(200,250,300,325,350)
 #Estimate yield based on a protected slot limit
  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-                       loi=c(200,250,300,325,350),lhparms=LH)
+                       lhparms=LH,loi=c(200,250,300,325,350))
 
  Res_1
 

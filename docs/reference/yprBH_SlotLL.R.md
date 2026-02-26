@@ -1,4 +1,4 @@
-# Main function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for a slot limit
+# Simulate expected yield using the Beverton-Holt Yield Per Recruit model for a slot limit
 
 Main wrapper function to estimate yield using the Beverton-Holt YPR
 model. This main function accepts a range of values for cf, cm,
@@ -16,8 +16,8 @@ yprBH_SlotLL(
   cfin,
   cfabove,
   cm,
-  loi = NULL,
   lhparms,
+  loi = NULL,
   matchRicker = FALSE
 )
 ```
@@ -55,11 +55,6 @@ yprBH_SlotLL(
 
   A numeric vector of conditional natural mortality.
 
-- loi:
-
-  A numeric vector for lengths of interest. Used to determine number of
-  fish that reach desired lengths.
-
 - lhparms:
 
   A named vector or list that contains values for each `N0`, `tmax`,
@@ -67,12 +62,17 @@ yprBH_SlotLL(
   [`makeLH`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   for definitions of these life history parameters. Also see details.
 
+- loi:
+
+  A numeric vector for lengths of interest. Used to determine number of
+  fish that reach desired lengths.
+
 - matchRicker:
 
   A logical that indicates whether the yield function should match that
-  in Ricker (). Defaults to `TRUE`. The only reason to changed to
-  `FALSE` is to try to match output from FAMS. See the "YPR_FAMSvRICKER"
-  article.
+  in Ricker (1975). Defaults to `TRUE`. The only reason to changed to
+  `FALSE` is to try to match output from FAMS. See the [FAMS vs Ricker
+  article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html).
 
 ## Value
 
@@ -260,7 +260,7 @@ loi <- c(200,250,300,325,350)
 #Estimate yield based on a protected slot limit
  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-                       loi=c(200,250,300,325,350),lhparms=LH)
+                       lhparms=LH,loi=c(200,250,300,325,350))
 
  Res_1
 #>    yieldTotal yieldUnder yieldIn   yieldAbove nharvTotal ndieTotal
@@ -294,15 +294,15 @@ loi <- c(200,250,300,325,350)
 #> 8  0.19946640  5.874316  1.6100560  0.21960825 1.761224 2.443479 3.68129
 #> 9  0.01599007  1.732910  0.2959923  0.01711867 1.761224 2.443479 3.68129
 #>   avglenUnder avglenIn avglenAbove avgwtUnder avgwtIn avgwtAbove    nAt200
-#> 1    225.5013      NaN    443.8067   149.2303     NaN  1368.5648 83.063612
-#> 2    225.1683      NaN    424.6353   148.5101     NaN  1184.3955 67.502485
-#> 3    224.7908      NaN    407.5833   147.6969     NaN  1035.7105 53.355962
-#> 4    224.3558      NaN    393.1118   146.7633     NaN   920.1343 40.670046
-#> 5    223.8426      NaN    381.0284   145.6675     NaN   830.7556 29.499778
-#> 6    223.2179      NaN    370.8494   144.3410     NaN   760.2978 19.913084
-#> 7    222.4198      NaN    362.0448   142.6588     NaN   702.7958 11.997573
-#> 8    221.3140      NaN    354.0829   140.3505     NaN   653.4620  5.874316
-#> 9    219.4936      NaN    346.2120   136.6072     NaN   607.1089  1.732910
+#> 1    225.5013        0    443.8067   149.2303       0  1368.5648 83.063612
+#> 2    225.1683        0    424.6353   148.5101       0  1184.3955 67.502485
+#> 3    224.7908        0    407.5833   147.6969       0  1035.7105 53.355962
+#> 4    224.3558        0    393.1118   146.7633       0   920.1343 40.670046
+#> 5    223.8426        0    381.0284   145.6675       0   830.7556 29.499778
+#> 6    223.2179        0    370.8494   144.3410       0   760.2978 19.913084
+#> 7    222.4198        0    362.0448   142.6588       0   702.7958 11.997573
+#> 8    221.3140        0    354.0829   140.3505       0   653.4620  5.874316
+#> 9    219.4936        0    346.2120   136.6072       0   607.1089  1.732910
 #>       nAt250      nAt300      nAt325     nAt350  cm  expUnder expIn   expAbove
 #> 1 63.5261255 58.45086262 55.75878105 48.8794721 0.1 0.2378792     0 0.14257140
 #> 2 47.6389553 39.93702691 36.14148621 29.9002613 0.2 0.2252683     0 0.13484863

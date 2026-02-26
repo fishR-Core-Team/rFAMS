@@ -15,8 +15,8 @@ yprBH_slot_func(
   cfin,
   cfabove,
   cm,
-  loi = NULL,
   lhparms,
+  loi = NULL,
   matchRicker = FALSE
 )
 ```
@@ -54,11 +54,6 @@ yprBH_slot_func(
 
   A numeric representing conditional natural mortality
 
-- loi:
-
-  A numeric vector for lengths of interest. Used to determine number of
-  fish that reach desired lengths.
-
 - lhparms:
 
   A named vector or list that contains values for each `N0`, `tmax`,
@@ -66,12 +61,17 @@ yprBH_slot_func(
   [`makeLH`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   for definitions of these life history parameters. Also see details.
 
+- loi:
+
+  A numeric vector for lengths of interest. Used to determine number of
+  fish that reach desired lengths.
+
 - matchRicker:
 
   A logical that indicates whether the yield function should match that
-  in Ricker (). Defaults to `TRUE`. The only reason to changed to
-  `FALSE` is to try to match output from FAMS. See the "YPR_FAMSvRICKER"
-  article.
+  in Ricker (1975). Defaults to `TRUE`. The only reason to changed to
+  `FALSE` is to try to match output from FAMS. See the [FAMS vs Ricker
+  article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html).
 
 ## Value
 
@@ -241,7 +241,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 # Estimate yield with fixed parameters
 Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
                        cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
-                       loi=c(200,250,300,325,350),lhparms=LH)
+                       lhparms=LH,loi=c(200,250,300,325,350))
 Res_1
 #>   yieldTotal yieldUnder  yieldIn yieldAbove nharvTotal ndieTotal nharvestUnder
 #> 1   5611.796   903.2554 3813.586   894.9547   19.68287   20.9852      6.154504

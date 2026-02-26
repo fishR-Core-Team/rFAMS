@@ -25,6 +25,10 @@
     <li><a class="dropdown-item" href="../articles/ggplot_for_rFAMS.html">ggplot2 for rFAMS</a></li>
   </ul></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-manual" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Manual</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-manual"><li><a class="dropdown-item" href="../articles/MANUAL_Mortality.html">Mortality</a></li>
+  </ul></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-explanations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Explanations</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-explanations"><li><a class="dropdown-item" href="../articles/YPR_FAMSvRICKER.html">Comparing FAMS and Ricker YPR Equations</a></li>
   </ul></li>
@@ -51,15 +55,15 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dpmBH_MinLL</span><span class="op">(</span></span>
-<span>  <span class="va">simyears</span>,</span>
 <span>  <span class="va">minLL</span>,</span>
 <span>  <span class="va">cf</span>,</span>
 <span>  <span class="va">cm</span>,</span>
 <span>  <span class="va">rec</span>,</span>
 <span>  <span class="va">lhparms</span>,</span>
-<span>  matchRicker <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">simyears</span>,</span>
 <span>  species <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  group <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  matchRicker <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -67,11 +71,7 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-simyears">simyears<a class="anchor" aria-label="anchor" href="#arg-simyears"></a></dt>
-<dd><p>A single numeric for the lower limit of minimum length limit for harvest in mm.</p></dd>
-
-
-<dt id="arg-minll">minLL<a class="anchor" aria-label="anchor" href="#arg-minll"></a></dt>
+<dl><dt id="arg-minll">minLL<a class="anchor" aria-label="anchor" href="#arg-minll"></a></dt>
 <dd><p>A single numeric representing the minimum length limit for harvest in mm.</p></dd>
 
 
@@ -91,8 +91,8 @@
 <dd><p>A named vector or list that contains values for each <code>N0</code>, <code>tmax</code>, <code>Linf</code>, <code>K</code>, <code>t0</code>, <code>LWalpha</code>, and <code>LWbeta</code>. See <code><a href="makeLH.html">makeLH</a></code> for definitions of these life history parameters. Also see details.</p></dd>
 
 
-<dt id="arg-matchricker">matchRicker<a class="anchor" aria-label="anchor" href="#arg-matchricker"></a></dt>
-<dd><p>A logical that indicates whether the yield function should match that in Ricker (). Defaults to <code>TRUE</code>. The only reason to changed to <code>FALSE</code> is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.</p></dd>
+<dt id="arg-simyears">simyears<a class="anchor" aria-label="anchor" href="#arg-simyears"></a></dt>
+<dd><p>A single numeric for the lower limit of minimum length limit for harvest in mm.</p></dd>
 
 
 <dt id="arg-species">species<a class="anchor" aria-label="anchor" href="#arg-species"></a></dt>
@@ -101,6 +101,10 @@
 
 <dt id="arg-group">group<a class="anchor" aria-label="anchor" href="#arg-group"></a></dt>
 <dd><p>is a single character to specify the sub-group name of a species used in the simulation and will define the length for <code>stock</code>, <code>quality</code>, <code>preferred</code>, <code>memorable</code>, and <code>trophy</code>. Length categories are obtained from the FSA package, see the <code><a href="https://fishr-core-team.github.io/FSA/reference/PSDlit.html" class="external-link">PSDlit</a></code> documentation.</p></dd>
+
+
+<dt id="arg-matchricker">matchRicker<a class="anchor" aria-label="anchor" href="#arg-matchricker"></a></dt>
+<dd><p>A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to <code>TRUE</code>. The only reason to changed to <code>FALSE</code> is to try to match output from FAMS. See the <a href="https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html">FAMS vs Ricker article</a>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -219,9 +223,9 @@
 <span class="r-in"><span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.18</span>,<span class="op">(</span><span class="va">lhparms</span><span class="op">$</span><span class="va">tmax</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">simyears</span><span class="op">)</span>,nrow<span class="op">=</span><span class="va">simyears</span>,byrow<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.33</span>,<span class="op">(</span><span class="va">lhparms</span><span class="op">$</span><span class="va">tmax</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">simyears</span><span class="op">)</span>,nrow<span class="op">=</span><span class="va">simyears</span>,byrow<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">out_2</span><span class="op">&lt;-</span><span class="fu">dpmBH_MinLL</span><span class="op">(</span>simyears <span class="op">=</span> <span class="va">simyears</span>, minLL <span class="op">=</span> <span class="va">minLL</span>, cf <span class="op">=</span> <span class="va">cf</span>,</span></span>
-<span class="r-in"><span>                   cm <span class="op">=</span> <span class="va">cm</span>, rec <span class="op">=</span> <span class="va">rec</span>, lhparms <span class="op">=</span> <span class="va">lhparms</span>,</span></span>
-<span class="r-in"><span>                   matchRicker<span class="op">=</span><span class="cn">FALSE</span>,species<span class="op">=</span><span class="st">"Striped Bass"</span>,group<span class="op">=</span><span class="st">"landlocked"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">out_2</span><span class="op">&lt;-</span><span class="fu">dpmBH_MinLL</span><span class="op">(</span>minLL <span class="op">=</span> <span class="va">minLL</span>, cf <span class="op">=</span> <span class="va">cf</span>, cm <span class="op">=</span> <span class="va">cm</span>,</span></span>
+<span class="r-in"><span>                   rec <span class="op">=</span> <span class="va">rec</span>, lhparms <span class="op">=</span> <span class="va">lhparms</span>,simyears <span class="op">=</span> <span class="va">simyears</span>,</span></span>
+<span class="r-in"><span>                   species<span class="op">=</span><span class="st">"Striped Bass"</span>,group<span class="op">=</span><span class="st">"landlocked"</span>,matchRicker<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Use summary by year data frame to plot yield vs year</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">out_2</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">year</span>,y<span class="op">=</span><span class="va">PSD</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span></span>

@@ -9,24 +9,19 @@ harvest (`minLL`).
 
 ``` r
 dpmBH_MinLL(
-  simyears,
   minLL,
   cf,
   cm,
   rec,
   lhparms,
-  matchRicker = FALSE,
+  simyears,
   species = NULL,
-  group = NULL
+  group = NULL,
+  matchRicker = FALSE
 )
 ```
 
 ## Arguments
-
-- simyears:
-
-  A single numeric for the lower limit of minimum length limit for
-  harvest in mm.
 
 - minLL:
 
@@ -59,12 +54,10 @@ dpmBH_MinLL(
   [`makeLH`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   for definitions of these life history parameters. Also see details.
 
-- matchRicker:
+- simyears:
 
-  A logical that indicates whether the yield function should match that
-  in Ricker (). Defaults to `TRUE`. The only reason to changed to
-  `FALSE` is to try to match output from FAMS. See the "YPR_FAMSvRICKER"
-  article.
+  A single numeric for the lower limit of minimum length limit for
+  harvest in mm.
 
 - species:
 
@@ -83,6 +76,13 @@ dpmBH_MinLL(
   from the FSA package, see the
   [`PSDlit`](https://fishr-core-team.github.io/FSA/reference/PSDlit.html)
   documentation.
+
+- matchRicker:
+
+  A logical that indicates whether the yield function should match that
+  in Ricker (1975). Defaults to `TRUE`. The only reason to changed to
+  `FALSE` is to try to match output from FAMS. See the [FAMS vs Ricker
+  article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html).
 
 ## Value
 
@@ -300,9 +300,9 @@ rec <- genRecruits(method = "normal", simyears = simyears,
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
-out_2<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
-                   cm = cm, rec = rec, lhparms = lhparms,
-                   matchRicker=FALSE,species="Striped Bass",group="landlocked")
+out_2<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
+                   rec = rec, lhparms = lhparms,simyears = simyears,
+                   species="Striped Bass",group="landlocked",matchRicker=FALSE)
 
 #Use summary by year data frame to plot yield vs year
 ggplot(data=out_2[[2]],mapping=aes(x=year,y=PSD)) +

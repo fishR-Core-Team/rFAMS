@@ -1,4 +1,4 @@
-#' @title Main function to simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest
+#' @title Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest
 #'
 #' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
 #'
@@ -6,7 +6,9 @@
 #' @param minLL A numeric vector of minimum length limits.
 #' @param cf A numeric vector of conditional fishing mortality.
 #' @param cm A numeric vector of conditional natural mortality.
+#' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
+#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
 #' @details Details will be filled out later
 #'
@@ -27,7 +29,7 @@
 #' \item \code{S} is the (total) annual rate of survival.
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (\code{minLL} derived from \code{lengthmin}, \code{lengthmax}, and \code{lengthinc}; \code{cf} derived from \code{cfmin}, \code{cfmax}, and \code{cfinc}; \code{cm} derived from \code{cmmin}, \code{cmmax}, and \code{cminc}; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax}).
+#' For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, and\code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax}).
 #'
 #' The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are defined under "values" in the documentation for \code{\link{yprBH_func}}.
 #'
@@ -35,13 +37,13 @@
 #'
 #' @seealso \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
 #'
-#'See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_MLL.html}{this demonstration page} for more plotting examples
+#'See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html}{this demonstration page} for more plotting examples
 #'
 #' @examples
 #' # Load other required packages for organizing output and plotting
 #' library(dplyr)    ## for filter
 #' library(ggplot2)  ## for ggplot et al.
-#' library(metR)     ## geom_text_contour
+#' library(metR)     ## geom_contour2
 #'
 #' # Life history parameters to be used below
 #' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
@@ -56,7 +58,7 @@
 #' loi <- c(400,450,500,550)
 #'
 #' Res_1 <- yprBH_MinLL(minLL = minLL, cf = cf, cm = cm,
-#'                      loi=loi,lhparms=LH)
+#'                      lhparms=LH, loi=loi)
 #'
 #' # Yield curves (yield vs exploitation) by varying minimum lengths,
 #' # using cm=40
@@ -66,7 +68,9 @@
 #'                                  group=minLL,color=minLL)) +
 #'   geom_line(linewidth=1) +
 #'   scale_color_gradient2(high="black") +
-#'   labs(y="Yield (g)",x="Exploitation (u)",color="Min Length Limit") +
+#'   xlab("Exploitation (u)")+
+#'   ylab("Yield (g)")+
+#'   labs(color="Min Length Limit") +
 #'   theme_bw()
 #'
 #' # Yield isopleths for varying minLL and exploitation with cm=0.40
@@ -81,8 +85,8 @@
 #' @rdname yprBH_MinLL
 #' @export
 
-yprBH_MinLL <- function(minLL,cf,cm,
-                        loi=NULL,lhparms,matchRicker=FALSE){
+yprBH_MinLL <- function(minLL,cf,cm,lhparms,
+                        loi=NULL,matchRicker=FALSE){
   # ---- Check inputs
   iCheckminLL(minLL,"minLL")
   iCheckcfVect(cf,"cf")
@@ -100,6 +104,11 @@ yprBH_MinLL <- function(minLL,cf,cm,
   # iCheckcm(cmmax,"maximum")
   # cm <- iCheckcfminc(cminc,cmmin,cmmax)
   iCheckloi(loi)
+
+  #needed to account for rounding issues of sequences
+  minLL <- round(minLL,8)
+  cf <- round(cf,8)
+  cm <- round(cm,8)
 
   # ---- Compute Yield et al. for varying minLL, cf, and cm
   # Setup data.frame of input values ... minLL, cf, and cm sequences were
