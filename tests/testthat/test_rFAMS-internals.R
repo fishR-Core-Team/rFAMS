@@ -213,6 +213,96 @@ test_that("iCheckLWa() messages",{
     expect_error("Only use one value in 'LWalpha'")
 })
 
+test_that("iCheckLHParms() messages",{
+  # ----- test if missing argument
+  rFAMS:::iCheckLHparms() |>
+    expect_error("Need to specify a list or vector of life history parameters")
+  LHparms <- NULL
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("Need to specify a list or vector of life history parameters")
+
+  # ----- test for unnamed vector/list
+  LHparms <- c(100,15,300,0.3,-0.5,-5.4,3.1)
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("Life history parameters in 'LHparms' must be named")
+  LHparms <- as.list(LHparms)
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("Life history parameters in 'LHparms' must be named")
+
+  # ----- test for missing parameters in vector and then list
+  tmp <- c("N0"=100,"tmax"=15,"Linf"=300,"K"=0.3,"t0"=-0.5,"LWalpha"=-5.4,"LWbeta"=3.1)
+  LHparms <- tmp
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_no_error()
+  LHparms <- tmp[-1]
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' is missing these life history parameters: N0")
+  LHparms <- tmp[-c(1,3)]
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' is missing these life history parameters: N0, Linf")
+
+  tmp2 <- as.list(tmp)
+  LHparms <- tmp2
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_no_error()
+  LHparms <- tmp2[-1]
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' is missing these life history parameters: N0")
+  LHparms <- tmp2[-c(1,3)]
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' is missing these life history parameters: N0, Linf")
+
+  # ----- test for mis-spelled parameters (treats as if missing)
+  LHparms <- tmp
+  names(LHparms)[1] <- "no"
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' is missing these life history parameters: N0")
+  names(LHparms)[3] <- "LINF"
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' is missing these life history parameters: N0, Linf")
+
+  LHparms <- tmp2
+  names(LHparms)[1] <- "no"
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' is missing these life history parameters: N0")
+  names(LHparms)[3] <- "LINF"
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' is missing these life history parameters: N0, Linf")
+
+  # ----- test for too many parameters
+  LHparms <- c(tmp,"derek"=7)
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("These parameters should not be in 'LHparms': derek")
+  LHparms <- as.list(LHparms)
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("These parameters should not be in 'LHparms': derek")
+
+  # ----- test for wrong type
+  LHparms <- as.data.frame(tmp)
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' must be a vector or list, not a data.frame")
+  LHparms <- as.matrix(tmp,ncol=1)
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' must be a vector or list, not a matrix")
+  LHparms <- array(tmp,dim=c(7,1))
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'LHparms' must be a vector or list, not a matrix")
+
+  # ----- spot test for wrong values type or magnitude ... more thorough tests
+  #       are elsewhere; e.g., iCheckLinf(), iCheckN0()
+  LHparms <- tmp
+  LHparms["N0"] <- -100
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'N0' must be >=0")
+  LHparms <- tmp
+  LHparms["LWbeta"] <- 1
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_warning("A weight-length beta coefficient of 1 seems too small")
+  LHparms <- tmp2
+  LHparms[["Linf"]] <- "Linf"
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_error("'Linf' must be a number")
+})
 
 
 test_that("iCheckCondMort() messages",{

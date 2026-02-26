@@ -4,7 +4,7 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckcfminc iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder iCheckCondMort
+#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckcfminc iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder iCheckCondMort iCheckLHparms
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
@@ -342,7 +342,7 @@ iCheckloi <- function(loi){
     STOP("loi must be a numeric data type")
 }
 
-# Check initial number of fish in the population
+# ===== Check initial number of fish in the population
 iCheckN0 <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x))
@@ -363,7 +363,7 @@ iCheckLLinf <- function(x, Linf) {
   if (sum(x > Linf) >0 ) STOP("Harvest lengths in the vector (", nm, ") can't be greater than Linf")
 }
 
-# Check Linf
+# ===== Check Linf
 iCheckLinf <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a mean asymptotic length (mm).")
@@ -377,7 +377,7 @@ iCheckLinf <- function(x) {
                    "  please check value in ",nm,".")
 }
 
-# Check K
+# ===== Check K
 iCheckK <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a Brody growth coefficient.")
@@ -391,7 +391,7 @@ iCheckK <- function(x) {
                   "  please check value in ",nm,".")
 }
 
-# Check t0
+# ===== Check t0
 iCheckt0 <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a time when the mean length is 0.")
@@ -400,7 +400,7 @@ iCheckt0 <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-# Check length-weight beta
+# ===== Check length-weight beta
 iCheckLWb <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a weight-length beta coefficient.")
@@ -414,7 +414,7 @@ iCheckLWb <- function(x) {
                 "  please check value in ",nm,".")
 }
 
-# Check length-weight alpha
+# ===== Check length-weight alpha
 iCheckLWa <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a weight-length alpha coefficient.")
@@ -424,7 +424,7 @@ iCheckLWa <- function(x) {
 }
 
 
-# Check maximum age
+# ===== Check maximum age
 iCheckMaxAge <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a maximum age.")
@@ -654,4 +654,51 @@ isum_by_year <- function(res,species,group){
 
 
   return(Year_Summary)
+}
+
+
+iCheckLHparms <- function(x) {
+  nm <- paste0("'",deparse(substitute(x)),"'")
+
+  ## check if missing
+  if (missing(x))
+    STOP("Need to specify a list or vector of life history parameters.")
+  if (is.null(x))
+    STOP("Need to specify a list or vector of life history parameters in ",nm,".")
+
+  ## check not a data.frame or matrix
+  if (is.data.frame(x)) STOP(nm," must be a vector or list, not a data.frame.")
+  if (is.matrix(x)) STOP(nm," must be a vector or list, not a matrix.")
+
+  ## Check names
+  # set expected names for list/vector
+  nms <- c("N0","tmax","Linf","K","t0","LWalpha","LWbeta")
+  # get names in vector/list
+  gnms <- names(x)
+  # check if vector/list is named
+  if (is.null(gnms)) STOP("Life history parameters in ",nm," must be named.")
+  # check that all required names are in vector/list
+  tmp <- nms %in% gnms
+  if (!all(tmp)) STOP(nm," is missing these life history parameters: ",
+                      paste(nms[!tmp],collapse=", "))
+  # check if too many items
+  tmp <- gnms %in% nms
+  if (!all(tmp)) STOP("These parameters should not be in ",nm,": ",
+                      paste(gnms[!tmp],collapse=", "))
+
+  ## Now check that contents are of the right type and magnitude
+  N0 <- x[["N0"]]
+  iCheckN0(N0)
+  tmax <- x[["tmax"]]
+  iCheckMaxAge(tmax)
+  Linf <- x[["Linf"]]
+  iCheckLinf(Linf)
+  K <- x[["K"]]
+  iCheckK(K)
+  t0 <- x[["t0"]]
+  iCheckt0(t0)
+  LWalpha <- x[["LWalpha"]]
+  iCheckLWa(LWalpha)
+  LWbeta <- x[["LWbeta"]]
+  iCheckLWb(LWbeta)
 }

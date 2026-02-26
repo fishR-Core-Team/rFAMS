@@ -53,6 +53,7 @@
 \alias{iCheckcfin}
 \alias{iCheckcfunder}
 \alias{iCheckCondMort}
+\alias{iCheckLHparms}
 \title{Internal functions.}
 \usage{
 .onAttach(libname, pkgname)
