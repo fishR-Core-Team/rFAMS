@@ -101,6 +101,32 @@ test_that("iCheckMaxAge() messages",{
     expect_error("Only use one value in 'tmax'")
 })
 
+test_that("iCheckLinf() messages",{
+  # ----- test that something was sent
+  rFAMS:::iCheckLinf() |>
+    expect_error("Need to specify a mean asymptotic length \\(mm\\)")
+  Linf <- NULL
+  rFAMS:::iCheckLinf(Linf) |>
+    expect_error("Need to specify a mean asymptotic length \\(mm\\) in 'Linf'")
+
+  # ----- test wrong input types
+  Linf <- -1
+  rFAMS:::iCheckLinf(Linf) |>
+    expect_error("'Linf' must be >=0")
+  Linf <- "a"
+  rFAMS:::iCheckLinf(Linf) |>
+    expect_error("'Linf' must be a number")
+  Linf <- c(300,500)
+  rFAMS:::iCheckLinf(Linf) |>
+    expect_error("Only use one value in 'Linf'")
+  Linf <- 150
+  rFAMS:::iCheckLinf(Linf) |>
+    expect_warning("A mean asymptotic length of 150 mm seems too small")
+  Linf <- 2500
+  rFAMS:::iCheckLinf(Linf) |>
+    expect_warning("A mean asymptotic length of 2500 mm seems too large")
+})
+
 
 test_that("iCheckCondMort() messages",{
   # ----- test that something was sent

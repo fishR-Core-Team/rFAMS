@@ -366,7 +366,7 @@ iCheckLLinf <- function(x, Linf) {
 # Check Linf
 iCheckLinf <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify a mean asymptotic length (mm) in ",nm,".")
+  if (missing(x)) STOP("Need to specify a mean asymptotic length (mm).")
   if (is.null(x)) STOP("Need to specify a mean asymptotic length (mm) in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
