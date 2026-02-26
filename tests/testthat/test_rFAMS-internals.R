@@ -127,6 +127,33 @@ test_that("iCheckLinf() messages",{
     expect_warning("A mean asymptotic length of 2500 mm seems too large")
 })
 
+test_that("iCheckK() messages",{
+  # ----- test that something was sent
+  rFAMS:::iCheckK() |>
+    expect_error("Need to specify a Brody growth coefficient")
+  K <- NULL
+  rFAMS:::iCheckK(K) |>
+    expect_error("Need to specify a Brody growth coefficient in 'K'")
+
+  # ----- test wrong input types
+  K <- -1
+  rFAMS:::iCheckK(K) |>
+    expect_error("'K' must be >=0")
+  K <- "a"
+  rFAMS:::iCheckK(K) |>
+    expect_error("'K' must be a number")
+  K <- c(0.3,0.5)
+  rFAMS:::iCheckK(K) |>
+    expect_error("Only use one value in 'K'")
+  K <- 1
+  rFAMS:::iCheckK(K) |>
+    expect_warning("A Brody growth coefficient of 1 seems too large")
+  K <- 0.01
+  rFAMS:::iCheckK(K) |>
+    expect_warning("A Brody growth coefficient of 0.01 seems too small")
+})
+
+
 
 test_that("iCheckCondMort() messages",{
   # ----- test that something was sent

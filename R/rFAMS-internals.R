@@ -380,14 +380,14 @@ iCheckLinf <- function(x) {
 # Check K
 iCheckK <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify a Brody growth coefficient in ",nm,".")
+  if (missing(x)) STOP("Need to specify a Brody growth coefficient.")
   if (is.null(x)) STOP("Need to specify a Brody growth coefficient in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
   if (x<0.1) WARN("A Brody growth coefficient of ",x," seems too small,\n",
                   "  please check value in ",nm,".")
-  if (x>0.6) WARN("A Brody growth coefficient of ",x," mm seems too large,\n",
+  if (x>0.6) WARN("A Brody growth coefficient of ",x," seems too large,\n",
                   "  please check value in ",nm,".")
 }
 
