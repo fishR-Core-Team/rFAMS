@@ -1,0 +1,214 @@
+# Comparing FAMS and Ricker YPR Equations
+
+### Yield Equations
+
+The Beverton-Holt yield-per-recruit (YPR) equation according to the FAMS
+documentation is:
+
+``` math
+ Y = \frac{FN_{t}e^{Zr}W_{\infty}}{K} [\beta(X,P,Q)-\beta(X1,P,Q)] 
+```
+
+The Beverton-Holt YPR equation according to Ricker is:
+
+``` math
+ Y = \frac{FN_{0}e^{Fr}W_{\infty}}{K} [\beta(X,P,Q)-\beta(X1,P,Q)] 
+```
+
+Note the use $`N_t`$ vs $`N_0`$ and the use of $`Z`$ vs $`F`$ (in the
+exponent).
+
+Parameters are defined as:
+
+- $`F`$ is instantaneous fishing mortality.
+- $`M`$ is instantaneous natural mortality (*not in above*).
+- $`Z`$ is instantaneous natural mortality.
+- $`t_0`$ is the hypothetical age (i.e., time) when the mean length is
+  zero.
+- $`t_r`$ is the age (i.e., time) when fish recruit to the fishery
+  (i.e., reach the minimum length in our example).
+- $`t_\lambda`$ is the maximum age of fish in the population (*not in
+  above*).
+- $`r`$ is the time it takes to recruit to the fishery ($`r=t_r-t_0`$).
+- $`N_0`$ is the number of recruits to the *population* **AT** $`t_0`$.
+- $`N_t`$ is the number of recruits to the *fishery* at $`t_r`$
+  (=$`N_{0}e^{-Mt_{r}}`$).
+- $`W_\infty`$ is the average asymptotic weight of a fish.
+- $`K`$ is the Brody growth coefficient from the von Bertalanffy growth
+  model.
+- $`b`$ is the slope of the $`log_{10}(Weight)`$-$`log_{10}(Length)`$
+  linear model fit (*not in above*).
+- $`\beta()`$ is the incomplete beta function with parameters $`X`$,
+  $`X1`$, $`P`$, and $`Q`$ defined as
+  - $`X=e^{-Kr}`$
+  - $`X1=e^{-K(t_\lambda-t_0)}`$
+  - $`P=\frac{Z}{K}`$
+  - $`Q=b+1`$
+
+### FAMS vs Ricker “Issue”
+
+We have not been able to reproduce the results from FAMS with results in
+R using the Ricker equation. This suggests some issue with coding (in
+FAMS or by us in R) or that the FAMS and Ricker YPR equations are not
+equal. We don’t have the ability to examine the code in FAMS and we are
+confident that we have coded Ricker’s equation correction. Thus, we look
+more closely at the two yield equations here.
+
+The two yield equations above are equivalent except for the
+$`N_{t}e^{Zr}`$ portion (from FAMS) and the $`N_{0}e^{Fr}`$ portion
+(from Ricker). Thus, as was suggested in the FAMS documentation, is it
+possible to make substitutions into the Ricker equation to produce the
+FAMS equation? We try this below.
+
+- Substitute $`Z-M`$ for $`F`$ in the Ricker portion, distribute the
+  $`r`$, and separate the exponents.
+
+``` math
+ N_{0}e^{(Z-M)r} = N_{0}e^{Zr-Mr} = N_{0}e^{Zr}e^{-Mr}
+```
+
+- Substitute $`t_r-t_0`$ for $`r`$ in the $`M`$ portion, distribute the
+  $`M`$, and separate the exponents.
+
+``` math
+ N_{0}e^{Zr}e^{-M(t_r-t_0)} = N_{0}e^{Zr}e^{-Mt_r+Mt_0} = N_{0}e^{Zr}e^{-Mt_r}e^{Mt_0}
+```
+
+- Rearrange the exponentiated parts and substitute $`N_{t}`$ for
+  $`N_{0}e^{-Mt_{r}}`$
+
+``` math
+ N_{0}e^{-Mt_r}e^{Zr}e^{Mt_0} = N_{t}e^{Zr}e^{Mt_0}
+```
+
+This last expression is the FAMS equation **EXCEPT** that it includes
+$`e^{Mt_0}`$. In other words, these portions of the yield equations
+would be exactly equal if $`t_{0}=0`$ such that $`e^{Mt_0}=1`$.
+Otherwise, they are not equal.
+
+Does this explain the difference between FAMS and Ricker?
+
+## Exploration
+
+Below is a quick function to compute the portions of the yield equations
+worked with above and to compute the percent differences (from the
+Ricker result) between the two results.
+
+Code
+
+``` r
+FAMSvRicker1 <- function(N0,F,M,tr,t0) {
+  Nt <- N0*exp(-M*tr)
+  r <- tr-t0
+  Z <- F+M
+  data.frame(t0,
+             FAMS=Nt*exp(Z*r),
+             RCKR=N0*exp(F*r)) |>
+    dplyr::mutate(percdiff=100*(FAMS-RCKR)/RCKR)
+}
+```
+
+Here the function is used to examine the impact of variable $`t_0`$ on
+the differences between the two yield equation portions, with all other
+parameters held constant. It can be seen that the two equation portions
+are equal when $`t_{0}=0`$, the FAMS portion if greater when $`t_{0}<0`$
+and the FAMS portion is less when $`t_{0}>0`$. The percent difference
+can be quite great over the range of reasonable $`t_0`$ values.
+
+Code
+
+``` r
+tmp <- FAMSvRicker1(100,0.2,0.3,1,seq(-2,2,length.out=100))
+
+ggplot(data=tmp,mapping=aes(y=percdiff,x=t0)) +
+  geom_point() +
+  geom_hline(yintercept=0,color="red",linetype="dashed") +
+  geom_vline(xintercept=0,color="red",linetype="dashed") +
+  labs(x="t_0",y="Percent Difference",title="Yield Portion: FAMS vs Ricker") +
+  theme_bw()
+```
+
+![](YPR_FAMSvRICKER_files/figure-html/comp-res-1-1.png)
+
+What is the impact of this difference in the actual yield equations.
+Again, a function to compute the two yield equations and find the
+absolute and percent differences is made. Note, however, that I included
+a “corrected” version of the FAMS equation that included the
+$`e^{Mt_0}`$ term.
+
+Code
+
+``` r
+FAMSvRicker <- function(N0,F,M,tr,t0,tlambda,Linf,K,a,b) {
+  Nt <- N0*exp(-M*tr)
+  r <- tr-t0
+  Z <- F+M
+  Winf <- 10^(a+b*log10(Linf))
+  P <- Z/K
+  Q <- b+1
+  X <- exp(-K*r)
+  X1 <- exp(-K*(tlambda-t0))
+  betas <- rFAMS:::iIbeta(X,P,Q)-rFAMS:::iIbeta(X1,P,Q)
+
+  data.frame(t0,
+             FAMS=((F*Nt*exp(Z*r)*Winf)/K)*betas,
+             cFAMS=((F*Nt*exp(Z*r)*Winf)/K)*betas*exp(M*t0),
+             RCKR=((F*N0*exp(F*r)*Winf)/K)*betas) |>
+    dplyr::mutate(percdiff=100*(FAMS-RCKR)/RCKR,
+                  cpercdiff=100*(cFAMS-RCKR)/RCKR)
+}
+```
+
+Here it is seen that the estimated yield results can differ greatly
+between the two equations.
+
+Code
+
+``` r
+tmp <- FAMSvRicker(N0=100,F=0.2,M=0.3,tr=1,t0=seq(-2,1,length.out=100),
+                   tlambda=10,Linf=500,K=3.1,a=-5.6,b=3.1)
+ggplot(data=tmp,mapping=aes(y=percdiff,x=t0)) +
+  geom_point() +
+  geom_hline(yintercept=0,color="red",linetype="dashed") +
+  geom_vline(xintercept=0,color="red",linetype="dashed") +
+  labs(x="t_0",y="Percent Difference",title="Yield: FAMS vs Ricker") +
+  theme_bw()
+```
+
+![](YPR_FAMSvRICKER_files/figure-html/comp-res-2-1.png)
+
+However, the differences disappear (within machine rounding error) when
+the “corrected” FAMS equation is used.
+
+Code
+
+``` r
+ggplot(data=tmp,mapping=aes(y=cpercdiff,x=t0)) +
+  geom_point() +
+  geom_hline(yintercept=0,color="red",linetype="dashed") +
+  geom_vline(xintercept=0,color="red",linetype="dashed") +
+  labs(x="t_0",y="Percent Difference",title="Yield: 'Corrected' FAMS vs Ricker") +
+  theme_bw()
+```
+
+![](YPR_FAMSvRICKER_files/figure-html/comp-res-3-1.png)
+
+### Conclusion
+
+The YPR equations in Ricker and FAMS are only strictly equal when
+$`t_0=0`$. Again, we can’t know what the authors of FAMS did, but
+perhaps they dropped this term as $`t_0`$ is often near 0 which means
+that $`e^{Mt_0}`$ would be near 1. However, as shown here, dropping that
+term can result in substantively different estimates of yield. Within a
+set of simulations this may not be a big deal because comparisons of
+yield are mostly made across other parameters that vary while $`t_0`$ is
+held constant.
+
+However, it is not difficult to include the $`e^{Mt_0}`$ term in the
+coding so why not include it to be as accurate with Ricker as possible?
+
+In addition, it likely makes sense to include this term as Ricker
+defines $`N_0`$ as the “hypothetical number of individuals that reach
+the hypothetical age $`t_0`$ annually” rather than the initial number of
+recruits at age 0. It seems reasonable that there would be a term to
+“handle” natural mortality for the time between $`t_0`$ and 0.

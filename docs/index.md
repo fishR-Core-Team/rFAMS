@@ -1,0 +1,83 @@
+## rFAMS ![rFAMS logo](reference/figures/rFAMSLogo.png)
+
+### Fisheries Analysis and Modeling Simulator in R
+
+Simulates the dynamics of exploited fish populations using the Jones
+modification of the Beverton-Holt equilibrium yield equation to compute
+yield-per-recruit and dynamic pool models (Ricker 1975)
+<https://publications.gc.ca/site/eng/480738/publication.html>. Allows
+users to evaluate minimum, slot, and inverted length limits on exploited
+fisheries using specified life history parameters. Users can simulate
+population under a variety of conditional fishing mortality and
+conditional natural mortality. Calculated quantities include number of
+fish harvested and dying naturally, mean weight and length of fish
+harvested, number of fish that reach specified lengths of interest,
+total number of fish and biomass in the population, and stock density
+indices.
+
+This package is maintained by [Jason Doll](mailto:jcdoll20@hotmail.com),
+Associate Professor of Fisheries at Francis Marion University
+
+### Support
+
+This project is supported in part by the American Fisheries Society Data
+and Technology Section (<https://units.fisheries.org/fits/>)
+
+### Status
+
+The package currently replicates all yield per recruit and dynamic pool
+modeling in FAMS with the exception of spawning potential ratio.
+Spawning potential ratio calculations will be added at a later date.
+Life history parameters can be estimated using [FSA
+package](https://fishr-core-team.github.io/FSA/index.html)
+
+#### Equilibrium Modeling
+
+1.  Initial package development completed
+2.  Add spawning potential ratio
+3.  Incorporate suggestions from the fisheries community.
+
+#### Dynamic Pool Modeling
+
+1.  Complete
+2.  Add spawning potential ratio
+3.  Incorporate suggestions from the fisheries community.
+
+#### RShiny Development
+
+1.  Initial development completed
+2.  Test with CRAN released rFAMS v0.0.2
+
+### Installation
+
+The [most recent stable
+version](https://CRAN.R-project.org/package=rFAMS) from CRAN may be
+installed with
+
+``` r
+install.packages("rFAMS")
+```
+
+The [development
+version](https://github.com/fishR-Core-Team/rFAMS/tree/dev) may be
+installed from GitHub with
+
+``` r
+# install.packages("devtools")
+devtools::install_github("fishR-Core-Team/rFAMS@dev")
+```
+
+You may need R Tools installed on your system to install the development
+version from GitHub. See the instructions for ([R Tools for
+Windows](https://cran.r-project.org/bin/windows/Rtools/) or [R Tools for
+Mac OS X](https://cran.r-project.org/bin/macosx/tools/)).
+
+ 
+
+#### Questions / Comments / Problems or Contributions
+
+Report questions, comments, or bug reports on the [issues
+page](https://github.com/fishR-Core-Team/rFAMS/issues).
+
+Please adhere to the [Code of
+Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
