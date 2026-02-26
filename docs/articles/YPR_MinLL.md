@@ -51,7 +51,6 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
 ## Estimate yield for multiple minimum length limit and multiple conditional fishing and conditional natural mortality.
 
-<<<<<<< HEAD
 The function
 [`yprBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md)
 function is used when yield is estimated with one or more minimum length
@@ -60,14 +59,6 @@ limit. This function requires a numeric vector of minimum length
 numeric vector of conditional natural mortality `cm`; a vector of length
 of interest to monitor `loi`; and the life history parameters
 `lhparams`.
-=======
-The function `yprBH_minLL()` function is used when yield is estimated
-with one or more minimum length limit. This function requires a numeric
-vector of minimum length `minLL`; a numeric vector of conditional
-fishing mortality `cf`; a numeric vector of conditional natural
-mortality `cm`; the life history parameters `lhparams`; and optionally,
-a vector of length of interest to monitor `loi`.
->>>>>>> b0bcdeac8090c63fd2e892c9cc1fa2d0ad4d2326
 
 rFAMS includes a function
 [`est_natmort()`](https://fishr-core-team.github.io/rFAMS/reference/est_natmort.md)
