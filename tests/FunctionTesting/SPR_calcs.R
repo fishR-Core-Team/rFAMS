@@ -128,7 +128,7 @@ M=0.198
 
 source("staticSPR.R")
 source("MakeSPR.R")
-source("yprBH_MinLL_var.R")
+#source("yprBH_MinLL.R")
 source("yprBH_func.R")
 source("MakeLH.R")
 source("rFAMS-internals.R")
@@ -140,12 +140,12 @@ FLRdat<- makeSPR(FLR = "Linear", FLRint = -1057029, FLRslope = 2777.08, MatAge =
 # Estimate yield for multiple values of minLL, cf, and cm
 # # This is a minimal example, lengthinc, cfinc, cminc would likely be smaller
 # #   to produce finer-scaled results
-Res_1 <- yprBH_minLL_var(lengthmin=280,lengthinc=60,lengthmax=400,
-                       cfmin=0.00,cfmax=0.70,cfinc=0.05,
-                       cmmin=0.18,cmmax=0.18,cminc=0.18,
-                       lhparms=LH,
-                       SPR = T,
-                       FLRdat=FLRdat)
+# Res_1 <- yprBH_MinLL(lengthmin=280,lengthinc=60,lengthmax=400,
+#                        cfmin=0.00,cfmax=0.70,cfinc=0.05,
+#                        cmmin=0.18,cmmax=0.18,cminc=0.18,
+#                        lhparms=LH,
+#                        SPR = T,
+#                        FLRdat=FLRdat)
 
 
 
