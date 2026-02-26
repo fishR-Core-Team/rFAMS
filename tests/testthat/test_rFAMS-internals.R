@@ -10,25 +10,22 @@ test_that("is.wholenumber() results",{
 
 test_that("iIbeta() messages and results",{
   # error messages
-  expect_error(rFAMS:::iIbeta(x=-1,a=1,b=1),
-               "'x' in incomplete beta function must be >=0")
-  expect_error(rFAMS:::iIbeta(x=2,a=1,b=1),
-               "'x' in incomplete beta function must be <=1")
-  expect_error(rFAMS:::iIbeta(x=0.5,a=-1,b=1),
-               "'a' in incomplete beta function must be >=0")
-  expect_error(rFAMS:::iIbeta(x=0.5,a=0.5,b=-1),
-               "'b' in incomplete beta function must be >=0")
+  rFAMS:::iIbeta(x=-1,a=1,b=1) |>
+    expect_error("'x' in incomplete beta function must be >=0")
+  rFAMS:::iIbeta(x=2,a=1,b=1) |>
+    expect_error("'x' in incomplete beta function must be <=1")
+  rFAMS:::iIbeta(x=0.5,a=-1,b=1) |>
+    expect_error("'a' in incomplete beta function must be >=0")
+  rFAMS:::iIbeta(x=0.5,a=0.5,b=-1) |>
+    expect_error("'b' in incomplete beta function must be >=0")
 
   # comparison to other packages
   df <- expand.grid(x=seq(0.05,0.95,0.1),
                     a=seq(0.1,3.0,0.2),
                     b=seq(0.1,3.0,0.2)) |>
     dplyr::mutate(zipfR=zipfR::Ibeta(x=x,a=a,b=b),
-                  #spsh=spsh::Ibeta(z=x,a=a,b=b),
                   rFAMS=rFAMS:::iIbeta(x,a,b))
   expect_equal(df$rFAMS,df$zipfR)
-  #expect_equal(df$rFAMS,df$spsh)
-  #expect_equal(df$spsh,df$zipfR)
 })
 #
 # test_that("iCheckMLHinc() messages and values",{
