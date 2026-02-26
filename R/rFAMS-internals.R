@@ -88,30 +88,6 @@ iCheckMLH <- function(x,type="") {
                    "  please check value in ",nm,".")
 }
 
-# # Check min length at harvest increments (min/max should be checked prior),
-# #   return sequence if everything looks good
-# iCheckMLHinc <- function(xinc,xmin,xmax) {
-#   ## checks of increment
-#   nm <- paste0("'",deparse(substitute(xinc)),"'")
-#   if (missing(xinc))
-#     STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
-#   if (is.null(xinc))
-#     STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
-#   iErrMore1(xinc,nm)
-#   iErrNotNumeric(xinc,nm)
-#   iErrLT(xinc,0,nm)
-#   ## Check min vs max
-#   nm1 <- paste0("'",deparse(substitute(xmin)),"'")
-#   nm2 <- paste0("'",deparse(substitute(xmax)),"'")
-#   if(xmin>xmax) STOP(nm1," must be equal to or less than ",nm2,".")
-#   res <- seq(xmin,xmax,xinc)
-#   if (length(res)>100)
-#     WARN("Choices of ",nm1,", ",nm2,", and ",nm," resulted in ",length(res),
-#          " values./n","  Depending on other choices the simulation may be slow.")
-#   ## Return sequence
-#   res
-# }
-
 # Check recruitment total length
 iCheckrecruitTL <- function(x,type="") {
   if(is.null(x)) return()
@@ -168,9 +144,10 @@ iCheckslotOrder <- function(recruitmentTL, lowerSL, upperSL) {
   if(lowerSL>upperSL) STOP(nm2," must be less than ",nm3,".")
 }
 
-# Check conditional mortality value(s)
-iCheckCondMort <- function(x) {
+# ===== Check conditional mortality value(s)
+iCheckCondMort <- function(x,optname) {
   nm <- paste0("'",deparse(substitute(x)),"'")
+  if (nm=="''") nm <- optname
   tmpmsg <- paste0("Need to specify a conditional ",
                    ifelse(startsWith(nm,"'cf"),"fishing","natural"),
                    " mortality in ",nm,".")
@@ -632,6 +609,7 @@ isum_by_year <- function(res,species,group){
 }
 
 
+# ===== Check life history parameters vector/list
 iCheckLHparms <- function(x) {
   ## check if missing
   if (missing(x))
@@ -689,6 +667,30 @@ iCheckLHparms <- function(x) {
 ## =============================================================================
 ## ==== OLD CAN PROBABLY BE DELETED
 ## =============================================================================
+
+# # Check min length at harvest increments (min/max should be checked prior),
+# #   return sequence if everything looks good
+# iCheckMLHinc <- function(xinc,xmin,xmax) {
+#   ## checks of increment
+#   nm <- paste0("'",deparse(substitute(xinc)),"'")
+#   if (missing(xinc))
+#     STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
+#   if (is.null(xinc))
+#     STOP("Need to specify an increment for minimum length (mm) limit for harvest in ",nm,".")
+#   iErrMore1(xinc,nm)
+#   iErrNotNumeric(xinc,nm)
+#   iErrLT(xinc,0,nm)
+#   ## Check min vs max
+#   nm1 <- paste0("'",deparse(substitute(xmin)),"'")
+#   nm2 <- paste0("'",deparse(substitute(xmax)),"'")
+#   if(xmin>xmax) STOP(nm1," must be equal to or less than ",nm2,".")
+#   res <- seq(xmin,xmax,xinc)
+#   if (length(res)>100)
+#     WARN("Choices of ",nm1,", ",nm2,", and ",nm," resulted in ",length(res),
+#          " values./n","  Depending on other choices the simulation may be slow.")
+#   ## Return sequence
+#   res
+# }
 
 
 # # Check conditional mortality increments (min/max should be checked prior),

@@ -11,15 +11,17 @@ sum4 <- summary(res2,verbose=FALSE)
 
 test_that("seeMorts() messages",{
   expect_error(seeMorts(),
-               "Need to specify a conditional natural mortality in 'cm'")
+               "Need to specify a conditional fishing mortality in 'cf'")
   expect_error(seeMorts(cm=0.3),
                "Need to specify a conditional fishing mortality in 'cf'")
+  expect_error(seeMorts(cf=0.2),
+               "Need to specify a conditional natural mortality in 'cm'")
   expect_error(seeMorts(cf=0.2,cm=0.1,type=0),
                "'type' must be 1 or 2 to choose a")
   expect_error(seeMorts(cf=0.2,cm=0.1,type="I"),
                "'type' must be 1 or 2 to choose a")
 
-  expect_error(seeMorts(cm="a",cf=-0.4),"'cm' must be a number")
+  expect_error(seeMorts(cm="a",cf=0.4),"'cm' must be a number")
   expect_error(seeMorts(cf="a",cm=0.4),"'cf' must be a number")
   expect_error(seeMorts(cm=0.3,cf=data.frame(cf=0.3)),"'cf' must be a vector")
   expect_error(seeMorts(cf=0.3,cm=data.frame(cm=0.3)),"'cm' must be a vector")
@@ -35,7 +37,7 @@ test_that("seeMorts() messages",{
   expect_error(seeMorts(cm=0.5,cf=c(0.3,1.1,0.5)),"All 'cf' must be <=1")
 
   expect_error(seeMorts(cm=c(0.3,0.1,0.5),cf=-0.5),"'cf' must be >=0")
-  expect_error(seeMorts(cm=c(0.3,-0.1,0.5),cf=-0.5),"All 'cm' must be >=0")
+  expect_error(seeMorts(cm=c(0.3,-0.1,0.5),cf=0.5),"All 'cm' must be >=0")
 
   expect_warning(seeMorts(cm=c(0.3,0.3,0.5,0.6),cf=0.2,verbose=FALSE),
                  "Duplicated values in 'cm' were dropped")
