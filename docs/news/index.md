@@ -20,6 +20,8 @@
 
 ## rFAMS 0.0.2
 
+CRAN release: 2026-02-10
+
 - Addressed comments in DESCRIPTION file from CRAN reviewer.
 
 ## rFAMS 0.0.1
