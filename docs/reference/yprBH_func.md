@@ -8,7 +8,7 @@ length limit for harvest (`minLL`).
 ## Usage
 
 ``` r
-yprBH_func(minLL, cf, cm, loi = NULL, lhparms, matchRicker = FALSE)
+yprBH_func(minLL, cf, cm, lhparms, loi = NULL, matchRicker = FALSE)
 ```
 
 ## Arguments
@@ -26,11 +26,6 @@ yprBH_func(minLL, cf, cm, loi = NULL, lhparms, matchRicker = FALSE)
 
   A single numeric representing conditional natural mortality.
 
-- loi:
-
-  A numeric vector for lengths of interest. Used to determine number of
-  fish that reach desired lengths.
-
 - lhparms:
 
   A named vector or list that contains values for each `N0`, `tmax`,
@@ -38,12 +33,17 @@ yprBH_func(minLL, cf, cm, loi = NULL, lhparms, matchRicker = FALSE)
   [`makeLH`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   for definitions of these life history parameters. Also see details.
 
+- loi:
+
+  A numeric vector for lengths of interest. Used to determine number of
+  fish that reach desired lengths.
+
 - matchRicker:
 
   A logical that indicates whether the yield function should match that
-  in Ricker (). Defaults to `TRUE`. The only reason to changed to
-  `FALSE` is to try to match output from FAMS. See the "YPR_FAMSvRICKER"
-  article.
+  in Ricker (1975). Defaults to `TRUE`. The only reason to changed to
+  `FALSE` is to try to match output from FAMS. See the [FAMS vs Ricker
+  article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html).
 
 ## Value
 
@@ -163,7 +163,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
 # Estimate yield with fixed parameters
 Res_1 <- yprBH_func(minLL=355,cf=0.45,cm=0.25,
-                    loi=c(200,250,300,325,350),lhparms=LH)
+                    lhparms=LH, loi=c(200,250,300,325,350))
 Res_1
 #>     yield nharvest     ndie       nt       tr    avgwt   avglen  nAt200
 #> 1 19606.5  19.7239 9.491238 29.21514 4.277232 994.0479 402.5024 60.2497

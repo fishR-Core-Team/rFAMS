@@ -45,7 +45,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-manual" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Manual</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-manual">
-<li><a class="dropdown-item" href="../articles/MANUAL_Mortality">Mortality</a></li>
+<li><a class="dropdown-item" href="../articles/MANUAL_Mortality.html">Mortality</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -93,7 +93,16 @@
 <p>The objective of this article is to demonstrate how to use rFAMS to calculate yield based on multiple minimum length limit with multiple values of conditional fishing and conditional natural mortality.</p>
 <section class="section level2"><h2 id="build-a-life-history-parameter-list">Build a life history parameter list<a class="anchor" aria-label="anchor" href="#build-a-life-history-parameter-list"></a>
 </h2>
-<p>The first step for using any of the rFAMS simulation models is to create an object with life history parameters using the <code><a href="../reference/makeLH.html">makeLH()</a></code> function. THe <code><a href="../reference/makeLH.html">makeLH()</a></code> function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>∞</mi></msub><annotation encoding="application/x-tex">L_\infty</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>0</mn></msub><annotation encoding="application/x-tex">t_0</annotation></semantics></math>), and parameters from the log10-transformed weight length model (alpha and beta). By default, the <code><a href="../reference/makeLH.html">makeLH()</a></code> returns a list. Growth length-weight model paramaters can be generated from functions in the <a href="https://fishr-core-team.github.io/FSA/index.html" class="external-link">FSA package</a>. The example below uses the following life history parameters: - NO is the initial number of recruits, set to 100. - tmax is the maximum age in the population in years, set to 15. - Linf is the point estimate of asymptotic mean length from the von Bertalanffy growth model, set to 592mm. - K (upper case) is the point estimate of the Brody growth coefficient from the von Bertalanffy growth model, set to 0.20. - t0 is the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model, set to -0.3. - LWalpha is the point estimate of alpha from the length-weight regression on the log10 scale, set to -5.528. - LWbeta is the point estimate of beta from the length-weight regression on the log10 scale, set to 3.273.</p>
+<p>The first step for using any of the rFAMS simulation models is to create an object with life history parameters using the <code><a href="../reference/makeLH.html">makeLH()</a></code> function. THe <code><a href="../reference/makeLH.html">makeLH()</a></code> function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>∞</mi></msub><annotation encoding="application/x-tex">L_\infty</annotation></semantics></math>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>, and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>0</mn></msub><annotation encoding="application/x-tex">t_0</annotation></semantics></math>), and parameters from the log10-transformed weight length model (alpha and beta). By default, the <code><a href="../reference/makeLH.html">makeLH()</a></code> returns a list. Growth length-weight model paramaters can be generated from functions in the <a href="https://fishr-core-team.github.io/FSA/index.html" class="external-link">FSA package</a>. The example below uses the following life history parameters:</p>
+<ul>
+<li>NO is the initial number of recruits, set to 100.</li>
+<li>tmax is the maximum age in the population in years, set to 15.</li>
+<li>Linf is the point estimate of asymptotic mean length from the von Bertalanffy growth model, set to 592mm.</li>
+<li>K (upper case) is the point estimate of the Brody growth coefficient from the von Bertalanffy growth model, set to 0.20.</li>
+<li>t0 is the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model, set to -0.3.</li>
+<li>LWalpha is the point estimate of alpha from the length-weight regression on the log10 scale, set to -5.528.</li>
+<li>LWbeta is the point estimate of beta from the length-weight regression on the log10 scale, set to 3.273.</li>
+</ul>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># create life history parameter object</span></span>
@@ -101,7 +110,7 @@
 </div>
 </section><section class="section level2"><h2 id="estimate-yield-for-multiple-minimum-length-limit-and-multiple-conditional-fishing-and-conditional-natural-mortality-">Estimate yield for multiple minimum length limit and multiple conditional fishing and conditional natural mortality.<a class="anchor" aria-label="anchor" href="#estimate-yield-for-multiple-minimum-length-limit-and-multiple-conditional-fishing-and-conditional-natural-mortality-"></a>
 </h2>
-<p>The function <code>yprBH_minLL()</code> function is used when yield is estimated with one or more minimum length limit. This function requires a numeric vector of minimum length <code>minLL</code>; a numeric vector of conditional fishing mortality <code>cf</code>; a numeric vector of conditional natural mortality <code>cm</code>; a vector of length of interest to monitor <code>loi</code>; and the life history parameters <code>lhparams</code>.</p>
+<p>The function <code>yprBH_minLL()</code> function is used when yield is estimated with one or more minimum length limit. This function requires a numeric vector of minimum length <code>minLL</code>; a numeric vector of conditional fishing mortality <code>cf</code>; a numeric vector of conditional natural mortality <code>cm</code>; the life history parameters <code>lhparams</code>; and optionally, a vector of length of interest to monitor <code>loi</code>.</p>
 <p>rFAMS includes a function <code><a href="../reference/est_natmort.html">est_natmort()</a></code> to estimate instantaneous natural mortality (M) and conditional natural mortality (cm) using parameters specified in the life history parameter object. See the <a href="https://fishr-core-team.github.io/FSA/index.html" class="external-link">FSA package</a> for other methods of calculating M and cm. To generate the range and average M and cm using rFAMS:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
@@ -142,7 +151,7 @@
 <span><span class="va">loi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span>, <span class="fl">450</span>, <span class="fl">500</span>, <span class="fl">550</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Res_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yprBH_MinLL.html">yprBH_MinLL</a></span><span class="op">(</span>minLL<span class="op">=</span><span class="va">minLL</span>,cf <span class="op">=</span> <span class="va">cf</span>, cm <span class="op">=</span> <span class="va">cm</span>,</span>
-<span>                     loi<span class="op">=</span><span class="va">loi</span>, lhparms<span class="op">=</span><span class="va">LH</span><span class="op">)</span>   </span></code></pre></div>
+<span>                     lhparms<span class="op">=</span><span class="va">LH</span>, loi<span class="op">=</span><span class="va">loi</span><span class="op">)</span>   </span></code></pre></div>
 </div>
 <p>The output object will be a data.frame with the following calculated values:</p>
 <ul>
@@ -207,7 +216,7 @@
 </div>
 <section class="level2"><h3 id="yield-as-a-function-of-exploitation">Yield as a function of exploitation<a class="anchor" aria-label="anchor" href="#yield-as-a-function-of-exploitation"></a>
 </h3>
-<p>The first graph will be a yield curve that displays the relationship between yield as a function of exploitation for a specified conditional natural morality <code>cm</code>. The example below uses <code>cm</code> = 0.30, which is close to the estimated mean <code>cm</code> above of 0.27</p>
+<p>The first graph will be a yield curve that displays the relationship between yield as a function of exploitation for a specified conditional natural morality <code>cm</code>. The example below uses <code>cm</code> = 0.30, which is close to the estimated mean <code>cm</code> above of 0.27, and a minimum length limit of 400 mm.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Round cm to account for "floating point arithmetic inaccuracies"</span></span>
@@ -229,7 +238,7 @@
 </div>
 </div>
 </div>
-<p>This next graph plots yield curves as a function of exploitation with multiple minimum lengths for a specified conditional natural morality <code>cm</code>. The example below uses <code>cm</code> = 0.30, as above.</p>
+<p>This next graph plots yield curves as a function of exploitation with multiple minimum lengths for a specified conditional natural morality <code>cm</code>. The example below uses <code>cm</code> = 0.30, as above, and a minimum length limit of 400 mm.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Round cm to account for "floating point arithmetic inaccuracies"</span></span>
@@ -253,7 +262,7 @@
 </div>
 </section><section class="level2"><h3 id="number-of-fish-that-reach-a-specified-size-as-a-function-of-exploitation">Number of fish that reach a specified size as a function of exploitation<a class="anchor" aria-label="anchor" href="#number-of-fish-that-reach-a-specified-size-as-a-function-of-exploitation"></a>
 </h3>
-<p>The next graph demonstrates how to explore the number of fish reaching a specified length. This figure creates a plot showing the number of fish reaching 450mm as a function of exploitation. Note this is based on a conditional natural mortality <code>cm</code> of 0.30 which was filtered out in the code block above.</p>
+<p>The next graph demonstrates how to explore the number of fish reaching a specified length. This figure creates a plot showing the number of fish reaching 450mm as a function of exploitation. Note this is based on a conditional natural mortality <code>cm</code> of 0.30 which was filtered out in the code block above, and a minimum length limit of 400 mm.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract results for cm=0.40 and minimum length limit=400</span></span>
@@ -300,7 +309,7 @@
 <p>The final two graphs demonstrate how to construct isopleths using the <code>ggplot2</code> and <code>metR</code> packages. We will use the same data from above that is filtered for a conditional natural mortality <code>cm</code> of 0.30.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Extract results for cm=0.40 and minimum length limit=400</span></span>
+<code class="sourceCode R"><span><span class="co"># Extract results for cm=0.40</span></span>
 <span><span class="va">plot_dat</span> <span class="op">&lt;-</span> <span class="va">Res_1</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cm</span><span class="op">==</span><span class="fl">0.30</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Yield isopleths for varying minLL and exploitation with cm=0.40</span></span>

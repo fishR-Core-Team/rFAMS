@@ -1,4 +1,4 @@
-# Main function to simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest
+# Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest
 
 Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model
 using ranges of values for conditional fishing mortality (`cf`),
@@ -8,7 +8,7 @@ harvest (`minLL`).
 ## Usage
 
 ``` r
-yprBH_MinLL(minLL, cf, cm, loi = NULL, lhparms, matchRicker = FALSE)
+yprBH_MinLL(minLL, cf, cm, lhparms, loi = NULL, matchRicker = FALSE)
 ```
 
 ## Arguments
@@ -25,11 +25,6 @@ yprBH_MinLL(minLL, cf, cm, loi = NULL, lhparms, matchRicker = FALSE)
 
   A numeric vector of conditional natural mortality.
 
-- loi:
-
-  A numeric vector for lengths of interest. Used to determine number of
-  fish that reach desired lengths.
-
 - lhparms:
 
   A named vector or list that contains values for each `N0`, `tmax`,
@@ -37,12 +32,17 @@ yprBH_MinLL(minLL, cf, cm, loi = NULL, lhparms, matchRicker = FALSE)
   [`makeLH`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   for definitions of these life history parameters. Also see details.
 
+- loi:
+
+  A numeric vector for lengths of interest. Used to determine number of
+  fish that reach desired lengths.
+
 - matchRicker:
 
   A logical that indicates whether the yield function should match that
-  in Ricker (). Defaults to `TRUE`. The only reason to changed to
-  `FALSE` is to try to match output from FAMS. See the "YPR_FAMSvRICKER"
-  article.
+  in Ricker (1975). Defaults to `TRUE`. The only reason to changed to
+  `FALSE` is to try to match output from FAMS. See the [FAMS vs Ricker
+  article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html).
 
 ## Value
 
@@ -78,10 +78,8 @@ A data.frame with the following calculated values:
 - `S` is the (total) annual rate of survival.
 
 For convenience the data.frame also contains the model input values
-(`minLL` derived from `lengthmin`, `lengthmax`, and `lengthinc`; `cf`
-derived from `cfmin`, `cfmax`, and `cfinc`; `cm` derived from `cmmin`,
-`cmmax`, and `cminc`; `N0`; `Linf`; `K`; `t0`; `LWalpha`; `LWbeta`; and
-`tmax`).
+(`minLL`, `cf`, and`cm` from input vectors; `N0`; `Linf`; `K`; `t0`;
+`LWalpha`; `LWbeta`; and `tmax`).
 
 The data.frame also contains a `notes` value which may contain
 abbreviations for "issues" that occurred when computing the results and
@@ -101,8 +99,8 @@ simulating yield with multiple values of `cf` and `cm` but a fixed value
 for `minLL`.
 
 See [this demonstration
-page](https://fishr-core-team.github.io/rFAMS/articles/YPR_MLL.html) for
-more plotting examples
+page](https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html)
+for more plotting examples
 
 ## Author
 
@@ -114,7 +112,7 @@ Jason C. Doll, <jason.doll@fmarion.edu>
 # Load other required packages for organizing output and plotting
 library(dplyr)    ## for filter
 library(ggplot2)  ## for ggplot et al.
-library(metR)     ## geom_text_contour
+library(metR)     ## geom_contour2
 
 # Life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
@@ -129,7 +127,7 @@ cm <- seq(from = 0.1, to = 0.9, by = 0.1)
 loi <- c(400,450,500,550)
 
 Res_1 <- yprBH_MinLL(minLL = minLL, cf = cf, cm = cm,
-                     loi=loi,lhparms=LH)
+                     lhparms=LH, loi=loi)
 
 # Yield curves (yield vs exploitation) by varying minimum lengths,
 # using cm=40
@@ -139,7 +137,9 @@ ggplot(data=plot_dat,mapping=aes(y=yield,x=exploitation,
                                  group=minLL,color=minLL)) +
   geom_line(linewidth=1) +
   scale_color_gradient2(high="black") +
-  labs(y="Yield (g)",x="Exploitation (u)",color="Min Length Limit") +
+  xlab("Exploitation (u)")+
+  ylab("Yield (g)")+
+  labs(color="Min Length Limit") +
   theme_bw()
 
 

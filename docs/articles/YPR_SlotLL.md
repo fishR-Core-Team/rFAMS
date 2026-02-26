@@ -122,8 +122,9 @@ loi <- c(200,250,300,325,350)
 
 Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325, #Set recruitment and slot limit length
                       cfunder=0.45,cfin=0,cfabove=0.25,        #Set cf under, in, and above slot limit
-                      cm=cm,loi=loi,                  # vector of cm and lengths of interests
-                      lhparms=LH)                     #Specifies life history parameters
+                      cm=cm,                  # vector of cm
+                      lhparms=LH,             # Specifies life history parameters
+                      loi=loi)                # vector of lengths of interest
 ```
 
 The output object will be a data.frame with the following calculated
