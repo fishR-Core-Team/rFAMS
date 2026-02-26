@@ -365,7 +365,7 @@ est_natmort(method="QuinnDeriso",tmax=15,PS=0.02)
 Some common methods have been grouped together such that all methods in the group may be chosen by giving the "group name" as the first argument to `est_natmort()`.^[See the [documentation for `metaM()`](https://fishr-core-team.github.io/FSA/reference/metaM.html#details){target="_blank"} for a list of group names.] For example, the methods used in the original FAMS software are in a group called `"FAMS"`. Some of these methods use inputs that are not in the life history list and must then be specifically declared in `est_natmort()`.
 
 ```{r}
-est_natmort(lhex,method="FAMS",PS=0.02,Winf=5000,Temp=9,incl.avg=TRUE)
+est_natmort(lhex,method="rFAMS",PS=0.02,Winf=5000,Temp=9,incl.avg=TRUE)
 ```
 
 Finally, @fig-metaMex illustrates how one might examine multiple estimates of $cm$ with the mean highlighted.^[See [this article](https://fishr-core-team.github.io/rFAMS/articles/ggplot_for_rFAMS.html){target="_blank"} for help with using `ggplot2` to make graphs.]

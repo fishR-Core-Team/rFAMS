@@ -9,9 +9,9 @@
 #' @param cfin Single value, conditional fishing mortality within the lower and upper slot limit.
 #' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
 #' @param cm A numeric representing conditional natural mortality
-#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
-#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
+#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
+#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
 #' @details Details will be filled out later
 #'
@@ -83,7 +83,7 @@
 #' # Estimate yield with fixed parameters
 #' Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
 #'                        cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
-#'                        loi=c(200,250,300,325,350),lhparms=LH)
+#'                        lhparms=LH,loi=c(200,250,300,325,350))
 #' Res_1
 #'
 #'
@@ -91,7 +91,7 @@
 #' @export
 
 yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
-                            loi=NULL,lhparms,matchRicker=FALSE){
+                            lhparms,loi=NULL,matchRicker=FALSE){
 
 
   # Extract individual life history values

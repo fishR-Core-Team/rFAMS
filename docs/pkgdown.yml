@@ -5,10 +5,11 @@ articles:
   articles/dpmBH: dpmBH.html
   articles/ggplot_for_rFAMS: ggplot_for_rFAMS.html
   articles/MakeLH: MakeLH.html
+  articles/MANUAL_Mortality: MANUAL_Mortality.html
   articles/YPR_FAMSvRICKER: YPR_FAMSvRICKER.html
   articles/YPR_MinLL: YPR_MinLL.html
   articles/YPR_SlotLL: YPR_SlotLL.html
-last_built: 2026-02-12T19:14Z
+last_built: 2026-02-26T00:17Z
 urls:
   reference: https://fishr-core-team.github.io/rFAMS/reference
   article: https://fishr-core-team.github.io/rFAMS/articles

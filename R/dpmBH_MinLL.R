@@ -2,15 +2,15 @@
 #'
 #' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
 #'
-#' @param simyears A single numeric for the lower limit of minimum length limit for harvest in mm.
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
 #' @param cf A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
 #' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.
 #' @param rec A A numeric vector of length `simyears` to specify recruitment each year. The vector can be geneated using the `genRecruits()` function.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
-#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the "YPR_FAMSvRICKER" article.
+#' @param simyears A single numeric for the lower limit of minimum length limit for harvest in mm.
 #' @param species is a single character to specify the species used in the simulation and will define the length for `stock`, `quality`, `preferred`, `memorable`, and `trophy`. Length categories are obtained from the FSA package, see the \code{\link[FSA]{PSDlit}} documentation.
 #' @param group is a single character to specify the sub-group name of a species used in the simulation and will define the length for `stock`, `quality`, `preferred`, `memorable`, and `trophy`. Length categories are obtained from the FSA package, see the \code{\link[FSA]{PSDlit}} documentation.
+#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
 #' @details Details
 #'
@@ -80,6 +80,7 @@
 #'
 #' See \href{https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html}{this demonstration page} for more plotting examples
 #'
+#'
 #' @examples
 #' #load required library
 #' library(dplyr)
@@ -122,9 +123,9 @@
 #' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
-#' out_2<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
-#'                    cm = cm, rec = rec, lhparms = lhparms,
-#'                    matchRicker=FALSE,species="Striped Bass",group="landlocked")
+#' out_2<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
+#'                    rec = rec, lhparms = lhparms,simyears = simyears,
+#'                    species="Striped Bass",group="landlocked",matchRicker=FALSE)
 #'
 #' #Use summary by year data frame to plot yield vs year
 #' ggplot(data=out_2[[2]],mapping=aes(x=year,y=PSD)) +
@@ -144,7 +145,7 @@
 #' @rdname dpmBH_MinLL
 #' @export
 
-dpmBH_MinLL <- function(simyears,minLL,cf,cm,rec,lhparms,matchRicker=FALSE,species=NULL, group=NULL){
+dpmBH_MinLL <- function(minLL,cf,cm,rec,lhparms,simyears,species=NULL,group=NULL,matchRicker=FALSE){
 
   # ---- Check inputs
   iCheckMLH(minLL)

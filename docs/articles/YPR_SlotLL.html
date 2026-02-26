@@ -43,6 +43,12 @@
   </ul>
 </li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-manual" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Manual</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-manual">
+<li><a class="dropdown-item" href="../articles/MANUAL_Mortality">Mortality</a></li>
+  </ul>
+</li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-explanations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Explanations</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-explanations">
 <li><a class="dropdown-item" href="../articles/YPR_FAMSvRICKER.html">Comparing FAMS and Ricker YPR Equations</a></li>
@@ -65,7 +71,7 @@
       <h1>Estimate yield based on a slot limit</h1>
 
       <p class="author">Jason Doll</p>
-      <p class="date">2026-02-12</p>
+      <p class="date">2026-02-25</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/YPR_SlotLL.qmd" class="external-link"><code>vignettes/articles/YPR_SlotLL.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -209,19 +215,19 @@
 <span><span class="co">#&gt; 5          0     1.5205306 70.50022  9.274288 7.042243  3.663598 29.49978</span></span>
 <span><span class="co">#&gt; 6          0     0.5447837 80.08692  7.761445 4.807692  1.735180 19.91308</span></span>
 <span><span class="co">#&gt;        nrIn   nrAbove  trUnder     trIn  trOver avglenUnder avglenIn</span></span>
-<span><span class="co">#&gt; 1 51.410701 45.124710 1.761224 2.443479 3.68129    224.6247      NaN</span></span>
-<span><span class="co">#&gt; 2 38.553462 29.248740 1.761224 2.443479 3.68129    224.2924      NaN</span></span>
-<span><span class="co">#&gt; 3 27.820264 17.890480 1.761224 2.443479 3.68129    223.9166      NaN</span></span>
-<span><span class="co">#&gt; 4 19.088779 10.143117 1.761224 2.443479 3.68129    223.4842      NaN</span></span>
-<span><span class="co">#&gt; 5 12.226450  5.184207 1.761224 2.443479 3.68129    222.9755      NaN</span></span>
-<span><span class="co">#&gt; 6  7.087658  2.279967 1.761224 2.443479 3.68129    222.3578      NaN</span></span>
+<span><span class="co">#&gt; 1 51.410701 45.124710 1.761224 2.443479 3.68129    224.6247        0</span></span>
+<span><span class="co">#&gt; 2 38.553462 29.248740 1.761224 2.443479 3.68129    224.2924        0</span></span>
+<span><span class="co">#&gt; 3 27.820264 17.890480 1.761224 2.443479 3.68129    223.9166        0</span></span>
+<span><span class="co">#&gt; 4 19.088779 10.143117 1.761224 2.443479 3.68129    223.4842        0</span></span>
+<span><span class="co">#&gt; 5 12.226450  5.184207 1.761224 2.443479 3.68129    222.9755        0</span></span>
+<span><span class="co">#&gt; 6  7.087658  2.279967 1.761224 2.443479 3.68129    222.3578        0</span></span>
 <span><span class="co">#&gt;   avglenAbove avgwtUnder avgwtIn avgwtAbove   nAt200    nAt250    nAt300</span></span>
-<span><span class="co">#&gt; 1    423.5651   147.3398     NaN  1174.6534 83.06361 51.410701 47.303370</span></span>
-<span><span class="co">#&gt; 2    408.5157   146.6277     NaN  1043.4850 67.50249 38.553462 32.320412</span></span>
-<span><span class="co">#&gt; 3    395.4809   145.8251     NaN   938.4079 53.35596 27.820264 20.986722</span></span>
-<span><span class="co">#&gt; 4    384.3607   144.9055     NaN   854.7731 40.67005 19.088779 12.748365</span></span>
-<span><span class="co">#&gt; 5    374.8445   143.8287     NaN   787.4350 29.49978 12.226450  7.069700</span></span>
-<span><span class="co">#&gt; 6    366.5665   142.5288     NaN   731.9345 19.91308  7.087658  3.435713</span></span>
+<span><span class="co">#&gt; 1    423.5651   147.3398       0  1174.6534 83.06361 51.410701 47.303370</span></span>
+<span><span class="co">#&gt; 2    408.5157   146.6277       0  1043.4850 67.50249 38.553462 32.320412</span></span>
+<span><span class="co">#&gt; 3    395.4809   145.8251       0   938.4079 53.35596 27.820264 20.986722</span></span>
+<span><span class="co">#&gt; 4    384.3607   144.9055       0   854.7731 40.67005 19.088779 12.748365</span></span>
+<span><span class="co">#&gt; 5    374.8445   143.8287       0   787.4350 29.49978 12.226450  7.069700</span></span>
+<span><span class="co">#&gt; 6    366.5665   142.5288       0   731.9345 19.91308  7.087658  3.435713</span></span>
 <span><span class="co">#&gt;      nAt325    nAt350  cm  expUnder expIn  expAbove   FUnder FIn    FAbove</span></span>
 <span><span class="co">#&gt; 1 45.124710 37.196999 0.1 0.4293355     0 0.2378792 0.597837   0 0.2876821</span></span>
 <span><span class="co">#&gt; 2 29.248740 22.753928 0.2 0.4077913     0 0.2252683 0.597837   0 0.2876821</span></span>
