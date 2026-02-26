@@ -74,8 +74,8 @@
 
 makeLH <- function(N0,tmax,Linf,K,t0,LWalpha,LWbeta,restype=c("list","vector")) {
   restype <- match.arg(restype)
-  iCheckN0(N0)
-  iCheckMaxAge(tmax)
+  iCheckN0(N0,"N0")
+  iCheckMaxAge(tmax,"tmax")
 
   ## if nls object in Linf then extract coefficients and put in separate values
   if (!missing(Linf)) {
@@ -94,11 +94,11 @@ makeLH <- function(N0,tmax,Linf,K,t0,LWalpha,LWbeta,restype=c("list","vector")) 
       if (missing(t0)) t0 <- tmp[["t0"]]
     }
   }
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
+  iCheckLinf(Linf,"Linf")
+  iCheckK(K,"K")
+  iCheckt0(t0,"t0")
 
-  ## if LWalpha is an lm object then extract coeffs and put in separate values
+  ## if LWalpha is an lm object then extract coefs and put in separate values
   if (!missing(LWalpha)) {
     if (isa(LWalpha,"nls")) STOP("'LWalpha' given object from 'nls()', did you\n",
                                  "  mean to give it an 'lm' object?")
@@ -111,8 +111,8 @@ makeLH <- function(N0,tmax,Linf,K,t0,LWalpha,LWbeta,restype=c("list","vector")) 
       if (missing(LWbeta)) LWbeta <- tmp[[2]]
     }
   }
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
+  iCheckLWa(LWalpha,"LWalpha")
+  iCheckLWb(LWbeta,"LWbeta")
 
   ## Make a vector or list and give the items names
   if (restype=="list") res <- list(N0,tmax,Linf,K,t0,LWalpha,LWbeta)

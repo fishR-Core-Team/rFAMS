@@ -6,7 +6,7 @@ test_that("yprBH_func() messages",{
 
   # ----- test for missing arguments
   yprBH_func(cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_error("Need to specify a minimum length")
+    expect_error("Need to specify a minimum length \\(mm\\) limit for harvest")
   yprBH_func(minLL=355,cm=0.25,lhparms=LH) |>
     expect_error("Need to specify a conditional fishing mortality in 'cf'")
   yprBH_func(minLL=355,cf=0.45,lhparms=LH) |>

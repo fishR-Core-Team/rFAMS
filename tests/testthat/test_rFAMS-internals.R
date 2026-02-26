@@ -56,12 +56,22 @@ test_that("iErrGT() and iErrLT() messages",{
     expect_no_error()
 })
 
+test_that("iErrMissNjll() messages",{
+  # ----- should err
+  expect_true(rFAMS:::iErrMissOrNull())
+  expect_true(rFAMS:::iErrMissOrNull(NULL))
 
+  # ----- no errors (not missing or NULL)
+  expect_false(rFAMS:::iErrMissOrNull(NA_real_))
+  expect_false(rFAMS:::iErrMissOrNull(3))
+  expect_false(rFAMS:::iErrMissOrNull("a"))
+  expect_false(rFAMS:::iErrMissOrNull(1:3))
+})
 
 test_that("iCheckN0() messages",{
-  # ----- test that something was sent
-  rFAMS:::iCheckN0() |>
-    expect_error("Need to specify an initial number of fish in the population")
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckN0(optname="N0") |>
+    expect_error("Need to specify an initial number of fish in the population in 'N0'")
   N0 <- NULL
   rFAMS:::iCheckN0(N0) |>
     expect_error("Need to specify an initial number of fish in the population in 'N0'")
@@ -79,9 +89,9 @@ test_that("iCheckN0() messages",{
 })
 
 test_that("iCheckMaxAge() messages",{
-  # ----- test that something was sent
-  rFAMS:::iCheckMaxAge() |>
-    expect_error("Need to specify a maximum age")
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckMaxAge(optname="tmax") |>
+    expect_error("Need to specify a maximum age in 'tmax'")
   tmax <- NULL
   rFAMS:::iCheckMaxAge(tmax) |>
     expect_error("Need to specify a maximum age in 'tmax'")
@@ -102,9 +112,9 @@ test_that("iCheckMaxAge() messages",{
 })
 
 test_that("iCheckLinf() messages",{
-  # ----- test that something was sent
-  rFAMS:::iCheckLinf() |>
-    expect_error("Need to specify a mean asymptotic length \\(mm\\)")
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckLinf(optname="Linf") |>
+    expect_error("Need to specify a mean asymptotic length \\(mm\\) in 'Linf'")
   Linf <- NULL
   rFAMS:::iCheckLinf(Linf) |>
     expect_error("Need to specify a mean asymptotic length \\(mm\\) in 'Linf'")
@@ -128,9 +138,9 @@ test_that("iCheckLinf() messages",{
 })
 
 test_that("iCheckK() messages",{
-  # ----- test that something was sent
-  rFAMS:::iCheckK() |>
-    expect_error("Need to specify a Brody growth coefficient")
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckK(optname="K") |>
+    expect_error("Need to specify a Brody growth coefficient in 'K'")
   K <- NULL
   rFAMS:::iCheckK(K) |>
     expect_error("Need to specify a Brody growth coefficient in 'K'")
@@ -154,9 +164,9 @@ test_that("iCheckK() messages",{
 })
 
 test_that("iCheckt0() messages",{
-  # ----- test that something was sent
-  rFAMS:::iCheckt0() |>
-    expect_error("Need to specify a time when the mean length is 0")
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckt0(optname="t0") |>
+    expect_error("Need to specify a time when the mean length is 0 in 't0'")
   t0 <- NULL
   rFAMS:::iCheckt0(t0) |>
     expect_error("Need to specify a time when the mean length is 0 in 't0'")
@@ -171,9 +181,9 @@ test_that("iCheckt0() messages",{
 })
 
 test_that("iCheckLWb() messages",{
-  # ----- test that something was sent
-  rFAMS:::iCheckLWb() |>
-    expect_error("Need to specify a weight-length beta coefficient")
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckLWb(optname="LWbeta") |>
+    expect_error("Need to specify a weight-length beta coefficient in 'LWbeta'")
   LWbeta <- NULL
   rFAMS:::iCheckLWb(LWbeta) |>
     expect_error("Need to specify a weight-length beta coefficient in 'LWbeta'")
@@ -197,9 +207,9 @@ test_that("iCheckLWb() messages",{
 })
 
 test_that("iCheckLWa() messages",{
-  # ----- test that something was sent
-  rFAMS:::iCheckLWa() |>
-    expect_error("Need to specify a weight-length alpha coefficient")
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckLWa(optname="LWalpha") |>
+    expect_error("Need to specify a weight-length alpha coefficient in 'LWalpha'")
   LWalpha <- NULL
   rFAMS:::iCheckLWa(LWalpha) |>
     expect_error("Need to specify a weight-length alpha coefficient in 'LWalpha'")
