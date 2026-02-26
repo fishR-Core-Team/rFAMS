@@ -87,7 +87,7 @@
 #' Res_1
 #'
 #'
-#' @rdname yprBH_slot_function
+#' @rdname yprBH_slot_func
 #' @export
 
 yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,

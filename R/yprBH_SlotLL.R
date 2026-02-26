@@ -126,7 +126,7 @@
 #'   guides(color=guide_legend(title="Yield"))
 #'
 #'
-#' @rdname yprBH_SlotLL.R
+#' @rdname yprBH_SlotLL
 #' @export
 yprBH_SlotLL<-function(recruitmentTL=NULL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
                        lhparms,loi=NULL,matchRicker=FALSE){
