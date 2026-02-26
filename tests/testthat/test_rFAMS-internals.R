@@ -153,6 +153,49 @@ test_that("iCheckK() messages",{
     expect_warning("A Brody growth coefficient of 0.01 seems too small")
 })
 
+test_that("iCheckt0() messages",{
+  # ----- test that something was sent
+  rFAMS:::iCheckt0() |>
+    expect_error("Need to specify a time when the mean length is 0")
+  t0 <- NULL
+  rFAMS:::iCheckt0(t0) |>
+    expect_error("Need to specify a time when the mean length is 0 in 't0'")
+
+  # ----- test wrong input types
+  t0 <- "a"
+  rFAMS:::iCheckt0(t0) |>
+    expect_error("'t0' must be a number")
+  t0 <- c(0.3,0.5)
+  rFAMS:::iCheckt0(t0) |>
+    expect_error("Only use one value in 't0'")
+})
+
+test_that("iCheckLWb() messages",{
+  # ----- test that something was sent
+  rFAMS:::iCheckLWb() |>
+    expect_error("Need to specify a weight-length beta coefficient")
+  LWbeta <- NULL
+  rFAMS:::iCheckLWb(LWbeta) |>
+    expect_error("Need to specify a weight-length beta coefficient in 'LWbeta'")
+
+  # ----- test wrong input types
+  LWbeta <- -1
+  rFAMS:::iCheckLWb(LWbeta) |>
+    expect_error("'LWbeta' must be >=0")
+  LWbeta <- "a"
+  rFAMS:::iCheckLWb(LWbeta) |>
+    expect_error("'LWbeta' must be a number")
+  LWbeta <- c(0.3,0.5)
+  rFAMS:::iCheckLWb(LWbeta) |>
+    expect_error("Only use one value in 'LWbeta'")
+  LWbeta <- 1
+  rFAMS:::iCheckLWb(LWbeta) |>
+    expect_warning("A weight-length beta coefficient of 1 seems too small")
+  LWbeta <- 4.5
+  rFAMS:::iCheckLWb(LWbeta) |>
+    expect_warning("A weight-length beta coefficient of 4.5 seems too large")
+})
+
 
 
 test_that("iCheckCondMort() messages",{

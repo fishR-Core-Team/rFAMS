@@ -394,8 +394,8 @@ iCheckK <- function(x) {
 # Check t0
 iCheckt0 <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify a Brody growth coefficient in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a Brody growth coefficient in ",nm,".")
+  if (missing(x)) STOP("Need to specify a time when the mean length is 0.")
+  if (is.null(x)) STOP("Need to specify a time when the mean length is 0 in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
 }
@@ -403,14 +403,14 @@ iCheckt0 <- function(x) {
 # Check length-weight beta
 iCheckLWb <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify a weight-length beta coefficient in ",nm,".")
+  if (missing(x)) STOP("Need to specify a weight-length beta coefficient.")
   if (is.null(x)) STOP("Need to specify a weight-length beta coefficient in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
   if (x<2) WARN("A weight-length beta coefficient of ",x," seems too small,\n",
                 "  please check value in ",nm,".")
-  if (x>4) WARN("A weight-length beta coefficient of ",x," mm seems too large,\n",
+  if (x>4) WARN("A weight-length beta coefficient of ",x," seems too large,\n",
                 "  please check value in ",nm,".")
 }
 
