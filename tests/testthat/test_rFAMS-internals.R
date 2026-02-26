@@ -214,6 +214,17 @@ test_that("iCheckLWa() messages",{
 })
 
 test_that("iCheckLHParms() messages",{
+  # ----- no errors if created with makeLH() (or vector or list craeted correctly)
+  LHparms <- makeLH(N0=100,tmax=15,Linf=300,K=0.3,t0=-0.5,LWalpha=-5.4,LWbeta=3.1)
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_no_error()
+  LHparms <- c(N0=100,tmax=15,Linf=300,K=0.3,t0=-0.5,LWalpha=-5.4,LWbeta=3.1)
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_no_error()
+  LHparms <- list(N0=100,tmax=15,Linf=300,K=0.3,t0=-0.5,LWalpha=-5.4,LWbeta=3.1)
+  rFAMS:::iCheckLHparms(LHparms) |>
+    expect_no_error()
+
   # ----- test if missing argument
   rFAMS:::iCheckLHparms() |>
     expect_error("Need to specify a list or vector of life history parameters")
@@ -230,7 +241,7 @@ test_that("iCheckLHParms() messages",{
     expect_error("Life history parameters in 'LHparms' must be named")
 
   # ----- test for missing parameters in vector and then list
-  tmp <- c("N0"=100,"tmax"=15,"Linf"=300,"K"=0.3,"t0"=-0.5,"LWalpha"=-5.4,"LWbeta"=3.1)
+  tmp <- c(N0=100,tmax=15,Linf=300,K=0.3,t0=-0.5,LWalpha=-5.4,LWbeta=3.1)
   LHparms <- tmp
   rFAMS:::iCheckLHparms(LHparms) |>
     expect_no_error()

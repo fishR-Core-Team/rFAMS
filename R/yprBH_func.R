@@ -68,9 +68,14 @@
 #' @export
 
 yprBH_func <- function(minLL,cf,cm,lhparms,loi=NULL,matchRicker=FALSE){
+  # ---- Check inputs
+  iCheckLHparms(lhparms)
+  iCheckMLH(minLL)
+  iCheckcf(cf)
+  iCheckcm(cm)
+  iCheckloi(loi)
 
-
-  # Extract individual life history values
+  # ---- Extract individual life history values and prepare notes vector
   N0 <- lhparms[["N0"]]
   tmax <- lhparms[["tmax"]]
   Linf <- lhparms[["Linf"]]
@@ -78,22 +83,6 @@ yprBH_func <- function(minLL,cf,cm,lhparms,loi=NULL,matchRicker=FALSE){
   t0 <- lhparms[["t0"]]
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
-
-  # ---- Check inputs
-  iCheckMLH(minLL)
-  iCheckcf(cf)
-  iCheckcm(cm)
-  iCheckloi(loi)
-  iCheckN0(N0)
-  iCheckMaxAge(tmax)
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
-
-
-  # prepare notes vector
   notes <- NULL
 
   # ---- Prep intermediate calculations needed to calculate Yield

@@ -658,47 +658,51 @@ isum_by_year <- function(res,species,group){
 
 
 iCheckLHparms <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-
   ## check if missing
   if (missing(x))
     STOP("Need to specify a list or vector of life history parameters.")
-  if (is.null(x))
-    STOP("Need to specify a list or vector of life history parameters in ",nm,".")
 
-  ## check not a data.frame or matrix
-  if (is.data.frame(x)) STOP(nm," must be a vector or list, not a data.frame.")
-  if (is.matrix(x)) STOP(nm," must be a vector or list, not a matrix.")
+  ## !! Only perform checks on x if x is NOT of class "MAKELH" ... in other words
+  ##    these tests are not needed (i.e., redundant) if x came from makeLH()
+  if (!("MAKELH" %in% class(x))) {
+    nm <- paste0("'",deparse(substitute(x)),"'")
+    if (is.null(x))
+      STOP("Need to specify a list or vector of life history parameters in ",nm,".")
 
-  ## Check names
-  # set expected names for list/vector
-  nms <- c("N0","tmax","Linf","K","t0","LWalpha","LWbeta")
-  # get names in vector/list
-  gnms <- names(x)
-  # check if vector/list is named
-  if (is.null(gnms)) STOP("Life history parameters in ",nm," must be named.")
-  # check that all required names are in vector/list
-  tmp <- nms %in% gnms
-  if (!all(tmp)) STOP(nm," is missing these life history parameters: ",
-                      paste(nms[!tmp],collapse=", "))
-  # check if too many items
-  tmp <- gnms %in% nms
-  if (!all(tmp)) STOP("These parameters should not be in ",nm,": ",
-                      paste(gnms[!tmp],collapse=", "))
+    ## check not a data.frame or matrix
+    if (is.data.frame(x)) STOP(nm," must be a vector or list, not a data.frame.")
+    if (is.matrix(x)) STOP(nm," must be a vector or list, not a matrix.")
 
-  ## Now check that contents are of the right type and magnitude
-  N0 <- x[["N0"]]
-  iCheckN0(N0)
-  tmax <- x[["tmax"]]
-  iCheckMaxAge(tmax)
-  Linf <- x[["Linf"]]
-  iCheckLinf(Linf)
-  K <- x[["K"]]
-  iCheckK(K)
-  t0 <- x[["t0"]]
-  iCheckt0(t0)
-  LWalpha <- x[["LWalpha"]]
-  iCheckLWa(LWalpha)
-  LWbeta <- x[["LWbeta"]]
-  iCheckLWb(LWbeta)
+    ## Check names
+    # set expected names for list/vector
+    nms <- c("N0","tmax","Linf","K","t0","LWalpha","LWbeta")
+    # get names in vector/list
+    gnms <- names(x)
+    # check if vector/list is named
+    if (is.null(gnms)) STOP("Life history parameters in ",nm," must be named.")
+    # check that all required names are in vector/list
+    tmp <- nms %in% gnms
+    if (!all(tmp)) STOP(nm," is missing these life history parameters: ",
+                        paste(nms[!tmp],collapse=", "))
+    # check if too many items
+    tmp <- gnms %in% nms
+    if (!all(tmp)) STOP("These parameters should not be in ",nm,": ",
+                        paste(gnms[!tmp],collapse=", "))
+
+    ## Now check that contents are of the right type and magnitude
+    N0 <- x[["N0"]]
+    iCheckN0(N0)
+    tmax <- x[["tmax"]]
+    iCheckMaxAge(tmax)
+    Linf <- x[["Linf"]]
+    iCheckLinf(Linf)
+    K <- x[["K"]]
+    iCheckK(K)
+    t0 <- x[["t0"]]
+    iCheckt0(t0)
+    LWalpha <- x[["LWalpha"]]
+    iCheckLWa(LWalpha)
+    LWbeta <- x[["LWbeta"]]
+    iCheckLWb(LWbeta)
+  }
 }

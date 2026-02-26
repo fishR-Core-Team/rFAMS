@@ -10,12 +10,10 @@
 #' @param LWalpha A single numeric that represents the point estimate of alpha from the length-weight regression on the log10 scale OR an `lm` object created from fitting the model to log10-transformed weight-length data.
 #' @param LWbeta A single numeric that represents the point estimate of beta from the length-weight regression on the log10 scale.
 #' @param restype A character that indicates the type of output (list or vector) returned by the function.
+#' @param x An object created by `makeLH`.
+#' @param \dots Optional arguments to be passed to `print`.
 #'
 #' @details Use of this function for putting life history parameters into a list or vector is recommended as (i) values for `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta` can be extracted from objects from appropriate model fitting and (ii) checks for impossible or improbable values for each parameter are performed; i.e.,
-#'
-#' @seealso \href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{this demonstration page} for more plotting examples
-#'
-#' @author Derek Ogle
 #'
 #' ```R
 #' # Best practice for entering life history parameter values
@@ -26,6 +24,10 @@
 #' LH <- list(N0=100,tmax=15,Linf=600,K=0.30,t0=-0.6,
 #'            LWalpha=-5.453,LWbeta=3.10)
 #' ```
+#'
+#' @seealso \href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{this demonstration page} for more plotting examples
+#'
+#' @author Derek Ogle
 #'
 #' If a list is returned then values will be displayed with the number of decimals provided by the user. If a vector is returned then the number of decimals displayed will be the same for each value and will match the value supplied by the user with the most decimals. Thus, a list is preferred as it will be easier to match what was given to what was expected to be given.
 #'
@@ -112,9 +114,19 @@ makeLH <- function(N0,tmax,Linf,K,t0,LWalpha,LWbeta,restype=c("list","vector")) 
   iCheckLWa(LWalpha)
   iCheckLWb(LWbeta)
 
-  ## Return vector or list
+  ## Make a vector or list and give the items names
   if (restype=="list") res <- list(N0,tmax,Linf,K,t0,LWalpha,LWbeta)
   else res <- c(N0,tmax,Linf,K,t0,LWalpha,LWbeta)
   names(res) <- c("N0","tmax","Linf","K","t0","LWalpha","LWbeta")
+  ## Add a "MAKELH" class
+  class(res) <- c("MAKELH",class(res))
+  ## Return vector or list
   res
+}
+
+#' @rdname makeLH
+#' @export
+print.MAKELH <- function(x,...) {
+  print(unclass(x),...)
+  return(invisible(x))
 }
