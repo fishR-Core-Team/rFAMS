@@ -144,10 +144,15 @@ yprBH_SlotLL<-function(recruitmentTL=NULL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   iCheckcfin(cfin)
   iCheckcfabove(cfabove)
   iCheckcmVect(cm,"cm")
+  iCheckloi(loi)
   # iCheckcm(cmmin,"minimum")
   # iCheckcm(cmmax,"maximum")
   # cm <- iCheckcfminc(cminc,cmmin,cmmax)
-  iCheckloi(loi)
+
+  if(is.null(recruitmentTL))
+    recruitmentTL = lowerSL
+
+
 
   # Setup data.frame of input values (varying cf and cm, the rest constant)
   res <- expand.grid(recruitmentTL=recruitmentTL,lowerSL=lowerSL,upperSL=upperSL,

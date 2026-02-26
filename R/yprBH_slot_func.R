@@ -184,11 +184,16 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
 
   N0die <-(N0 - Nr_under) #number that die prior to recruiting to the fishery
 
-  # Mean weight of harvested fish ... FAMS equation 6:6
-  avgwt_under <- Y_under/Nharv_under
-
-  # Mean length of harvest fish ... from mean weight and weight-length parameters
-  avglen_under <- 10^((log10(avgwt_under) - LWalpha)/LWbeta)
+  #Check for division by 0 if inverse slot is used = no F below slot so no harvest below slot
+  if(Nharv_under==0){
+    avgwt_under = 0
+    avglen_under = 0
+  } else{
+    # Mean weight of harvested fish ... FAMS equation 6:6
+    avgwt_under <- Y_under/Nharv_under
+    # Mean length of harvest fish ... from mean weight and weight-length parameters
+    avglen_under <- 10^((log10(avgwt_under) - LWalpha)/LWbeta)
+  }
 
 
   #yield in slot######
@@ -226,11 +231,17 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   Nharv_in <- (Nr_in - (Nr_in*exp(-Z_in* (tmax_upperSL-tmax_lowerSL)))) * (F_in/Z_in)
   Ndie_in <- (Nr_in - (Nr_in*exp(-Z_in* (tmax_upperSL-tmax_lowerSL)))) * (M_in/Z_in)
 
-  # Mean weight of harvested fish ... FAMS equation 6:6
-  avgwt_in <- Y_in/Nharv_in
 
-  # Mean length of harvest fish ... from mean weight and weight-length parameters
-  avglen_in <- 10^((log10(avgwt_in) - LWalpha)/LWbeta)
+  #Check for division by 0 if protected slot is used = no F in slot so no harvest below slot
+  if(Nharv_in==0){
+    avgwt_in = 0
+    avglen_in = 0
+  } else{
+    # Mean weight of harvested fish ... FAMS equation 6:6
+    avgwt_in <- Y_in/Nharv_in
+    # Mean length of harvest fish ... from mean weight and weight-length parameters
+    avglen_in <- 10^((log10(avgwt_in) - LWalpha)/LWbeta)
+  }
 
   #yield over slot######
 
@@ -264,11 +275,16 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   Nharv_above <- (Nr_above - (Nr_above*exp(-Z_above* (tmax-tmax_upperSL)))) * (F_above/Z_above)
   Ndie_above <- (Nr_above - (Nr_above*exp(-Z_above* (tmax-tmax_upperSL)))) * (M_above/Z_above)
 
-  # Mean weight of harvested fish ... FAMS equation 6:6
-  avgwt_above <- Y_above/Nharv_above
-
-  # Mean length of harvest fish ... from mean weight and weight-length parameters
-  avglen_above <- 10^((log10(avgwt_above) - LWalpha)/LWbeta)
+  #Check for division by 0 if inverse slot is used = no F below slot so no harvest below slot
+  if(Nharv_above==0){
+    avgwt_above = 0
+    avglen_above = 0
+  } else{
+    # Mean weight of harvested fish ... FAMS equation 6:6
+    avgwt_above <- Y_above/Nharv_above
+    # Mean length of harvest fish ... from mean weight and weight-length parameters
+    avglen_above <- 10^((log10(avgwt_above) - LWalpha)/LWbeta)
+  }
 
   #Find out where tloi is in relation to time to lower slot and upper slot.
   #I think this might work.. needs to be tested

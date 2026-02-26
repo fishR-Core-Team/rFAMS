@@ -69,8 +69,9 @@ iErrNotVector <- function(x,nm) if (!is.vector(x)) STOP(nm," must be a vector")
 # Check slot limit lengths and cf
 iCheckSlotType <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove) {
   if(cfunder > 0 & is.null(recruitmentTL)){
-    WARN("cfunder is specified for harvest under the slot and no length is specified for recruitmentTL. Consider specifying a recruitmentTL to indicate what length fish are likely to beharvested")
+    STOP("cfunder is specified for harvest under the slot and no length is specified for recruitmentTL. You must specify a recruitmentTL to indicate what length fish are likely to beharvested.")
   }
+
 }
 
 # Check minimum length limit for harvest
