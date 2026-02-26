@@ -346,7 +346,7 @@ iCheckloi <- function(loi){
 iCheckN0 <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x))
-    STOP("Need to specify an initial number of fish in the population in ",nm,".")
+    STOP("Need to specify an initial number of fish in the population.")
   if (is.null(x))
     STOP("Need to specify an initial number of fish in the population in ",nm,".")
   iErrMore1(x,nm)
@@ -427,13 +427,12 @@ iCheckLWa <- function(x) {
 # Check maximum age
 iCheckMaxAge <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify a maximum age in ",nm,".")
+  if (missing(x)) STOP("Need to specify a maximum age.")
   if (is.null(x)) STOP("Need to specify a maximum age in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (!is.wholenumber(x)) WARN("The maximum age is not a whole number,\n",
-                               "  please check value in ",nm,".")
+  if (!is.wholenumber(x)) WARN("The maximum age in ",nm," is not a whole number.")
 }
 
 # Check simyears

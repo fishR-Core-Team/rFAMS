@@ -61,7 +61,10 @@ test_that("iErrGT() and iErrLT() messages",{
 test_that("iCheckN0() messages",{
   # ----- test that something was sent
   rFAMS:::iCheckN0() |>
-    expect_error("Need to specify an initial number of fish in the population in")
+    expect_error("Need to specify an initial number of fish in the population")
+  N0 <- NULL
+  rFAMS:::iCheckN0(N0) |>
+    expect_error("Need to specify an initial number of fish in the population in 'N0'")
 
   # ----- test wrong input types
   N0 <- -100
@@ -75,6 +78,28 @@ test_that("iCheckN0() messages",{
     expect_error("Only use one value in 'N0'")
 })
 
+test_that("iCheckMaxAge() messages",{
+  # ----- test that something was sent
+  rFAMS:::iCheckMaxAge() |>
+    expect_error("Need to specify a maximum age")
+  tmax <- NULL
+  rFAMS:::iCheckMaxAge(tmax) |>
+    expect_error("Need to specify a maximum age in 'tmax'")
+
+  # ----- test wrong input types
+  tmax <- -1
+  rFAMS:::iCheckMaxAge(tmax) |>
+    expect_error("'tmax' must be >=0")
+  tmax <- 1.5
+  rFAMS:::iCheckMaxAge(tmax) |>
+    expect_warning("The maximum age in 'tmax' is not a whole number")
+  tmax <- "a"
+  rFAMS:::iCheckMaxAge(tmax) |>
+    expect_error("'tmax' must be a number")
+  tmax <- c(300,500)
+  rFAMS:::iCheckMaxAge(tmax) |>
+    expect_error("Only use one value in 'tmax'")
+})
 
 
 test_that("iCheckCondMort() messages",{
