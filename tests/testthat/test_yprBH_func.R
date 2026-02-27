@@ -54,6 +54,14 @@ test_that("yprBH_func() messages",{
   LH["LWbeta"] <- 5
   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
     expect_warning("A weight-length beta coefficient of 5 seems too large")
+
+  # ----- tests of warnings during calculations
+  LH <- makeLH(N0=100,tmax=15,Linf=1000,K=0.30,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
+  yprBH_func(minLL=1055,cf=0.45,cm=0.25,lhparms=LH) |>
+    expect_warning("The set mininmum length limit of harvest \\(=1055\\) is greater")
+  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=1055) |>
+    expect_warning("The specified length of interest \\(=1055\\) is greater")
+  ## Need to find values that create the tr<t0 error
 })
 
 

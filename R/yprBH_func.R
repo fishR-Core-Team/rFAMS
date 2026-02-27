@@ -1,6 +1,6 @@
 #' @title Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for single input parameters
 #'
-#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortalitiy (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minLL}).
+#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model. This main function accepts only single values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and a minimum length limit for harvest (\code{minLL}).
 #'
 #' @param cf A single numeric representing conditional fishing mortality.
 #' @param cm A single numeric representing conditional natural mortality.
@@ -104,9 +104,9 @@ yprBH_func <- function(minLL,cf,cm,lhparms,loi=NULL,matchRicker=FALSE){
   #   needed adjustment if minLL>Linf
   if (minLL>=Linf) {
     WARN("The set mininmum length limit of harvest (=",minLL,") is greater than\n",
-         "  the asymptotic mean length (=",Linf,"). The time to recruit to the\n",
-         "  fishery was adjusted. There will be very little harvest and the\n",
-         "  YPR calculations may not be robust.")
+         "  the Linf (=",Linf,"). The time to recruit to the fishery (tr) was\n",
+         "  adjusted. There will be very little harvest and the YPR calculations\n",
+         "  may not be robust.")
     notes <- c(notes,"minLL>=Linf")
     tr <- ((log(1-minLL/(minLL+.1)))/-K)+t0
   } else tr <- ((log(1-minLL/Linf))/-K)+t0
@@ -114,7 +114,7 @@ yprBH_func <- function(minLL,cf,cm,lhparms,loi=NULL,matchRicker=FALSE){
   #   needed adjustment if tr<to (b/c r<0) b/c X in beta() (below) can not be <0
   #     and it does not make sense to recruit before length=0
   if ((tr-t0)<0) {
-    WARN("The age at recruitment to the fishery (tr; =",tr," is less than t0.\n",
+    WARN("The age at recruitment to the fishery (tr; =",tr,") is less than t0.\n",
          "Fish can't be available to the fishery until after t0; thus tr was\n",
          "set to t0. Check your growth parameter values (Linf, K, and t0) and\n",
          "your minLL values.")
@@ -129,9 +129,9 @@ if(!is.null(loi[1])){
   for(x in 1:length(loi)){
     #Time to length of interest
     if(loi[x] > Linf){
-      WARN("Specified length of interest, loi = ", loi[x]," is greater than\n",
-           "Linf of ",Linf," this produces an error. Please select a length\n",
-           "of interest below Linf")
+      WARN("The specified length of interest (=",loi[x],") is greater than the\n",
+           "Linf (=",Linf,") which produces an error. Please select a length\n",
+           "of interest below Linf.")
       notes <- c(notes,paste0("loi=",loi[x],">Linf"))
     } else {
 
