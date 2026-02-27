@@ -77,11 +77,7 @@ iErrNotVector <- function(x,nm) {
 }
 
 # ===== Determine if missing OR NULL
-iErrMissOrNull <- function(x) {
-  res <- missing(x)
-  if (!res) res <- is.null(x)
-  res
-}
+iErrMissOrNull <- function(x) missing(x) || is.null(x)
 
 # -- Specific Checks --
 
