@@ -14,7 +14,8 @@ test_that("yprBH_func() messages",{
   yprBH_func(minLL=355,cf=0.45,cm=0.25) |>
     expect_error("Need to specify a list or vector of life history parameters")
 
-  # ----- test for bad values
+  # ----- test for bad values, more thorough testing is elsewhere;
+  #       e.g., iCheckLinf(), iCheckN0()
   yprBH_func(minLL=-10,cf=0.45,cm=0.25,lhparms=LH) |>
     expect_error("'minLL' must be >=0")
   yprBH_func(minLL=35,cf=0.45,cm=0.25,lhparms=LH) |>

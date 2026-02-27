@@ -327,7 +327,9 @@ test_that("iCheckLHParms() messages",{
 
 
 test_that("iCheckCondMort() messages",{
-  # ----- test that something was sent
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckCondMort(optname="cf") |>
+    expect_error("Need to specify a conditional fishing mortality in 'cf'")
   cf <- NULL
   rFAMS:::iCheckCondMort(cf) |>
     expect_error("Need to specify a conditional fishing mortality in 'cf'")
@@ -393,6 +395,33 @@ test_that("iCheckCondMort() messages",{
   rFAMS:::iCheckCondMort(cfunder) |>
     expect_error("All 'cfunder' must be <=1")
 })
+
+test_that("iCheckMLH() messages",{
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckMLH(optname="minLL") |>
+    expect_error("Need to specify a minimum length \\(mm\\) limit for harvest")
+  minLL <- NULL
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_error("Need to specify a minimum length \\(mm\\) limit for harvest")
+
+  # ----- test wrong input types or values
+  minLL <- -1
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_error("'minLL' must be >=0")
+  minLL <- "a"
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_error("'minLL' must be a number")
+  minLL <- c(200,300)
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_error("Only use one value in 'minLL'")
+  minLL <- 25
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_warning("A minimum length limit of harvest of 25 mm seems too small")
+  minLL <- 2000
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_warning("A minimum length limit of harvest of 2000 mm seems too large")
+})
+
 
 test_that("iCheckcf() messages",{
   rFAMS:::iCheckcf() |>
