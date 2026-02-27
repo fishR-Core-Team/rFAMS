@@ -30,9 +30,9 @@ test_that("iIbeta() messages and results",{
 
 test_that("iErrGT() and iErrLT() messages",{
   rFAMS:::iErrGT(1.3,1,"junk") |>
-    expect_error("junk must be <=1")
+    expect_error("'junk' must be <=1")
   rFAMS:::iErrGT(c(0.3,1,1.3),1,"junk") |>
-    expect_error("All junk must be <=1")
+    expect_error("All 'junk' must be <=1")
   rFAMS:::iErrGT(0.3,1,"junk") |>
     expect_no_error()
   rFAMS:::iErrGT(1,1,"junk") |>
@@ -43,9 +43,9 @@ test_that("iErrGT() and iErrLT() messages",{
     expect_no_error()
 
   rFAMS:::iErrLT(-0.3,0,"junk") |>
-    expect_error("junk must be >=0")
+    expect_error("'junk' must be >=0")
   rFAMS:::iErrLT(c(-0.3,1,1.3),0,"junk") |>
-    expect_error("All junk must be >=0")
+    expect_error("All 'junk' must be >=0")
   rFAMS:::iErrLT(0.3,0,"junk") |>
     expect_no_error()
   rFAMS:::iErrLT(0,0,"junk") |>
@@ -421,6 +421,23 @@ test_that("iCheckMLH() messages",{
   rFAMS:::iCheckMLH(minLL) |>
     expect_warning("A minimum length limit of harvest of 2000 mm seems too large")
 })
+
+test_that("iCheckloi() messages",{
+  # ----- test wrong input types or values
+  loi <- -1
+  rFAMS:::iCheckloi(loi) |>
+    expect_error("'loi' must be >=0")
+  loi <- "a"
+  rFAMS:::iCheckloi(loi) |>
+    expect_error("'loi' must be a number")
+  loi <- c(-200,300)
+  rFAMS:::iCheckloi(loi) |>
+    expect_error("All 'loi' must be >=0")
+  loi <- data.frame(loi=200)
+  rFAMS:::iCheckloi(loi) |>
+    expect_error("'loi' must be a vector")
+})
+
 
 
 test_that("iCheckcf() messages",{

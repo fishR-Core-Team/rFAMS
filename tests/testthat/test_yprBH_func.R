@@ -31,8 +31,10 @@ test_that("yprBH_func() messages",{
     expect_error("'cm' must be >=0")
   yprBH_func(minLL=355,cf=0.45,cm=1.25,lhparms=LH) |>
     expect_error("'cm' must be <=1")
-#  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=-100) |>
-#    expect_error("'cm' must be <=1")
+  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=-100) |>
+    expect_error("'loi' must be >=0")
+  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=c(100,-200)) |>
+    expect_error("All 'loi' must be >=0")
 
   # ----- spot tests for bad values in lhparms, more thorough testing is
   #       elsewhere; e.g., iCheckLinf(), iCheckN0()

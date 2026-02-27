@@ -43,7 +43,12 @@ iHndlArgName <- function(x,optname=NULL) paste0("'",ifelse(x=="",optname,x),"'")
 
 # -- General Error Checks --
 # ===== Error if more than one item
-iErrMore1 <- function(x,nm) if(length(x)>1) STOP("Only use one value in ",nm,".")
+iErrMore1 <- function(x,nm) {
+  if(length(x)>1) {
+    if (!startsWith(nm,"'")) nm <- paste0("'",nm,"'")
+    STOP("Only use one value in ",nm,".")
+  }
+}
 
 # ===== Error if not numeric
 iErrNotNumeric <- function(x,nm) if (!is.numeric(x)) STOP(nm," must be a number.")
@@ -52,6 +57,7 @@ iErrNotNumeric <- function(x,nm) if (!is.numeric(x)) STOP(nm," must be a number.
 iErrLT <- function(x,value,nm) {
   if (any(x<value)) {
     pre <- ifelse(length(x)>1,"All ","")
+    if (!startsWith(nm,"'")) nm <- paste0("'",nm,"'")
     STOP(pre,nm," must be >=",value,".")
   }
 }
@@ -60,12 +66,15 @@ iErrLT <- function(x,value,nm) {
 iErrGT <- function(x,value,nm) {
   if (any(x>value)) {
     pre <- ifelse(length(x)>1,"All ","")
+    if (!startsWith(nm,"'")) nm <- paste0("'",nm,"'")
     STOP(pre,nm," must be <=",value,".")
   }
 }
 
 # Error if not numeric
-iErrNotVector <- function(x,nm) if (!is.vector(x)) STOP(nm," must be a vector")
+iErrNotVector <- function(x,nm) {
+  if (!is.vector(x)) STOP(nm," must be a vector")
+}
 
 # ===== Determine if missing OR NULL
 iErrMissOrNull <- function(x) {
@@ -291,15 +300,15 @@ iCheckcmVect <- function(x,type=NULL){
   iErrNotNumeric(x,nm)
 }
 
-
-# Check length of interest "loi" input
-iCheckloi <- function(loi){
-  #if(any(is.na(loi))){return(NULL)}
-  if(is.null(loi)){return(NULL)}
-  if(!is.vector(loi))
-    STOP("loi must be a vector")
-  if(!is.numeric(loi))
-    STOP("loi must be a numeric data type")
+# ===== Check length of interest "loi" input
+iCheckloi <- function(x,optname) {
+  #! loi is often NULL, so just pass-through (don't do anything) if it is
+  if (!is.null(x)) {
+    nm <- iHndlArgName(deparse(substitute(x)),optname)
+    iErrNotVector(x,nm)
+    iErrNotNumeric(x,nm)
+    iErrLT(x,0,nm)
+  }
 }
 
 # ===== Check initial number of fish in the population
