@@ -73,7 +73,7 @@ iErrGT <- function(x,value,nm) {
 
 # Error if not numeric
 iErrNotVector <- function(x,nm) {
-  if (!is.vector(x)) STOP(nm," must be a vector")
+  if (!is.vector(x)) STOP(nm," must be a vector.")
 }
 
 # ===== Determine if missing OR NULL
@@ -94,17 +94,26 @@ iCheckSlotType <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove) {
 }
 
 # ===== Check minimum length limit for harvest
-iCheckMLH <- function(x,optname) {
+iCheckMLH <- function(x,optname=NULL,onlyone=FALSE) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (iErrMissOrNull(x))
     STOP("Need to specify a minimum length (mm) limit for harvest in ",nm,".")
-  iErrMore1(x,nm)
+  iErrNotVector(x,nm)
+  if (onlyone) iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (x<100) WARN("A minimum length limit of harvest of ",x," mm seems too small,\n",
-                  "  please check value in ",nm,".")
-  if (x>1600) WARN("A minimum length limit of harvest of ",x," mm seems too large,\n",
-                   "  please check value in ",nm,".")
+  tmp <- x<100
+  if (any(tmp)) {
+    tmp <- max(x[tmp])
+    WARN("A minimum length limit of harvest of ",tmp," mm seems too small,\n",
+         "  please check value(s) in ",nm,".")
+  }
+  tmp <- x>1600
+  if (any(tmp)) {
+    tmp <- min(x[tmp])
+    WARN("A minimum length limit of harvest of ",tmp," mm seems too large,\n",
+         "  please check value(s) in ",nm,".")
+  }
 }
 
 # Check recruitment total length
@@ -164,13 +173,14 @@ iCheckslotOrder <- function(recruitmentTL, lowerSL, upperSL) {
 }
 
 # ===== Check conditional mortality value(s)
-iCheckCondMort <- function(x,optname) {
+iCheckCondMort <- function(x,optname=NULL,onlyone=FALSE) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   tmpmsg <- paste0("Need to specify a conditional ",
                    ifelse(startsWith(nm,"'cf"),"fishing","natural"),
                    " mortality in ",nm,".")
   if (iErrMissOrNull(x)) STOP(tmpmsg)
   iErrNotVector(x,nm)
+  if (onlyone) iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
   iErrGT(x,1,nm)
@@ -264,18 +274,6 @@ iCheckrec <- function(rec) {
 }
 
 # Check length of interest "mLL" input
-iCheckminLL <- function(x,type=NULL){
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " vector for minimum length limits in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a ",type,
-                       " vector for minimum length limits in ",nm,".")
-  iErrNotVector(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check length of interest "mLL" input
 iCheckcfVect <- function(x,type=NULL){
   nm <- paste0("'",deparse(substitute(x)),"'")
   if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
@@ -301,7 +299,7 @@ iCheckcmVect <- function(x,type=NULL){
 }
 
 # ===== Check length of interest "loi" input
-iCheckloi <- function(x,optname) {
+iCheckloi <- function(x,optname=NULL) {
   #! loi is often NULL, so just pass-through (don't do anything) if it is
   if (!is.null(x)) {
     nm <- iHndlArgName(deparse(substitute(x)),optname)
@@ -312,7 +310,7 @@ iCheckloi <- function(x,optname) {
 }
 
 # ===== Check initial number of fish in the population
-iCheckN0 <- function(x,optname) {
+iCheckN0 <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (iErrMissOrNull(x))
     STOP("Need to specify an initial number of fish in the population in ",nm,".")
@@ -331,7 +329,7 @@ iCheckLLinf <- function(x, Linf) {
 }
 
 # ===== Check Linf
-iCheckLinf <- function(x,optname) {
+iCheckLinf <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (iErrMissOrNull(x))
     STOP("Need to specify a mean asymptotic length (mm) in ",nm,".")
@@ -345,7 +343,7 @@ iCheckLinf <- function(x,optname) {
 }
 
 # ===== Check K
-iCheckK <- function(x,optname) {
+iCheckK <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (iErrMissOrNull(x))
     STOP("Need to specify a Brody growth coefficient in ",nm,".")
@@ -359,7 +357,7 @@ iCheckK <- function(x,optname) {
 }
 
 # ===== Check t0
-iCheckt0 <- function(x,optname) {
+iCheckt0 <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (iErrMissOrNull(x))
     STOP("Need to specify a time when the mean length is 0 in ",nm,".")
@@ -368,7 +366,7 @@ iCheckt0 <- function(x,optname) {
 }
 
 # ===== Check length-weight beta
-iCheckLWb <- function(x,optname) {
+iCheckLWb <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (iErrMissOrNull(x))
     STOP("Need to specify a weight-length beta coefficient in ",nm,".")
@@ -382,7 +380,7 @@ iCheckLWb <- function(x,optname) {
 }
 
 # ===== Check length-weight alpha
-iCheckLWa <- function(x,optname) {
+iCheckLWa <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (iErrMissOrNull(x))
     STOP("Need to specify a weight-length alpha coefficient in ",nm,".")
@@ -392,7 +390,7 @@ iCheckLWa <- function(x,optname) {
 
 
 # ===== Check maximum age
-iCheckMaxAge <- function(x,optname) {
+iCheckMaxAge <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (iErrMissOrNull(x))
     STOP("Need to specify a maximum age in ",nm,".")
@@ -625,15 +623,16 @@ isum_by_year <- function(res,species,group){
 
 
 # ===== Check life history parameters vector/list
-iCheckLHparms <- function(x) {
+iCheckLHparms <- function(x,optname=NULL) {
   ## check if missing
   if (missing(x))
-    STOP("Need to specify a list or vector of life history parameters.")
+    STOP("Need to specify a list or vector of life history parameters in '",
+         optname,"'.")
 
   ## !! Only perform checks on x if x is NOT of class "MAKELH" ... in other words
   ##    these tests are not needed (i.e., redundant) if x came from makeLH()
   if (!("MAKELH" %in% class(x))) {
-    nm <- paste0("'",deparse(substitute(x)),"'")
+    nm <- iHndlArgName(deparse(substitute(x)),optname)
     if (is.null(x))
       STOP("Need to specify a list or vector of life history parameters in ",nm,".")
 
@@ -729,5 +728,18 @@ iCheckLHparms <- function(x) {
 #          " values.\n","  Depending on other choices the simulation may be slow.")
 #   ## Return sequence
 #   res
+# }
+
+
+# # Check length of interest "mLL" input
+# iCheckminLL <- function(x,type=NULL){
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+#   if (missing(x)) STOP("Need to specify a",type,
+#                        " vector for minimum length limits in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify a ",type,
+#                        " vector for minimum length limits in ",nm,".")
+#   iErrNotVector(x,nm)
+#   iErrNotNumeric(x,nm)
 # }
 

@@ -69,10 +69,10 @@
 
 yprBH_func <- function(minLL,cf,cm,lhparms,loi=NULL,matchRicker=FALSE){
   # ---- Check inputs
-  iCheckLHparms(lhparms)
-  iCheckMLH(minLL,"minLL")
-  iCheckCondMort(cf,"cf")
-  iCheckCondMort(cm,"cm")
+  iCheckLHparms(lhparms,"lhparms")
+  iCheckMLH(minLL,"minLL",onlyone=TRUE)
+  iCheckCondMort(cf,"cf",onlyone=TRUE)
+  iCheckCondMort(cm,"cm",onlyone=TRUE)
   iCheckloi(loi)
 
   # ---- Extract individual life history values and prepare notes vector

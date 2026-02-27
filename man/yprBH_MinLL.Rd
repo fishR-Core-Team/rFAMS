@@ -89,7 +89,6 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
   ylab("Minimum length limit (mm)") +
   theme_bw()
 
-
 }
 \seealso{
 \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.

@@ -235,8 +235,8 @@ test_that("iCheckLHParms() messages",{
   rFAMS:::iCheckLHparms(LHparms) |>
     expect_no_error()
 
-  # ----- test if missing argument
-  rFAMS:::iCheckLHparms() |>
+  # ----- test if missing argument (optname used in first for testing only)
+  rFAMS:::iCheckLHparms(optname="lhparms") |>
     expect_error("Need to specify a list or vector of life history parameters")
   LHparms <- NULL
   rFAMS:::iCheckLHparms(LHparms) |>
@@ -344,6 +344,11 @@ test_that("iCheckCondMort() messages",{
   cf <- "a"
   rFAMS:::iCheckCondMort(cf) |>
     expect_error("'cf' must be a number")
+  cf <- c(0.3,0.5)
+  rFAMS:::iCheckCondMort(cf) |>
+    expect_no_error()
+  rFAMS:::iCheckCondMort(cf,onlyone=TRUE) |>
+    expect_error("Only use one value in 'cf'")
   cf <- c(-0.3,0.5)
   rFAMS:::iCheckCondMort(cf) |>
     expect_error("All 'cf' must be >=0")
@@ -366,6 +371,11 @@ test_that("iCheckCondMort() messages",{
   cm <- "a"
   rFAMS:::iCheckCondMort(cm) |>
     expect_error("'cm' must be a number")
+  cm <- c(0.3,0.5)
+  rFAMS:::iCheckCondMort(cm) |>
+    expect_no_error()
+  rFAMS:::iCheckCondMort(cm,onlyone=TRUE) |>
+    expect_error("Only use one value in 'cm'")
   cm <- c(-0.3,0.5)
   rFAMS:::iCheckCondMort(cm) |>
     expect_error("All 'cm' must be >=0")
@@ -388,6 +398,11 @@ test_that("iCheckCondMort() messages",{
   cfunder <- "a"
   rFAMS:::iCheckCondMort(cfunder) |>
     expect_error("'cfunder' must be a number")
+  cfunder <- c(0.3,0.5)
+  rFAMS:::iCheckCondMort(cfunder) |>
+    expect_no_error()
+  rFAMS:::iCheckCondMort(cfunder,onlyone=TRUE) |>
+    expect_error("Only use one value in 'cfunder'")
   cfunder <- c(-0.3,0.5)
   rFAMS:::iCheckCondMort(cfunder) |>
     expect_error("All 'cfunder' must be >=0")
@@ -413,11 +428,25 @@ test_that("iCheckMLH() messages",{
     expect_error("'minLL' must be a number")
   minLL <- c(200,300)
   rFAMS:::iCheckMLH(minLL) |>
+    expect_no_error()
+  rFAMS:::iCheckMLH(minLL,onlyone=TRUE) |>
     expect_error("Only use one value in 'minLL'")
   minLL <- 25
   rFAMS:::iCheckMLH(minLL) |>
     expect_warning("A minimum length limit of harvest of 25 mm seems too small")
+  minLL <- c(25,300)
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_warning("A minimum length limit of harvest of 25 mm seems too small")
+  minLL <- c(10,25,300)
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_warning("A minimum length limit of harvest of 25 mm seems too small")
   minLL <- 2000
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_warning("A minimum length limit of harvest of 2000 mm seems too large")
+  minLL <- c(300,2000)
+  rFAMS:::iCheckMLH(minLL) |>
+    expect_warning("A minimum length limit of harvest of 2000 mm seems too large")
+  minLL <- c(300,2000,3000)
   rFAMS:::iCheckMLH(minLL) |>
     expect_warning("A minimum length limit of harvest of 2000 mm seems too large")
 })
