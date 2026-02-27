@@ -186,34 +186,6 @@ iCheckCondMort <- function(x,optname=NULL,onlyone=FALSE) {
   iErrGT(x,1,nm)
 }
 
-# Check conditional fishing mortality value
-iCheckcf <- function(x,type=NULL) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional fishing mortality in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a ",type,
-                       " conditional fishing mortality in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  iErrGT(x,1,nm)
-}
-
-# Check conditional natural mortality value
-iCheckcm <- function(x,type=NULL) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional natural mortality in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a",type,
-                       " conditional natural mortality in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  iErrGT(x,1,nm)
-}
-
 # Check conditional fishing mortality value under slot
 iCheckcfunder <- function(x,type=NULL) {
   nm <- paste0("'",deparse(substitute(x)),"'")
@@ -742,4 +714,32 @@ iCheckLHparms <- function(x,optname=NULL) {
 #   iErrNotVector(x,nm)
 #   iErrNotNumeric(x,nm)
 # }
+
+# # Check conditional fishing mortality value
+# iCheckcf <- function(x,type=NULL) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+#   if (missing(x)) STOP("Need to specify a",type,
+#                        " conditional fishing mortality in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify a ",type,
+#                        " conditional fishing mortality in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+#   iErrLT(x,0,nm)
+#   iErrGT(x,1,nm)
+# }
+
+# Check conditional natural mortality value
+iCheckcm <- function(x,type=NULL) {
+  nm <- paste0("'",deparse(substitute(x)),"'")
+  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+  if (missing(x)) STOP("Need to specify a",type,
+                       " conditional natural mortality in ",nm,".")
+  if (is.null(x)) STOP("Need to specify a",type,
+                       " conditional natural mortality in ",nm,".")
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  iErrGT(x,1,nm)
+}
 

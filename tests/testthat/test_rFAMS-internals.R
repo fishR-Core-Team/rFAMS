@@ -469,55 +469,6 @@ test_that("iCheckloi() messages",{
 
 
 
-test_that("iCheckcf() messages",{
-  rFAMS:::iCheckcf() |>
-    expect_error("Need to specify a conditional fishing mortality in")
-  ## Set cf to value outside function to test that name is extracted
-  cf <- -1
-  rFAMS:::iCheckcf(cf) |>
-    expect_error("'cf' must be >=0")
-  cf <- 2
-  rFAMS:::iCheckcf(cf) |>
-    expect_error("'cf' must be <=1")
-  cf <- "a"
-  rFAMS:::iCheckcf(cf) |>
-    expect_error("'cf' must be a number")
-  cf <- c(0.3,0.5)
-  rFAMS:::iCheckcf(cf) |>
-    expect_error("Only use one value in 'cf'")
-  ## test function for work with cfmin and cfmax
-  cfmin <- -1
-  rFAMS:::iCheckcf(cfmin) |>
-    expect_error("'cfmin' must be >=0")
-  cfmax <- "a"
-  rFAMS:::iCheckcf(cfmax) |>
-    expect_error("'cfmax' must be a number")
-})
-
-test_that("iCheckcm() messages",{
-  rFAMS:::iCheckcm() |>
-    expect_error("Need to specify a conditional natural mortality in")
-  ## Set cm to value outside function to test that name is extracted
-  cm <- -1
-  rFAMS:::iCheckcm(cm) |>
-    expect_error("'cm' must be >=0")
-  cm <- 2
-  rFAMS:::iCheckcm(cm) |>
-    expect_error("'cm' must be <=1")
-  cm <- "a"
-  rFAMS:::iCheckcm(cm) |>
-    expect_error("'cm' must be a number")
-  cm <- c(0.3,0.5)
-  rFAMS:::iCheckcm(cm) |>
-    expect_error("Only use one value in 'cm'")
-  ## test function for work with cmmin and cmmax
-  cmmin <- -1
-  rFAMS:::iCheckcm(cmmin) |>
-    expect_error("'cmmin' must be >=0")
-  cmmax <- "a"
-  rFAMS:::iCheckcm(cmmax) |>
-    expect_error("'cmmax' must be a number")
-})
 
 
 ## Continue with the rest of the internals ##
@@ -579,3 +530,52 @@ test_that("iCheckcm() messages",{
 #   expect_equal(length(tmp),801)
 # })
 
+# test_that("iCheckcf() messages",{
+#   rFAMS:::iCheckcf() |>
+#     expect_error("Need to specify a conditional fishing mortality in")
+#   ## Set cf to value outside function to test that name is extracted
+#   cf <- -1
+#   rFAMS:::iCheckcf(cf) |>
+#     expect_error("'cf' must be >=0")
+#   cf <- 2
+#   rFAMS:::iCheckcf(cf) |>
+#     expect_error("'cf' must be <=1")
+#   cf <- "a"
+#   rFAMS:::iCheckcf(cf) |>
+#     expect_error("'cf' must be a number")
+#   cf <- c(0.3,0.5)
+#   rFAMS:::iCheckcf(cf) |>
+#     expect_error("Only use one value in 'cf'")
+#   ## test function for work with cfmin and cfmax
+#   cfmin <- -1
+#   rFAMS:::iCheckcf(cfmin) |>
+#     expect_error("'cfmin' must be >=0")
+#   cfmax <- "a"
+#   rFAMS:::iCheckcf(cfmax) |>
+#     expect_error("'cfmax' must be a number")
+# })
+
+test_that("iCheckcm() messages",{
+  rFAMS:::iCheckcm() |>
+    expect_error("Need to specify a conditional natural mortality in")
+  ## Set cm to value outside function to test that name is extracted
+  cm <- -1
+  rFAMS:::iCheckcm(cm) |>
+    expect_error("'cm' must be >=0")
+  cm <- 2
+  rFAMS:::iCheckcm(cm) |>
+    expect_error("'cm' must be <=1")
+  cm <- "a"
+  rFAMS:::iCheckcm(cm) |>
+    expect_error("'cm' must be a number")
+  cm <- c(0.3,0.5)
+  rFAMS:::iCheckcm(cm) |>
+    expect_error("Only use one value in 'cm'")
+  ## test function for work with cmmin and cmmax
+  cmmin <- -1
+  rFAMS:::iCheckcm(cmmin) |>
+    expect_error("'cmmin' must be >=0")
+  cmmax <- "a"
+  rFAMS:::iCheckcm(cmmax) |>
+    expect_error("'cmmax' must be a number")
+})
