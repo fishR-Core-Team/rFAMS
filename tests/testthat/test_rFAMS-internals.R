@@ -557,7 +557,7 @@ test_that("iCheckloi() messages",{
 
 test_that("iCheckcm() messages",{
   rFAMS:::iCheckcm() |>
-    expect_error("Need to specify a conditional natural mortality in")
+    expect_error("Need to specify aNULL conditional natural mortality in")
   ## Set cm to value outside function to test that name is extracted
   cm <- -1
   rFAMS:::iCheckcm(cm) |>

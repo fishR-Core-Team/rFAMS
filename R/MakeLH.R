@@ -79,16 +79,16 @@ makeLH <- function(N0,tmax,Linf,K,t0,LWalpha,LWbeta,restype=c("list","vector")) 
 
   ## if nls object in Linf then extract coefficients and put in separate values
   if (!missing(Linf)) {
-    if (isa(Linf,"lm")) STOP("'Linf' given object from 'lm()', did you mean\n",
-                             "  to give it an 'nls' object?")
+    if (isa(Linf,"lm")) STOP("'Linf' given object from 'lm()', did you mean",
+                             " to give it an 'nls' object?")
     if (isa(Linf,"nls")) {
       tmp <- stats::coef(Linf)
       if (length(names(tmp))!=3)
-        STOP("Number of paramaters in 'nls' object is not 3; 'nls' object must\n",
-             "  be from fitting a von Bertalanffy model.")
+        STOP("Number of paramaters in 'nls' object is not 3; 'nls' object must",
+             " be from fitting a von Bertalanffy model.")
       if (!all(names(tmp) %in% c("Linf","K","t0")))
-        STOP("Names of parameters in 'nls' object are not 'Linf', 'K', and 't0';\n",
-             "'nls' object must be from fitting a von Bertalanffy model.")
+        STOP("Names of parameters in 'nls' object are not 'Linf', 'K', and 't0';",
+             " 'nls' object must be from fitting a von Bertalanffy model.")
       Linf <- tmp[["Linf"]]
       if (missing(K)) K <- tmp[["K"]]
       if (missing(t0)) t0 <- tmp[["t0"]]
@@ -100,13 +100,13 @@ makeLH <- function(N0,tmax,Linf,K,t0,LWalpha,LWbeta,restype=c("list","vector")) 
 
   ## if LWalpha is an lm object then extract coefs and put in separate values
   if (!missing(LWalpha)) {
-    if (isa(LWalpha,"nls")) STOP("'LWalpha' given object from 'nls()', did you\n",
-                                 "  mean to give it an 'lm' object?")
+    if (isa(LWalpha,"nls")) STOP("'LWalpha' given object from 'nls()', did you",
+                                 " mean to give it an 'lm' object?")
     if (isa(LWalpha,"lm")) {
       tmp <- stats::coef(LWalpha)
       if (length(names(tmp))!=2)
-        STOP("Number of paramaters in 'lm' object is not 2; 'lm' object must\n",
-             "  be from fitting a log10 weight-length linear regression.")
+        STOP("Number of paramaters in 'lm' object is not 2; 'lm' object must",
+             " be from fitting a log10 weight-length linear regression.")
       LWalpha <- tmp[["(Intercept)"]]
       if (missing(LWbeta)) LWbeta <- tmp[[2]]
     }

@@ -18,10 +18,20 @@
 
 
 # -- Helper Functions
-# ===== same as stop() and warning() but with call.=FALSE as default
-STOP <- function(...,call.=FALSE,domain=NULL) stop(...,call.=call.,domain=domain)
+# same as stop() and warning() but with call.=FALSE as default & wrapped message
+iMakeSWmsg <- function(...) {
+  # create message, wrapped according to windows size
+  strwrap(paste(as.character(list(...)),collapse=""),
+          width=0.9*getOption("width"),exdent=2,prefix="\n",initial="")
+}
+
+STOP <- function(...,call.=FALSE,domain=NULL) {
+  stop(iMakeSWmsg(...),call.=call.,domain=domain)
+}
+
 WARN <- function(...,call.=FALSE,immediate.=FALSE,noBreaks.=FALSE,domain=NULL) {
-  warning(...,call.=call.,immediate.=immediate.,noBreaks.=noBreaks.,domain=domain)
+  warning(iMakeSWmsg(...),call.=call.,immediate.=immediate.,
+          noBreaks.=noBreaks.,domain=domain)
 }
 
 # ===== Checks if a value is a whole number
@@ -101,14 +111,14 @@ iCheckMLH <- function(x,optname=NULL,onlyone=FALSE) {
   tmp <- x<100
   if (any(tmp)) {
     tmp <- max(x[tmp])
-    WARN("A minimum length limit of harvest of ",tmp," mm seems too small,\n",
-         "  please check value(s) in ",nm,".")
+    WARN("A minimum length limit of harvest of ",tmp," mm seems too small,",
+         " please check value(s) in ",nm,".")
   }
   tmp <- x>1600
   if (any(tmp)) {
     tmp <- min(x[tmp])
-    WARN("A minimum length limit of harvest of ",tmp," mm seems too large,\n",
-         "  please check value(s) in ",nm,".")
+    WARN("A minimum length limit of harvest of ",tmp," mm seems too large,",
+         " please check value(s) in ",nm,".")
   }
 }
 
@@ -121,10 +131,10 @@ iCheckrecruitTL <- function(x,type="") {
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (x<50) WARN("A recruitment total length of ",x," mm seems too small,\n",
-                  "please check value in ",nm,".")
-  if (x>1600) WARN("A recruitment total length of ",x," mm seems too large,\n",
-                   "  please check value in ",nm,".")
+  if (x<50) WARN("A recruitment total length of ",x," mm seems too small,",
+                  " please check value in ",nm,".")
+  if (x>1600) WARN("A recruitment total length of ",x," mm seems too large,",
+                   " please check value in ",nm,".")
 }
 
 # Check lower slot limit total length
@@ -135,10 +145,10 @@ iChecklowerSLTL <- function(x,type="") {
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (x<50) WARN("A lower slot limit total length of ",x," mm seems too small,\n",
-                 "please check value in ",nm,".")
-  if (x>1600) WARN("A lower slot limit total length of ",x," mm seems too large,\n",
-                   "  please check value in ",nm,".")
+  if (x<50) WARN("A lower slot limit total length of ",x," mm seems too small,",
+                 " please check value in ",nm,".")
+  if (x>1600) WARN("A lower slot limit total length of ",x," mm seems too large,",
+                   " please check value in ",nm,".")
 }
 
 # Check lower slot limit total length
@@ -149,10 +159,10 @@ iCheckupperSLTL <- function(x,type="") {
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (x<50) WARN("An upper slot limit total length of ",x," mm seems too small,\n",
-                 "please check value in ",nm,".")
-  if (x>1600) WARN("An upper slot limit total length of ",x," mm seems too large,\n",
-                   "  please check value in ",nm,".")
+  if (x<50) WARN("An upper slot limit total length of ",x," mm seems too small,",
+                 " please check value in ",nm,".")
+  if (x>1600) WARN("An upper slot limit total length of ",x," mm seems too large,",
+                   " please check value in ",nm,".")
 }
 
 #Check recruitment, lower slot, and upper slot are in proper order
@@ -286,8 +296,8 @@ iCheckN0 <- function(x,optname=NULL) {
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
   # if (!is.wholenumber(x))
-  #   WARN("The initial number in the population is not a whole number,\n",
-  #        "  please check value in ",nm,".")
+  #   WARN("The initial number in the population is not a whole number,",
+  #        " please check value in ",nm,".")
 }
 
 # Check Linf > Minimum length
@@ -304,10 +314,10 @@ iCheckLinf <- function(x,optname=NULL) {
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (x<200) WARN("A mean asymptotic length of ",x," mm seems too small,\n",
-                  "  please check value in ",nm,".")
-  if (x>2000) WARN("A mean asymptotic length of ",x," mm seems too large,\n",
-                   "  please check value in ",nm,".")
+  if (x<200) WARN("A mean asymptotic length of ",x," mm seems too small,",
+                  " please check value in ",nm,".")
+  if (x>2000) WARN("A mean asymptotic length of ",x," mm seems too large,",
+                   " please check value in ",nm,".")
 }
 
 # ===== Check K
@@ -318,10 +328,10 @@ iCheckK <- function(x,optname=NULL) {
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (x<0.1) WARN("A Brody growth coefficient of ",x," seems too small,\n",
-                  "  please check value in ",nm,".")
-  if (x>0.6) WARN("A Brody growth coefficient of ",x," seems too large,\n",
-                  "  please check value in ",nm,".")
+  if (x<0.1) WARN("A Brody growth coefficient of ",x," seems too small,",
+                  " please check value in ",nm,".")
+  if (x>0.6) WARN("A Brody growth coefficient of ",x," seems too large,",
+                  " please check value in ",nm,".")
 }
 
 # ===== Check t0
@@ -341,10 +351,10 @@ iCheckLWb <- function(x,optname=NULL) {
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (x<2) WARN("A weight-length beta coefficient of ",x," seems too small,\n",
-                "  please check value in ",nm,".")
-  if (x>4) WARN("A weight-length beta coefficient of ",x," seems too large,\n",
-                "  please check value in ",nm,".")
+  if (x<2) WARN("A weight-length beta coefficient of ",x," seems too small,",
+                " please check value in ",nm,".")
+  if (x>4) WARN("A weight-length beta coefficient of ",x," seems too large,",
+                " please check value in ",nm,".")
 }
 
 # ===== Check length-weight alpha
@@ -376,8 +386,8 @@ iChecksimyears <- function(x) {
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
-  if (!is.wholenumber(x)) WARN("The numer of simulation years is not a whole number,\n",
-                               "  please check value in ",nm,".")
+  if (!is.wholenumber(x)) WARN("The numer of simulation years is not a whole number,",
+                               " please check value in ",nm,".")
 }
 
 iCheckspecies <- function(x) {
@@ -693,7 +703,7 @@ iCheckLHparms <- function(x,optname=NULL) {
 #   res <- round(seq(xmin,xmax,xinc),8)
 #   if (length(res)>100)
 #     WARN("Choices of ",nm1,", ",nm2,", and ",nm," resulted in ",length(res),
-#          " values.\n","  Depending on other choices the simulation may be slow.")
+#          " values.","  Depending on other choices the simulation may be slow.")
 #   ## Return sequence
 #   res
 # }
