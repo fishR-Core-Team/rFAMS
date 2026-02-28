@@ -4,7 +4,7 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder iCheckCondMort iCheckLHparms iErrMissOrNull iHndlArgName
+#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder iCheckCondMort iCheckLHparms iHndlArgName
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
@@ -17,14 +17,15 @@
 }
 
 
-# -- Helper Functions
-# same as stop() and warning() but with call.=FALSE as default & wrapped message
+# ===== Helper Functions
+# ----- for use with STOP() and WARN()
 iMakeSWmsg <- function(...) {
   # create message, wrapped according to windows size
   strwrap(paste(as.character(list(...)),collapse=""),
           width=0.9*getOption("width"),exdent=2,prefix="\n",initial="")
 }
 
+# ----- same as stop() and warning() but w/ call.=FALSE as default & wrapped msg
 STOP <- function(...,call.=FALSE,domain=NULL) {
   stop(iMakeSWmsg(...),call.=call.,domain=domain)
 }
@@ -34,12 +35,12 @@ WARN <- function(...,call.=FALSE,immediate.=FALSE,noBreaks.=FALSE,domain=NULL) {
           noBreaks.=noBreaks.,domain=domain)
 }
 
-# ===== Checks if a value is a whole number
+# ----- Checks if a value is a whole number
 is.wholenumber <- function(x,tol=.Machine$double.eps^0.5) {
   abs(x - round(x)) < tol
 }
 
-# ===== Incomplete beta function ... see tests for comparison to other packages
+# ----- Incomplete beta function ... see tests for comparison to other packages
 iIbeta <- function(x,a,b) {
   if (any(x<0)) STOP("'x' in incomplete beta function must be >=0.")
   if (any(x>1)) STOP("'x' in incomplete beta function must be <=1.")
@@ -48,61 +49,223 @@ iIbeta <- function(x,a,b) {
   beta(a,b)*stats::pbeta(x,a,b)
 }
 
-# ===== Get argument name from x, or use optname if it is missing
+# ----- Get argument name from x, or use optname if it is missing
 iHndlArgName <- function(x,optname=NULL) paste0("'",ifelse(x=="",optname,x),"'")
 
-# -- General Error Checks --
-# ===== Error if more than one item
+# ===== General Error Checks --
+# ----- Error if more than one item
 iErrMore1 <- function(x,nm) {
   if(length(x)>1) {
+    # some checks send name already in singe quotes ... check & adjust for this
     if (!startsWith(nm,"'")) nm <- paste0("'",nm,"'")
     STOP("Only use one value in ",nm,".")
   }
 }
 
-# ===== Error if not numeric
-iErrNotNumeric <- function(x,nm) if (!is.numeric(x)) STOP(nm," must be a number.")
+# ----- Error if not numeric
+iErrNotNumeric <- function(x,nm) {
+  if (!is.numeric(x)) STOP(nm," must be a number.")
+}
 
-# ===== Error if (any items are) less than value
+# ----- Error if (any items are) less than value
 iErrLT <- function(x,value,nm) {
   if (any(x<value)) {
-    pre <- ifelse(length(x)>1,"All ","")
+    # some checks send name already in singe quotes ... check & adjust for this
     if (!startsWith(nm,"'")) nm <- paste0("'",nm,"'")
+    pre <- ifelse(length(x)>1,"All ","")
     STOP(pre,nm," must be >=",value,".")
   }
 }
 
-# ===== Error if (any items are) greater than value
+# ----- Error if (any items are) greater than value
 iErrGT <- function(x,value,nm) {
   if (any(x>value)) {
-    pre <- ifelse(length(x)>1,"All ","")
+    # some checks send name already in singe quotes ... check & adjust for this
     if (!startsWith(nm,"'")) nm <- paste0("'",nm,"'")
+    pre <- ifelse(length(x)>1,"All ","")
     STOP(pre,nm," must be <=",value,".")
   }
 }
 
-# Error if not numeric
+# Error if not a vector
 iErrNotVector <- function(x,nm) {
   if (!is.vector(x)) STOP(nm," must be a vector.")
 }
 
-# ===== Determine if missing OR NULL
-iErrMissOrNull <- function(x) missing(x) || is.null(x)
 
-# -- Specific Checks --
+# ===== Specific Checks ... roughly ordered as general, YPR MinLL, YPR Slot, DPM
+# ===== Check life history parameters vector/list
+# !!!!! throughout optname= is used to provide a name to the error/warning
+#       message for when the argument is missing, as it is not possible to
+#       extract an argument name when the argument is missing.
+# !!!!! throughout onlyone= is used to help the function distinguish whether it
+#       should test whether only one value was provided. This allows checks for
+#       both when one value is expected from one function (e.g., yprBH_func())
+#       but multiple values may be expected for others (e.g., yprBH_minLL()).
+iCheckLHparms <- function(x,optname=NULL) {
+  ## check if missing
+  if (missing(x))
+    STOP("Need to specify a list or vector of life history parameters in '",
+         optname,"'.")
 
-# Check slot limit lengths and cf
-iCheckSlotType <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove) {
-  if(cfunder > 0 & is.null(recruitmentTL)){
-    STOP("cfunder is specified for harvest under the slot and no length is specified for recruitmentTL. You must specify a recruitmentTL to indicate what length fish are likely to beharvested.")
+  ## !! Only perform checks on x if x is NOT of class "MAKELH" ... in other words
+  ##    these tests are not needed (i.e., redundant) if x came from makeLH()
+  if (!("MAKELH" %in% class(x))) {
+    nm <- iHndlArgName(deparse(substitute(x)),optname)
+    if (is.null(x))
+      STOP("Need to specify a list or vector of life history parameters in ",nm,".")
+
+    ## check not a data.frame or matrix
+    if (is.data.frame(x)) STOP(nm," must be a vector or list, not a data.frame.")
+    if (is.matrix(x)) STOP(nm," must be a vector or list, not a matrix.")
+
+    ## Check names
+    # set expected names for list/vector
+    nms <- c("N0","tmax","Linf","K","t0","LWalpha","LWbeta")
+    # get names in vector/list
+    gnms <- names(x)
+    # check if vector/list is named
+    if (is.null(gnms)) STOP("Life history parameters in ",nm," must be named.")
+    # check that all required names are in vector/list
+    tmp <- nms %in% gnms
+    if (!all(tmp)) STOP(nm," is missing these life history parameters: ",
+                        paste(nms[!tmp],collapse=", "))
+    # check if too many items
+    tmp <- gnms %in% nms
+    if (!all(tmp)) STOP("These parameters should not be in ",nm,": ",
+                        paste(gnms[!tmp],collapse=", "))
+
+    ## Now check that contents are of the right type and magnitude
+    N0 <- x[["N0"]]
+    iCheckN0(N0)
+    tmax <- x[["tmax"]]
+    iCheckMaxAge(tmax)
+    Linf <- x[["Linf"]]
+    iCheckLinf(Linf)
+    K <- x[["K"]]
+    iCheckK(K)
+    t0 <- x[["t0"]]
+    iCheckt0(t0)
+    LWalpha <- x[["LWalpha"]]
+    iCheckLWa(LWalpha)
+    LWbeta <- x[["LWbeta"]]
+    iCheckLWb(LWbeta)
   }
-
 }
 
-# ===== Check minimum length limit for harvest
+# ----- Check initial number of fish in the population
+iCheckN0 <- function(x,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify an initial number of fish in the population in ",nm,".")
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  # if (!is.wholenumber(x))
+  #   WARN("The initial number in the population is not a whole number,",
+  #        " please check value in ",nm,".")
+}
+
+# ----- Check maximum age
+iCheckMaxAge <- function(x,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify a maximum age in ",nm,".")
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  if (!is.wholenumber(x)) WARN("The maximum age in ",nm," is not a whole number.")
+}
+
+# ----- Check Linf
+iCheckLinf <- function(x,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify a mean asymptotic length (mm) in ",nm,".")
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  if (x<200) WARN("A mean asymptotic length of ",x," mm seems too small,",
+                  " please check value in ",nm,".")
+  if (x>2000) WARN("A mean asymptotic length of ",x," mm seems too large,",
+                   " please check value in ",nm,".")
+}
+
+# ----- Check K
+iCheckK <- function(x,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify a Brody growth coefficient in ",nm,".")
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  if (x<0.1) WARN("A Brody growth coefficient of ",x," seems too small,",
+                  " please check value in ",nm,".")
+  if (x>0.6) WARN("A Brody growth coefficient of ",x," seems too large,",
+                  " please check value in ",nm,".")
+}
+
+# ----- Check t0
+iCheckt0 <- function(x,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify a time when the mean length is 0 in ",nm,".")
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+}
+
+# ----- Check length-weight beta
+iCheckLWb <- function(x,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify a weight-length beta coefficient in ",nm,".")
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  if (x<2) WARN("A weight-length beta coefficient of ",x," seems too small,",
+                " please check value in ",nm,".")
+  if (x>4) WARN("A weight-length beta coefficient of ",x," seems too large,",
+                " please check value in ",nm,".")
+}
+
+# ----- Check length-weight alpha
+iCheckLWa <- function(x,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify a weight-length alpha coefficient in ",nm,".")
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+}
+
+# ----- Check length of interest "loi" input
+iCheckloi <- function(x,optname=NULL) {
+  #! loi is often NULL, so just pass-through (don't do anything) if it is
+  if (!is.null(x)) {
+    nm <- iHndlArgName(deparse(substitute(x)),optname)
+    iErrNotVector(x,nm)
+    iErrNotNumeric(x,nm)
+    iErrLT(x,0,nm)
+  }
+}
+
+# ----- Check conditional mortality value(s)
+iCheckCondMort <- function(x,optname=NULL,onlyone=FALSE) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  tmpmsg <- paste0("Need to specify a conditional ",
+                   ifelse(startsWith(nm,"'cf"),"fishing","natural"),
+                   " mortality in ",nm,".")
+  if (missing(x) || is.null(x)) STOP(tmpmsg)
+  iErrNotVector(x,nm)
+  if (onlyone) iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  iErrGT(x,1,nm)
+}
+
+# ----- Check minimum length limit for harvest
 iCheckMLH <- function(x,optname=NULL,onlyone=FALSE) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
-  if (iErrMissOrNull(x))
+  if (missing(x) || is.null(x))
     STOP("Need to specify a minimum length (mm) limit for harvest in ",nm,".")
   iErrNotVector(x,nm)
   if (onlyone) iErrMore1(x,nm)
@@ -120,6 +283,20 @@ iCheckMLH <- function(x,optname=NULL,onlyone=FALSE) {
     WARN("A minimum length limit of harvest of ",tmp," mm seems too large,",
          " please check value(s) in ",nm,".")
   }
+}
+
+
+
+
+
+
+
+# Check slot limit lengths and cf
+iCheckSlotType <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove) {
+  if(cfunder > 0 & is.null(recruitmentTL)){
+    STOP("cfunder is specified for harvest under the slot and no length is specified for recruitmentTL. You must specify a recruitmentTL to indicate what length fish are likely to beharvested.")
+  }
+
 }
 
 # Check recruitment total length
@@ -176,20 +353,6 @@ iCheckslotOrder <- function(recruitmentTL, lowerSL, upperSL) {
     if(recruitmentTL>upperSL) STOP(nm1," must be less than ",nm3,".")
   }
   if(lowerSL>upperSL) STOP(nm2," must be less than ",nm3,".")
-}
-
-# ===== Check conditional mortality value(s)
-iCheckCondMort <- function(x,optname=NULL,onlyone=FALSE) {
-  nm <- iHndlArgName(deparse(substitute(x)),optname)
-  tmpmsg <- paste0("Need to specify a conditional ",
-                   ifelse(startsWith(nm,"'cf"),"fishing","natural"),
-                   " mortality in ",nm,".")
-  if (iErrMissOrNull(x)) STOP(tmpmsg)
-  iErrNotVector(x,nm)
-  if (onlyone) iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  iErrGT(x,1,nm)
 }
 
 # Check conditional fishing mortality value under slot
@@ -276,29 +439,6 @@ iCheckcmVect <- function(x,type=NULL){
   iErrNotNumeric(x,nm)
 }
 
-# ===== Check length of interest "loi" input
-iCheckloi <- function(x,optname=NULL) {
-  #! loi is often NULL, so just pass-through (don't do anything) if it is
-  if (!is.null(x)) {
-    nm <- iHndlArgName(deparse(substitute(x)),optname)
-    iErrNotVector(x,nm)
-    iErrNotNumeric(x,nm)
-    iErrLT(x,0,nm)
-  }
-}
-
-# ===== Check initial number of fish in the population
-iCheckN0 <- function(x,optname=NULL) {
-  nm <- iHndlArgName(deparse(substitute(x)),optname)
-  if (iErrMissOrNull(x))
-    STOP("Need to specify an initial number of fish in the population in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  # if (!is.wholenumber(x))
-  #   WARN("The initial number in the population is not a whole number,",
-  #        " please check value in ",nm,".")
-}
 
 # Check Linf > Minimum length
 iCheckLLinf <- function(x, Linf) {
@@ -306,77 +446,6 @@ iCheckLLinf <- function(x, Linf) {
   if (sum(x > Linf) >0 ) STOP("Harvest lengths in the vector (", nm, ") can't be greater than Linf")
 }
 
-# ===== Check Linf
-iCheckLinf <- function(x,optname=NULL) {
-  nm <- iHndlArgName(deparse(substitute(x)),optname)
-  if (iErrMissOrNull(x))
-    STOP("Need to specify a mean asymptotic length (mm) in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  if (x<200) WARN("A mean asymptotic length of ",x," mm seems too small,",
-                  " please check value in ",nm,".")
-  if (x>2000) WARN("A mean asymptotic length of ",x," mm seems too large,",
-                   " please check value in ",nm,".")
-}
-
-# ===== Check K
-iCheckK <- function(x,optname=NULL) {
-  nm <- iHndlArgName(deparse(substitute(x)),optname)
-  if (iErrMissOrNull(x))
-    STOP("Need to specify a Brody growth coefficient in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  if (x<0.1) WARN("A Brody growth coefficient of ",x," seems too small,",
-                  " please check value in ",nm,".")
-  if (x>0.6) WARN("A Brody growth coefficient of ",x," seems too large,",
-                  " please check value in ",nm,".")
-}
-
-# ===== Check t0
-iCheckt0 <- function(x,optname=NULL) {
-  nm <- iHndlArgName(deparse(substitute(x)),optname)
-  if (iErrMissOrNull(x))
-    STOP("Need to specify a time when the mean length is 0 in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# ===== Check length-weight beta
-iCheckLWb <- function(x,optname=NULL) {
-  nm <- iHndlArgName(deparse(substitute(x)),optname)
-  if (iErrMissOrNull(x))
-    STOP("Need to specify a weight-length beta coefficient in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  if (x<2) WARN("A weight-length beta coefficient of ",x," seems too small,",
-                " please check value in ",nm,".")
-  if (x>4) WARN("A weight-length beta coefficient of ",x," seems too large,",
-                " please check value in ",nm,".")
-}
-
-# ===== Check length-weight alpha
-iCheckLWa <- function(x,optname=NULL) {
-  nm <- iHndlArgName(deparse(substitute(x)),optname)
-  if (iErrMissOrNull(x))
-    STOP("Need to specify a weight-length alpha coefficient in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-
-# ===== Check maximum age
-iCheckMaxAge <- function(x,optname=NULL) {
-  nm <- iHndlArgName(deparse(substitute(x)),optname)
-  if (iErrMissOrNull(x))
-    STOP("Need to specify a maximum age in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  if (!is.wholenumber(x)) WARN("The maximum age in ",nm," is not a whole number.")
-}
 
 # Check simyears
 iChecksimyears <- function(x) {
@@ -599,58 +668,6 @@ isum_by_year <- function(res,species,group){
   return(Year_Summary)
 }
 
-
-# ===== Check life history parameters vector/list
-iCheckLHparms <- function(x,optname=NULL) {
-  ## check if missing
-  if (missing(x))
-    STOP("Need to specify a list or vector of life history parameters in '",
-         optname,"'.")
-
-  ## !! Only perform checks on x if x is NOT of class "MAKELH" ... in other words
-  ##    these tests are not needed (i.e., redundant) if x came from makeLH()
-  if (!("MAKELH" %in% class(x))) {
-    nm <- iHndlArgName(deparse(substitute(x)),optname)
-    if (is.null(x))
-      STOP("Need to specify a list or vector of life history parameters in ",nm,".")
-
-    ## check not a data.frame or matrix
-    if (is.data.frame(x)) STOP(nm," must be a vector or list, not a data.frame.")
-    if (is.matrix(x)) STOP(nm," must be a vector or list, not a matrix.")
-
-    ## Check names
-    # set expected names for list/vector
-    nms <- c("N0","tmax","Linf","K","t0","LWalpha","LWbeta")
-    # get names in vector/list
-    gnms <- names(x)
-    # check if vector/list is named
-    if (is.null(gnms)) STOP("Life history parameters in ",nm," must be named.")
-    # check that all required names are in vector/list
-    tmp <- nms %in% gnms
-    if (!all(tmp)) STOP(nm," is missing these life history parameters: ",
-                        paste(nms[!tmp],collapse=", "))
-    # check if too many items
-    tmp <- gnms %in% nms
-    if (!all(tmp)) STOP("These parameters should not be in ",nm,": ",
-                        paste(gnms[!tmp],collapse=", "))
-
-    ## Now check that contents are of the right type and magnitude
-    N0 <- x[["N0"]]
-    iCheckN0(N0)
-    tmax <- x[["tmax"]]
-    iCheckMaxAge(tmax)
-    Linf <- x[["Linf"]]
-    iCheckLinf(Linf)
-    K <- x[["K"]]
-    iCheckK(K)
-    t0 <- x[["t0"]]
-    iCheckt0(t0)
-    LWalpha <- x[["LWalpha"]]
-    iCheckLWa(LWalpha)
-    LWbeta <- x[["LWbeta"]]
-    iCheckLWb(LWbeta)
-  }
-}
 
 
 

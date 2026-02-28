@@ -53,7 +53,6 @@
 \alias{iCheckcfunder}
 \alias{iCheckCondMort}
 \alias{iCheckLHparms}
-\alias{iErrMissOrNull}
 \alias{iHndlArgName}
 \title{Internal functions.}
 \usage{

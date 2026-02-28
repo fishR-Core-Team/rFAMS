@@ -56,18 +56,6 @@ test_that("iErrGT() and iErrLT() messages",{
     expect_no_error()
 })
 
-test_that("iErrMissNjll() messages",{
-  # ----- should err
-  expect_true(rFAMS:::iErrMissOrNull())
-  expect_true(rFAMS:::iErrMissOrNull(NULL))
-
-  # ----- no errors (not missing or NULL)
-  expect_false(rFAMS:::iErrMissOrNull(NA_real_))
-  expect_false(rFAMS:::iErrMissOrNull(3))
-  expect_false(rFAMS:::iErrMissOrNull("a"))
-  expect_false(rFAMS:::iErrMissOrNull(1:3))
-})
-
 test_that("iCheckN0() messages",{
   # ----- test that something was sent (optname is used in first ex just to test)
   rFAMS:::iCheckN0(optname="N0") |>
