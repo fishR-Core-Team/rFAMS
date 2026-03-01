@@ -110,7 +110,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
 # Estimate yield with fixed parameters
 Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
-                       cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
+                       cfunder=0.25,cfin=0,cfabove=0.15,cm=0.4,
                        lhparms=LH,loi=c(200,250,300,325,350))
 Res_1
 
