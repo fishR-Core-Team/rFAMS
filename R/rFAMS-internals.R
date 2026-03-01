@@ -4,7 +4,7 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases STOP WARN .onAttach is.wholenumber iIbeta iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckMLH iCheckrecruitTL iChecklowerSLTL iCheckupperSLTL iCheckslotOrder iCheckcf iCheckcm iCheckminLL iCheckcfVect iCheckcmVect iCheckloi iCheckcfcm_dpm iCheckN0 iCheckLLinf iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckMaxAge isum_by_year iChecksimyears iCheckspecies iCheckNrec iCheckMinR iCheckMaxR iCheckMinRNorm iCheckMaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iCheckNthyr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year iCheckrec iCheckloi iCheckcfcm_dpm iCheckcfabove iCheckcfin iCheckcfunder iCheckCondMort iCheckLHparms iHndlArgName
+#' @aliases .onAttach iMakeSWmsg STOP WARN is.wholenumber iIbeta iHndlArgName iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckLHparms iCheckN0 iCheckMaxAge iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckloi iCheckCondMort iCheckMLH iCheckrecruitTL iCheckSlotTL iCheckCondMortForSlot iCheckLLinf iCheckcfcm_dpm iCheckrec iChecksimyears iCheckspecies iChecknR iCheckminR iCheckmaxR iCheckminRNorm iCheckmaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iChecknStr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
@@ -50,7 +50,9 @@ iIbeta <- function(x,a,b) {
 }
 
 # ----- Get argument name from x, or use optname if it is missing
-iHndlArgName <- function(x,optname=NULL) paste0("'",ifelse(x=="",optname,x),"'")
+iHndlArgName <- function(x,optname=NULL) {
+  paste0("'",ifelse(x=="",optname,x),"'")
+}
 
 # ===== General Error Checks --
 # ----- Error if more than one item
