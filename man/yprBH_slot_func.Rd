@@ -5,7 +5,6 @@
 \title{Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for single input parameters}
 \usage{
 yprBH_slot_func(
-  recruitmentTL = NULL,
   lowerSL,
   upperSL,
   cfunder,
@@ -13,13 +12,12 @@ yprBH_slot_func(
   cfabove,
   cm,
   lhparms,
+  recruitmentTL = NULL,
   loi = NULL,
   matchRicker = FALSE
 )
 }
 \arguments{
-\item{recruitmentTL}{A numeric representing the minimum length limit for recruiting to the fishery in mm.}
-
 \item{lowerSL}{A numeric representing the length of the lower slot limit in mm.}
 
 \item{upperSL}{A numeric representing the length of the upper slot limit in mm.}
@@ -33,6 +31,8 @@ yprBH_slot_func(
 \item{cm}{A numeric representing conditional natural mortality}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
+
+\item{recruitmentTL}{A numeric representing the minimum length limit for recruiting to the fishery in mm.}
 
 \item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
 
@@ -108,12 +108,17 @@ Details will be filled out later
 # Life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
-# Estimate yield with fixed parameters
-Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
-                       cfunder=0.25,cfin=0,cfabove=0.15,cm=0.4,
-                       lhparms=LH,loi=c(200,250,300,325,350))
-Res_1
+# Estimate yield with fixed parameters for a PROTECTED slot
+pslot1 <- yprBH_slot_func(lowerSL=250,upperSL=325,
+                          cfunder=0.25,cfin=0,cfabove=0.15,cm=0.4,lhparms=LH,
+                          recruitmentTL=200,loi=c(200,250,300,325,350))
+pslot1
 
+# Estimate yield with fixed parameters for an INVERSE/HARVEST slot
+hslot1 <- yprBH_slot_func(lowerSL=250,upperSL=325,
+                          cfunder=0,cfin=0.3,cfabove=0,cm=0.4,lhparms=LH,
+                          loi=c(200,250,300,325,350))
+hslot1
 
 }
 \author{

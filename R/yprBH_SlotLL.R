@@ -4,7 +4,6 @@
 #'
 #' @details Details will be filled out later
 #'
-#' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param lowerSL A numeric representing the length of the lower slot limit in mm.
 #' @param upperSL A numeric representing the length of the upper slot limit in mm.
 #' @param cfunder Single value, conditional fishing mortality under the lower slot limit.
@@ -12,6 +11,7 @@
 #' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
 #' @param cm A numeric vector of conditional natural mortality.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
+#' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
@@ -94,9 +94,9 @@
 #' loi <- c(200,250,300,325,350)
 #'
 #' #Estimate yield based on a protected slot limit
-#'  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
+#'  Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
 #'                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-#'                        lhparms=LH,loi=c(200,250,300,325,350))
+#'                        lhparms=LH,recruitmentTL=200,loi=c(200,250,300,325,350))
 #'
 #'  Res_1
 #'
@@ -127,8 +127,8 @@
 #'
 #' @rdname yprBH_SlotLL
 #' @export
-yprBH_SlotLL<-function(recruitmentTL=NULL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
-                       lhparms,loi=NULL,matchRicker=FALSE){
+yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
+                       recruitmentTL=NULL,loi=NULL,matchRicker=FALSE){
   # ---- Check inputs
   iCheckLHparms(lhparms,"lhparms")
   iCheckCondMort(cm,"cm")
