@@ -99,67 +99,91 @@ test_that("yprBH_MinLL() messages",{
 
 ## ===== Get Some Results for Use Below ========================================
 LH <- makeLH(N0=100,tmax=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
-minLL <- c(200,300)
-cf <- seq(0.3,0.4,0.05)
-cm <- c(0.2,0.3)
 lois <- c(300,400)
 
-res1 <- yprBH_MinLL(minLL=minLL,cf=cf,cm=cm,lhparms=LH,matchRicker=FALSE)
-res2 <- yprBH_MinLL(minLL=minLL,cf=cf,cm=cm,lhparms=LH,loi=lois,matchRicker=FALSE)
+## ----- only one simulation ... lhparms as a list with lois
+minll1 <- 355
+cf1 <- 0.45
+cm1 <- 0.25
+minLL1 <- yprBH_func(minLL=minll1,cf=cf1,cm=cm1,lhparms=LH,loi=lois)
 
-exp_nms2 <- c("yield","nharvest","ndie","nt","tr","avgwt","avglen","nAt300","nAt400",
-              "exploitation","F","M","Z","S","cf","cm","minLL",
-              "N0","Linf","K","t0","LWalpha","LWbeta","tmax","notes")
-exp_nms1 <- exp_nms2[!startsWith(exp_nms2,"nAt")]
-exp_rows <- length(minLL)*length(cf)*length(cm)
+## expectations
+exp_nms1 <- c("yield","nharvest","ndie","nt","tr","avgwt","avglen","nAt300",
+              "nAt400","exploitation","F","M","Z","S","cf","cm","minLL","N0",
+              "Linf","K","t0","LWalpha","LWbeta","tmax","notes")
+exp_rows1 <- 1
 
+## ----- multiple simulations ... lhparms as a list with lois
+minll2 <- c(200,300)
+cf2 <- seq(0.3,0.4,0.05)
+cm2 <- c(0.2,0.3)
+minLL2 <- yprBH_MinLL(minLL=minll2,cf=cf2,cm=cm2,lhparms=LH,loi=lois)
+exp_rows2 <- length(minll2)*length(cf2)*length(cm2)
 
 ## ===== Test Output Types =====================================================
 test_that("yprBH_MinLL() output",{
-  # ----- tests without loi
+  # ----- tests with single simulation
   # ..... data types, sizes, and names
-  expect_type(res1,"list")
-  expect_equal(class(res1),"data.frame")
-  expect_equal(nrow(res1),exp_rows)
-  expect_equal(ncol(res1),length(exp_nms1))
-  expect_equal(names(res1),exp_nms1)
+  expect_type(minLL1,"list")
+  expect_equal(class(minLL1),"data.frame")
+  expect_equal(nrow(minLL1),exp_rows1)
+  expect_equal(ncol(minLL1),length(exp_nms1))
+  expect_equal(names(minLL1),exp_nms1)
 
   # ..... test repetitive (non-calculated) values equal what was expected
-  expect_equal(minLL,unique(res1$minLL))
-  expect_equal(cf,unique(res1$cf))
-  expect_equal(cm,unique(res1$cm))
-  expect_true(all(res1$N0==LH$N0))
-  expect_true(all(res1$Linf==LH$Linf))
-  expect_true(all(res1$K==LH$K))
-  expect_true(all(res1$t0==LH$t0))
-  expect_true(all(res1$LWalpha==LH$LWalpha))
-  expect_true(all(res1$LWbeta==LH$LWbeta))
+  expect_equal(unique(minLL1$minLL),minll1)
+  expect_equal(unique(minLL1$cf),cf1)
+  expect_equal(unique(minLL1$cm),cm1)
+  expect_true(all(minLL1$N0==LH$N0))
+  expect_true(all(minLL1$Linf==LH$Linf))
+  expect_true(all(minLL1$K==LH$K))
+  expect_true(all(minLL1$t0==LH$t0))
+  expect_true(all(minLL1$LWalpha==LH$LWalpha))
+  expect_true(all(minLL1$LWbeta==LH$LWbeta))
 
-  # ----- tests with loi
-  # ..... data types, sizes, and names
-  expect_type(res2,"list")
-  expect_equal(class(res2),"data.frame")
-  expect_equal(nrow(res2),exp_rows)
-  expect_equal(ncol(res2),length(exp_nms2))
-  expect_equal(names(res2),exp_nms2)
+  # ----- tests with multiple simulations
+  expect_type(minLL2,"list")
+  expect_equal(class(minLL2),"data.frame")
+  expect_equal(nrow(minLL2),exp_rows2)
+  expect_equal(ncol(minLL2),length(exp_nms1))
+  expect_equal(names(minLL2),exp_nms1)
 
   # ..... test repetitive (non-calculated) values equal what was expected
-  expect_equal(minLL,unique(res2$minLL))
-  expect_equal(cf,unique(res2$cf))
-  expect_equal(cm,unique(res2$cm))
-  expect_true(all(res2$N0==LH$N0))
-  expect_true(all(res2$Linf==LH$Linf))
-  expect_true(all(res2$K==LH$K))
-  expect_true(all(res2$t0==LH$t0))
-  expect_true(all(res2$LWalpha==LH$LWalpha))
-  expect_true(all(res2$LWbeta==LH$LWbeta))
+  expect_equal(unique(minLL2$minLL),minll2)
+  expect_equal(unique(minLL2$cf),cf2)
+  expect_equal(unique(minLL2$cm),cm2)
+  expect_true(all(minLL2$N0==LH$N0))
+  expect_true(all(minLL2$Linf==LH$Linf))
+  expect_true(all(minLL2$K==LH$K))
+  expect_true(all(minLL2$t0==LH$t0))
+  expect_true(all(minLL2$LWalpha==LH$LWalpha))
+  expect_true(all(minLL2$LWbeta==LH$LWbeta))
 })
 
-
-
 ## ===== Test Results Accuracy =================================================
-## !!!!!   related accuracty results in testing for yprBH_func
-#test_that("yprBH_MinLL() results",{
+# ----- Run code below to create a snapshot of the two data.frames created here.
+#       These are loaded in below to compare current output to previous output.
+#       If something errs in the accuracy tests, then the reason should be
+#       determined. If the changes makes sense, then run this code to make a
+#       new data snapshot for future testing.
+# !!!!! These don't test true accuracy of results, but will detect if anything
+#       has changed since the last "thought-to-be-stable" results.
+#
+# dt <- format(Sys.Date(),format="%d_%b_%Y")
+# fn <- paste0(testthat::test_path(),"/minLL1_",dt,".rds")
+# saveRDS(minLL1,fn)
+#
+# fn <- paste0(testthat::test_path(),"/minLL2_",dt,".rds")
+# saveRDS(minLL2,fn)
 
-## !!!!! TO BE ADDED !!!!!
-#})
+test_that("yprBH_MinLL() results",{
+  # Load snapshots of "old" (i.e., last stable) outputs
+  fn <- paste0(testthat::test_path(),"/minLL1_01_Mar_2026.rds")
+  minLL1_old <- readRDS(fn)
+  fn <- paste0(testthat::test_path(),"/minLL2_01_Mar_2026.rds")
+  minLL2_old <- readRDS(fn)
+
+  # Compare new to "old" data.frames
+  expect_equal(minLL1,minLL1_old)
+  expect_equal(minLL2,minLL2_old)
+})
