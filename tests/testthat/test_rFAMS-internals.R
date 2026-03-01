@@ -652,27 +652,27 @@ test_that("iCheckSlottTL() messages",{
 #     expect_error("'cfmax' must be a number")
 # })
 
-test_that("iCheckcm() messages",{
-  rFAMS:::iCheckcm() |>
-    expect_error("Need to specify aNULL conditional natural mortality in")
-  ## Set cm to value outside function to test that name is extracted
-  cm <- -1
-  rFAMS:::iCheckcm(cm) |>
-    expect_error("'cm' must be >=0")
-  cm <- 2
-  rFAMS:::iCheckcm(cm) |>
-    expect_error("'cm' must be <=1")
-  cm <- "a"
-  rFAMS:::iCheckcm(cm) |>
-    expect_error("'cm' must be a number")
-  cm <- c(0.3,0.5)
-  rFAMS:::iCheckcm(cm) |>
-    expect_error("Only use one value in 'cm'")
-  ## test function for work with cmmin and cmmax
-  cmmin <- -1
-  rFAMS:::iCheckcm(cmmin) |>
-    expect_error("'cmmin' must be >=0")
-  cmmax <- "a"
-  rFAMS:::iCheckcm(cmmax) |>
-    expect_error("'cmmax' must be a number")
-})
+# test_that("iCheckcm() messages",{
+#   rFAMS:::iCheckcm() |>
+#     expect_error("Need to specify aNULL conditional natural mortality in")
+#   ## Set cm to value outside function to test that name is extracted
+#   cm <- -1
+#   rFAMS:::iCheckcm(cm) |>
+#     expect_error("'cm' must be >=0")
+#   cm <- 2
+#   rFAMS:::iCheckcm(cm) |>
+#     expect_error("'cm' must be <=1")
+#   cm <- "a"
+#   rFAMS:::iCheckcm(cm) |>
+#     expect_error("'cm' must be a number")
+#   cm <- c(0.3,0.5)
+#   rFAMS:::iCheckcm(cm) |>
+#     expect_error("Only use one value in 'cm'")
+#   ## test function for work with cmmin and cmmax
+#   cmmin <- -1
+#   rFAMS:::iCheckcm(cmmin) |>
+#     expect_error("'cmmin' must be >=0")
+#   cmmax <- "a"
+#   rFAMS:::iCheckcm(cmmax) |>
+#     expect_error("'cmmax' must be a number")
+# })

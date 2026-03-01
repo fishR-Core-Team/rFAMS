@@ -148,38 +148,21 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
 
   iCheckRecruitmentTL(recruitmentTL,cfunder,lhparms[["Linf"]],lowerSL,
                       "recruitmentTL")
-  # ---- Check inputs
-#  iCheckSlotType(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove)
-#  iCheckRecruitmentTL(recruitmentTL)
-#  iChecklowerSLTL(lowerSL)
-#  iCheckupperSLTL(upperSL)
-#  iCheckslotOrder(recruitmentTL, lowerSL, upperSL)
-#  iCheckLLinf(recruitmentTL,lhparms$Linf)
-#  iCheckLLinf(lowerSL,lhparms$Linf)
-#  iCheckLLinf(upperSL,lhparms$Linf)
-#  iCheckcfunder(cfunder)
-#  iCheckcfin(cfin)
-#  iCheckcfabove(cfabove)
-#  iCheckcmVect(cm,"cm")
-#  iCheckloi(loi)
-  # iCheckcm(cmmin,"minimum")
-  # iCheckcm(cmmax,"maximum")
-  # cm <- iCheckcfminc(cminc,cmmin,cmmax)
 
-  if(is.null(recruitmentTL))
-    recruitmentTL = lowerSL
-
-  # Setup data.frame of input values (varying cf and cm, the rest constant)
-  res <- expand.grid(recruitmentTL=recruitmentTL,lowerSL=lowerSL,upperSL=upperSL,
+  # Setup data.frame of input values (varying cm, the rest constant)
+  res <- expand.grid(lowerSL=lowerSL,upperSL=upperSL,
                      cfunder=cfunder,cfin=cfin,cfabove=cfabove,
                      cm=cm)
-  # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
+  # !! Need to handle the case when recruitmentTL=NULL as special
+  if (!is.null(recruitmentTL)) res$recruitmentTL <- recruitmentTL
+
+  # Send each row to yprBH_slot_func() ... so calc yield et al for all combos
   # output is by age
-  res <- purrr::pmap_df(res,yprBH_slot_func,matchRicker=matchRicker,loi=loi,lhparms=lhparms)
+  res <- purrr::pmap_df(res,yprBH_slot_func,lhparms=lhparms,
+                        loi=loi,matchRicker=matchRicker)
 
   # Return result
   return(res)
-
 }
 
 

@@ -312,8 +312,8 @@ iCheckRecruitmentTL <- function(x,cfunder,Linf,lowerSL,optname=NULL) {
     if (cfunder==0) {
       STOP("'cfunder'==0 which implies that you wish to simulate an inverse/",
            "harvest slot. You have entered a 'recruitmentTL' value which is",
-           "not used with inverse/harvest slots. Please check your use of",
-           "'recruitmentTL', 'cfunder', 'cfin', and 'cfabove'.")
+           " not used with inverse/harvest slots. Please check your use of",
+           " 'recruitmentTL', 'cfunder', 'cfin', and 'cfabove'.")
     } else {
       iErrMore1(x,nm)
       iErrNotNumeric(x,nm)
@@ -354,98 +354,13 @@ iCheckSlotTL <- function(x,Linf,optname) {
 
 
 
-
-# Check slot limit lengths and cf
-iCheckSlotType <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove) {
-  if(cfunder > 0 & is.null(recruitmentTL)){
-    STOP("cfunder is specified for harvest under the slot and no length is specified for recruitmentTL. You must specify a recruitmentTL to indicate what length fish are likely to beharvested.")
-  }
-
-}
-
-
-# Check lower slot limit total length
-iChecklowerSLTL <- function(x,type="") {
+# Check Linf > Minimum length
+iCheckLLinf <- function(x, Linf) {
   nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify a lower slot limit total length (mm) in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a lower slot limit total length (mm) in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  if (x<50) WARN("A lower slot limit total length of ",x," mm seems too small,",
-                 " please check value in ",nm,".")
-  if (x>1600) WARN("A lower slot limit total length of ",x," mm seems too large,",
-                   " please check value in ",nm,".")
+  if (sum(x > Linf) >0 ) STOP("Harvest lengths in the vector (", nm, ") can't be greater than Linf")
 }
 
-# Check lower slot limit total length
-iCheckupperSLTL <- function(x,type="") {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify an upper slot limit total length (mm) in ",nm,".")
-  if (is.null(x)) STOP("Need to specify an upper slot limit total length (mm) in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  if (x<50) WARN("An upper slot limit total length of ",x," mm seems too small,",
-                 " please check value in ",nm,".")
-  if (x>1600) WARN("An upper slot limit total length of ",x," mm seems too large,",
-                   " please check value in ",nm,".")
-}
 
-#Check recruitment, lower slot, and upper slot are in proper order
-iCheckslotOrder <- function(recruitmentTL, lowerSL, upperSL) {
-  ## Check min vs max
-  nm1 <- paste0("'",deparse(substitute(recruitmentTL)),"'")
-  nm2 <- paste0("'",deparse(substitute(lowerSL)),"'")
-  nm3 <- paste0("'",deparse(substitute(upperSL)),"'")
-  if(!is.null(recruitmentTL)){
-    if(recruitmentTL>lowerSL) STOP(nm1," must be less than ",nm2,".")
-    if(recruitmentTL>upperSL) STOP(nm1," must be less than ",nm3,".")
-  }
-  if(lowerSL>upperSL) STOP(nm2," must be less than ",nm3,".")
-}
-
-# Check conditional fishing mortality value under slot
-iCheckcfunder <- function(x,type=NULL) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional fishing mortality under the slot limit in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a",type,
-                       " conditional fishing mortality under the slot limit in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  iErrGT(x,1,nm)
-}
-
-# Check conditional fishing mortality value in slot
-iCheckcfin <- function(x,type=NULL) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional fishing mortality in the slot limit in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a",type,
-                       " conditional fishing mortality in the slot limit in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  iErrGT(x,1,nm)
-}
-
-# Check conditional fishing mortality value under slot
-iCheckcfabove <- function(x,type=NULL) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional fishing mortality above the slot limit in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a",type,
-                       " conditional fishing mortality above the slot limit in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  iErrGT(x,1,nm)
-}
 
 #Check that cf and cm are a numeric matrix
 iCheckcfcm_dpm <- function(x) {
@@ -463,39 +378,6 @@ iCheckrec <- function(rec) {
   if(!is.numeric(rec))
     STOP("rec must be a numeric data type")
 }
-
-# Check length of interest "mLL" input
-iCheckcfVect <- function(x,type=NULL){
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional fishing mortality vector in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a ",type,
-                       " conditional fishing mortality vector in ",nm,".")
-  iErrNotVector(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-
-# Check length of interest "mLL" input
-iCheckcmVect <- function(x,type=NULL){
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional natural mortality in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a ",type,
-                       " conditional natural mortality in ",nm,".")
-  iErrNotVector(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-
-# Check Linf > Minimum length
-iCheckLLinf <- function(x, Linf) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (sum(x > Linf) >0 ) STOP("Harvest lengths in the vector (", nm, ") can't be greater than Linf")
-}
-
 
 # Check simyears
 iChecksimyears <- function(x) {
@@ -802,17 +684,132 @@ isum_by_year <- function(res,species,group){
 #   iErrGT(x,1,nm)
 # }
 
-# Check conditional natural mortality value
-iCheckcm <- function(x,type=NULL) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
-  if (missing(x)) STOP("Need to specify a",type,
-                       " conditional natural mortality in ",nm,".")
-  if (is.null(x)) STOP("Need to specify a",type,
-                       " conditional natural mortality in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  iErrGT(x,1,nm)
-}
+# # Check slot limit lengths and cf
+# iCheckSlotType <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove) {
+#   if(cfunder > 0 & is.null(recruitmentTL)){
+#     STOP("cfunder is specified for harvest under the slot and no length is specified for recruitmentTL. You must specify a recruitmentTL to indicate what length fish are likely to beharvested.")
+#   }
+#
+# }
+
+# # Check lower slot limit total length
+# iChecklowerSLTL <- function(x,type="") {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify a lower slot limit total length (mm) in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify a lower slot limit total length (mm) in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+#   iErrLT(x,0,nm)
+#   if (x<50) WARN("A lower slot limit total length of ",x," mm seems too small,",
+#                  " please check value in ",nm,".")
+#   if (x>1600) WARN("A lower slot limit total length of ",x," mm seems too large,",
+#                    " please check value in ",nm,".")
+# }
+
+# # Check lower slot limit total length
+# iCheckupperSLTL <- function(x,type="") {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify an upper slot limit total length (mm) in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify an upper slot limit total length (mm) in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+#   iErrLT(x,0,nm)
+#   if (x<50) WARN("An upper slot limit total length of ",x," mm seems too small,",
+#                  " please check value in ",nm,".")
+#   if (x>1600) WARN("An upper slot limit total length of ",x," mm seems too large,",
+#                    " please check value in ",nm,".")
+# }
+
+# #Check recruitment, lower slot, and upper slot are in proper order
+# iCheckslotOrder <- function(recruitmentTL, lowerSL, upperSL) {
+#   ## Check min vs max
+#   nm1 <- paste0("'",deparse(substitute(recruitmentTL)),"'")
+#   nm2 <- paste0("'",deparse(substitute(lowerSL)),"'")
+#   nm3 <- paste0("'",deparse(substitute(upperSL)),"'")
+#   if(!is.null(recruitmentTL)){
+#     if(recruitmentTL>lowerSL) STOP(nm1," must be less than ",nm2,".")
+#     if(recruitmentTL>upperSL) STOP(nm1," must be less than ",nm3,".")
+#   }
+#   if(lowerSL>upperSL) STOP(nm2," must be less than ",nm3,".")
+# }
+
+# # Check conditional natural mortality value
+# iCheckcm <- function(x,type=NULL) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+#   if (missing(x)) STOP("Need to specify a",type,
+#                        " conditional natural mortality in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify a",type,
+#                        " conditional natural mortality in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+#   iErrLT(x,0,nm)
+#   iErrGT(x,1,nm)
+# }
+
+# # Check conditional fishing mortality value under slot
+# iCheckcfunder <- function(x,type=NULL) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+#   if (missing(x)) STOP("Need to specify a",type,
+#                        " conditional fishing mortality under the slot limit in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify a",type,
+#                        " conditional fishing mortality under the slot limit in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+#   iErrLT(x,0,nm)
+#   iErrGT(x,1,nm)
+# }
+
+# # Check conditional fishing mortality value in slot
+# iCheckcfin <- function(x,type=NULL) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+#   if (missing(x)) STOP("Need to specify a",type,
+#                        " conditional fishing mortality in the slot limit in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify a",type,
+#                        " conditional fishing mortality in the slot limit in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+#   iErrLT(x,0,nm)
+#   iErrGT(x,1,nm)
+# }
+
+# # Check conditional fishing mortality value under slot
+# iCheckcfabove <- function(x,type=NULL) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+#   if (missing(x)) STOP("Need to specify a",type,
+#                        " conditional fishing mortality above the slot limit in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify a",type,
+#                        " conditional fishing mortality above the slot limit in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+#   iErrLT(x,0,nm)
+#   iErrGT(x,1,nm)
+# }
+
+# # Check length of interest "mLL" input
+# iCheckcfVect <- function(x,type=NULL){
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+#   if (missing(x)) STOP("Need to specify a",type,
+#                        " conditional fishing mortality vector in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify a ",type,
+#                        " conditional fishing mortality vector in ",nm,".")
+#   iErrNotVector(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+
+# # Check length of interest "mLL" input
+# iCheckcmVect <- function(x,type=NULL){
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if(!is.null(type)) type <- paste0(" ",type)  ## to handle space padding in msg
+#   if (missing(x)) STOP("Need to specify a",type,
+#                        " conditional natural mortality in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify a ",type,
+#                        " conditional natural mortality in ",nm,".")
+#   iErrNotVector(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
 
