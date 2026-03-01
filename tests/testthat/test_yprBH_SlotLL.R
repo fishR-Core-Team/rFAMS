@@ -7,93 +7,193 @@ test_that("yprBH_SlotLL() messages",{
   # ..... protected slot
   yprBH_SlotLL(lowerSL=250,upperSL=325,
                cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
-               lhparms=LH,recruitmentTL=200,loi=c(200,300)) |>
+               lhparms=LH,recruitmentTL=200) |>
     expect_no_error()
   # ..... inverse/harvest slot
   yprBH_SlotLL(lowerSL=250,upperSL=325,
                cfunder=0,cfin=0.25,cfabove=0,cm=cm,
-               lhparms=LH,loi=c(200,300)) |>
+               lhparms=LH) |>
     expect_no_error()
-
-
-
-    LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
   # ----- test for missing arguments
-  yprBH_MinLL(minLL=300,cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_no_error()
-  yprBH_MinLL(cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_error("Need to specify a minimum length \\(mm\\) limit for harvest")
-  yprBH_MinLL(minLL=300,cm=0.2,lhparms=LH) |>
-    expect_error("Need to specify a conditional fishing mortality in 'cf'")
-  yprBH_MinLL(minLL=300,cf=0.2,lhparms=LH) |>
+  # ..... protected slot
+  yprBH_SlotLL(upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("Need to specify a lower slot limit total length")
+  yprBH_SlotLL(lowerSL=250,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("Need to specify a upper slot limit total length")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("Need to specify a conditional fishing mortality under")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("Need to specify a conditional fishing mortality in")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("Need to specify a conditional fishing mortality above")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.15,
+               lhparms=LH,recruitmentTL=200) |>
     expect_error("Need to specify a conditional natural mortality in 'cm'")
-  yprBH_MinLL(minLL=300,cf=0.3,cm=0.2) |>
-    expect_error("Need to specify a list or vector of life history parameters in")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               recruitmentTL=200) |>
+    expect_error("Need to specify a list or vector of life history parameters")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH) |>
+    expect_error("'cfunder'>0 which implies that you wish to simulate")
 
   # ----- test for bad values
-  # ..... in minLL
-  yprBH_MinLL(minLL=c(300,400),cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_no_error()
-  yprBH_MinLL(minLL=-300,cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_error("'minLL' must be >=0")
-  yprBH_MinLL(minLL=c(-300,400),cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_error("All 'minLL' must be >=0")
-  yprBH_MinLL(minLL="a",cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_error("'minLL' must be a number")
-  yprBH_MinLL(minLL=data.frame(minLL=300),cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_error("'minLL' must be a vector")
-  yprBH_MinLL(minLL=2005,cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_error("A minimum length limit of harvest cannot be more than Linf")
+  # ..... in lowerSL
+  yprBH_SlotLL(lowerSL=-250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'lowerSL' must be >=0")
+  yprBH_SlotLL(lowerSL="a",upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'lowerSL' must be a number")
+  yprBH_SlotLL(lowerSL=c(200,250),upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("Only use one value in 'lowerSL'")
+  yprBH_SlotLL(lowerSL=350,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'lowerSL' must be less than 'upperSL'")
+  yprBH_SlotLL(lowerSL=600,upperSL=625,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("The lower slot limit total length \\(=600\\) mm cannot be")
+  # ..... in upperSL
+  yprBH_SlotLL(lowerSL=250,upperSL=-325,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'upperSL' must be >=0")
+  yprBH_SlotLL(lowerSL=250,upperSL="a",
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'upperSL' must be a number")
+  yprBH_SlotLL(lowerSL=250,upperSL=c(325,350),
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("Only use one value in 'upperSL'")
+  yprBH_SlotLL(lowerSL=350,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'lowerSL' must be less than 'upperSL'")
+  yprBH_SlotLL(lowerSL=300,upperSL=600,
+               cfunder=0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("The upper slot limit total length \\(=600\\) mm cannot be")
+  # ..... in cfunder
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=-0.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'cfunder' must be >=0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=1.25,cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'cfunder' must be <=1")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder="a",cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'cfunder' must be a number")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=c(0.25,0.3),cfin=0,cfabove=0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("Only use one value in 'cfunder'")
+  # ..... in cfabove
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=-0.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'cfabove' must be >=0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=1.15,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'cfabove' must be <=1")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove="a",cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'cfabove' must be a number")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=c(0.25,0.3),cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("Only use one value in 'cfabove'")
+  # ..... in cfin (switch to inverse/harvest slot)
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin=-0.3,cfabove=0,cm=cm,
+               lhparms=LH) |>
+    expect_error("'cfin' must be >=0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin=1.3,cfabove=0,cm=cm,
+               lhparms=LH) |>
+    expect_error("'cfin' must be <=1")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin="a",cfabove=0,cm=cm,
+               lhparms=LH) |>
+    expect_error("'cfin' must be a number")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin=c(0.3,0.4),cfabove=0,cm=cm,
+               lhparms=LH) |>
+    expect_error("Only use one value in 'cfin'")
+  # ..... in cfunder, cfabove, cfin relatedly
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.2,cfin=0.3,cfabove=0.4,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all be >0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.2,cfin=0.3,cfabove=0.4,cm=cm,
+               lhparms=LH) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all be >0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin=0,cfabove=0,cm=cm,
+               lhparms=LH) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin=0,cfabove=0,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
 
-  # ..... in cf
-  yprBH_MinLL(minLL=300,cf=c(0.3,0.4),cm=0.2,lhparms=LH) |>
-    expect_no_error()
-  yprBH_MinLL(minLL=300,cf=-0.3,cm=0.2,lhparms=LH)|>
-    expect_error("'cf' must be >=0")
-  yprBH_MinLL(minLL=300,cf=c(-0.3,0.4),cm=0.2,lhparms=LH)|>
-    expect_error("All 'cf' must be >=0")
-  yprBH_MinLL(minLL=300,cf=1.3,cm=0.2,lhparms=LH)|>
-    expect_error("'cf' must be <=1")
-  yprBH_MinLL(minLL=300,cf=c(0.3,1.4),cm=0.2,lhparms=LH)|>
-    expect_error("All 'cf' must be <=1")
-  yprBH_MinLL(minLL=300,cf="a",cm=0.2,lhparms=LH)|>
-    expect_error("'cf' must be a number")
-  yprBH_MinLL(minLL=300,cf=data.frame(cf=0.3),cm=0.2,lhparms=LH)|>
-    expect_error("'cf' must be a vector")
-
-  # ..... in cm
-  yprBH_MinLL(minLL=300,cf=0.2,cm=c(0.3,0.4),lhparms=LH) |>
-    expect_no_error()
-  yprBH_MinLL(minLL=300,cf=0.2,cm=-0.3,lhparms=LH)|>
-    expect_error("'cm' must be >=0")
-  yprBH_MinLL(minLL=300,cf=0.2,cm=c(-0.3,0.4),lhparms=LH)|>
-    expect_error("All 'cm' must be >=0")
-  yprBH_MinLL(minLL=300,cf=0.2,cm=1.3,lhparms=LH)|>
-    expect_error("'cm' must be <=1")
-  yprBH_MinLL(minLL=300,cf=0.2,cm=c(0.3,1.4),lhparms=LH)|>
-    expect_error("All 'cm' must be <=1")
-  yprBH_MinLL(minLL=300,cf=0.2,cm="a",lhparms=LH)|>
-    expect_error("'cm' must be a number")
-  yprBH_MinLL(minLL=300,cf=0.2,cm=data.frame(cm=0.3),lhparms=LH)|>
-    expect_error("'cm' must be a vector")
-
-  # ..... in loi
-  lois <- c(300,400,500)
-  yprBH_MinLL(minLL=300,cf=0.2,cm=c(0.3,0.4),lhparms=LH,loi=lois) |>
-    expect_no_error()
-  lois <- -300
-  yprBH_MinLL(minLL=300,cf=0.2,cm=c(0.3,0.4),lhparms=LH,loi=lois) |>
-    expect_error("'loi' must be >=0")
-  lois <- c(-300,400,500)
-  yprBH_MinLL(minLL=300,cf=0.2,cm=c(0.3,0.4),lhparms=LH,loi=lois) |>
-    expect_error("All 'loi' must be >=0")
-  lois <- "a"
-  yprBH_MinLL(minLL=300,cf=0.2,cm=c(0.3,0.4),lhparms=LH,loi=lois) |>
-    expect_error("'loi' must be a number")
-  lois <- data.frame(loi=c(300,400,500))
-  yprBH_MinLL(minLL=300,cf=0.2,cm=c(0.3,0.4),lhparms=LH,loi=lois) |>
-    expect_error("'loi' must be a vector")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.2,cfin=0.2,cfabove=0,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.2,cfin=0.2,cfabove=0,cm=cm,
+               lhparms=LH,recruitmentTL=NULL) |>
+    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin=0.2,cfabove=0.2,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin=0.2,cfabove=0.2,cm=cm,
+               lhparms=LH,recruitmentTL=NULL) |>
+    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.2,cfin=0,cfabove=0,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.2,cfin=0,cfabove=0,cm=cm,
+               lhparms=LH,recruitmentTL=NULL) |>
+    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin=0,cfabove=0.2,cm=cm,
+               lhparms=LH,recruitmentTL=200) |>
+    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0,cfin=0,cfabove=0.2,cm=cm,
+               lhparms=LH,recruitmentTL=NULL) |>
+    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
 
   # ..... spot tests for bad values in lhparms ... more thorough testing is
   #       elsewhere; e.g., iCheckLinf(), iCheckN0()

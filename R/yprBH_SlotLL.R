@@ -135,11 +135,7 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   iCheckCondMort(cfunder,"cfunder",onlyone=TRUE)
   iCheckCondMort(cfin,"cfin",onlyone=TRUE)
   iCheckCondMort(cfabove,"cfabove",onlyone=TRUE)
-  # .... Check that inputs for cfs represent either an inverse or protected slot
-  if (cfin>0 & (cfunder>0 | cfabove>0))
-    STOP("Either 'cfin'>0 and both 'cfunder'=0 and 'cfabove'=0 to simulate an",
-         " 'inverse/harvest slot, or 'cfin=0' and both 'cfunder' and 'cfabove'>0",
-         " to simulate a 'protected slot'.")
+  iCheckCondMortForSlot(cfunder,cfin,cfabove,recruitmentTL)
   iCheckloi(loi)
   iCheckSlotTL(lowerSL,lhparms[["Linf"]],"lowerSL")
   iCheckSlotTL(upperSL,lhparms[["Linf"]],"upperSL")

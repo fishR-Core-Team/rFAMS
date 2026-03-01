@@ -351,8 +351,43 @@ iCheckSlotTL <- function(x,Linf,optname) {
                    " mm seems too large, please check value in ",nm,".")
 }
 
+# ----- Check combinations of cf values and recruitmentTL for Slot Limits
+iCheckCondMortForSlot <- function(cfu,cfi,cfa,rtl) {
+  # determine what of cfunder, cfin, cfbelow, and recruitmentTL were given
+  ugiven <- cfu>0
+  igiven <- cfi>0
+  agiven <- cfa>0
+  rtlgiven <- !is.null(rtl)
 
+  # determine problems with combos of cfunder, cfin, and cfabove
+  if (all(c(ugiven,igiven,agiven))) {
+    tmp1 <- "'cfunder', 'cfin', and 'cfabove' cannot all be >0. "
+  } else if (all(c(!ugiven,!igiven,!agiven))) {
+    STOP("'cfunder', 'cfin', and 'cfabove' cannot all =0.")
+  } else if (igiven & (ugiven | agiven)) {
+    tmp1 <- "If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0. "
+  } else if (!igiven & (!ugiven | !agiven)) {
+    tmp1 <- "If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0. "
+  } else tmp1 <- NULL  ## no problems
 
+  if (!is.null(tmp1)) { ## there was a problem so STOP needs to be used
+    # modify message depending on whether recruitmentTL was given or no
+    if (rtlgiven) {
+      tmp2 <- paste("You have provided a 'recruitmentTL' which implies you",
+                    "want to simulate a protected slot. Use 'cfin'=0,",
+                    "'cfunder'>0, 'cfabove'>0 and a 'recruitmentTL'",
+                    "to simulate a 'protected slot'. ")
+    } else {
+      tmp2 <- paste("You have not provided a 'recruitmentTL' which implies you",
+                    "want to simulate an inverse/harvest slot. Use 'cfin'>0,",
+                    "'cfunder'=0, and 'cfabove'=0 and no 'recruitmentTL'",
+                    "to simulate an inverse/harvest slot. ")
+    }
+    # send message
+    STOP(tmp1,tmp2,"Please check your values in 'cfunder', ",
+                           "'cfin', 'cfabove', and 'recruitmentTL'.")
+  }
+}
 
 # Check Linf > Minimum length
 iCheckLLinf <- function(x, Linf) {

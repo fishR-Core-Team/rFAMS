@@ -470,6 +470,46 @@ test_that("iCheckloi() messages",{
     expect_error("'loi' must be a vector")
 })
 
+test_that("iCheckCondForSlot() messages",{
+  # ----- no errors
+  # ..... protect slot
+  rFAMS:::iCheckCondMortForSlot(0.1,0,0.1,200) |>
+    expect_no_error()
+  # ..... inverse/harvest slot
+  rFAMS:::iCheckCondMortForSlot(0,0.1,0,200) |>
+    expect_no_error()
+
+  # ----- simple errors (all >0 or all =0)
+  rFAMS:::iCheckCondMortForSlot(0.1,0.1,0.1,200) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all be >0")
+  rFAMS:::iCheckCondMortForSlot(0.1,0.1,0.1,NULL) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all be >0")
+  rFAMS:::iCheckCondMortForSlot(0  ,0  ,0  ,200) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+  rFAMS:::iCheckCondMortForSlot(0  ,0  ,0  ,NULL) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+
+  # ----- errors with cfin >0
+  rFAMS:::iCheckCondMortForSlot(0.1,0.1,0  ,200) |>
+    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
+  rFAMS:::iCheckCondMortForSlot(0  ,0.1,0.1,200) |>
+    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
+  rFAMS:::iCheckCondMortForSlot(0.1,0.1,0  ,NULL) |>
+    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
+  rFAMS:::iCheckCondMortForSlot(0  ,0.1,0.1,NULL) |>
+    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
+
+  # ----- errors with cfin =0
+  rFAMS:::iCheckCondMortForSlot(0.1,0  ,0  ,200) |>
+    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
+  rFAMS:::iCheckCondMortForSlot(0  ,0  ,0.1,200) |>
+    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
+  rFAMS:::iCheckCondMortForSlot(0.1,0  ,0  ,NULL) |>
+    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
+  rFAMS:::iCheckCondMortForSlot(0  ,0  ,0.1,NULL) |>
+    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
+})
+
 test_that("iCheckRecruitmentTL() messages",{
   # ----- test that something was sent (optname is used in first exs just to test)
   # !!!!! no error as presumably modeling inverse slot, so don't need recruitmentTL
