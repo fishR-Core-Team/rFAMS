@@ -133,7 +133,7 @@ yprBH_SlotLL<-function(recruitmentTL=NULL,lowerSL,upperSL,cfunder,cfin,cfabove,c
 
   # ---- Check inputs
   iCheckSlotType(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove)
-  iCheckrecruitTL(recruitmentTL)
+  iCheckRecruitmentTL(recruitmentTL)
   iChecklowerSLTL(lowerSL)
   iCheckupperSLTL(upperSL)
   iCheckslotOrder(recruitmentTL, lowerSL, upperSL)

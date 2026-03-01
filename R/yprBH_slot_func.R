@@ -90,11 +90,12 @@
 #' @rdname yprBH_slot_func
 #' @export
 
-yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
+yprBH_slot_func <- function(recruitmentTL=NULL,lowerSL,upperSL,
+                            cfunder,cfin,cfabove,cm,
                             lhparms,loi=NULL,matchRicker=FALSE){
-
-
-  # Extract individual life history values
+  # ---- Check inputs
+  iCheckLHparms(lhparms,"lhparms")
+  # .... Extract individual life history values
   N0 <- lhparms[["N0"]]
   tmax <- lhparms[["tmax"]]
   Linf <- lhparms[["Linf"]]
@@ -102,23 +103,34 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   t0 <- lhparms[["t0"]]
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
-
-  # ---- Check inputs
-  iCheckN0(N0)
-  iCheckMaxAge(tmax)
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
+  # .... continue checks
+  iCheckCondMort(cm,"cm",onlyone=TRUE)
+  iCheckCondMort(cfunder,"cfunder",onlyone=TRUE)
+  iCheckCondMort(cfin,"cfin",onlyone=TRUE)
+  iCheckCondMort(cfabove,"cfabove",onlyone=TRUE)
+  # .... Check that inputs for cfs represent either an inverse or protected slot
+  if (cfin>0 & (cfunder>0 | cfabove>0))
+    STOP("Either 'cfin'>0 and both 'cfunder'=0 and 'cfabove'=0 to simulate an",
+         " 'inverse/harvest slot, or 'cfin=0' and both 'cfunder' and 'cfabove'>0",
+         " to simulate a 'protected slot'.")
   iCheckloi(loi)
-  iCheckcm(cm)
-  iCheckcfunder(cfunder)
-  iCheckcfin(cfin)
-  iCheckcfabove(cfabove)
-  iCheckrecruitTL(recruitmentTL)
-  iChecklowerSLTL(lowerSL)
-  iCheckupperSLTL(upperSL)
+  iCheckSlotTL(lowerSL,Linf,"lowerSL")
+  iCheckSlotTL(upperSL,Linf,"upperSL")
+  # .... check that slot lengths are in correct order
+  if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
+
+  iCheckRecruitmentTL(recruitmentTL,cfunder,Linf,lowerSL,"recruitmentTL")
+  # !!!!! This is a stop-gap ... if here without error than simulating an inverse
+  #       slot where recruitmentTL is not required. However, recruitmentTL is
+  #       tested against Linf below, with tr adjusted if it is larger than Linf.
+  #       Right now recruitmentTL could be NULL here which would make that later
+  #       test an error. I set recruitmentTL to lowerSL for now, but we need a
+  #       better solution. It should be noted that we check to see if
+  #       recruitmentTL>Linf before this and STOP if it is ... thus, the check
+  #       and adjustment below is likely not needed??
+  #       I now see that you did this same thing in yprBH_SlotLL().
+  recruitmentTL <- lowerSL
+
 
   #needed to account for rounding issues of sequences
   cm <- round(cm,8)

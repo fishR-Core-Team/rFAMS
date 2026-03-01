@@ -374,7 +374,13 @@ test_that("iCheckCondMort() messages",{
   # ----- test wrong input types or values
   cfunder <- NULL
   rFAMS:::iCheckCondMort(cfunder) |>
-    expect_error("Need to specify a conditional fishing mortality in 'cfunder'")
+    expect_error("Need to specify a conditional fishing mortality under the slot")
+  cfin <- NULL
+  rFAMS:::iCheckCondMort(cfin) |>
+    expect_error("Need to specify a conditional fishing mortality in the slot")
+  cfabove <- NULL
+  rFAMS:::iCheckCondMort(cfabove) |>
+    expect_error("Need to specify a conditional fishing mortality above the slot")
 
   # ----- test wrong input types or values
   cfunder <- -1
@@ -455,6 +461,100 @@ test_that("iCheckloi() messages",{
     expect_error("'loi' must be a vector")
 })
 
+test_that("iCheckRecruitmentTL() messages",{
+  # ----- test that something was sent (optname is used in first exs just to test)
+  # !!!!! no error as presumably modeling inverse slot, so don't need recruitmentTL
+  rFAMS:::iCheckRecruitmentTL(cfunder=0,Linf=250,lowerSL=100,
+                              optname="recruitmentTL") |>
+    expect_no_error()
+  rFAMS:::iCheckRecruitmentTL(cfunder=0.25,Linf=250,lowerSL=100,
+                              optname="recruitmentTL") |>
+    expect_error("'cfunder'>0 which implies that you wish to simulate a")
+  recruitmentTL <- NULL
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0,Linf=250,lowerSL=100) |>
+    expect_no_error()
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+    expect_error("'cfunder'>0 which implies that you wish to simulate a")
+
+  # ----- test wrong input types or values
+  # !!!!! cfunder>0 for situation (protected slot) where recruitmentTL is needed
+  recruitmentTL <- -1
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+    expect_error("'recruitmentTL' must be >=0")
+  recruitmentTL <- "a"
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+    expect_error("'recruitmentTL' must be a number")
+  recruitmentTL <- c(200,300)
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+    expect_error("Only use one value in 'recruitmentTL'")
+  recruitmentTL <- 300
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+    expect_error("The recruitment total length \\(=300\\) mm cannot be greater")
+  # recruitmentTL <- 25
+  # rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+  #   expect_warning("A recruitment total length of 25 mm seems too small")
+  # recruitmentTL <- 2000
+  # rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=2500,lowerSL=2200) |>
+  #   expect_warning("A recruitment total length of 2000 mm seems too large")
+  # recruitmentTL <- 200
+  # rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=150) |>
+  #   expect_error("'recruitmentTL' must be less than or equal to 'lowerSL'")
+})
+
+test_that("iCheckSlottTL() messages",{
+  # ----- test that something was sent (optname is used in first exs just to test)
+  rFAMS:::iCheckSlotTL(Linf=250,optname="lowerSL") |>
+    expect_error("Need to specify a lower slot limit total length")
+  rFAMS:::iCheckSlotTL(Linf=250,optname="upperSL") |>
+    expect_error("Need to specify a upper slot limit total length")
+  lowerSL <- NULL
+  rFAMS:::iCheckSlotTL(lowerSL,Linf=250) |>
+    expect_error("Need to specify a lower slot limit total length")
+  upperSL <- NULL
+  rFAMS:::iCheckSlotTL(upperSL,Linf=250) |>
+    expect_error("Need to specify a upper slot limit total length")
+
+  # ----- test wrong input types or values
+  # ..... lowerSL values
+  lowerSL <- -1
+  rFAMS:::iCheckSlotTL(lowerSL,Linf=250) |>
+    expect_error("'lowerSL' must be >=0")
+  lowerSL <- "a"
+  rFAMS:::iCheckSlotTL(lowerSL,Linf=250) |>
+    expect_error("'lowerSL' must be a number")
+  lowerSL <- c(200,300)
+  rFAMS:::iCheckSlotTL(lowerSL,Linf=250) |>
+    expect_error("Only use one value in 'lowerSL'")
+  lowerSL <- 300
+  rFAMS:::iCheckSlotTL(lowerSL,Linf=250) |>
+    expect_error("The lower slot limit total length \\(=300\\) mm cannot be greater")
+  lowerSL <- 25
+  rFAMS:::iCheckSlotTL(lowerSL,Linf=250) |>
+    expect_warning("A lower slot limit total length of 25 mm seems too small")
+  lowerSL <- 2000
+  rFAMS:::iCheckSlotTL(lowerSL,Linf=2500) |>
+    expect_warning("A lower slot limit total length of 2000 mm seems too large")
+
+  # ..... upperSL values
+  upperSL <- -1
+  rFAMS:::iCheckSlotTL(upperSL,Linf=250) |>
+    expect_error("'upperSL' must be >=0")
+  upperSL <- "a"
+  rFAMS:::iCheckSlotTL(upperSL,Linf=250) |>
+    expect_error("'upperSL' must be a number")
+  upperSL <- c(200,300)
+  rFAMS:::iCheckSlotTL(upperSL,Linf=250) |>
+    expect_error("Only use one value in 'upperSL'")
+  upperSL <- 300
+  rFAMS:::iCheckSlotTL(upperSL,Linf=250) |>
+    expect_error("The upper slot limit total length \\(=300\\) mm cannot be greater")
+  upperSL <- 25
+  rFAMS:::iCheckSlotTL(upperSL,Linf=250) |>
+    expect_warning("A upper slot limit total length of 25 mm seems too small")
+  upperSL <- 2000
+  rFAMS:::iCheckSlotTL(upperSL,Linf=2500) |>
+    expect_warning("A upper slot limit total length of 2000 mm seems too large")
+})
 
 
 

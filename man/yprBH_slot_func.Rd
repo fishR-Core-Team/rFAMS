@@ -5,7 +5,7 @@
 \title{Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for single input parameters}
 \usage{
 yprBH_slot_func(
-  recruitmentTL,
+  recruitmentTL = NULL,
   lowerSL,
   upperSL,
   cfunder,

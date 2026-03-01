@@ -251,9 +251,19 @@ iCheckloi <- function(x,optname=NULL) {
 # ----- Check conditional mortality value(s)
 iCheckCondMort <- function(x,optname=NULL,onlyone=FALSE) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
-  tmpmsg <- paste0("Need to specify a conditional ",
-                   ifelse(startsWith(nm,"'cf"),"fishing","natural"),
-                   " mortality in ",nm,".")
+  # determine type of mortality ... fishing or natural based on nm
+  type <- ifelse(startsWith(nm,"'cf"),"fishing","natural")
+  # determine extra description for fishing mortality if a Slot limit
+  slotdesc <- ""  # default for if nm="cf" or nm="cm"
+  if (type=="fishing") {
+    if (nm=="'cfunder'") slotdesc <- "under the slot limit"
+    else if (nm=="'cfin'") slotdesc <- "in the slot limit"
+    else if (nm=="'cfabove'") slotdesc <- "above the slot limit"
+  }
+  # put a message together
+  tmpmsg <- paste0("Need to specify a conditional ",type,
+                   " mortality ",slotdesc," in ",nm,".")
+  # do the checks
   if (missing(x) || is.null(x)) STOP(tmpmsg)
   iErrNotVector(x,nm)
   if (onlyone) iErrMore1(x,nm)
@@ -285,7 +295,57 @@ iCheckMLH <- function(x,optname=NULL,onlyone=FALSE) {
   }
 }
 
+# ----- Check recruitment total length
+iCheckRecruitmentTL <- function(x,cfunder,Linf,lowerSL,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x)) {
+    if (cfunder>0)
+      STOP("'cfunder'>0 which implies that you wish to simulate a protected",
+           " slot limit. In this case, you must also choose a length when",
+           " fish recruit to the fishery in 'recruitmentTL'.")
+    # otherwise, no problem, just return with nothing being said
+  } else {
+    if (cfunder==0) {
+      STOP("'cfunder'==0 which implies that you wish to simulate an inverse/",
+           "harvest slot. You have entered a 'recruitmentTL' value which is",
+           "not used with inverse/harvest slots. Please check your use of",
+           "'recruitmentTL', 'cfunder', 'cfin', and 'cfabove'.")
+    } else {
+      iErrMore1(x,nm)
+      iErrNotNumeric(x,nm)
+      iErrLT(x,0,nm)
+      if (x>Linf) STOP("The recruitment total length (=",x,
+                       ") mm cannot be greater than 'Linf' (=",Linf,
+                       "); please check value in ",nm,".")
+      if (x>lowerSL)
+        STOP(nm," must be less than or equal to 'lowerSL' (=",lowerSL,").")
+      if (x<50) WARN("A recruitment total length of ",x," mm seems too small,",
+                     " please check value in ",nm,".")
+      if (x>1600) WARN("A recruitment total length of ",x," mm seems too large,",
+                       " please check value in ",nm,".")
+    }
+  }
+}
 
+# ----- Check slot total length
+iCheckSlotTL <- function(x,Linf,optname) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  # determine type of slot length ... lower or upper
+  type <- substr(nm,2,6)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify a ",type," slot limit total length (mm) in ",nm,".")
+  # do the checks
+  iErrMore1(x,nm)
+  iErrNotNumeric(x,nm)
+  iErrLT(x,0,nm)
+  if (x>Linf) STOP("The ",type," slot limit total length (=",x,
+                   ") mm cannot be greater than 'Linf' (=",Linf,
+                   "); please check value in ",nm,".")
+  if (x<50) WARN("A ",type," slot limit total length of ",x,
+                 " mm seems too small, please check value in ",nm,".")
+  if (x>1600) WARN("A ",type," slot limit total length of ",x,
+                   " mm seems too large, please check value in ",nm,".")
+}
 
 
 
@@ -299,20 +359,6 @@ iCheckSlotType <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove) {
 
 }
 
-# Check recruitment total length
-iCheckrecruitTL <- function(x,type="") {
-  if(is.null(x)) return()
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  #if (missing(x)) STOP("Need to specify a recruitment total length (mm) in ",nm,".")
-  #if (is.null(x)) STOP("Need to specify a recruitment total length (mm) in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-  iErrLT(x,0,nm)
-  if (x<50) WARN("A recruitment total length of ",x," mm seems too small,",
-                  " please check value in ",nm,".")
-  if (x>1600) WARN("A recruitment total length of ",x," mm seems too large,",
-                   " please check value in ",nm,".")
-}
 
 # Check lower slot limit total length
 iChecklowerSLTL <- function(x,type="") {

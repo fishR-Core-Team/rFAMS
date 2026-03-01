@@ -66,31 +66,46 @@ test_that("yprBH_func() messages",{
 
 
 ## ===== Get Some Results for Use Below ========================================
-## ----- lhparms as a list
+## ----- lhparms as a list with and without lois
 LH <- makeLH(N0=100,tmax=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
-res1 <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,matchRicker=FALSE)
+res1a <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH)
+res1b <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,loi=c(200,300))
 
-## ----- Same, but with lhparms as a vector
+## ----- Same, but with lhparms as a vector with and without lois
 LH <- makeLH(N0=100,tmax=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,
              restype="vector")
-res2 <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,matchRicker=FALSE)
+res2a <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH)
+res2b <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,loi=c(200,300))
+
+## expectations
+exp_nms2 <- c("yield","nharvest","ndie","nt","tr","avgwt","avglen","nAt200",
+              "nAt300","exploitation","F","M","Z","S","cf","cm","minLL","N0",
+              "Linf","K","t0","LWalpha","LWbeta","tmax","notes")
+exp_nms1 <- exp_nms2[!startsWith(exp_nms2,"nAt")]
 
 
 ## ===== Test Output Types =====================================================
 test_that("Two types of lhparams of yprBH_func() match",{
-  expect_equal(res2,res1)
+  expect_equal(res1a,res2a)
+  expect_equal(res1b,res2b)
 })
 
 test_that("yprBH_func() output",{
-  expect_type(res1,"list")
-  expect_equal(class(res1),"data.frame")
-  expect_equal(nrow(res1),1)
-  expect_equal(ncol(res1),23)
-  expect_equal(names(res1),c("yield","nharvest","ndie","nt","tr",
-                             "avgwt","avglen","exploitation","F","M","Z","S",
-                             "cf","cm","minLL","N0","Linf","K","t0",
-                             "LWalpha","LWbeta","tmax","notes"))
-  expect_equal(res1$notes,"Nt>N0")
+  # ----- without lois
+  expect_type(res1a,"list")
+  expect_equal(class(res1a),"data.frame")
+  expect_equal(nrow(res1a),1)
+  expect_equal(ncol(res1a),length(exp_nms1))
+  expect_equal(names(res1a),exp_nms1)
+  expect_equal(res1a$notes,"Nt>N0")
+
+  # ----- with lois
+  expect_type(res1b,"list")
+  expect_equal(class(res1b),"data.frame")
+  expect_equal(nrow(res1b),1)
+  expect_equal(ncol(res1b),length(exp_nms2))
+  expect_equal(names(res1b),exp_nms2)
+  expect_equal(res1b$notes,"Nt>N0")
 })
 
 ## ===== Test Results Accuracy with Other Sources ==============================
@@ -101,16 +116,16 @@ test_that("yprBH_func() results",{
                      F=0.597837,M=0.2876821,Z=0.8855191,S=0.4125,
                      cf=0.45,cm=0.25,minLL=355,N0=100,Linf=2000,K=0.50,t0=-0.616,
                      LWalpha=-5.453,LWbeta=3.10,tmax=15)
-  expect_equal(round(res1$exploitation,7),ores$exploitation)
-  expect_equal(round(res1$yield,1),ores$yield)
-  expect_equal(round(res1$nharvest,5),ores$nharvest)
-  expect_equal(round(res1$ndie,5),ores$ndie)
-  expect_equal(round(res1$nt,0),ores$nt)
-  expect_equal(round(res1$avgwt,3),ores$avgwt)
-  expect_equal(round(res1$avglen,3),ores$avglen)
-  expect_equal(round(res1$F,6),ores$F)
-  expect_equal(round(res1$M,7),ores$M)
-  expect_equal(round(res1$Z,7),ores$Z)
-  expect_equal(round(res1$S,4),ores$S)
-  expect_equal(dplyr::select(res1,cf:tmax),dplyr::select(ores,cf:tmax))
+  expect_equal(round(res1a$exploitation,7),ores$exploitation)
+  expect_equal(round(res1a$yield,1),ores$yield)
+  expect_equal(round(res1a$nharvest,5),ores$nharvest)
+  expect_equal(round(res1a$ndie,5),ores$ndie)
+  expect_equal(round(res1a$nt,0),ores$nt)
+  expect_equal(round(res1a$avgwt,3),ores$avgwt)
+  expect_equal(round(res1a$avglen,3),ores$avglen)
+  expect_equal(round(res1a$F,6),ores$F)
+  expect_equal(round(res1a$M,7),ores$M)
+  expect_equal(round(res1a$Z,7),ores$Z)
+  expect_equal(round(res1a$S,4),ores$S)
+  expect_equal(dplyr::select(res1a,cf:tmax),dplyr::select(ores,cf:tmax))
 })
