@@ -1,6 +1,7 @@
 ## ===== Test Message Errors and Warnings ======================================
 test_that("yprBH_func() messages",{
-  LH <- makeLH(N0=100,tmax=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
+  suppressWarnings(LH <- makeLH(N0=100,tmax=15,Linf=2100,K=0.50,t0=-0.616,
+                                LWalpha=-5.453,LWbeta=3.10))
   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
     expect_no_error()
 
@@ -20,9 +21,10 @@ test_that("yprBH_func() messages",{
     expect_error("'minLL' must be >=0")
   yprBH_func(minLL=35,cf=0.45,cm=0.25,lhparms=LH) |>
     expect_warning("A minimum length limit of harvest of 35 mm seems too small")
-  yprBH_func(minLL=2235,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_warning("A minimum length limit of harvest of 2235 mm seems too large") |>
-    expect_warning("The set mininmum length limit of harvest")
+  yprBH_func(minLL=2135,cf=0.45,cm=0.25,lhparms=LH) |>
+    expect_error("A minimum length limit of harvest cannot be more than Linf")
+  yprBH_func(minLL=2035,cf=0.45,cm=0.25,lhparms=LH) |>
+    expect_warning("A minimum length limit of harvest of 2035 mm seems too large")
   yprBH_func(minLL=355,cf=-0.45,cm=0.25,lhparms=LH) |>
     expect_error("'cf' must be >=0")
   yprBH_func(minLL=355,cf=1.45,cm=0.25,lhparms=LH) |>
@@ -58,7 +60,7 @@ test_that("yprBH_func() messages",{
   # ----- tests of warnings during calculations
   LH <- makeLH(N0=100,tmax=15,Linf=1000,K=0.30,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
   yprBH_func(minLL=1055,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_warning("The set mininmum length limit of harvest \\(=1055\\) is greater")
+    expect_error("A minimum length limit of harvest cannot be more than Linf")
   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=1055) |>
     expect_warning("The specified length of interest \\(=1055\\) is greater")
   ## Need to find values that create the tr<t0 error

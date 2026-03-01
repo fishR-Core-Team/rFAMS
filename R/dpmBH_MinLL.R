@@ -148,7 +148,7 @@
 dpmBH_MinLL <- function(minLL,cf,cm,rec,lhparms,simyears,species=NULL,group=NULL,matchRicker=FALSE){
 
   # ---- Check inputs
-  iCheckMLH(minLL)
+  iCheckMLH(minLL,lhparms$Linf)
   iCheckLLinf(minLL,lhparms$Linf)
   iCheckspecies(species)
   iChecksimyears(simyears)

@@ -6,7 +6,7 @@ test_that("yprBH_MinLL() messages",{
   yprBH_MinLL(minLL=300,cf=0.3,cm=0.2,lhparms=LH) |>
     expect_no_error()
   yprBH_MinLL(cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_error("Need to specify a minimum length \\(mm\\) limit for harvest in 'minLL'")
+    expect_error("Need to specify a minimum length \\(mm\\) limit for harvest")
   yprBH_MinLL(minLL=300,cm=0.2,lhparms=LH) |>
     expect_error("Need to specify a conditional fishing mortality in 'cf'")
   yprBH_MinLL(minLL=300,cf=0.2,lhparms=LH) |>
@@ -27,8 +27,7 @@ test_that("yprBH_MinLL() messages",{
   yprBH_MinLL(minLL=data.frame(minLL=300),cf=0.3,cm=0.2,lhparms=LH) |>
     expect_error("'minLL' must be a vector")
   yprBH_MinLL(minLL=2005,cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_error("Harvest lengths in the vector") |>
-    expect_warning("A minimum length limit of harvest of 2005 mm seems too large")
+    expect_error("A minimum length limit of harvest cannot be more than Linf")
 
   # ..... in cf
   yprBH_MinLL(minLL=300,cf=c(0.3,0.4),cm=0.2,lhparms=LH) |>

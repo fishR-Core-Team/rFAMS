@@ -86,8 +86,7 @@
 yprBH_MinLL <- function(minLL,cf,cm,lhparms,loi=NULL,matchRicker=FALSE){
   # ---- Check inputs
   iCheckLHparms(lhparms,"lhparms")
-  iCheckMLH(minLL,"minLL")
-  iCheckLLinf(minLL,lhparms$Linf)
+  iCheckMLH(minLL,lhparms[["Linf"]],"minLL")
   iCheckCondMort(cf,"cf")
   iCheckCondMort(cm,"cm")
   iCheckloi(loi,"loi")

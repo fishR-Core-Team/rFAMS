@@ -70,12 +70,7 @@
 yprBH_func <- function(minLL,cf,cm,lhparms,loi=NULL,matchRicker=FALSE){
   # ---- Check inputs
   iCheckLHparms(lhparms,"lhparms")
-  iCheckMLH(minLL,"minLL",onlyone=TRUE)
-  iCheckCondMort(cf,"cf",onlyone=TRUE)
-  iCheckCondMort(cm,"cm",onlyone=TRUE)
-  iCheckloi(loi)
-
-  # ---- Extract individual life history values and prepare notes vector
+  # .... Extract individual life history values and prepare notes vector
   N0 <- lhparms[["N0"]]
   tmax <- lhparms[["tmax"]]
   Linf <- lhparms[["Linf"]]
@@ -84,6 +79,11 @@ yprBH_func <- function(minLL,cf,cm,lhparms,loi=NULL,matchRicker=FALSE){
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
   notes <- NULL
+  # .... back to checking
+  iCheckMLH(minLL,Linf,"minLL",onlyone=TRUE)
+  iCheckCondMort(cf,"cf",onlyone=TRUE)
+  iCheckCondMort(cm,"cm",onlyone=TRUE)
+  iCheckloi(loi)
 
   # ---- Prep intermediate calculations needed to calculate Yield
   # Maximum theoretical weight derived from L-inf and weight to length regression

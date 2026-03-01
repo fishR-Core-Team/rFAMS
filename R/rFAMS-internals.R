@@ -273,7 +273,7 @@ iCheckCondMort <- function(x,optname=NULL,onlyone=FALSE) {
 }
 
 # ----- Check minimum length limit for harvest
-iCheckMLH <- function(x,optname=NULL,onlyone=FALSE) {
+iCheckMLH <- function(x,Linf,optname=NULL,onlyone=FALSE) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (missing(x) || is.null(x))
     STOP("Need to specify a minimum length (mm) limit for harvest in ",nm,".")
@@ -281,6 +281,10 @@ iCheckMLH <- function(x,optname=NULL,onlyone=FALSE) {
   if (onlyone) iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
   iErrLT(x,0,nm)
+  if (any(x>=Linf)) {
+    STOP("A minimum length limit of harvest cannot be more than Linf (="
+         ,Linf,"), please check values in ",nm,".")
+  }
   tmp <- x<100
   if (any(tmp)) {
     tmp <- max(x[tmp])

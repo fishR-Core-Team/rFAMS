@@ -125,34 +125,49 @@
 #'   theme(legend.position = "top")+
 #'   guides(color=guide_legend(title="Yield"))
 #'
-#'
 #' @rdname yprBH_SlotLL
 #' @export
 yprBH_SlotLL<-function(recruitmentTL=NULL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
                        lhparms,loi=NULL,matchRicker=FALSE){
-
   # ---- Check inputs
-  iCheckSlotType(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove)
-  iCheckRecruitmentTL(recruitmentTL)
-  iChecklowerSLTL(lowerSL)
-  iCheckupperSLTL(upperSL)
-  iCheckslotOrder(recruitmentTL, lowerSL, upperSL)
-  iCheckLLinf(recruitmentTL,lhparms$Linf)
-  iCheckLLinf(lowerSL,lhparms$Linf)
-  iCheckLLinf(upperSL,lhparms$Linf)
-  iCheckcfunder(cfunder)
-  iCheckcfin(cfin)
-  iCheckcfabove(cfabove)
-  iCheckcmVect(cm,"cm")
+  iCheckLHparms(lhparms,"lhparms")
+  iCheckCondMort(cm,"cm")
+  iCheckCondMort(cfunder,"cfunder",onlyone=TRUE)
+  iCheckCondMort(cfin,"cfin",onlyone=TRUE)
+  iCheckCondMort(cfabove,"cfabove",onlyone=TRUE)
+  # .... Check that inputs for cfs represent either an inverse or protected slot
+  if (cfin>0 & (cfunder>0 | cfabove>0))
+    STOP("Either 'cfin'>0 and both 'cfunder'=0 and 'cfabove'=0 to simulate an",
+         " 'inverse/harvest slot, or 'cfin=0' and both 'cfunder' and 'cfabove'>0",
+         " to simulate a 'protected slot'.")
   iCheckloi(loi)
+  iCheckSlotTL(lowerSL,lhparms[["Linf"]],"lowerSL")
+  iCheckSlotTL(upperSL,lhparms[["Linf"]],"upperSL")
+  # .... check that slot lengths are in correct order
+  if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
+
+  iCheckRecruitmentTL(recruitmentTL,cfunder,lhparms[["Linf"]],lowerSL,
+                      "recruitmentTL")
+  # ---- Check inputs
+#  iCheckSlotType(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove)
+#  iCheckRecruitmentTL(recruitmentTL)
+#  iChecklowerSLTL(lowerSL)
+#  iCheckupperSLTL(upperSL)
+#  iCheckslotOrder(recruitmentTL, lowerSL, upperSL)
+#  iCheckLLinf(recruitmentTL,lhparms$Linf)
+#  iCheckLLinf(lowerSL,lhparms$Linf)
+#  iCheckLLinf(upperSL,lhparms$Linf)
+#  iCheckcfunder(cfunder)
+#  iCheckcfin(cfin)
+#  iCheckcfabove(cfabove)
+#  iCheckcmVect(cm,"cm")
+#  iCheckloi(loi)
   # iCheckcm(cmmin,"minimum")
   # iCheckcm(cmmax,"maximum")
   # cm <- iCheckcfminc(cminc,cmmin,cmmax)
 
   if(is.null(recruitmentTL))
     recruitmentTL = lowerSL
-
-
 
   # Setup data.frame of input values (varying cf and cm, the rest constant)
   res <- expand.grid(recruitmentTL=recruitmentTL,lowerSL=lowerSL,upperSL=upperSL,

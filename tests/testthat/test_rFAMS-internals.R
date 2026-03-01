@@ -407,42 +407,51 @@ test_that("iCheckCondMort() messages",{
 
 test_that("iCheckMLH() messages",{
   # ----- test that something was sent (optname is used in first ex just to test)
-  rFAMS:::iCheckMLH(optname="minLL") |>
+  rFAMS:::iCheckMLH(Linf=600,optname="minLL") |>
     expect_error("Need to specify a minimum length \\(mm\\) limit for harvest")
   minLL <- NULL
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
     expect_error("Need to specify a minimum length \\(mm\\) limit for harvest")
 
   # ----- test wrong input types or values
   minLL <- -1
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
     expect_error("'minLL' must be >=0")
   minLL <- "a"
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
     expect_error("'minLL' must be a number")
   minLL <- c(200,300)
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
     expect_no_error()
-  rFAMS:::iCheckMLH(minLL,onlyone=TRUE) |>
+  rFAMS:::iCheckMLH(minLL,Linf=600,onlyone=TRUE) |>
     expect_error("Only use one value in 'minLL'")
   minLL <- 25
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
     expect_warning("A minimum length limit of harvest of 25 mm seems too small")
   minLL <- c(25,300)
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
     expect_warning("A minimum length limit of harvest of 25 mm seems too small")
   minLL <- c(10,25,300)
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
     expect_warning("A minimum length limit of harvest of 25 mm seems too small")
   minLL <- 2000
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=2200) |>
     expect_warning("A minimum length limit of harvest of 2000 mm seems too large")
   minLL <- c(300,2000)
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=2200) |>
     expect_warning("A minimum length limit of harvest of 2000 mm seems too large")
   minLL <- c(300,2000,3000)
-  rFAMS:::iCheckMLH(minLL) |>
+  rFAMS:::iCheckMLH(minLL,Linf=3200) |>
     expect_warning("A minimum length limit of harvest of 2000 mm seems too large")
+  minLL <- 750
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
+    expect_error("A minimum length limit of harvest cannot be more than Linf")
+  minLL <- c(300,750)
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
+    expect_error("A minimum length limit of harvest cannot be more than Linf")
+  minLL <- c(300,750,900)
+  rFAMS:::iCheckMLH(minLL,Linf=600) |>
+    expect_error("A minimum length limit of harvest cannot be more than Linf")
 })
 
 test_that("iCheckloi() messages",{
@@ -490,15 +499,15 @@ test_that("iCheckRecruitmentTL() messages",{
   recruitmentTL <- 300
   rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
     expect_error("The recruitment total length \\(=300\\) mm cannot be greater")
-  # recruitmentTL <- 25
-  # rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
-  #   expect_warning("A recruitment total length of 25 mm seems too small")
-  # recruitmentTL <- 2000
-  # rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=2500,lowerSL=2200) |>
-  #   expect_warning("A recruitment total length of 2000 mm seems too large")
-  # recruitmentTL <- 200
-  # rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=150) |>
-  #   expect_error("'recruitmentTL' must be less than or equal to 'lowerSL'")
+  recruitmentTL <- 25
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+    expect_warning("A recruitment total length of 25 mm seems too small")
+  recruitmentTL <- 2000
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=2500,lowerSL=2200) |>
+    expect_warning("A recruitment total length of 2000 mm seems too large")
+  recruitmentTL <- 200
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=150) |>
+    expect_error("'recruitmentTL' must be less than or equal to 'lowerSL'")
 })
 
 test_that("iCheckSlottTL() messages",{

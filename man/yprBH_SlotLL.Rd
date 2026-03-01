@@ -149,7 +149,6 @@ ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   theme(legend.position = "top")+
   guides(color=guide_legend(title="Yield"))
 
-
 }
 \seealso{
 \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_slotLimit.html}{this demonstration page} for more plotting examples
