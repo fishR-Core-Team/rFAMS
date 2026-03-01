@@ -118,19 +118,12 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   iCheckSlotTL(upperSL,Linf,"upperSL")
   # .... check that slot lengths are in correct order
   if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
-
   iCheckRecruitmentTL(recruitmentTL,cfunder,Linf,lowerSL,"recruitmentTL")
-  # !!!!! This is a stop-gap ... if here without error than simulating an inverse
-  #       slot where recruitmentTL is not required. However, recruitmentTL is
-  #       tested against Linf below, with tr adjusted if it is larger than Linf.
-  #       Right now recruitmentTL could be NULL here which would make that later
-  #       test an error. I set recruitmentTL to lowerSL for now, but we need a
-  #       better solution. It should be noted that we check to see if
-  #       recruitmentTL>Linf before this and STOP if it is ... thus, the check
-  #       and adjustment below is likely not needed??
-  #       I now see that you did this same thing in yprBH_SlotLL().
-  recruitmentTL <- lowerSL
-
+  # !!!!! For a protected slot (so by here recruitmentTL should be NULL), set
+  #       recruitmentTL to the lowerSL of the slot limit (i.e, when fish would
+  #       first be available for harvest). This is needed for the
+  #       test against Linf below
+  if (is.null(recruitmentTL)) recruitmentTL <- lowerSL
 
   #needed to account for rounding issues of sequences
   cm <- round(cm,8)

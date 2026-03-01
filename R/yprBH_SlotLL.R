@@ -141,7 +141,6 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   iCheckSlotTL(upperSL,lhparms[["Linf"]],"upperSL")
   # .... check that slot lengths are in correct order
   if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
-
   iCheckRecruitmentTL(recruitmentTL,cfunder,lhparms[["Linf"]],lowerSL,
                       "recruitmentTL")
 
@@ -149,13 +148,12 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   res <- expand.grid(lowerSL=lowerSL,upperSL=upperSL,
                      cfunder=cfunder,cfin=cfin,cfabove=cfabove,
                      cm=cm)
-  # !! Need to handle the case when recruitmentTL=NULL as special
-  if (!is.null(recruitmentTL)) res$recruitmentTL <- recruitmentTL
 
   # Send each row to yprBH_slot_func() ... so calc yield et al for all combos
   # output is by age
   res <- purrr::pmap_df(res,yprBH_slot_func,lhparms=lhparms,
-                        loi=loi,matchRicker=matchRicker)
+                        loi=loi,recruitmentTL=recruitmentTL,
+                        matchRicker=matchRicker)
 
   # Return result
   return(res)
