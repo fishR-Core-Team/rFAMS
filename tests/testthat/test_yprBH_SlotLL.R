@@ -428,30 +428,28 @@ test_that("yprBH_SlotLL() output",{
 #       These are loaded in below to compare current output to previous output.
 #       If something errs in the accuracy tests, then the reason should be
 #       determined. If the changes makes sense, then run this code to make a
-#       new data snapshot for future testing.
+#       new data snapshot for future testing. Either delete the old file or
+#       move it to "archived" in "datasnaps".
+# ..... Use CTRL-SHIFT-C to uncomment/comment selected lines in RStudio
 # !!!!! These don't test true accuracy of results, but will detect if anything
 #       has changed since the last "thought-to-be-stable" results.
 #
+# tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
 # dt <- format(Sys.Date(),format="%d_%b_%Y")
-# fn <- paste0(testthat::test_path(),"/slotLL1p_",dt,".rds")
-# saveRDS(slotLL1p,fn)
-# fn <- paste0(testthat::test_path(),"/slotLL2p_",dt,".rds")
-# saveRDS(slotLL2p,fn)
-# fn <- paste0(testthat::test_path(),"/slotLL1h_",dt,".rds")
-# saveRDS(slotLL1h,fn)
-# fn <- paste0(testthat::test_path(),"/slotLL2h_",dt,".rds")
-# saveRDS(slotLL2h,fn)
+# saveRDS(slotLL1p,paste0(tmpdir,"slotLL1p_",dt,".rds"))
+# saveRDS(slotLL2p,paste0(tmpdir,"slotLL2p_",dt,".rds"))
+# saveRDS(slotLL1h,paste0(tmpdir,"slotLL1h_",dt,".rds"))
+# saveRDS(slotLL2h,paste0(tmpdir,"slotLL2h_",dt,".rds"))
 
 test_that("yprBH_SlotLL() results",{
+  # get list of files in datasnaps folder
+  tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
+  tmpfns <- list.files(tmpdir)
   # Load snapshots of "old" (i.e., last stable) outputs
-  fn <- paste0(testthat::test_path(),"/slotLL1p_01_Mar_2026.rds")
-  slotLL1p_old <- readRDS(fn)
-  fn <- paste0(testthat::test_path(),"/slotLL2p_01_Mar_2026.rds")
-  slotLL2p_old <- readRDS(fn)
-  fn <- paste0(testthat::test_path(),"/slotLL1h_01_Mar_2026.rds")
-  slotLL1h_old <- readRDS(fn)
-  fn <- paste0(testthat::test_path(),"/slotLL2h_01_Mar_2026.rds")
-  slotLL2h_old <- readRDS(fn)
+  slotLL1p_old <- readRDS(paste0(tmpdir,tmpfns[grepl("slotLL1p",tmpfns)]))
+  slotLL2p_old <- readRDS(paste0(tmpdir,tmpfns[grepl("slotLL2p",tmpfns)]))
+  slotLL1h_old <- readRDS(paste0(tmpdir,tmpfns[grepl("slotLL1h",tmpfns)]))
+  slotLL2h_old <- readRDS(paste0(tmpdir,tmpfns[grepl("slotLL2h",tmpfns)]))
 
   # Compare new to "old" data.frames
   expect_equal(slotLL1p,slotLL1p_old)

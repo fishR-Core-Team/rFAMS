@@ -107,17 +107,17 @@ cf1 <- 0.45
 cm1 <- 0.25
 minLL1 <- yprBH_func(minLL=minll1,cf=cf1,cm=cm1,lhparms=LH,loi=lois)
 
-## expectations
-exp_nms1 <- c("yield","nharvest","ndie","nt","tr","avgwt","avglen","nAt300",
-              "nAt400","exploitation","F","M","Z","S","cf","cm","minLL","N0",
-              "Linf","K","t0","LWalpha","LWbeta","tmax","notes")
-exp_rows1 <- 1
-
 ## ----- multiple simulations ... lhparms as a list with lois
 minll2 <- c(200,300)
 cf2 <- seq(0.3,0.4,0.05)
 cm2 <- c(0.2,0.3)
 minLL2 <- yprBH_MinLL(minLL=minll2,cf=cf2,cm=cm2,lhparms=LH,loi=lois)
+
+## expectations
+exp_nms1 <- c("yield","nharvest","ndie","nt","tr","avgwt","avglen","nAt300",
+              "nAt400","exploitation","F","M","Z","S","cf","cm","minLL","N0",
+              "Linf","K","t0","LWalpha","LWbeta","tmax","notes")
+exp_rows1 <- 1
 exp_rows2 <- length(minll2)*length(cf2)*length(cm2)
 
 ## ===== Test Output Types =====================================================
@@ -165,23 +165,24 @@ test_that("yprBH_MinLL() output",{
 #       These are loaded in below to compare current output to previous output.
 #       If something errs in the accuracy tests, then the reason should be
 #       determined. If the changes makes sense, then run this code to make a
-#       new data snapshot for future testing.
+#       new data snapshot for future testing. Either delete the old file or
+#       move it to "archived" in "datasnaps".
+# ..... Use CTRL-SHIFT-C to uncomment/comment selected lines in RStudio
 # !!!!! These don't test true accuracy of results, but will detect if anything
 #       has changed since the last "thought-to-be-stable" results.
 #
+# tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
 # dt <- format(Sys.Date(),format="%d_%b_%Y")
-# fn <- paste0(testthat::test_path(),"/minLL1_",dt,".rds")
-# saveRDS(minLL1,fn)
-#
-# fn <- paste0(testthat::test_path(),"/minLL2_",dt,".rds")
-# saveRDS(minLL2,fn)
+# saveRDS(minLL1,paste0(tmpdir,"minLL1_",dt,".rds"))
+# saveRDS(minLL2,paste0(tmpdir,"minLL2_",dt,".rds"))
 
 test_that("yprBH_MinLL() results",{
+  # get list of files in datasnaps folder
+  tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
+  tmpfns <- list.files(tmpdir)
   # Load snapshots of "old" (i.e., last stable) outputs
-  fn <- paste0(testthat::test_path(),"/minLL1_01_Mar_2026.rds")
-  minLL1_old <- readRDS(fn)
-  fn <- paste0(testthat::test_path(),"/minLL2_01_Mar_2026.rds")
-  minLL2_old <- readRDS(fn)
+  minLL1_old <- readRDS(paste0(tmpdir,tmpfns[grepl("minLL1",tmpfns)]))
+  minLL2_old <- readRDS(paste0(tmpdir,tmpfns[grepl("minLL2",tmpfns)]))
 
   # Compare new to "old" data.frames
   expect_equal(minLL1,minLL1_old)
