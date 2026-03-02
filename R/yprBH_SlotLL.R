@@ -141,7 +141,7 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   # .... check that slot lengths are in correct order
   if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
   iCheckRecruitmentTL(recruitmentTL,lhparms[["Linf"]],lowerSL)
-  iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL)
+  iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE)
 
   # Setup data.frame of input values (varying cm, the rest constant)
   res <- expand.grid(lowerSL=lowerSL,upperSL=upperSL,

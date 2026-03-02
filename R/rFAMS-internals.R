@@ -342,7 +342,16 @@ iCheckSlotTL <- function(x,Linf,optname) {
 }
 
 # ----- Check combinations of cf values and recruitmentTL for Slot Limits
-iCheckSlotType <- function(cfu,cfi,cfa,rtl) {
+iCheckSlotType <- function(cfu,cfi,cfa,rtl,strict=FALSE) {
+  # Note: strict is a logical that indicates whether strict criterion for values
+  #       of recruitmentTL, cfunder, cfin, and cfabove should be used. If
+  #       strict=TRUE then the only accepted combinations are that a recruitmentTL
+  #       is given (i.e., not NULL), cfunder>0, cfabove>0, and cfin=0 (i.e.,
+  #       simulating a protected slot) or recruitmentTL is NULL, cfunder=0,
+  #       cfabove=0, and cfin>0 (i.e., simulating an inverse/harvest slot). If
+  #       strict=FALSE then the only restrictions are that all three cfs cannot
+  #       all =0, and that if cfunder is given the recruitmentTL cannot be NULL.
+
   # ===== determine what of cfunder, cfin, cfbelow, and recruitmentTL were given
   #       e.g., ug==TRUE if cfunder is given (i.e., >0)
   ug <- cfu>0
@@ -350,47 +359,55 @@ iCheckSlotType <- function(cfu,cfi,cfa,rtl) {
   ag <- cfa>0
   rg <- !is.null(rtl)
 
-  # ===== parts of messages
-  tmp1p <- paste0("It appears you are trying to simulate a protected slot",
-                  " (i.e., 'recruitmentTL'>0). If so, ")
-  tmp1h <- paste0("It appears you are trying to simulate an inverse/harvest slot",
-                  " (i.e., 'recruitmentTL'=NULL). If so, ")
+  # ===== Stop immediately if no mortality rates are given
+  if (!ug & !ig & !ag) STOP("'cfunder', 'cfin', and 'cfabove' cannot all =0.") #1
 
-  # ===== perform checks for cfs relative to type of slot
-  # ----- Stop immediately if no mortality rates are given
-  if (!ug & !ig & !ag)
-    STOP("'cfunder', 'cfin', and 'cfabove' cannot all =0.") #1
-  # ----- check for combinations of cfs and recruitmentTL
-  if (rg & ug & ig & ag)
-    STOP(tmp1p,"'cfin' should =0.")  #2
-  else if (!rg & ug & ig & ag)
-    STOP(tmp1h,"'cfunder' and 'cfabove' should =0.") #3
-  else if (rg & !ug & ig & !ag)
-    STOP("'cfin'>0, 'cfunder'=0, and 'cfabove'=0 implies you are trying to simulate an ",
-         "inverse/harvest slot. If so, 'recruitmentTL' must not be 'NULL'.")
-  else if (!rg & ug & !ig & ag)
-    STOP("'cfin'=0, 'cfunder'>0, and 'cfabove'>0 implies you are trying to simulate a ",
-         "protected slot. If so, 'recruitmentTL' must not be 'NULL'.") #5
-  else if (rg & ug & ig & !ag)
-    STOP(tmp1p,"'cfin' should =0 and 'cfabove' (along with 'cfunder') should be >0.") #6
-  else if (!rg & ug & ig & !ag)
-    STOP(tmp1h,"'cfunder' (along with 'cfabove') should =0.") #7
-  else if (rg & !ug & ig & ag)
-    STOP(tmp1p,"'cfin' should =0 and 'cfunder' (along with 'cfabove') should be >0.") #8
-  else if (!rg & !ug & ig & ag)
-    STOP(tmp1h,"'cfabove' (along with 'cfunder') should =0.") #9
-  else if (rg & ug & !ig & !ag)
-    STOP(tmp1p,"'cfabove' (along with 'cfunder') should be >0.") #10
-  else if (!rg & ug & !ig & !ag)
-    STOP(tmp1h,"'cfin' should be >0 and 'cfunder' (along with 'cfabove') should be 0.") #11
-  else if (rg & ug & !ig & !ag)
-    STOP(tmp1p,"'cfabove' (along with 'cfunder') should be >0.") #12
-  else if (!rg & !ug & !ig & ag)
-    STOP(tmp1h,"'cfin' should be >0 and 'cfabove' (along with 'cfunder') should be 0.") #13
-  else if (rg & !ug & !ig & ag)
-    STOP(tmp1p,"'cfunder' (along with 'cfabove') should =0.") #14
-  # !!!!! rg, ug, !ig, ag is a good protected slot ... so no STOP() #15
-  #       !rg, !ug, ig, !ag is a good inverse/harvest slot ... so no STOP() #16
+  # ===== Check for combos of cfs and recruitmentTL by slot type
+  if (!strict) {
+    # ===== do not use strict criterion
+    if (ug & !rg)
+      STOP("If 'cfunder'>0 then a value must be given to 'recruitmentLT' ",
+           "(i.e., it cannot be NULL)")
+  } else {
+    # ===== use strict criterion
+    # ----- parts of messages
+    tmp1p <- paste0("It appears you are trying to simulate a protected slot",
+                    " (i.e., 'recruitmentTL'>0). If so, ")
+    tmp1h <- paste0("It appears you are trying to simulate an inverse/harvest slot",
+                    " (i.e., 'recruitmentTL'=NULL). If so, ")
+
+    # ..... check for combinations of cfs and recruitmentTL
+    if (rg & ug & ig & ag)
+      STOP(tmp1p,"'cfin' should =0.")  #2
+    else if (!rg & ug & ig & ag)
+      STOP(tmp1h,"'cfunder' and 'cfabove' should =0.") #3
+    else if (rg & !ug & ig & !ag)
+      STOP("'cfin'>0, 'cfunder'=0, and 'cfabove'=0 implies you are trying to simulate an ",
+           "inverse/harvest slot. If so, 'recruitmentTL' must not be 'NULL'.")
+    else if (!rg & ug & !ig & ag)
+      STOP("'cfin'=0, 'cfunder'>0, and 'cfabove'>0 implies you are trying to simulate a ",
+           "protected slot. If so, 'recruitmentTL' must not be 'NULL'.") #5
+    else if (rg & ug & ig & !ag)
+      STOP(tmp1p,"'cfin' should =0 and 'cfabove' (along with 'cfunder') should be >0.") #6
+    else if (!rg & ug & ig & !ag)
+      STOP(tmp1h,"'cfunder' (along with 'cfabove') should =0.") #7
+    else if (rg & !ug & ig & ag)
+      STOP(tmp1p,"'cfin' should =0 and 'cfunder' (along with 'cfabove') should be >0.") #8
+    else if (!rg & !ug & ig & ag)
+      STOP(tmp1h,"'cfabove' (along with 'cfunder') should =0.") #9
+    else if (rg & ug & !ig & !ag)
+      STOP(tmp1p,"'cfabove' (along with 'cfunder') should be >0.") #10
+    else if (!rg & ug & !ig & !ag)
+      STOP(tmp1h,"'cfin' should be >0 and 'cfunder' (along with 'cfabove') should be 0.") #11
+    else if (rg & ug & !ig & !ag)
+      STOP(tmp1p,"'cfabove' (along with 'cfunder') should be >0.") #12
+    else if (!rg & !ug & !ig & ag)
+      STOP(tmp1h,"'cfin' should be >0 and 'cfabove' (along with 'cfunder') should be 0.") #13
+    else if (rg & !ug & !ig & ag)
+      STOP(tmp1p,"'cfunder' (along with 'cfabove') should =0.") #14
+    # !!!!! rg, ug, !ig, ag is a good protected slot ... so no STOP() #15
+    #       !rg, !ug, ig, !ag is a good inverse/harvest slot ... so no STOP() #16
+  }
 }
 
 

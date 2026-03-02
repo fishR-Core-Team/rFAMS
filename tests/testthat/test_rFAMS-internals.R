@@ -471,79 +471,138 @@ test_that("iCheckloi() messages",{
 })
 
 test_that("iCheckSlotType() messages",{
-# !!!!! Checking for these cases ..
-# Case recTL un in ab RESULT
-# 1    any   0  0  0  STOP ... need some mortality
-# 2    ####  ## ## ## STOP ... can't have all, implied protected slot
-# 3    NULL  ## ## ## STOP ... can't have all, implied inverse slot
-# 4    ####  0  ## 0  STOP ... don't use recruitmentTL for harvest slot
-# 5    NULL  ## 0  ## STOP ... need recruitmentTL for protected slot
-# 6    ####  ## ## 0  STOP ... implied protected slot, can't have cfin
-# 7    NULL  ## ## 0  STOP ... implied harvest slot, can't have cfunder
-# 8    ####  0  ## ## STOP ... implied protected slot, can't have cfin
-# 9    NULL  0  ## ## STOP ... implied harvest slot, can't have cfabove
-# 10   ####  ## 0  0  STOP ... implied protected slot, also need cfabove
-# 11   NULL  ## 0  0  STOP ... implied harvest slot, need cfin and no cfunder
-# 12   ####  ## 0  0  STOP ... implied protected slot, also need cfabove
-# 13   NULL  0  0  ## STOP ... implied harvest slot, need cfin and no cfabove
-# 14   ####  0  0  ## STOP ... implied protected slot, also need cfunder
-# 14   ####  ## 0  ## GOOD ... protected slot
-# 15   NULL  0  ## 0  GOOD ... inverse slot
+  # !!!!! Checked for these cases ...
+  # Case recTL un in ab RESULT
+  # 1    any   0  0  0  STOP ... need some mortality
+  # 2    ####  ## ## ## STOP ... can't have all, implied protected slot
+  # 3    NULL  ## ## ## STOP ... can't have all, implied inverse slot
+  # 4    ####  0  ## 0  STOP ... don't use recruitmentTL for harvest slot
+  # 5    NULL  ## 0  ## STOP ... need recruitmentTL for protected slot
+  # 6    ####  ## ## 0  STOP ... implied protected slot, can't have cfin
+  # 7    NULL  ## ## 0  STOP ... implied harvest slot, can't have cfunder
+  # 8    ####  0  ## ## STOP ... implied protected slot, can't have cfin
+  # 9    NULL  0  ## ## STOP ... implied harvest slot, can't have cfabove
+  # 10   ####  ## 0  0  STOP ... implied protected slot, also need cfabove
+  # 11   NULL  ## 0  0  STOP ... implied harvest slot, need cfin and no cfunder
+  # 12   ####  ## 0  0  STOP ... implied protected slot, also need cfabove
+  # 13   NULL  0  0  ## STOP ... implied harvest slot, need cfin and no cfabove
+  # 14   ####  0  0  ## STOP ... implied protected slot, also need cfunder
+  # 14   ####  ## 0  ## GOOD ... protected slot
+  # 15   NULL  0  ## 0  GOOD ... inverse slot
+
+  ## ----- no potential issues
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # 15
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # 16
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+
+  ## ----- can't be all zeroes
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1a
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1b
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+
+  ## ----- can't have recruitmenT=NULL when cfunder is provided
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #3
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_error("If 'cfunder'>0 then a value must be given to")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0.4  # Case #5
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_error("If 'cfunder'>0 then a value must be given to")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #7
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_error("If 'cfunder'>0 then a value must be given to")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #11
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_error("If 'cfunder'>0 then a value must be given to")
+
+  ## ----- check a few that will err when strict=TRUE, but not when strict=FALSE
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #2
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #4
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #6
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #8
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #9
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #10
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #12
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #13
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #14
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+    expect_no_error()
 
 #!!!!! Did not check against specific error messages for all situations because
 #      the messages are long and they wrap differently depending on where the
 #      tests are made (i.e., varies by computer).
-recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1a
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
-recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1b
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
-recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #2
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #3
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #4
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0.4  # Case #5
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #6
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #7
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #8
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #9
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #10
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #11
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #12
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #13
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #14
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_error("")
-recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # Case #15
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_no_error()
-recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #16
-rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-  expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1a
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1b
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #2
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #3
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #4
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0.4  # Case #5
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #6
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #7
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #8
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #9
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #10
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #11
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #12
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #13
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #14
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_error("")
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # Case #15
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_no_error()
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #16
+  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+    expect_no_error()
 })
 
 test_that("iCheckRecruitmentTL() messages",{

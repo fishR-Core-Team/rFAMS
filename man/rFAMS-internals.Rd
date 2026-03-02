@@ -26,7 +26,7 @@
 \alias{iCheckMLH}
 \alias{iCheckrecruitTL}
 \alias{iCheckSlotTL}
-\alias{iCheckCondMortForSlot}
+\alias{iCheckSlotType}
 \alias{iCheckLLinf}
 \alias{iCheckcfcm_dpm}
 \alias{iCheckrec}
