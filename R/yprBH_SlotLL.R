@@ -135,14 +135,13 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   iCheckCondMort(cfunder,"cfunder",onlyone=TRUE)
   iCheckCondMort(cfin,"cfin",onlyone=TRUE)
   iCheckCondMort(cfabove,"cfabove",onlyone=TRUE)
-  iCheckCondMortForSlot(cfunder,cfin,cfabove,recruitmentTL)
   iCheckloi(loi)
   iCheckSlotTL(lowerSL,lhparms[["Linf"]],"lowerSL")
   iCheckSlotTL(upperSL,lhparms[["Linf"]],"upperSL")
   # .... check that slot lengths are in correct order
   if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
-  iCheckRecruitmentTL(recruitmentTL,cfunder,lhparms[["Linf"]],lowerSL,
-                      "recruitmentTL")
+  iCheckRecruitmentTL(recruitmentTL,lhparms[["Linf"]],lowerSL)
+  iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL)
 
   # Setup data.frame of input values (varying cm, the rest constant)
   res <- expand.grid(lowerSL=lowerSL,upperSL=upperSL,

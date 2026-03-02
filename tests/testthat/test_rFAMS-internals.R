@@ -470,84 +470,109 @@ test_that("iCheckloi() messages",{
     expect_error("'loi' must be a vector")
 })
 
-test_that("iCheckCondForSlot() messages",{
-  # ----- no errors
-  # ..... protect slot
-  rFAMS:::iCheckCondMortForSlot(0.1,0,0.1,200) |>
-    expect_no_error()
-  # ..... inverse/harvest slot
-  rFAMS:::iCheckCondMortForSlot(0,0.1,0,200) |>
-    expect_no_error()
+test_that("iCheckSlotType() messages",{
+# !!!!! Checking for these cases ..
+# Case recTL un in ab RESULT
+# 1    any   0  0  0  STOP ... need some mortality
+# 2    ####  ## ## ## STOP ... can't have all, implied protected slot
+# 3    NULL  ## ## ## STOP ... can't have all, implied inverse slot
+# 4    ####  0  ## 0  STOP ... don't use recruitmentTL for harvest slot
+# 5    NULL  ## 0  ## STOP ... need recruitmentTL for protected slot
+# 6    ####  ## ## 0  STOP ... implied protected slot, can't have cfin
+# 7    NULL  ## ## 0  STOP ... implied harvest slot, can't have cfunder
+# 8    ####  0  ## ## STOP ... implied protected slot, can't have cfin
+# 9    NULL  0  ## ## STOP ... implied harvest slot, can't have cfabove
+# 10   ####  ## 0  0  STOP ... implied protected slot, also need cfabove
+# 11   NULL  ## 0  0  STOP ... implied harvest slot, need cfin and no cfunder
+# 12   ####  ## 0  0  STOP ... implied protected slot, also need cfabove
+# 13   NULL  0  0  ## STOP ... implied harvest slot, need cfin and no cfabove
+# 14   ####  0  0  ## STOP ... implied protected slot, also need cfunder
+# 14   ####  ## 0  ## GOOD ... protected slot
+# 15   NULL  0  ## 0  GOOD ... inverse slot
 
-  # ----- simple errors (all >0 or all =0)
-  rFAMS:::iCheckCondMortForSlot(0.1,0.1,0.1,200) |>
-    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all be >0")
-  rFAMS:::iCheckCondMortForSlot(0.1,0.1,0.1,NULL) |>
-    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all be >0")
-  rFAMS:::iCheckCondMortForSlot(0  ,0  ,0  ,200) |>
-    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
-  rFAMS:::iCheckCondMortForSlot(0  ,0  ,0  ,NULL) |>
-    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
-
-  # ----- errors with cfin >0
-  rFAMS:::iCheckCondMortForSlot(0.1,0.1,0  ,200) |>
-    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
-  rFAMS:::iCheckCondMortForSlot(0  ,0.1,0.1,200) |>
-    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
-  rFAMS:::iCheckCondMortForSlot(0.1,0.1,0  ,NULL) |>
-    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
-  rFAMS:::iCheckCondMortForSlot(0  ,0.1,0.1,NULL) |>
-    expect_error("If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0")
-
-  # ----- errors with cfin =0
-  rFAMS:::iCheckCondMortForSlot(0.1,0  ,0  ,200) |>
-    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
-  rFAMS:::iCheckCondMortForSlot(0  ,0  ,0.1,200) |>
-    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
-  rFAMS:::iCheckCondMortForSlot(0.1,0  ,0  ,NULL) |>
-    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
-  rFAMS:::iCheckCondMortForSlot(0  ,0  ,0.1,NULL) |>
-    expect_error("If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0")
+#!!!!! Did not check against specific error messages for all situations because
+#      the messages are long and they wrap differently depending on where the
+#      tests are made (i.e., varies by computer).
+recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1a
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1b
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #2
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #3
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #4
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0.4  # Case #5
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #6
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #7
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #8
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #9
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #10
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #11
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #12
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #13
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #14
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_error("")
+recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # Case #15
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_no_error()
+recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #16
+rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  expect_no_error()
 })
 
 test_that("iCheckRecruitmentTL() messages",{
-  # ----- test that something was sent (optname is used in first exs just to test)
-  # !!!!! no error as presumably modeling inverse slot, so don't need recruitmentTL
-  rFAMS:::iCheckRecruitmentTL(cfunder=0,Linf=250,lowerSL=100,
-                              optname="recruitmentTL") |>
-    expect_no_error()
-  rFAMS:::iCheckRecruitmentTL(cfunder=0.25,Linf=250,lowerSL=100,
-                              optname="recruitmentTL") |>
-    expect_error("'cfunder'>0 which implies that you wish to simulate a")
   recruitmentTL <- NULL
-  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0,Linf=250,lowerSL=100) |>
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,Linf=250,lowerSL=100) |>
     expect_no_error()
-  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
-    expect_error("'cfunder'>0 which implies that you wish to simulate a")
 
   # ----- test wrong input types or values
-  # !!!!! cfunder>0 for situation (protected slot) where recruitmentTL is needed
   recruitmentTL <- -1
-  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,Linf=250,lowerSL=100) |>
     expect_error("'recruitmentTL' must be >=0")
   recruitmentTL <- "a"
-  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,Linf=250,lowerSL=100) |>
     expect_error("'recruitmentTL' must be a number")
   recruitmentTL <- c(200,300)
-  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,Linf=250,lowerSL=100) |>
     expect_error("Only use one value in 'recruitmentTL'")
   recruitmentTL <- 300
-  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
-    expect_error("The recruitment total length \\(=300\\) mm cannot be greater")
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,Linf=250,lowerSL=100) |>
+    expect_error("'recruitmentTL' cannot be greater than 'Linf'")
   recruitmentTL <- 25
-  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=100) |>
-    expect_warning("A recruitment total length of 25 mm seems too small")
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,Linf=250,lowerSL=100) |>
+    expect_warning("'recruitmentTL' of 25 mm seems too small")
   recruitmentTL <- 2000
-  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=2500,lowerSL=2200) |>
-    expect_warning("A recruitment total length of 2000 mm seems too large")
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,Linf=2500,lowerSL=2200) |>
+    expect_warning("'recruitmentTL' of 2000 mm seems too large")
   recruitmentTL <- 200
-  rFAMS:::iCheckRecruitmentTL(recruitmentTL,cfunder=0.25,Linf=250,lowerSL=150) |>
-    expect_error("'recruitmentTL' must be less than or equal to 'lowerSL'")
+  rFAMS:::iCheckRecruitmentTL(recruitmentTL,Linf=250,lowerSL=150) |>
+    expect_error("'recruitmentTL' cannot be greater than 'lowerSL'")
 })
 
 test_that("iCheckSlottTL() messages",{

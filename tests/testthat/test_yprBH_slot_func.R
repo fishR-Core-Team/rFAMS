@@ -59,11 +59,11 @@ test_that("yprBH_slot_func() messages",{
   yprBH_slot_func(lowerSL=250,upperSL=325,
                   cfunder=0.25,cfin=0,cfabove=0.15,cm=0.4,
                   lhparms=LH,recruitmentTL=275,loi=c(200,300)) |>
-    expect_error("'recruitmentTL' must be less than or equal to 'lowerSL'")
+    expect_error("'recruitmentTL' cannot be greater than 'lowerSL'")
   yprBH_slot_func(lowerSL=250,upperSL=325,
                   cfunder=0.25,cfin=0,cfabove=0.15,cm=0.4,
                   lhparms=LH,recruitmentTL=600,loi=c(200,300)) |>
-    expect_error("The recruitment total length \\(=600\\) mm cannot be greater")
+    expect_error("'recruitmentTL' cannot be greater than 'Linf'")
 
   yprBH_slot_func(lowerSL=-250,upperSL=325,
                   cfunder=0.25,cfin=0,cfabove=0.15,cm=0.4,
@@ -173,21 +173,17 @@ test_that("yprBH_slot_func() messages",{
   # ..... inverse/harvest slot
   LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
   yprBH_slot_func(lowerSL=250,upperSL=325,
-                  cfunder=0,cfin=0.3,cfabove=0,cm=0.4,
-                  lhparms=LH,recruitmentTL=200,loi=c(200,300)) |>
-    expect_error("'cfunder'==0 which implies that you wish to simulate an")
-    yprBH_slot_func(lowerSL=250,upperSL=325,
-                    cfunder=0,cfin=-0.3,cfabove=0,cm=0.4,
-                    lhparms=LH,loi=c(200,300)) |>
-      expect_error("'cfin' must be >=0")
-    yprBH_slot_func(lowerSL=250,upperSL=325,
-                    cfunder=0,cfin=1.3,cfabove=0,cm=0.4,
-                    lhparms=LH,loi=c(200,300)) |>
-      expect_error("'cfin' must be <=1")
-    yprBH_slot_func(lowerSL=250,upperSL=325,
-                    cfunder=0,cfin=c(0.3,0.4),cfabove=0,cm=0.4,
-                    lhparms=LH,loi=c(200,300)) |>
-      expect_error("Only use one value in 'cfin'")
+                  cfunder=0,cfin=-0.3,cfabove=0,cm=0.4,
+                  lhparms=LH,loi=c(200,300)) |>
+    expect_error("'cfin' must be >=0")
+  yprBH_slot_func(lowerSL=250,upperSL=325,
+                  cfunder=0,cfin=1.3,cfabove=0,cm=0.4,
+                  lhparms=LH,loi=c(200,300)) |>
+    expect_error("'cfin' must be <=1")
+  yprBH_slot_func(lowerSL=250,upperSL=325,
+                  cfunder=0,cfin=c(0.3,0.4),cfabove=0,cm=0.4,
+                  lhparms=LH,loi=c(200,300)) |>
+    expect_error("Only use one value in 'cfin'")
 })
 
 

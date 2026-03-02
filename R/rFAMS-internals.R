@@ -4,7 +4,7 @@
 #'
 #' @rdname rFAMS-internals
 #' @keywords internal
-#' @aliases .onAttach iMakeSWmsg STOP WARN is.wholenumber iIbeta iHndlArgName iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckLHparms iCheckN0 iCheckMaxAge iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckloi iCheckCondMort iCheckMLH iCheckrecruitTL iCheckSlotTL iCheckCondMortForSlot iCheckLLinf iCheckcfcm_dpm iCheckrec iChecksimyears iCheckspecies iChecknR iCheckminR iCheckmaxR iCheckminRNorm iCheckmaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iChecknStr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year
+#' @aliases .onAttach iMakeSWmsg STOP WARN is.wholenumber iIbeta iHndlArgName iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckLHparms iCheckN0 iCheckMaxAge iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckloi iCheckCondMort iCheckMLH iCheckrecruitTL iCheckSlotTL iCheckSlotType iCheckLLinf iCheckcfcm_dpm iCheckrec iChecksimyears iCheckspecies iChecknR iCheckminR iCheckmaxR iCheckminRNorm iCheckmaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iChecknStr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year
 
 # -- Sends a start-up message to the console when the package is loaded.
 .onAttach <- function(libname, pkgname) {
@@ -302,34 +302,22 @@ iCheckMLH <- function(x,Linf,optname=NULL,onlyone=FALSE) {
 }
 
 # ----- Check recruitment total length
-iCheckRecruitmentTL <- function(x,cfunder,Linf,lowerSL,optname=NULL) {
-  nm <- iHndlArgName(deparse(substitute(x)),optname)
-  if (missing(x) || is.null(x)) {
-    if (cfunder>0)
-      STOP("'cfunder'>0 which implies that you wish to simulate a protected",
-           " slot limit. In this case, you must also choose a length when",
-           " fish recruit to the fishery in 'recruitmentTL'.")
-    # otherwise, no problem, just return with nothing being said
-  } else {
-    if (cfunder==0) {
-      STOP("'cfunder'==0 which implies that you wish to simulate an inverse/",
-           "harvest slot. You have entered a 'recruitmentTL' value which is",
-           " not used with inverse/harvest slots. Please check your use of",
-           " 'recruitmentTL', 'cfunder', 'cfin', and 'cfabove'.")
-    } else {
-      iErrMore1(x,nm)
-      iErrNotNumeric(x,nm)
-      iErrLT(x,0,nm)
-      if (x>Linf) STOP("The recruitment total length (=",x,
-                       ") mm cannot be greater than 'Linf' (=",Linf,
-                       "); please check value in ",nm,".")
-      if (x>lowerSL)
-        STOP(nm," must be less than or equal to 'lowerSL' (=",lowerSL,").")
-      if (x<50) WARN("A recruitment total length of ",x," mm seems too small,",
-                     " please check value in ",nm,".")
-      if (x>1600) WARN("A recruitment total length of ",x," mm seems too large,",
-                       " please check value in ",nm,".")
-    }
+iCheckRecruitmentTL <- function(x,Linf,lowerSL) {
+  # !! don't check for missing as recruitmentTL is NULL by default or the user had
+  #    to change it to something, very unlikely they changed it to missing.
+  #    Thus, don't need optname= argument used in other functions
+  # !! tests of recruitmentTL relative to type of slot limit is in iCheckSlotType()
+  # Don't test, just pass through if recruitmentTL is NULL
+  if (!is.null(x)) {
+    nm <- iHndlArgName(deparse(substitute(x)))
+    iErrMore1(x,nm)
+    iErrNotNumeric(x,nm)
+    iErrLT(x,0,nm)
+    tmp <- paste0("; please check value in ",nm,".")
+    if (x>Linf) STOP(nm," cannot be greater than 'Linf' (=",Linf,")",tmp)
+    if (x>lowerSL) STOP(nm," cannot be greater than 'lowerSL' (=",lowerSL,")",tmp)
+    if (x<50) WARN(nm," of ",x," mm seems too small",tmp)
+    if (x>1600) WARN(nm," of ",x," mm seems too large",tmp)
   }
 }
 
@@ -354,6 +342,59 @@ iCheckSlotTL <- function(x,Linf,optname) {
 }
 
 # ----- Check combinations of cf values and recruitmentTL for Slot Limits
+iCheckSlotType <- function(cfu,cfi,cfa,rtl) {
+  # ===== determine what of cfunder, cfin, cfbelow, and recruitmentTL were given
+  #       e.g., ug==TRUE if cfunder is given (i.e., >0)
+  ug <- cfu>0
+  ig <- cfi>0
+  ag <- cfa>0
+  rg <- !is.null(rtl)
+
+  # ===== parts of messages
+  tmp1p <- paste0("It appears you are trying to simulate a protected slot",
+                  " (i.e., 'recruitmentTL'>0). If so, ")
+  tmp1h <- paste0("It appears you are trying to simulate an inverse/harvest slot",
+                  " (i.e., 'recruitmentTL'=NULL). If so, ")
+
+  # ===== perform checks for cfs relative to type of slot
+  # ----- Stop immediately if no mortality rates are given
+  if (!ug & !ig & !ag)
+    STOP("'cfunder', 'cfin', and 'cfabove' cannot all =0.") #1
+  # ----- check for combinations of cfs and recruitmentTL
+  if (rg & ug & ig & ag)
+    STOP(tmp1p,"'cfin' should =0.")  #2
+  else if (!rg & ug & ig & ag)
+    STOP(tmp1h,"'cfunder' and 'cfabove' should =0.") #3
+  else if (rg & !ug & ig & !ag)
+    STOP("'cfin'>0, 'cfunder'=0, and 'cfabove'=0 implies you are trying to simulate an ",
+         "inverse/harvest slot. If so, 'recruitmentTL' must not be 'NULL'.")
+  else if (!rg & ug & !ig & ag)
+    STOP("'cfin'=0, 'cfunder'>0, and 'cfabove'>0 implies you are trying to simulate a ",
+         "protected slot. If so, 'recruitmentTL' must not be 'NULL'.") #5
+  else if (rg & ug & ig & !ag)
+    STOP(tmp1p,"'cfin' should =0 and 'cfabove' (along with 'cfunder') should be >0.") #6
+  else if (!rg & ug & ig & !ag)
+    STOP(tmp1h,"'cfunder' (along with 'cfabove') should =0.") #7
+  else if (rg & !ug & ig & ag)
+    STOP(tmp1p,"'cfin' should =0 and 'cfunder' (along with 'cfabove') should be >0.") #8
+  else if (!rg & !ug & ig & ag)
+    STOP(tmp1h,"'cfabove' (along with 'cfunder') should =0.") #9
+  else if (rg & ug & !ig & !ag)
+    STOP(tmp1p,"'cfabove' (along with 'cfunder') should be >0.") #10
+  else if (!rg & ug & !ig & !ag)
+    STOP(tmp1h,"'cfin' should be >0 and 'cfunder' (along with 'cfabove') should be 0.") #11
+  else if (rg & ug & !ig & !ag)
+    STOP(tmp1p,"'cfabove' (along with 'cfunder') should be >0.") #12
+  else if (!rg & !ug & !ig & ag)
+    STOP(tmp1h,"'cfin' should be >0 and 'cfabove' (along with 'cfunder') should be 0.") #13
+  else if (rg & !ug & !ig & ag)
+    STOP(tmp1p,"'cfunder' (along with 'cfabove') should =0.") #14
+  # !!!!! rg, ug, !ig, ag is a good protected slot ... so no STOP() #15
+  #       !rg, !ug, ig, !ag is a good inverse/harvest slot ... so no STOP() #16
+}
+
+
+
 iCheckCondMortForSlot <- function(cfu,cfi,cfa,rtl) {
   # determine what of cfunder, cfin, cfbelow, and recruitmentTL were given
   ugiven <- cfu>0
