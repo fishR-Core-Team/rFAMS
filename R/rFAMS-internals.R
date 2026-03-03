@@ -1,12 +1,5 @@
-#' @title Internal functions.
-#'
-#' @description Internal functions that are common to several functions in rFAMS.
-#'
-#' @rdname rFAMS-internals
-#' @keywords internal
-#' @aliases .onAttach iMakeSWmsg STOP WARN is.wholenumber iIbeta iHndlArgName iErrMore1 iErrNotNumeric iErrLT iErrGt iErrNotVector iCheckLHparms iCheckN0 iCheckMaxAge iCheckLinf iCheckK iCheckt0 iCheckLWb iCheckLWa iCheckloi iCheckCondMort iCheckMLH iCheckrecruitTL iCheckSlotTL iCheckSlotType iCheckLLinf iCheckcfcm_dpm iCheckrec iChecksimyears iCheckspecies iChecknR iCheckminR iCheckmaxR iCheckminRNorm iCheckmaxRNorm iCheckmeanR iChecksdR iCheckmeanRNth iChecknStr iChecksizeStr iCheckmeanRrandInt iCheckavgFreq iChecksizeStrRrandInt isum_by_year
-
-# -- Sends a start-up message to the console when the package is loaded.
+#' Sends a start-up message to the console when the package is loaded.
+#' @noRd
 .onAttach <- function(libname, pkgname) {
   vers <- read.dcf(system.file("DESCRIPTION",
                                package=pkgname,lib.loc=libname),
@@ -18,29 +11,35 @@
 
 
 # ===== Helper Functions
-# ----- for use with STOP() and WARN()
+#' Wraps an error or warning message for use with STOP() and WARN()
+#' @noRd
 iMakeSWmsg <- function(...) {
   # create message, wrapped according to windows size
   strwrap(paste(as.character(list(...)),collapse=""),
           width=0.9*getOption("width"),exdent=2,prefix="\n",initial="")
 }
 
-# ----- same as stop() and warning() but w/ call.=FALSE as default & wrapped msg
+#' A modification of stop() with call.=FALSE as default and wrapped message
+#' @keywords internal
 STOP <- function(...,call.=FALSE,domain=NULL) {
   stop(iMakeSWmsg(...),call.=call.,domain=domain)
 }
 
+#' A modification of warning() with call.=FALSE as default and wrapped message
+#' @keywords internal
 WARN <- function(...,call.=FALSE,immediate.=FALSE,noBreaks.=FALSE,domain=NULL) {
   warning(iMakeSWmsg(...),call.=call.,immediate.=immediate.,
           noBreaks.=noBreaks.,domain=domain)
 }
 
-# ----- Checks if a value is a whole number
+#' Checks if a value is a whole number
+#' @keywords internal
 is.wholenumber <- function(x,tol=.Machine$double.eps^0.5) {
   abs(x - round(x)) < tol
 }
 
-# ----- Incomplete beta function ... see tests for comparison to other packages
+#' Incomplete beta function ... see tests for comparison to other packages
+#' @keywords internal
 iIbeta <- function(x,a,b) {
   if (any(x<0)) STOP("'x' in incomplete beta function must be >=0.")
   if (any(x>1)) STOP("'x' in incomplete beta function must be <=1.")
@@ -49,13 +48,15 @@ iIbeta <- function(x,a,b) {
   beta(a,b)*stats::pbeta(x,a,b)
 }
 
-# ----- Get argument name from x, or use optname if it is missing
+#' A helper to extract name from argument sent in x, or use optname if x is missing
+#' @keywords internal
 iHndlArgName <- function(x,optname=NULL) {
   paste0("'",ifelse(x=="",optname,x),"'")
 }
 
-# ===== General Error Checks --
-# ----- Error if more than one item
+# ===== General Error Checks
+#' Error if more than one item in x
+#' @keywords internal
 iErrMore1 <- function(x,nm) {
   if(length(x)>1) {
     # some checks send name already in singe quotes ... check & adjust for this
@@ -64,12 +65,14 @@ iErrMore1 <- function(x,nm) {
   }
 }
 
-# ----- Error if not numeric
+#' Error if x is not numeric
+#' @keywords internal
 iErrNotNumeric <- function(x,nm) {
   if (!is.numeric(x)) STOP(nm," must be a number.")
 }
 
-# ----- Error if (any items are) less than value
+#' Error if x is (or any items in x are) less than value
+#' @keywords internal
 iErrLT <- function(x,value,nm) {
   if (any(x<value)) {
     # some checks send name already in singe quotes ... check & adjust for this
@@ -79,7 +82,8 @@ iErrLT <- function(x,value,nm) {
   }
 }
 
-# ----- Error if (any items are) greater than value
+#' Error if x (or any items in x are) greater than value
+#' @keywords internal
 iErrGT <- function(x,value,nm) {
   if (any(x>value)) {
     # some checks send name already in singe quotes ... check & adjust for this
@@ -89,21 +93,19 @@ iErrGT <- function(x,value,nm) {
   }
 }
 
-# Error if not a vector
+#' Error if x is not a vector
+#' @keywords internal
 iErrNotVector <- function(x,nm) {
   if (!is.vector(x)) STOP(nm," must be a vector.")
 }
 
 
 # ===== Specific Checks ... roughly ordered as general, YPR MinLL, YPR Slot, DPM
-# ===== Check life history parameters vector/list
-# !!!!! throughout optname= is used to provide a name to the error/warning
-#       message for when the argument is missing, as it is not possible to
-#       extract an argument name when the argument is missing.
-# !!!!! throughout onlyone= is used to help the function distinguish whether it
-#       should test whether only one value was provided. This allows checks for
-#       both when one value is expected from one function (e.g., yprBH_func())
-#       but multiple values may be expected for others (e.g., yprBH_minLL()).
+
+#' Make checks on life history parameters vector/list
+#' @param x a list/vector of seven life history parameters, preferably constructed with `makeLH()`
+#' @param optname a name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckLHparms <- function(x,optname=NULL) {
   ## check if missing
   if (missing(x))
@@ -155,7 +157,10 @@ iCheckLHparms <- function(x,optname=NULL) {
   }
 }
 
-# ----- Check initial number of fish in the population
+#' Make checks of the initial number of fish in the population
+#' @param x A value of N0
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckN0 <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (missing(x) || is.null(x))
@@ -168,7 +173,10 @@ iCheckN0 <- function(x,optname=NULL) {
   #        " please check value in ",nm,".")
 }
 
-# ----- Check maximum age
+#' Make checks of the maximum age (usually sent as tmax)
+#' @param x A value of maximum age.
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckMaxAge <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (missing(x) || is.null(x))
@@ -179,7 +187,10 @@ iCheckMaxAge <- function(x,optname=NULL) {
   if (!is.wholenumber(x)) WARN("The maximum age in ",nm," is not a whole number.")
 }
 
-# ----- Check Linf
+#' Make checks of LVB Linf parameter
+#' @param x A value of Linf.
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckLinf <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (missing(x) || is.null(x))
@@ -193,7 +204,10 @@ iCheckLinf <- function(x,optname=NULL) {
                    " please check value in ",nm,".")
 }
 
-# ----- Check K
+#' Make checks of LVB K parameter
+#' @param x A value of K
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckK <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (missing(x) || is.null(x))
@@ -207,7 +221,10 @@ iCheckK <- function(x,optname=NULL) {
                   " please check value in ",nm,".")
 }
 
-# ----- Check t0
+#' Make checks of LVB t0 parameter
+#' @param x A value of t0
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckt0 <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (missing(x) || is.null(x))
@@ -216,7 +233,10 @@ iCheckt0 <- function(x,optname=NULL) {
   iErrNotNumeric(x,nm)
 }
 
-# ----- Check length-weight beta
+#' Make checks of length-weight regression beta parameter
+#' @param x A value of beta from a length-weight regression.
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckLWb <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (missing(x) || is.null(x))
@@ -230,7 +250,10 @@ iCheckLWb <- function(x,optname=NULL) {
                 " please check value in ",nm,".")
 }
 
-# ----- Check length-weight alpha
+#' Make checks of length-weight regression alpha parameter
+#' @param x A value of alpha from a length-weight regression
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckLWa <- function(x,optname=NULL) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (missing(x) || is.null(x))
@@ -239,7 +262,10 @@ iCheckLWa <- function(x,optname=NULL) {
   iErrNotNumeric(x,nm)
 }
 
-# ----- Check length of interest "loi" input
+#' Make checks of length of interest values (usually sent in loi)
+#' @param x A vector (or value) for a "length-of-interest".
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckloi <- function(x,optname=NULL) {
   #! loi is often NULL, so just pass-through (don't do anything) if it is
   if (!is.null(x)) {
@@ -250,7 +276,11 @@ iCheckloi <- function(x,optname=NULL) {
   }
 }
 
-# ----- Check conditional mortality value(s)
+#' Make checks of conditional mortality value(s)
+#' @param x A vector (or value) of a conditional mortality.
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @param onlyone A logical to help the function distinguish whether it should test whether only one value was provided. This allows checks for both when one value is expected from one function (e.g., `yprBH_func()`) but multiple values may be expected for others (e.g., `yprBH_minLL()`).
+#' @keywords internal
 iCheckCondMort <- function(x,optname=NULL,onlyone=FALSE) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   # determine type of mortality ... fishing or natural based on nm
@@ -274,7 +304,11 @@ iCheckCondMort <- function(x,optname=NULL,onlyone=FALSE) {
   iErrGT(x,1,nm)
 }
 
-# ----- Check minimum length limit for harvest
+#' Make checks of minimum length limit for harvest value
+#' @param x A vector (or value) of minimum length limits of harvest.
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @param onlyone A logical to help the function distinguish whether it should test whether only one value was provided. This allows checks for both when one value is expected from one function (e.g., `yprBH_func()`) but multiple values may be expected for others (e.g., `yprBH_minLL()`).
+#' @keywords internal
 iCheckMLH <- function(x,Linf,optname=NULL,onlyone=FALSE) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   if (missing(x) || is.null(x))
@@ -301,13 +335,18 @@ iCheckMLH <- function(x,Linf,optname=NULL,onlyone=FALSE) {
   }
 }
 
-# ----- Check recruitment total length
+#' Make checks of recruitment total length
+#' @param x A recruitment total length value.
+#' @param Linf A value of Linf.
+#' @param lowerSL A value for the lower slot limit length.
+#' @keywords internal
+#' @details
+#' Don't check for missing as `recruitmentTL` is `NULL` by default in the major functions or the user changed it to something (very unlikely they changed it to missing). Thus, don't need `optname=` argument used in other functions.
+#'
+#' Tests of `recruitmentTL` relative to the type of slot limit are in `iCheckSlotType()`.
+#'
+#' If `recruitmentTL=NULL`, just pass through, don't do any tests.
 iCheckRecruitmentTL <- function(x,Linf,lowerSL) {
-  # !! don't check for missing as recruitmentTL is NULL by default or the user had
-  #    to change it to something, very unlikely they changed it to missing.
-  #    Thus, don't need optname= argument used in other functions
-  # !! tests of recruitmentTL relative to type of slot limit is in iCheckSlotType()
-  # Don't test, just pass through if recruitmentTL is NULL
   if (!is.null(x)) {
     nm <- iHndlArgName(deparse(substitute(x)))
     iErrMore1(x,nm)
@@ -321,7 +360,11 @@ iCheckRecruitmentTL <- function(x,Linf,lowerSL) {
   }
 }
 
-# ----- Check slot total length
+#' Make checks of slot total length value
+#' @param x A slot total length value (lower or upper),
+#' @param Linf A value of Linf
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
 iCheckSlotTL <- function(x,Linf,optname) {
   nm <- iHndlArgName(deparse(substitute(x)),optname)
   # determine type of slot length ... lower or upper
@@ -341,17 +384,17 @@ iCheckSlotTL <- function(x,Linf,optname) {
                    " mm seems too large, please check value in ",nm,".")
 }
 
-# ----- Check combinations of cf values and recruitmentTL for Slot Limits
+#' Make checks of combinations of `cf` values and `recruitmentTL` for slot limits
+#' @param cfu A `cfunder` value.
+#' @param cfi A `cfin` value.
+#' @param cfa A `cfabove` value.
+#' @param rtl A `recruitmentTL` value.
+#' @param strict A logical that indicates how strict the test should be. See details.
+#' @keywords internal
+#'
+#' @details
+#' `strict` is a logical that indicates whether strict criterion for values of `recruitmentTL`, `cfunder`, `cfin`, and `cfabove` should be used. If `strict=TRUE` then the only accepted combinations are that a `recruitmentTL` is given (i.e., not `NULL`), `cfunder`>0, `cfabove`>0, and `cfin`=0 (i.e., simulating a protected slot) or `recruitmentTL` is `NULL`, `cfunder`=0, `cfabove`=0, and `cfin`>0 (i.e., simulating an inverse/harvest slot). If `strict=FALSE` then the only restrictions are that the three `cf`s cannot all =0, and that if `cfunder` is given them `recruitmentTL` cannot be `NULL`. **This argument allows us to model each type of restrictions while we ultimately decide which one to use.**
 iCheckSlotType <- function(cfu,cfi,cfa,rtl,strict=FALSE) {
-  # Note: strict is a logical that indicates whether strict criterion for values
-  #       of recruitmentTL, cfunder, cfin, and cfabove should be used. If
-  #       strict=TRUE then the only accepted combinations are that a recruitmentTL
-  #       is given (i.e., not NULL), cfunder>0, cfabove>0, and cfin=0 (i.e.,
-  #       simulating a protected slot) or recruitmentTL is NULL, cfunder=0,
-  #       cfabove=0, and cfin>0 (i.e., simulating an inverse/harvest slot). If
-  #       strict=FALSE then the only restrictions are that all three cfs cannot
-  #       all =0, and that if cfunder is given the recruitmentTL cannot be NULL.
-
   # ===== determine what of cfunder, cfin, cfbelow, and recruitmentTL were given
   #       e.g., ug==TRUE if cfunder is given (i.e., >0)
   ug <- cfu>0
@@ -411,51 +454,11 @@ iCheckSlotType <- function(cfu,cfi,cfa,rtl,strict=FALSE) {
 }
 
 
-
-iCheckCondMortForSlot <- function(cfu,cfi,cfa,rtl) {
-  # determine what of cfunder, cfin, cfbelow, and recruitmentTL were given
-  ugiven <- cfu>0
-  igiven <- cfi>0
-  agiven <- cfa>0
-  rtlgiven <- !is.null(rtl)
-
-  # determine problems with combos of cfunder, cfin, and cfabove
-  if (all(c(ugiven,igiven,agiven))) {
-    tmp1 <- "'cfunder', 'cfin', and 'cfabove' cannot all be >0. "
-  } else if (all(c(!ugiven,!igiven,!agiven))) {
-    STOP("'cfunder', 'cfin', and 'cfabove' cannot all =0.")
-  } else if (igiven & (ugiven | agiven)) {
-    tmp1 <- "If 'cfin'>0 then neither 'cfunder' or 'cfabove' may be >0. "
-  } else if (!igiven & (!ugiven | !agiven)) {
-    tmp1 <- "If 'cfin'=0 then both 'cfunder' and 'cfabove' should be >0. "
-  } else tmp1 <- NULL  ## no problems
-
-  if (!is.null(tmp1)) { ## there was a problem so STOP needs to be used
-    # modify message depending on whether recruitmentTL was given or no
-    if (rtlgiven) {
-      tmp2 <- paste("You have provided a 'recruitmentTL' which implies you",
-                    "want to simulate a protected slot. Use 'cfin'=0,",
-                    "'cfunder'>0, 'cfabove'>0 and a 'recruitmentTL'",
-                    "to simulate a 'protected slot'. ")
-    } else {
-      tmp2 <- paste("You have not provided a 'recruitmentTL' which implies you",
-                    "want to simulate an inverse/harvest slot. Use 'cfin'>0,",
-                    "'cfunder'=0, and 'cfabove'=0 and no 'recruitmentTL'",
-                    "to simulate an inverse/harvest slot. ")
-    }
-    # send message
-    STOP(tmp1,tmp2,"Please check your values in 'cfunder', ",
-                           "'cfin', 'cfabove', and 'recruitmentTL'.")
-  }
-}
-
 # Check Linf > Minimum length
 iCheckLLinf <- function(x, Linf) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (sum(x > Linf) >0 ) STOP("Harvest lengths in the vector (", nm, ") can't be greater than Linf")
 }
-
-
 
 #Check that cf and cm are a numeric matrix
 iCheckcfcm_dpm <- function(x) {
@@ -582,7 +585,6 @@ iChecksizeStr <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-
 # Check meanR with randInt
 iCheckmeanRrandInt <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
@@ -610,7 +612,7 @@ iChecksizeStrRrandInt <- function(x) {
   iErrNotNumeric(x,nm)
 }
 
-#Summarize dynamic pool model by year
+# Summarize dynamic pool model by year
 isum_by_year <- function(res,species,group){
   year<-gcat<-nstart<-count<-quality<-stock<-preferred<-memorable<-trophy<-age<-yield<-biomass<-nharvest<-ndie<-age_1plus<-Yield_age_1plus<-Total_biomass<-nharvest_age_1plus<-ndie_age_1plus<-NULL
   #Calculate PSD's based on number of individuals at length at the start of the year
@@ -630,7 +632,6 @@ isum_by_year <- function(res,species,group){
   psd.age.cuts[5] <- ((log(1-unname(psd.cuts[5])/res$Linf[1]))/-res$K[1])+res$t0[1]
   psd.age.cuts[6] <- ((log(1-unname(psd.cuts[6])/res$Linf[1]))/-res$K[1])+res$t0[1]
 
-
   psd_calc<-res |>
     dplyr::mutate(
       gcat = dplyr::case_when(
@@ -641,7 +642,6 @@ isum_by_year <- function(res,species,group){
         age < psd.age.cuts[6] ~ names(psd.cuts[5]),
         TRUE ~ names(psd.cuts[6])
       ))
-
 
   # it is unclear how FAMS calculates PSD. Output shows number at PSD categories
   # however, using those numbers do not match reported PSD's
@@ -690,7 +690,6 @@ isum_by_year <- function(res,species,group){
 
   # merged_df <- dplyr::left_join(psd_summary,Year_Summary, by = "year") |>
   #   dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, N_harvest_age_1plus, N_die_age_1plus), ~dplyr::coalesce(., 0)))
-
 
   return(Year_Summary)
 }
