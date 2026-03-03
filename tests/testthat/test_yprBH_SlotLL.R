@@ -140,56 +140,6 @@ test_that("yprBH_SlotLL() messages",{
                cfunder=0,cfin=c(0.3,0.4),cfabove=0,cm=cm,
                lhparms=LH) |>
     expect_error("Only use one value in 'cfin'")
-  # ..... in cfunder, cfabove, cfin relatedly (did not check against specific
-  #       error messages as they are long and wrap diffrently on differnet OS)
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0.2,cfin=0.3,cfabove=0.4,cm=cm,
-               lhparms=LH,recruitmentTL=200) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0.2,cfin=0.3,cfabove=0.4,cm=cm,
-               lhparms=LH) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0,cfin=0,cfabove=0,cm=cm,
-               lhparms=LH) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0,cfin=0,cfabove=0,cm=cm,
-               lhparms=LH,recruitmentTL=200) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0.2,cfin=0.2,cfabove=0,cm=cm,
-               lhparms=LH,recruitmentTL=200) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0.2,cfin=0.2,cfabove=0,cm=cm,
-               lhparms=LH,recruitmentTL=NULL) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0,cfin=0.2,cfabove=0.2,cm=cm,
-               lhparms=LH,recruitmentTL=200) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0,cfin=0.2,cfabove=0.2,cm=cm,
-               lhparms=LH,recruitmentTL=NULL) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0.2,cfin=0,cfabove=0,cm=cm,
-               lhparms=LH,recruitmentTL=200) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0.2,cfin=0,cfabove=0,cm=cm,
-               lhparms=LH,recruitmentTL=NULL) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0,cfin=0,cfabove=0.2,cm=cm,
-               lhparms=LH,recruitmentTL=200) |>
-    expect_error()
-  yprBH_SlotLL(lowerSL=250,upperSL=325,
-               cfunder=0,cfin=0,cfabove=0.2,cm=cm,
-               lhparms=LH,recruitmentTL=NULL) |>
-    expect_error()
   # ..... in cm
   yprBH_SlotLL(lowerSL=250,upperSL=325,
                cfunder=0.25,cfin=0,cfabove=0.2,cm=-0.2,
@@ -244,6 +194,171 @@ test_that("yprBH_SlotLL() messages",{
     expect_warning("A weight-length beta coefficient of 5 seems too large") |>
     expect_warning("A weight-length beta coefficient of 5 seems too large")
   ## !!! May want to address this double warning
+})
+
+test_that("yprBH_SlotLL() messages when strict=FALSE is used in yprBH_SLotLL",{
+  # Either this or the next set of tests should be commented out beginning
+  #   with Case #2 below if strict=TRUE is set in iCheckSlotType() in
+  #   yprBH_SlotLL() until we decide which way we want to run those tests and
+  #   delete strict= in iCheckSlotType().
+  LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
+  lowerSL <- 200; upperSL <- 325; cm <- c(0.3,0.4,0.5)
+
+  ## ----- no issues
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # 15
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # 16
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+
+  ## ----- can't be all zeroes
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1a
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1b
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+
+  ## ----- can't have recruitmenT=NULL when cfunder is provided
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #3
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_error("If 'cfunder'>0 then a value must be given to")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0.4  # Case #5
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_error("If 'cfunder'>0 then a value must be given to")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #7
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_error("If 'cfunder'>0 then a value must be given to")
+  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #11
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_error("If 'cfunder'>0 then a value must be given to")
+
+  ## ----- check those that will err when strict=TRUE, but not when strict=FALSE
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #2
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #4
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #6
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #8
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #9
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #10
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #12
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #13
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #14
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+})
+
+test_that("yprBH_SlotLL() messages when strict=TRUE is used in yprBH_SLotLL",{
+  # Either this or the previous set of tests should be commented out beginning
+  #   with Case #2 below if strict=FALSE is set in iCheckSlotType() in
+  #   yprBH_SlotLL() until we decide which way we want to run those tests and
+  #   delete strict= in iCheckSlotType().
+  # ! Did not test against actual error messages as they are long and depend
+  #   on the machine running the tests dues to wrapping
+  LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
+  lowerSL <- 200; upperSL <- 325; cm <- c(0.3,0.4,0.5)
+
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # Case #15
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #16
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_no_error()
+  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1a
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1b
+  yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+               cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+  # recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #2
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #3
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #4
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0.4  # Case #5
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #6
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #7
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #8
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #9
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #10
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #11
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #12
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #13
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
+  # recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #14
+  # yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cfunder=cfunder,cfin=cfin,
+  #              cfabove=cfabove,cm=cm,lhparms=LH,recruitmentTL=recruitmentTL) |>
+  #   expect_error()
 })
 
 

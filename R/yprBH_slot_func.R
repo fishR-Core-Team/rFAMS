@@ -118,7 +118,7 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   # .... check that slot lengths are in correct order
   if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
   iCheckRecruitmentTL(recruitmentTL,Linf,lowerSL)
-  iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE)
+  iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=FALSE)
   # !!!!! For a protected slot (so by here recruitmentTL should be NULL), set
   #       recruitmentTL to the lowerSL of the slot limit (i.e, when fish would
   #       first be available for harvest). This is needed for the

@@ -491,10 +491,10 @@ test_that("iCheckSlotType() messages",{
   # 15   NULL  0  ## 0  GOOD ... inverse slot
 
   ## ----- no potential issues
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # 15
+  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # Case 15
   rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
     expect_no_error()
-  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # 16
+  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case 16
   rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
     expect_no_error()
 
