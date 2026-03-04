@@ -47,13 +47,15 @@ LH <- makeLH(N0=100,tmax=15,Linf=600,K=0.30,t0=-0.6,
 LH <- list(N0=100,tmax=15,Linf=600,K=0.30,t0=-0.6,
            LWalpha=-5.453,LWbeta=3.10)
 }\if{html}{\out{</div>}}
+
+If a list is returned then values will be displayed with the number of decimals provided by the user. If a vector is returned then the number of decimals displayed will be the same for each value and will match the value supplied by the user with the most decimals. Thus, a list is preferred as it will be easier to match what was given to what was expected to be given.
 }
 \examples{
 library(FSA)
 library(FSAdata)
 library(dplyr)
 
-# ----- Simple examples with explicity arguments for each -------------------
+# ----- Simple examples with explicit arguments for each --------------------
 makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1)
 makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1,
        restype="vector")
@@ -68,9 +70,9 @@ makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1,
 # create log10 values of weight and length
 data(WalleyeErie2,package="FSAdata")
 tmp <- WalleyeErie2 |>
-  filter(loc==2,year==2010) |>
-  mutate(logW=log10(w),
-         logL=log10(tl))
+  dplyr::filter(loc==2,year==2010) |>
+  dplyr::mutate(logW=log10(w),
+                logL=log10(tl))
 
 # Generate LVB results
 vb1 <- FSA::makeGrowthFun(type="von Bertalanffy")
@@ -86,10 +88,8 @@ waeLH
 
 }
 \seealso{
-\href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{this demonstration page} for more plotting examples
+This \href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{demonstration page} for further examples.
 }
 \author{
 Derek Ogle
-
-If a list is returned then values will be displayed with the number of decimals provided by the user. If a vector is returned then the number of decimals displayed will be the same for each value and will match the value supplied by the user with the most decimals. Thus, a list is preferred as it will be easier to match what was given to what was expected to be given.
 }
