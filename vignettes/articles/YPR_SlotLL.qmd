@@ -1,6 +1,5 @@
 ---
 title: "Estimate yield based on a slot limit"
-author: "Jason Doll"
 date: "`r Sys.Date()`"
 format: 
   html: 

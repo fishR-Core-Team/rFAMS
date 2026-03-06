@@ -8,7 +8,9 @@
   rFAMS](https://fishr-core-team.github.io/rFAMS/articles/ggplot_for_rFAMS.md):
 - [Create life history
   object](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.md):
+- [Growth](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Growth.md):
 - [Mortality](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Mortality.md):
+- [Weight-Length](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_WeightLength.md):
 - [Comparing FAMS and Ricker YPR
   Equations](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.md):
 - [Estimate yield based on one or more minimum length

@@ -22,20 +22,17 @@
   [`dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md)
   for consistent function names.
 
-- [`iCheckCondMort()`](https://fishr-core-team.github.io/rFAMS/reference/rFAMS-internals.md):
+- [`iCheckCondMort()`](https://fishr-core-team.github.io/rFAMS/reference/iCheckCondMort.md):
   Added. Currently only used in `showMorts()`. However, I think that
   this is more general than some other functions and, thus, could
-  replace
-  [`iCheckcf()`](https://fishr-core-team.github.io/rFAMS/reference/rFAMS-internals.md),
-  [`iCheckcm()`](https://fishr-core-team.github.io/rFAMS/reference/rFAMS-internals.md),
-  [`iCheckcfVect()`](https://fishr-core-team.github.io/rFAMS/reference/rFAMS-internals.md),
-  [`iCheckcmVect()`](https://fishr-core-team.github.io/rFAMS/reference/rFAMS-internals.md),
-  and possibly a few others.
+  replace `iCheckcf()`, `iCheckcm()`, `iCheckcfVect()`,
+  `iCheckcmVect()`, and possibly a few others.
 
-- `iErrGT()`: Modified to allow for checks on a vector rather than just
-  a single value, which it still works for.
+- [`iErrGT()`](https://fishr-core-team.github.io/rFAMS/reference/iErrGT.md):
+  Modified to allow for checks on a vector rather than just a single
+  value, which it still works for.
 
-- [`iErrLT()`](https://fishr-core-team.github.io/rFAMS/reference/rFAMS-internals.md):
+- [`iErrLT()`](https://fishr-core-team.github.io/rFAMS/reference/iErrLT.md):
   Modified to allow for checks on a vector rather than just a single
   value, which it still works for.
 

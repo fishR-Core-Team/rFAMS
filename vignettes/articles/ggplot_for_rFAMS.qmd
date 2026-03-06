@@ -1,6 +1,5 @@
 ---
 title: "Quick Introduction to ggplot2 for rFAMS"
-author: "Derek Ogle"
 date: "`r Sys.Date()`"
 format: 
   html: 

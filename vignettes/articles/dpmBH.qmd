@@ -1,6 +1,5 @@
 ---
 title: "Simulate a population using the dynamic pool model"
-author: "Jason Doll"
 date: "`r Sys.Date()`"
 format: 
   html: 

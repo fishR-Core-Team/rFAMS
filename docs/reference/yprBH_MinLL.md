@@ -151,5 +151,4 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
   ylab("Minimum length limit (mm)") +
   theme_bw()
 
-
 ```

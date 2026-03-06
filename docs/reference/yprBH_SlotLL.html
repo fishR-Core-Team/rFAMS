@@ -17,16 +17,18 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-manual" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Manual</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-manual"><li><a class="dropdown-item" href="../articles/MANUAL_Mortality.html">Mortality</a></li>
+    <li><a class="dropdown-item" href="../articles/MANUAL_Growth.html">Growth</a></li>
+    <li><a class="dropdown-item" href="../articles/MANUAL_WeightLength.html">Weight-Length</a></li>
+  </ul></li>
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-demonstrations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Demonstrations</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-demonstrations"><li><a class="dropdown-item" href="../articles/MakeLH.html">Create life history object</a></li>
     <li><a class="dropdown-item" href="../articles/YPR_MinLL.html">Estimate yield based on one or more minimum length limits</a></li>
     <li><a class="dropdown-item" href="../articles/YPR_SlotLL.html">Estimate yield based on a slot length limit</a></li>
     <li><a class="dropdown-item" href="../articles/dpmBH.html">Simulate a population using the dynamic pool model</a></li>
     <li><a class="dropdown-item" href="../articles/ggplot_for_rFAMS.html">ggplot2 for rFAMS</a></li>
-  </ul></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-manual" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Manual</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-manual"><li><a class="dropdown-item" href="../articles/MANUAL_Mortality.html">Mortality</a></li>
   </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-explanations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Explanations</button>
@@ -55,7 +57,6 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">yprBH_SlotLL</span><span class="op">(</span></span>
-<span>  recruitmentTL <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">lowerSL</span>,</span>
 <span>  <span class="va">upperSL</span>,</span>
 <span>  <span class="va">cfunder</span>,</span>
@@ -63,6 +64,7 @@
 <span>  <span class="va">cfabove</span>,</span>
 <span>  <span class="va">cm</span>,</span>
 <span>  <span class="va">lhparms</span>,</span>
+<span>  recruitmentTL <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  loi <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  matchRicker <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -72,11 +74,7 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-recruitmenttl">recruitmentTL<a class="anchor" aria-label="anchor" href="#arg-recruitmenttl"></a></dt>
-<dd><p>A numeric representing the minimum length limit for recruiting to the fishery in mm.</p></dd>
-
-
-<dt id="arg-lowersl">lowerSL<a class="anchor" aria-label="anchor" href="#arg-lowersl"></a></dt>
+<dl><dt id="arg-lowersl">lowerSL<a class="anchor" aria-label="anchor" href="#arg-lowersl"></a></dt>
 <dd><p>A numeric representing the length of the lower slot limit in mm.</p></dd>
 
 
@@ -102,6 +100,10 @@
 
 <dt id="arg-lhparms">lhparms<a class="anchor" aria-label="anchor" href="#arg-lhparms"></a></dt>
 <dd><p>A named vector or list that contains values for each <code>N0</code>, <code>tmax</code>, <code>Linf</code>, <code>K</code>, <code>t0</code>, <code>LWalpha</code>, and <code>LWbeta</code>. See <code><a href="makeLH.html">makeLH</a></code> for definitions of these life history parameters. Also see details.</p></dd>
+
+
+<dt id="arg-recruitmenttl">recruitmentTL<a class="anchor" aria-label="anchor" href="#arg-recruitmenttl"></a></dt>
+<dd><p>A numeric representing the minimum length limit for recruiting to the fishery in mm.</p></dd>
 
 
 <dt id="arg-loi">loi<a class="anchor" aria-label="anchor" href="#arg-loi"></a></dt>
@@ -199,9 +201,9 @@
 <span class="r-in"><span><span class="va">loi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">250</span>,<span class="fl">300</span>,<span class="fl">325</span>,<span class="fl">350</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#Estimate yield based on a protected slot limit</span></span></span>
-<span class="r-in"><span> <span class="va">Res_1</span> <span class="op">&lt;-</span> <span class="fu">yprBH_SlotLL</span><span class="op">(</span>recruitmentTL<span class="op">=</span><span class="fl">200</span>,lowerSL<span class="op">=</span><span class="fl">250</span>,upperSL<span class="op">=</span><span class="fl">325</span>,</span></span>
+<span class="r-in"><span> <span class="va">Res_1</span> <span class="op">&lt;-</span> <span class="fu">yprBH_SlotLL</span><span class="op">(</span>lowerSL<span class="op">=</span><span class="fl">250</span>,upperSL<span class="op">=</span><span class="fl">325</span>,</span></span>
 <span class="r-in"><span>                       cfunder<span class="op">=</span><span class="fl">0.25</span>,cfin<span class="op">=</span><span class="fl">0.0</span>,cfabove<span class="op">=</span><span class="fl">0.15</span>,cm<span class="op">=</span><span class="va">cm</span>,</span></span>
-<span class="r-in"><span>                       lhparms<span class="op">=</span><span class="va">LH</span>,loi<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">250</span>,<span class="fl">300</span>,<span class="fl">325</span>,<span class="fl">350</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                       lhparms<span class="op">=</span><span class="va">LH</span>,recruitmentTL<span class="op">=</span><span class="fl">200</span>,loi<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">250</span>,<span class="fl">300</span>,<span class="fl">325</span>,<span class="fl">350</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="va">Res_1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    yieldTotal yieldUnder yieldIn   yieldAbove nharvTotal ndieTotal</span>
@@ -311,7 +313,6 @@
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span><span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Yield"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="yprBH_SlotLL-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

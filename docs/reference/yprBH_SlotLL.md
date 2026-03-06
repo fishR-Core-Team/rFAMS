@@ -9,7 +9,6 @@ length.
 
 ``` r
 yprBH_SlotLL(
-  recruitmentTL = NULL,
   lowerSL,
   upperSL,
   cfunder,
@@ -17,17 +16,13 @@ yprBH_SlotLL(
   cfabove,
   cm,
   lhparms,
+  recruitmentTL = NULL,
   loi = NULL,
   matchRicker = FALSE
 )
 ```
 
 ## Arguments
-
-- recruitmentTL:
-
-  A numeric representing the minimum length limit for recruiting to the
-  fishery in mm.
 
 - lowerSL:
 
@@ -61,6 +56,11 @@ yprBH_SlotLL(
   `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See
   [`makeLH`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   for definitions of these life history parameters. Also see details.
+
+- recruitmentTL:
+
+  A numeric representing the minimum length limit for recruiting to the
+  fishery in mm.
 
 - loi:
 
@@ -258,9 +258,9 @@ cm <- seq(from = 0.1, to = 0.9, by = 0.1)
 loi <- c(200,250,300,325,350)
 
 #Estimate yield based on a protected slot limit
- Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
+ Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-                       lhparms=LH,loi=c(200,250,300,325,350))
+                       lhparms=LH,recruitmentTL=200,loi=c(200,250,300,325,350))
 
  Res_1
 #>    yieldTotal yieldUnder yieldIn   yieldAbove nharvTotal ndieTotal
@@ -369,6 +369,5 @@ ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   theme_bw() +
   theme(legend.position = "top")+
   guides(color=guide_legend(title="Yield"))
-
 
 ```

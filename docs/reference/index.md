@@ -14,6 +14,7 @@
 - [`genRecruits()`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
   : Generate a vector of number of recruits for the dynamic pool model.
 - [`makeLH()`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
+  [`print(`*`<MAKELH>`*`)`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   : Make a list or vector of life history parameters for
   yield-per-recruit analyses.
 - [`seeMorts()`](https://fishr-core-team.github.io/rFAMS/reference/seeMorts.md)

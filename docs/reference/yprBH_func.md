@@ -2,7 +2,7 @@
 
 Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model.
 This main function accepts only single values for conditional fishing
-mortalitiy (`cf`), conditional natural mortality (`cm`), and a minimum
+mortality (`cf`), conditional natural mortality (`cm`), and a minimum
 length limit for harvest (`minLL`).
 
 ## Usage

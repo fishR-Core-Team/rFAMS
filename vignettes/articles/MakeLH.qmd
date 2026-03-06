@@ -1,6 +1,5 @@
 ---
 title: "Create life history object"
-author: "Jason Doll"
 date: "`r Sys.Date()`"
 format: 
   html: 

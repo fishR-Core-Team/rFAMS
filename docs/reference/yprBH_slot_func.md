@@ -8,7 +8,6 @@ wrapper ypr() function for specifying range of cf, cm, and minlength
 
 ``` r
 yprBH_slot_func(
-  recruitmentTL,
   lowerSL,
   upperSL,
   cfunder,
@@ -16,17 +15,13 @@ yprBH_slot_func(
   cfabove,
   cm,
   lhparms,
+  recruitmentTL = NULL,
   loi = NULL,
   matchRicker = FALSE
 )
 ```
 
 ## Arguments
-
-- recruitmentTL:
-
-  A numeric representing the minimum length limit for recruiting to the
-  fishery in mm.
 
 - lowerSL:
 
@@ -60,6 +55,11 @@ yprBH_slot_func(
   `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See
   [`makeLH`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   for definitions of these life history parameters. Also see details.
+
+- recruitmentTL:
+
+  A numeric representing the minimum length limit for recruiting to the
+  fishery in mm.
 
 - loi:
 
@@ -238,26 +238,43 @@ Jason C. Doll, <jason.doll@fmarion.edu>
 # Life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
-# Estimate yield with fixed parameters
-Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
-                       cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
-                       lhparms=LH,loi=c(200,250,300,325,350))
-Res_1
-#>   yieldTotal yieldUnder  yieldIn yieldAbove nharvTotal ndieTotal nharvestUnder
-#> 1   5611.796   903.2554 3813.586   894.9547   19.68287   20.9852      6.154504
+# Estimate yield with fixed parameters for a PROTECTED slot
+pslot1 <- yprBH_slot_func(lowerSL=250,upperSL=325,
+                          cfunder=0.25,cfin=0,cfabove=0.15,cm=0.4,lhparms=LH,
+                          recruitmentTL=200,loi=c(200,250,300,325,350))
+pslot1
+#>   yieldTotal yieldUnder yieldIn yieldAbove nharvTotal ndieTotal nharvestUnder
+#> 1   3685.372   903.2554       0   2782.117   9.178103   31.4858      6.154504
 #>   nharvestIn nharvestAbove    n0die ndieUnder   ndieIn ndieAbove  nrUnder
-#> 1   12.55573     0.9726349 59.32995  10.92831 6.999731  3.057163 40.67005
+#> 1          0      3.023598 59.32995  10.92831 11.05379  9.503702 40.67005
 #>       nrIn  nrAbove  trUnder     trIn  trOver avglenUnder avglenIn avglenAbove
-#> 1 23.58723 4.031773 1.761224 2.443479 3.68129    224.3558 280.1859    393.1118
-#>   avgwtUnder  avgwtIn avgwtAbove   nAt200   nAt250   nAt300   nAt325   nAt350
-#> 1   146.7633 303.7327   920.1343 40.67005 23.58723 7.636027 4.031773 2.895681
-#>    cm  expUnder     expIn  expAbove    FUnder       FIn    FAbove    MUnder
-#> 1 0.4 0.1981511 0.4879637 0.1182668 0.2876821 0.9162907 0.1625189 0.5108256
-#>         MIn    MAbove    ZUnder      ZIn    ZAbove SUnder  SIn SAbove cfUnder
-#> 1 0.5108256 0.5108256 0.7985077 1.427116 0.6733446   0.45 0.24   0.51    0.25
-#>   cfIn cfOver recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha LWbeta
-#> 1  0.6   0.15           200     250     325 100  592 0.2 -0.3  -5.528  3.273
-#>   tmax
-#> 1   15
+#> 1 23.58723 12.53344 1.761224 2.443479 3.68129    224.3558        0    393.1118
+#>   avgwtUnder avgwtIn avgwtAbove   nAt200   nAt250   nAt300   nAt325   nAt350
+#> 1   146.7633       0   920.1343 40.67005 23.58723 15.75264 12.53344 9.001711
+#>    cm  expUnder expIn  expAbove    FUnder FIn    FAbove    MUnder       MIn
+#> 1 0.4 0.1981511     0 0.1182668 0.2876821   0 0.1625189 0.5108256 0.5108256
+#>      MAbove    ZUnder       ZIn    ZAbove SUnder SIn SAbove cfUnder cfIn cfOver
+#> 1 0.5108256 0.7985077 0.5108256 0.6733446   0.45 0.6   0.51    0.25    0   0.15
+#>   recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha LWbeta tmax
+#> 1           200     250     325 100  592 0.2 -0.3  -5.528  3.273   15
 
+# Estimate yield with fixed parameters for an INVERSE/HARVEST slot
+hslot1 <- yprBH_slot_func(lowerSL=250,upperSL=325,
+                          cfunder=0,cfin=0.3,cfabove=0,cm=0.4,lhparms=LH,
+                          loi=c(200,250,300,325,350))
+hslot1
+#>   yieldTotal yieldUnder  yieldIn yieldAbove nharvTotal ndieTotal nharvestUnder
+#> 1   2473.538          0 2473.538          0   7.768535  20.90356             0
+#>   nharvestIn nharvestAbove    n0die ndieUnder ndieIn ndieAbove  nrUnder
+#> 1   7.768535             0 71.29767         0 11.126  9.777554 28.70233
+#>       nrIn  nrAbove  trUnder     trIn  trOver avglenUnder avglenIn avglenAbove
+#> 1 28.70233 9.807791 2.443479 2.443479 3.68129           0 284.2536           0
+#>   avgwtUnder  avgwtIn avgwtAbove   nAt200   nAt250   nAt300   nAt325   nAt350
+#> 1          0 318.4047          0 40.67005 28.70233 14.46028 9.807791 7.629927
+#>    cm expUnder     expIn expAbove FUnder       FIn FAbove    MUnder       MIn
+#> 1 0.4        0 0.2384684        0      0 0.3566749      0 0.5108256 0.5108256
+#>      MAbove    ZUnder       ZIn    ZAbove SUnder  SIn SAbove cfUnder cfIn
+#> 1 0.5108256 0.5108256 0.8675006 0.5108256    0.6 0.42    0.6       0  0.3
+#>   cfOver recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha LWbeta tmax
+#> 1      0           250     250     325 100  592 0.2 -0.3  -5.528  3.273   15
 ```
