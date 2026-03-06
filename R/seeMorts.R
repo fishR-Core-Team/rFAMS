@@ -75,15 +75,15 @@ seeMorts <- function(cf,cm,type=2,verbose=TRUE) {
   ## Checks
   if (!type %in% 1:2)
     STOP("'type' must be 1 or 2 to choose a 'Type-1' or 'Type-2' fishery.")
-  iCheckCondMort(cm)
-  iCheckCondMort(cf)
-  if (any(duplicated(cm))) {
-    cm <- cm[!duplicated(cm)]
-    WARN("Duplicated values in 'cm' were dropped.")
-  }
+  iCheckCondMort(cf,"cf")
+  iCheckCondMort(cm,"cm")
   if (any(duplicated(cf))) {
     cf <- cf[!duplicated(cf)]
     WARN("Duplicated values in 'cf' were dropped.")
+  }
+  if (any(duplicated(cm))) {
+    cm <- cm[!duplicated(cm)]
+    WARN("Duplicated values in 'cm' were dropped.")
   }
   ## Send message about type of fishery if verbose=TRUE (default)
   if (verbose) cat("Conditional mortality calculations made for a Type-",

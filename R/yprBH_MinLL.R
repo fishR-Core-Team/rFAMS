@@ -80,44 +80,29 @@
 #'   ylab("Minimum length limit (mm)") +
 #'   theme_bw()
 #'
-#'
 #' @rdname yprBH_MinLL
 #' @export
 
-yprBH_MinLL <- function(minLL,cf,cm,lhparms,
-                        loi=NULL,matchRicker=FALSE){
+yprBH_MinLL <- function(minLL,cf,cm,lhparms,loi=NULL,matchRicker=FALSE){
   # ---- Check inputs
-  iCheckminLL(minLL,"minLL")
-  iCheckcfVect(cf,"cf")
-  iCheckcmVect(cm,"cm")
-  # iCheckMLH(lengthmin,"minimum")
-  # iCheckMLH(lengthmax,"maximum")
-  # minLL <- iCheckMLHinc(lengthinc,lengthmin,lengthmax)
-   iCheckLLinf(minLL,lhparms$Linf)
-   #iCheckLLinf(minLL,400)
-  # iCheckLLinf(lengthmax,lhparms$Linf)
-  # iCheckcf(cfmin,"minimum")
-  # iCheckcf(cfmax,"maximum")
-  # cf <- iCheckcfminc(cfinc,cfmin,cfmax)
-  # iCheckcm(cmmin,"minimum")
-  # iCheckcm(cmmax,"maximum")
-  # cm <- iCheckcfminc(cminc,cmmin,cmmax)
-  iCheckloi(loi)
+  iCheckLHparms(lhparms,"lhparms")
+  iCheckMLH(minLL,lhparms[["Linf"]],"minLL")
+  iCheckCondMort(cf,"cf")
+  iCheckCondMort(cm,"cm")
+  iCheckloi(loi,"loi")
 
-  #needed to account for rounding issues of sequences
+  # ---- Needed to account for rounding issues of sequences
   minLL <- round(minLL,8)
   cf <- round(cf,8)
   cm <- round(cm,8)
 
   # ---- Compute Yield et al. for varying minLL, cf, and cm
-  # Setup data.frame of input values ... minLL, cf, and cm sequences were
-  #   created in checks above
+  # Setup data.frame of input values from minLL, cf, and cm vectors
   res <- expand.grid(minLL=minLL,cf=cf,cm=cm)
 
   # Send each row to yprBH_func() ...
   #   i.e., calculate yield et al for all minLL, cf, and cm combos
-  res <- purrr::pmap_df(res,yprBH_func,matchRicker=matchRicker,loi=loi,lhparms=lhparms)
-
+  res <- purrr::pmap_df(res,yprBH_func,lhparms=lhparms,loi=loi,matchRicker=matchRicker)
 
   # ---- Return data.frame with both output values and input parameters
   res

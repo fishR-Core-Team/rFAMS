@@ -10,12 +10,10 @@
 #' @param LWalpha A single numeric that represents the point estimate of alpha from the length-weight regression on the log10 scale OR an `lm` object created from fitting the model to log10-transformed weight-length data.
 #' @param LWbeta A single numeric that represents the point estimate of beta from the length-weight regression on the log10 scale.
 #' @param restype A character that indicates the type of output (list or vector) returned by the function.
+#' @param x An object created by `makeLH`.
+#' @param \dots Optional arguments to be passed to `print`.
 #'
 #' @details Use of this function for putting life history parameters into a list or vector is recommended as (i) values for `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta` can be extracted from objects from appropriate model fitting and (ii) checks for impossible or improbable values for each parameter are performed; i.e.,
-#'
-#' @seealso \href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{this demonstration page} for more plotting examples
-#'
-#' @author Derek Ogle
 #'
 #' ```R
 #' # Best practice for entering life history parameter values
@@ -31,12 +29,16 @@
 #'
 #' @returns A named list or vector (depending on `restype`) that contains the given (or extracted) life history parameters values that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{yprBH_SlotLL}}).
 #'
+#' @author Derek Ogle
+#'
+#' @seealso This \href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{demonstration page} for further examples.
+#'
 #' @examples
 #' library(FSA)
 #' library(FSAdata)
 #' library(dplyr)
 #'
-#' # ----- Simple examples with explicity arguments for each -------------------
+#' # ----- Simple examples with explicit arguments for each --------------------
 #' makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1)
 #' makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1,
 #'        restype="vector")
@@ -51,9 +53,9 @@
 #' # create log10 values of weight and length
 #' data(WalleyeErie2,package="FSAdata")
 #' tmp <- WalleyeErie2 |>
-#'   filter(loc==2,year==2010) |>
-#'   mutate(logW=log10(w),
-#'          logL=log10(tl))
+#'   dplyr::filter(loc==2,year==2010) |>
+#'   dplyr::mutate(logW=log10(w),
+#'                 logL=log10(tl))
 #'
 #' # Generate LVB results
 #' vb1 <- FSA::makeGrowthFun(type="von Bertalanffy")
@@ -72,49 +74,59 @@
 
 makeLH <- function(N0,tmax,Linf,K,t0,LWalpha,LWbeta,restype=c("list","vector")) {
   restype <- match.arg(restype)
-  iCheckN0(N0)
-  iCheckMaxAge(tmax)
+  iCheckN0(N0,"N0")
+  iCheckMaxAge(tmax,"tmax")
 
   ## if nls object in Linf then extract coefficients and put in separate values
   if (!missing(Linf)) {
-    if (isa(Linf,"lm")) STOP("'Linf' given object from 'lm()', did you mean\n",
-                             "  to give it an 'nls' object?")
+    if (isa(Linf,"lm")) STOP("'Linf' given object from 'lm()', did you mean",
+                             " to give it an 'nls' object?")
     if (isa(Linf,"nls")) {
       tmp <- stats::coef(Linf)
       if (length(names(tmp))!=3)
-        STOP("Number of paramaters in 'nls' object is not 3; 'nls' object must\n",
-             "  be from fitting a von Bertalanffy model.")
+        STOP("Number of paramaters in 'nls' object is not 3; 'nls' object must",
+             " be from fitting a von Bertalanffy model.")
       if (!all(names(tmp) %in% c("Linf","K","t0")))
-        STOP("Names of parameters in 'nls' object are not 'Linf', 'K', and 't0';\n",
-             "'nls' object must be from fitting a von Bertalanffy model.")
+        STOP("Names of parameters in 'nls' object are not 'Linf', 'K', and 't0';",
+             " 'nls' object must be from fitting a von Bertalanffy model.")
       Linf <- tmp[["Linf"]]
       if (missing(K)) K <- tmp[["K"]]
       if (missing(t0)) t0 <- tmp[["t0"]]
     }
   }
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
+  iCheckLinf(Linf,"Linf")
+  iCheckK(K,"K")
+  iCheckt0(t0,"t0")
 
-  ## if LWalpha is an lm object then extract coeffs and put in separate values
+  ## if LWalpha is an lm object then extract coefs and put in separate values
   if (!missing(LWalpha)) {
-    if (isa(LWalpha,"nls")) STOP("'LWalpha' given object from 'nls()', did you\n",
-                                 "  mean to give it an 'lm' object?")
+    if (isa(LWalpha,"nls")) STOP("'LWalpha' given object from 'nls()', did you",
+                                 " mean to give it an 'lm' object?")
     if (isa(LWalpha,"lm")) {
       tmp <- stats::coef(LWalpha)
       if (length(names(tmp))!=2)
-        STOP("Number of paramaters in 'lm' object is not 2; 'lm' object must\n",
-             "  be from fitting a log10 weight-length linear regression.")
+        STOP("Number of paramaters in 'lm' object is not 2; 'lm' object must",
+             " be from fitting a log10 weight-length linear regression.")
       LWalpha <- tmp[["(Intercept)"]]
       if (missing(LWbeta)) LWbeta <- tmp[[2]]
     }
   }
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
+  iCheckLWa(LWalpha,"LWalpha")
+  iCheckLWb(LWbeta,"LWbeta")
 
-  ## Return vector or list
+  ## Make a vector or list and give the items names
   if (restype=="list") res <- list(N0,tmax,Linf,K,t0,LWalpha,LWbeta)
   else res <- c(N0,tmax,Linf,K,t0,LWalpha,LWbeta)
   names(res) <- c("N0","tmax","Linf","K","t0","LWalpha","LWbeta")
+  ## Add a "MAKELH" class
+  class(res) <- c("MAKELH",class(res))
+  ## Return vector or list
   res
+}
+
+#' @rdname makeLH
+#' @export
+print.MAKELH <- function(x,...) {
+  print(unclass(x),...)
+  return(invisible(x))
 }

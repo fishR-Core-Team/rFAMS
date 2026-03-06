@@ -4,7 +4,6 @@
 #'
 #' @details Details will be filled out later
 #'
-#' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param lowerSL A numeric representing the length of the lower slot limit in mm.
 #' @param upperSL A numeric representing the length of the upper slot limit in mm.
 #' @param cfunder Single value, conditional fishing mortality under the lower slot limit.
@@ -12,6 +11,7 @@
 #' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
 #' @param cm A numeric vector of conditional natural mortality.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
+#' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
@@ -94,9 +94,9 @@
 #' loi <- c(200,250,300,325,350)
 #'
 #' #Estimate yield based on a protected slot limit
-#'  Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
+#'  Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
 #'                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-#'                        lhparms=LH,loi=c(200,250,300,325,350))
+#'                        lhparms=LH,recruitmentTL=200,loi=c(200,250,300,325,350))
 #'
 #'  Res_1
 #'
@@ -125,46 +125,37 @@
 #'   theme(legend.position = "top")+
 #'   guides(color=guide_legend(title="Yield"))
 #'
-#'
 #' @rdname yprBH_SlotLL
 #' @export
-yprBH_SlotLL<-function(recruitmentTL=NULL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
-                       lhparms,loi=NULL,matchRicker=FALSE){
-
+yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
+                       recruitmentTL=NULL,loi=NULL,matchRicker=FALSE){
   # ---- Check inputs
-  iCheckSlotType(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove)
-  iCheckrecruitTL(recruitmentTL)
-  iChecklowerSLTL(lowerSL)
-  iCheckupperSLTL(upperSL)
-  iCheckslotOrder(recruitmentTL, lowerSL, upperSL)
-  iCheckLLinf(recruitmentTL,lhparms$Linf)
-  iCheckLLinf(lowerSL,lhparms$Linf)
-  iCheckLLinf(upperSL,lhparms$Linf)
-  iCheckcfunder(cfunder)
-  iCheckcfin(cfin)
-  iCheckcfabove(cfabove)
-  iCheckcmVect(cm,"cm")
+  iCheckLHparms(lhparms,"lhparms")
+  iCheckCondMort(cm,"cm")
+  iCheckCondMort(cfunder,"cfunder",onlyone=TRUE)
+  iCheckCondMort(cfin,"cfin",onlyone=TRUE)
+  iCheckCondMort(cfabove,"cfabove",onlyone=TRUE)
   iCheckloi(loi)
-  # iCheckcm(cmmin,"minimum")
-  # iCheckcm(cmmax,"maximum")
-  # cm <- iCheckcfminc(cminc,cmmin,cmmax)
+  iCheckSlotTL(lowerSL,lhparms[["Linf"]],"lowerSL")
+  iCheckSlotTL(upperSL,lhparms[["Linf"]],"upperSL")
+  # .... check that slot lengths are in correct order
+  if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
+  iCheckRecruitmentTL(recruitmentTL,lhparms[["Linf"]],lowerSL)
+  iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=FALSE)
 
-  if(is.null(recruitmentTL))
-    recruitmentTL = lowerSL
-
-
-
-  # Setup data.frame of input values (varying cf and cm, the rest constant)
-  res <- expand.grid(recruitmentTL=recruitmentTL,lowerSL=lowerSL,upperSL=upperSL,
+  # Setup data.frame of input values (varying cm, the rest constant)
+  res <- expand.grid(lowerSL=lowerSL,upperSL=upperSL,
                      cfunder=cfunder,cfin=cfin,cfabove=cfabove,
                      cm=cm)
-  # Send each row to ypr_func() ... so calc yield et al for all cf & cm combos
+
+  # Send each row to yprBH_slot_func() ... so calc yield et al for all combos
   # output is by age
-  res <- purrr::pmap_df(res,yprBH_slot_func,matchRicker=matchRicker,loi=loi,lhparms=lhparms)
+  res <- purrr::pmap_df(res,yprBH_slot_func,lhparms=lhparms,
+                        loi=loi,recruitmentTL=recruitmentTL,
+                        matchRicker=matchRicker)
 
   # Return result
   return(res)
-
 }
 
 

@@ -67,10 +67,11 @@ cm <- seq(from = 0.1, to = 0.9, by = 0.1)
 # length of interest vector
 loi <- c(200,250,300,325,350)
 
-Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325, #Set recruitment and slot limit length
-                      cfunder=0.45,cfin=0,cfabove=0.25,        #Set cf under, in, and above slot limit
+Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,          # Set slot limit length
+                      cfunder=0.45,cfin=0,cfabove=0.25, # Set cf under, in, and above slot limit
                       cm=cm,                  # vector of cm
                       lhparms=LH,             # Specifies life history parameters
+                      recruitmentTL=200,      # Set recruitment length
                       loi=loi)                # vector of lengths of interest
 ```
 

@@ -2,7 +2,6 @@
 #'
 #' @description Function to estimate yield using the Beverton-Holt YPR model. This main function accepts only single values for cf, cm, and minlength. Use the wrapper ypr() function for specifying range of cf, cm, and minlength
 #'
-#' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param lowerSL A numeric representing the length of the lower slot limit in mm.
 #' @param upperSL A numeric representing the length of the upper slot limit in mm.
 #' @param cfunder Single value, conditional fishing mortality under the lower slot limit.
@@ -10,6 +9,7 @@
 #' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
 #' @param cm A numeric representing conditional natural mortality
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
+#' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
@@ -80,21 +80,26 @@
 #' # Life history parameters to be used below
 #' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 #'
-#' # Estimate yield with fixed parameters
-#' Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
-#'                        cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
-#'                        lhparms=LH,loi=c(200,250,300,325,350))
-#' Res_1
+#' # Estimate yield with fixed parameters for a PROTECTED slot
+#' pslot1 <- yprBH_slot_func(lowerSL=250,upperSL=325,
+#'                           cfunder=0.25,cfin=0,cfabove=0.15,cm=0.4,lhparms=LH,
+#'                           recruitmentTL=200,loi=c(200,250,300,325,350))
+#' pslot1
 #'
+#' # Estimate yield with fixed parameters for an INVERSE/HARVEST slot
+#' hslot1 <- yprBH_slot_func(lowerSL=250,upperSL=325,
+#'                           cfunder=0,cfin=0.3,cfabove=0,cm=0.4,lhparms=LH,
+#'                           loi=c(200,250,300,325,350))
+#' hslot1
 #'
 #' @rdname yprBH_slot_func
 #' @export
 
-yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
-                            lhparms,loi=NULL,matchRicker=FALSE){
-
-
-  # Extract individual life history values
+yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
+                            recruitmentTL=NULL,loi=NULL,matchRicker=FALSE){
+  # ---- Check inputs
+  iCheckLHparms(lhparms,"lhparms")
+  # .... Extract individual life history values
   N0 <- lhparms[["N0"]]
   tmax <- lhparms[["tmax"]]
   Linf <- lhparms[["Linf"]]
@@ -102,23 +107,23 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   t0 <- lhparms[["t0"]]
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
-
-  # ---- Check inputs
-  iCheckN0(N0)
-  iCheckMaxAge(tmax)
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
+  # .... continue checks
+  iCheckCondMort(cm,"cm",onlyone=TRUE)
+  iCheckCondMort(cfunder,"cfunder",onlyone=TRUE)
+  iCheckCondMort(cfin,"cfin",onlyone=TRUE)
+  iCheckCondMort(cfabove,"cfabove",onlyone=TRUE)
   iCheckloi(loi)
-  iCheckcm(cm)
-  iCheckcfunder(cfunder)
-  iCheckcfin(cfin)
-  iCheckcfabove(cfabove)
-  iCheckrecruitTL(recruitmentTL)
-  iChecklowerSLTL(lowerSL)
-  iCheckupperSLTL(upperSL)
+  iCheckSlotTL(lowerSL,Linf,"lowerSL")
+  iCheckSlotTL(upperSL,Linf,"upperSL")
+  # .... check that slot lengths are in correct order
+  if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
+  iCheckRecruitmentTL(recruitmentTL,Linf,lowerSL)
+  iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=FALSE)
+  # !!!!! For a protected slot (so by here recruitmentTL should be NULL), set
+  #       recruitmentTL to the lowerSL of the slot limit (i.e, when fish would
+  #       first be available for harvest). This is needed for the
+  #       test against Linf below
+  if (is.null(recruitmentTL)) recruitmentTL <- lowerSL
 
   #needed to account for rounding issues of sequences
   cm <- round(cm,8)

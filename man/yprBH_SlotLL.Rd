@@ -5,7 +5,6 @@
 \title{Simulate expected yield using the Beverton-Holt Yield Per Recruit model for a slot limit}
 \usage{
 yprBH_SlotLL(
-  recruitmentTL = NULL,
   lowerSL,
   upperSL,
   cfunder,
@@ -13,13 +12,12 @@ yprBH_SlotLL(
   cfabove,
   cm,
   lhparms,
+  recruitmentTL = NULL,
   loi = NULL,
   matchRicker = FALSE
 )
 }
 \arguments{
-\item{recruitmentTL}{A numeric representing the minimum length limit for recruiting to the fishery in mm.}
-
 \item{lowerSL}{A numeric representing the length of the lower slot limit in mm.}
 
 \item{upperSL}{A numeric representing the length of the upper slot limit in mm.}
@@ -33,6 +31,8 @@ yprBH_SlotLL(
 \item{cm}{A numeric vector of conditional natural mortality.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
+
+\item{recruitmentTL}{A numeric representing the minimum length limit for recruiting to the fishery in mm.}
 
 \item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
 
@@ -118,9 +118,9 @@ cm <- seq(from = 0.1, to = 0.9, by = 0.1)
 loi <- c(200,250,300,325,350)
 
 #Estimate yield based on a protected slot limit
- Res_1 <- yprBH_SlotLL(recruitmentTL=200,lowerSL=250,upperSL=325,
+ Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-                       lhparms=LH,loi=c(200,250,300,325,350))
+                       lhparms=LH,recruitmentTL=200,loi=c(200,250,300,325,350))
 
  Res_1
 
@@ -148,7 +148,6 @@ ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   theme_bw() +
   theme(legend.position = "top")+
   guides(color=guide_legend(title="Yield"))
-
 
 }
 \seealso{
