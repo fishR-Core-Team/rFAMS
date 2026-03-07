@@ -18,7 +18,8 @@ yprBH_SlotLL(
   lhparms,
   recruitmentTL = NULL,
   loi = NULL,
-  matchRicker = FALSE
+  matchRicker = FALSE,
+  label = NULL
 )
 ```
 
@@ -73,6 +74,10 @@ yprBH_SlotLL(
   in Ricker (1975). Defaults to `TRUE`. The only reason to changed to
   `FALSE` is to try to match output from FAMS. See the [FAMS vs Ricker
   article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html).
+
+- label:
+
+  An optional string to label the type of slot limit being simulated
 
 ## Value
 
@@ -224,6 +229,9 @@ A data.frame with the following calculated values:
 
 - tmax An integer representing maximum age in the population in years
 
+- label An optional string to label the type of slot limit being
+  simulated
+
 ## Details
 
 Details will be filled out later
@@ -260,7 +268,8 @@ loi <- c(200,250,300,325,350)
 #Estimate yield based on a protected slot limit
  Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-                       lhparms=LH,recruitmentTL=200,loi=c(200,250,300,325,350))
+                       lhparms=LH,recruitmentTL=200,
+                       loi=c(200,250,300,325,350),label="250-325")
 
  Res_1
 #>    yieldTotal yieldUnder yieldIn   yieldAbove nharvTotal ndieTotal
@@ -333,16 +342,16 @@ loi <- c(200,250,300,325,350)
 #> 7 1.3664917  0.225 0.3  0.255    0.25    0   0.15           200     250     325
 #> 8 1.7719568  0.150 0.2  0.170    0.25    0   0.15           200     250     325
 #> 9 2.4651040  0.075 0.1  0.085    0.25    0   0.15           200     250     325
-#>    N0 Linf   K   t0 LWalpha LWbeta tmax
-#> 1 100  592 0.2 -0.3  -5.528  3.273   15
-#> 2 100  592 0.2 -0.3  -5.528  3.273   15
-#> 3 100  592 0.2 -0.3  -5.528  3.273   15
-#> 4 100  592 0.2 -0.3  -5.528  3.273   15
-#> 5 100  592 0.2 -0.3  -5.528  3.273   15
-#> 6 100  592 0.2 -0.3  -5.528  3.273   15
-#> 7 100  592 0.2 -0.3  -5.528  3.273   15
-#> 8 100  592 0.2 -0.3  -5.528  3.273   15
-#> 9 100  592 0.2 -0.3  -5.528  3.273   15
+#>    N0 Linf   K   t0 LWalpha LWbeta tmax   label
+#> 1 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 2 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 3 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 4 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 5 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 6 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 7 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 8 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 9 100  592 0.2 -0.3  -5.528  3.273   15 250-325
 
 # Plot results
 # Total Yield vs Conditional Natural Mortality (cm)

@@ -66,7 +66,8 @@
 <span>  <span class="va">lhparms</span>,</span>
 <span>  recruitmentTL <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  loi <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  matchRicker <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  matchRicker <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  label <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -112,6 +113,10 @@
 
 <dt id="arg-matchricker">matchRicker<a class="anchor" aria-label="anchor" href="#arg-matchricker"></a></dt>
 <dd><p>A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to <code>TRUE</code>. The only reason to changed to <code>FALSE</code> is to try to match output from FAMS. See the <a href="https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html">FAMS vs Ricker article</a>.</p></dd>
+
+
+<dt id="arg-label">label<a class="anchor" aria-label="anchor" href="#arg-label"></a></dt>
+<dd><p>An optional string to label the type of slot limit being simulated</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -171,6 +176,7 @@
 <li><p>LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.</p></li>
 <li><p>LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.</p></li>
 <li><p>tmax An integer representing maximum age in the population in years</p></li>
+<li><p>label An optional string to label the type of slot limit being simulated</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -203,7 +209,8 @@
 <span class="r-in"><span><span class="co">#Estimate yield based on a protected slot limit</span></span></span>
 <span class="r-in"><span> <span class="va">Res_1</span> <span class="op">&lt;-</span> <span class="fu">yprBH_SlotLL</span><span class="op">(</span>lowerSL<span class="op">=</span><span class="fl">250</span>,upperSL<span class="op">=</span><span class="fl">325</span>,</span></span>
 <span class="r-in"><span>                       cfunder<span class="op">=</span><span class="fl">0.25</span>,cfin<span class="op">=</span><span class="fl">0.0</span>,cfabove<span class="op">=</span><span class="fl">0.15</span>,cm<span class="op">=</span><span class="va">cm</span>,</span></span>
-<span class="r-in"><span>                       lhparms<span class="op">=</span><span class="va">LH</span>,recruitmentTL<span class="op">=</span><span class="fl">200</span>,loi<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">250</span>,<span class="fl">300</span>,<span class="fl">325</span>,<span class="fl">350</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                       lhparms<span class="op">=</span><span class="va">LH</span>,recruitmentTL<span class="op">=</span><span class="fl">200</span>,</span></span>
+<span class="r-in"><span>                       loi<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">250</span>,<span class="fl">300</span>,<span class="fl">325</span>,<span class="fl">350</span><span class="op">)</span>,label<span class="op">=</span><span class="st">"250-325"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="va">Res_1</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    yieldTotal yieldUnder yieldIn   yieldAbove nharvTotal ndieTotal</span>
@@ -276,16 +283,16 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7 1.3664917  0.225 0.3  0.255    0.25    0   0.15           200     250     325</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8 1.7719568  0.150 0.2  0.170    0.25    0   0.15           200     250     325</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9 2.4651040  0.075 0.1  0.085    0.25    0   0.15           200     250     325</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    N0 Linf   K   t0 LWalpha LWbeta tmax</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 100  592 0.2 -0.3  -5.528  3.273   15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 100  592 0.2 -0.3  -5.528  3.273   15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 100  592 0.2 -0.3  -5.528  3.273   15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 100  592 0.2 -0.3  -5.528  3.273   15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 100  592 0.2 -0.3  -5.528  3.273   15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 100  592 0.2 -0.3  -5.528  3.273   15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 100  592 0.2 -0.3  -5.528  3.273   15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8 100  592 0.2 -0.3  -5.528  3.273   15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9 100  592 0.2 -0.3  -5.528  3.273   15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    N0 Linf   K   t0 LWalpha LWbeta tmax   label</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 100  592 0.2 -0.3  -5.528  3.273   15 250-325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 100  592 0.2 -0.3  -5.528  3.273   15 250-325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 100  592 0.2 -0.3  -5.528  3.273   15 250-325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 100  592 0.2 -0.3  -5.528  3.273   15 250-325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 100  592 0.2 -0.3  -5.528  3.273   15 250-325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 100  592 0.2 -0.3  -5.528  3.273   15 250-325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7 100  592 0.2 -0.3  -5.528  3.273   15 250-325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8 100  592 0.2 -0.3  -5.528  3.273   15 250-325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9 100  592 0.2 -0.3  -5.528  3.273   15 250-325</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot results</span></span></span>
 <span class="r-in"><span><span class="co"># Total Yield vs Conditional Natural Mortality (cm)</span></span></span>

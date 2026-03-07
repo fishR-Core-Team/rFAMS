@@ -40,7 +40,7 @@ genRecruits(
 - nR:
 
   A single numeric that sets the fixed number of recruitment. Used when
-  `method="fixed"`.
+  `method="fixed"` or `method="StrYC_Nth"`.
 
 - minR:
 
@@ -55,7 +55,7 @@ genRecruits(
 - meanR:
 
   A single numeric that sets the mean number of recruits. Used when
-  `method="normal"`, `method="StrYC_Nth"`, or `method="StrYC_randInt"`.
+  `method="normal"` or `method="StrYC_randInt"`.
 
 - sdR:
 
@@ -91,34 +91,30 @@ Jason C. Doll, <jason.doll@fmarion.edu>
 ## Examples
 
 ``` r
-# Genearte recruits based on a fixed number
-genRecruits("fixed",nR=50)
-#>  [1] 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50
-#> [26] 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50
+# Genearte recruits for 20 years based on a fixed number
+genRecruits("fixed",simyears=20,nR=50)
+#>  [1] 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50
 
-# Generate recruits from a uniform distribution bound by 25 and 75
-genRecruits("uniform",minR=25,maxR=75)
-#>  [1] 51 67 60 69 26 69 75 50 43 64 54 57 68 53 38 71 68 37 45 63 31 35 33 58 68
-#> [26] 71 53 54 59 37 27 70 29 75 56 34 70 27 55 37 70 66 60 36 61 36 48 42 53 38
+# Generate recruits for 20 years from a uniform distribution bound
+# by 25 and 75
+genRecruits("uniform",simyears=20,minR=25,maxR=75)
+#>  [1] 51 67 60 69 26 69 75 50 43 64 54 57 68 53 38 71 68 37 45 63
 
-# Generate recruits based on a normal distribution with a mean of 50,
-# standard deviation of 10, and trucated to be between 25 and 75
-genRecruits("normal",minR=25,maxR=75,meanR=50,sdR=10)
-#>  [1] 49 69 63 57 56 45 61 25 48 54 46 54 61 60 50 55 67 46 59 63 47 46 42 39 42
-#> [26] 32 43 44 45 52 60 48 36 53 46 56 71 54 33 52 61 70 54 64 54 51 50 56 47 45
+# Generate recruits for 20 years based on a normal distribution with a mean
+# of 50, standard deviation of 10, and trucated to be between 25 and 75
+genRecruits("normal",simyears=20,minR=25,maxR=75,meanR=50,sdR=10)
+#>  [1] 38 40 61 51 55 33 35 53 63 52 63 55 56 49 52 49 69 63 57 56
 
-# Geneate recruits based on a fixed mean recruit number of 50 and a
-# strong year class every 5 years with recruits 2 times the mean recruits
-genRecruits("StrYC_Nth",meanR=50,sizeStr=2,nStr=5)
+# Geneate recruits for 20 years based on a fixed number of recruits at 50 and
+# a strong year class every 5 years with recruits 2 times the mean recruits
+genRecruits("StrYC_Nth",simyears=20,nR=50,sizeStr=2,nStr=5)
 #>  [1]  50  50  50  50 100  50  50  50  50 100  50  50  50  50 100  50  50  50  50
-#> [20] 100  50  50  50  50 100  50  50  50  50 100  50  50  50  50 100  50  50  50
-#> [39]  50 100  50  50  50  50 100  50  50  50  50 100
+#> [20] 100
 
-# Generate recruits based on a fixed mean recruit number of 50 and a
-# strong year class at random intervals of size 2 times the mean recruits
-# with the random interval averaging every 5 years.
-genRecruits("StrYC_randInt",meanR=50,sizeStr=2,avgFreq=5)
-#>  [1]  50  50  50 100 100  50  50  50  50  50  50  50  50 100  50 100  50  50 100
-#> [20]  50  50  50  50  50  50  50 100  50  50 100 100  50 100  50  50  50  50  50
-#> [39]  50  50 100  50  50  50  50 100  50  50  50  50
+# Generate recruits for 20 years based on a fixed number of recruits at 50
+# and a strong year class at random intervals of size 2 times the mean
+# recruitswith the random interval averaging every 5 years.
+genRecruits("StrYC_randInt",simyears=20,nR=50,sizeStr=2,avgFreq=5)
+#>  [1]  50  50 100  50  50 100  50  50  50  50  50  50  50  50 100  50 100  50  50
+#> [20]  50
 ```

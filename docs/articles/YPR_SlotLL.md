@@ -112,7 +112,8 @@ is a protective slot (set `cfin` = 0) with harvest under and above the
 slot, or an inverse slot (set `cfunder` and `cfabove` = 0) with harvest
 within the slot. In the example below, there is a protective slot and cm
 values range from 0.1 to 0.9 in increments of 0.1. It also monitors
-lengths of 200, 250, 300, and 350mm.
+lengths of 200, 250, 300, and 350mm. FInally, there is an optional
+string to `label` the simulation.
 
 ``` r
 # conditional natural mortality vector
@@ -125,7 +126,8 @@ Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,          # Set slot limit length
                       cm=cm,                  # vector of cm
                       lhparms=LH,             # Specifies life history parameters
                       recruitmentTL=200,      # Set recruitment length
-                      loi=loi)                # vector of lengths of interest
+                      loi=loi,                # vector of lengths of interest
+                      label="250 to 325")     # string to label simulation
 ```
 
 The output object will be a data.frame with the following calculated
@@ -266,13 +268,13 @@ head(Res_1)
 #> 4    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
 #> 5    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
 #> 6    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
-#>   LWbeta tmax
-#> 1  3.273   15
-#> 2  3.273   15
-#> 3  3.273   15
-#> 4  3.273   15
-#> 5  3.273   15
-#> 6  3.273   15
+#>   LWbeta tmax      label
+#> 1  3.273   15 250 to 325
+#> 2  3.273   15 250 to 325
+#> 3  3.273   15 250 to 325
+#> 4  3.273   15 250 to 325
+#> 5  3.273   15 250 to 325
+#> 6  3.273   15 250 to 325
 ```
 
 ## Plot results
@@ -351,3 +353,40 @@ ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
 ```
 
 ![](YPR_SlotLL_files/figure-html/Plot%20of%20yield%20across%20all%20sizes-1.png)
+
+## Compare yield across multiple slot limits
+
+The `label` argument can be used to plot and compare results from
+multiple slot limits. The last example simulates yield under two
+additional slot limits and creates a single figure to compare yield
+across the three slot limits.
+
+``` r
+# Simulate yield using settings above with two additional slot limit ranges
+
+Res_2 <- yprBH_SlotLL(lowerSL=325,upperSL=375,          # Set slot limit length
+                      cfunder=0.45,cfin=0,cfabove=0.25, # Set cf under, in, and above slot limit
+                      cm=cm,                  # vector of cm
+                      lhparms=LH,             # Specifies life history parameters
+                      recruitmentTL=200,      # Set recruitment length
+                      loi=loi,                # vector of lengths of interest
+                      label="325 to 375")     # string to label simulation
+
+Res_3 <- yprBH_SlotLL(lowerSL=375,upperSL=450,          # Set slot limit length
+                      cfunder=0.45,cfin=0,cfabove=0.25, # Set cf under, in, and above slot limit
+                      cm=cm,                  # vector of cm
+                      lhparms=LH,             # Specifies life history parameters
+                      recruitmentTL=200,      # Set recruitment length
+                      loi=loi,                # vector of lengths of interest
+                      label="375 to 450")     # string to label simulation
+
+Res_all <- rbind(Res_1,Res_2,Res_3)
+
+ggplot(data=Res_all,mapping=aes(x=cm,y=yieldTotal,color=label)) +
+    geom_line()+
+    theme_FAMS() +
+    theme(legend.position = "top")+
+    guides(color=guide_legend(title="Slot limit"))
+```
+
+![](YPR_SlotLL_files/figure-html/Plot%20of%20yield%20across%20three%20slot%20limits-1.png)

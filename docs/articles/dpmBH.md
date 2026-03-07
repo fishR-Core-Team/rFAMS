@@ -114,8 +114,7 @@ information about PSD categories.
 
 ``` r
 #run dynamic pool simulations
-out1<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = LH,
-           matchRicker=FALSE,species="Striped Bass",group="landlocked")
+out1<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = LH, matchRicker=FALSE,species="Striped Bass",group="landlocked")
 ```
 
 View the first few lines of each summary
