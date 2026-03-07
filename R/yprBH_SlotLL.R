@@ -14,6 +14,7 @@
 #' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
 #' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
+#' @param label An optional string to label the type of slot limit being simulated
 #'
 #' @return A data.frame with the following calculated values:
 #' \itemize{
@@ -72,6 +73,7 @@
 #' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 #' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
 #' \item tmax An integer representing maximum age in the population in years
+#' \item label An optional string to label the type of slot limit being simulated
 #' }
 #'
 #'@seealso \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_slotLimit.html}{this demonstration page} for more plotting examples
@@ -96,7 +98,8 @@
 #' #Estimate yield based on a protected slot limit
 #'  Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
 #'                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-#'                        lhparms=LH,recruitmentTL=200,loi=c(200,250,300,325,350))
+#'                        lhparms=LH,recruitmentTL=200,
+#'                        loi=c(200,250,300,325,350),label="250-325")
 #'
 #'  Res_1
 #'
@@ -128,7 +131,7 @@
 #' @rdname yprBH_SlotLL
 #' @export
 yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
-                       recruitmentTL=NULL,loi=NULL,matchRicker=FALSE){
+                       recruitmentTL=NULL,loi=NULL,matchRicker=FALSE,label=NULL){
   # ---- Check inputs
   iCheckLHparms(lhparms,"lhparms")
   iCheckCondMort(cm,"cm")
@@ -138,6 +141,8 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   iCheckloi(loi)
   iCheckSlotTL(lowerSL,lhparms[["Linf"]],"lowerSL")
   iCheckSlotTL(upperSL,lhparms[["Linf"]],"upperSL")
+  if (!is.null(label)) iChecklabel(label)
+
   # .... check that slot lengths are in correct order
   if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
   iCheckRecruitmentTL(recruitmentTL,lhparms[["Linf"]],lowerSL)
@@ -153,6 +158,9 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   res <- purrr::pmap_df(res,yprBH_slot_func,lhparms=lhparms,
                         loi=loi,recruitmentTL=recruitmentTL,
                         matchRicker=matchRicker)
+
+  # Optionally create a column with label
+  if (!is.null(label)) res$label <- label
 
   # Return result
   return(res)

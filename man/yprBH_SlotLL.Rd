@@ -14,7 +14,8 @@ yprBH_SlotLL(
   lhparms,
   recruitmentTL = NULL,
   loi = NULL,
-  matchRicker = FALSE
+  matchRicker = FALSE,
+  label = NULL
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ yprBH_SlotLL(
 \item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
+
+\item{label}{An optional string to label the type of slot limit being simulated}
 }
 \value{
 A data.frame with the following calculated values:
@@ -96,6 +99,7 @@ A data.frame with the following calculated values:
 \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
 \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
 \item tmax An integer representing maximum age in the population in years
+\item label An optional string to label the type of slot limit being simulated
 }
 }
 \description{
@@ -120,7 +124,8 @@ loi <- c(200,250,300,325,350)
 #Estimate yield based on a protected slot limit
  Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-                       lhparms=LH,recruitmentTL=200,loi=c(200,250,300,325,350))
+                       lhparms=LH,recruitmentTL=200,
+                       loi=c(200,250,300,325,350),label="250-325")
 
  Res_1
 
