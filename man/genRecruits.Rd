@@ -22,13 +22,13 @@ genRecruits(
 
 \item{simyears}{A single numeric that sets the number of years to simulate recruitment}
 
-\item{nR}{A single numeric that sets the fixed number of recruitment. Used when \code{method="fixed"}.}
+\item{nR}{A single numeric that sets the fixed number of recruitment. Used when \code{method="fixed"} or \code{method="StrYC_Nth"}.}
 
 \item{minR}{A single numeric that sets the minimum number of recruits during simulations. Used when \code{method="uniform"} or \code{method="normal"}.}
 
 \item{maxR}{A single numeric that sets the maximum number of recruits during simulations. Used when \code{method="uniform"} or \code{method="normal"}.}
 
-\item{meanR}{A single numeric that sets the mean number of recruits. Used when \code{method="normal"}, \code{method="StrYC_Nth"}, or \code{method="StrYC_randInt"}.}
+\item{meanR}{A single numeric that sets the mean number of recruits. Used when \code{method="normal"} or \code{method="StrYC_randInt"}.}
 
 \item{sdR}{A single numeric that sets the standard deviation of number of recruits. Used when \code{method="normal"}.}
 
@@ -45,24 +45,25 @@ A vector that contains the number of recruits for each simulation that can be us
 This function is used to generate number of recruits across multiple years using different random functions.
 }
 \examples{
-# Genearte recruits based on a fixed number
-genRecruits("fixed",nR=50)
+# Genearte recruits for 20 years based on a fixed number
+genRecruits("fixed",simyears=20,nR=50)
 
-# Generate recruits from a uniform distribution bound by 25 and 75
-genRecruits("uniform",minR=25,maxR=75)
+# Generate recruits for 20 years from a uniform distribution bound
+# by 25 and 75
+genRecruits("uniform",simyears=20,minR=25,maxR=75)
 
-# Generate recruits based on a normal distribution with a mean of 50,
-# standard deviation of 10, and trucated to be between 25 and 75
-genRecruits("normal",minR=25,maxR=75,meanR=50,sdR=10)
+# Generate recruits for 20 years based on a normal distribution with a mean
+# of 50, standard deviation of 10, and trucated to be between 25 and 75
+genRecruits("normal",simyears=20,minR=25,maxR=75,meanR=50,sdR=10)
 
-# Geneate recruits based on a fixed mean recruit number of 50 and a
-# strong year class every 5 years with recruits 2 times the mean recruits
-genRecruits("StrYC_Nth",meanR=50,sizeStr=2,nStr=5)
+# Geneate recruits for 20 years based on a fixed number of recruits at 50 and
+# a strong year class every 5 years with recruits 2 times the mean recruits
+genRecruits("StrYC_Nth",simyears=20,nR=50,sizeStr=2,nStr=5)
 
-# Generate recruits based on a fixed mean recruit number of 50 and a
-# strong year class at random intervals of size 2 times the mean recruits
-# with the random interval averaging every 5 years.
-genRecruits("StrYC_randInt",meanR=50,sizeStr=2,avgFreq=5)
+# Generate recruits for 20 years based on a fixed number of recruits at 50
+# and a strong year class at random intervals of size 2 times the mean
+# recruitswith the random interval averaging every 5 years.
+genRecruits("StrYC_randInt",simyears=20,nR=50,sizeStr=2,avgFreq=5)
 
 }
 \author{
