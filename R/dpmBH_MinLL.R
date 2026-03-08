@@ -3,18 +3,14 @@
 #' @description Simulate yield under minimum length regulations using the Dynamic Pool (DPM) model with (possibly) multiple values for conditional fishing mortality (`cf`) and conditional natural mortality (`cm`).
 #'
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
-#' @param cf A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age (i.e., `tmax` in `lhparms`).
-#' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age (i.e., `tmax` in `lhparms`).
-#' @param rec A numeric vector with length `simyears` that specifies the number of recruits each year. This vector can be generated using the \code{\link{genRecruits}}.
+#' @param cf A matrix of conditional fishing mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., `tmax` in `lhparms`). All values must be between 0 and 1 (inclusive).
+#' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., `tmax` in `lhparms`). All values must be between 0 and 1 (inclusive).
+#' @param rec A numeric vector with length `simyears` that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
-#' @param simyears A single numeric for the number of years to simulate.
+#' @param simyears A single numeric for the number of years to simulate. Value must be a whole number greater than 1.
 #' @param species A single character to specify the species used in the simulation. This will define the length for `stock`, `quality`, `preferred`, `memorable`, and `trophy` lengths from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.
 #' @param group A single character to specify the sub-group name for `species` which may be required when defining the `stock`, `quality`, `preferred`, `memorable`, and `trophy` length categories from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to `FALSE`. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
-#'
-#' @details Details will be filled out later.
-#'
-#' Note that the main calculations are in the internal `dpmBH_func` (use `rFAMS:::dpmBH_func` to see that source code).
 #'
 #' @return  A list with two data.frame object. The first list item named `sumbyAge` contains a data.frame with the following calculated values in a summary by age:
 #'
@@ -65,11 +61,15 @@
 #'
 #' PSD-X are calculated based on the number of fish in each category (`stock`, `quality`, `preferred`, `memorable`, and `trophy`) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish.
 #'
-#' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
+#' @details Details will be filled out later.
+#'
+#' Note that the main calculations are in the internal `dpmBH_func` (use `rFAMS:::dpmBH_func` to see that source code).
 #'
 #' @seealso \code{\link{yprBH_MinLL}} for estimating yield with a yield-per-recruit model using a minimum length limit and \code{\link{yprBH_SlotLL}} for estimating yield with the yield-per-recruit model and a slot limit.
 #'
 #' See \href{https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html}{this demonstration page} for more examples of this function.
+#'
+#' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #' @examples
 #' #load required library

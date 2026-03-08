@@ -2,19 +2,15 @@
 #'
 #' @description Simulate yield under slot length regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with (possibly) multiple values for conditional natural mortality (`cm`) and chosen values for the lower and upper lengths of the slot (i.e,. `lowerSL` and `upperSL`); conditional fishing mortality under (`cfunder`), in (`cfin`), and above (`cfabove`) the slot; and length when fish recruit to the fishery (`recruitmentTL`).
 #'
-#' @details Details will be filled out later.
-#'
-#' Note that the main calculations are in the internal `yprBH_slot_func` (use `rFAMS:::yprBH_slot_func` to see that source code).
-#'
-#' @param lowerSL A single numeric representing the length (mm) of the lower slot limit in mm.
-#' @param upperSL A single numeric representing the length (mm) of the upper slot limit in mm.
-#' @param cfunder A single numeric representing conditional fishing mortality under the lower slot limit length.
-#' @param cfin A single numeric representing conditional fishing mortality between the lower and upper slot limit lengths (i.e., "in the slot").
-#' @param cfabove A single numeric representing conditional fishing mortality above the upper slot limit length.
-#' @param cm A numeric vector of conditional natural mortality values.
+#' @param lowerSL A single numeric representing the length of the lower slot limit in mm. See details. Must be less than `upperSL`.
+#' @param upperSL A single numeric representing the length of the upper slot limit in mm. See details. Must be less than `Linf` in `lhparms`.
+#' @param cfunder A single numeric representing conditional fishing mortality under the lower slot limit length. Must be between 0 and 1 (inclusive).
+#' @param cfin A single numeric representing conditional fishing mortality between the lower and upper slot limit lengths (i.e., "in the slot"). Must be between 0 and 1 (inclusive).
+#' @param cfabove A single numeric representing conditional fishing mortality above the upper slot limit length. Must be between 0 and 1 (inclusive).
+#' @param cm A numeric vector of conditional natural mortality values. All values must be between 0 and 1 (inclusive).
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
-#' @param recruitmentTL A single numeric that represents the minimum length (mm) for recruiting to the fishery.
-#' @param loi A numeric vector of lengths (mm) of interest. Used to determine number of fish that reach these lengths.
+#' @param recruitmentTL A single numeric that represents the minimum length (in mm) for recruiting to the fishery. Cannot be greater than `lowerSL`.
+#' @param loi A numeric vector of lengths (in mm) of interest. Used to determine number of fish that reach these lengths. All must be less than `Linf` in `lhparms`.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #' @param label An optional string to label the type of slot limit being simulated.
 #'
@@ -66,11 +62,15 @@
 #'
 #' For convenience the data.frame also contains the model input values (`lowerSL`, `upperSL`, `cfUnder`, `cfIn`, `cfOver`, `cm` from input vectors; `N0`; `Linf`; `K`; `t0`; `LWalpha`; `LWbeta`; and `tmax` from `lhparms`) and, optionally, the string provided in `label`.
 #'
-#' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
+#' @details Details will be filled out later.
+#'
+#' Note that the main calculations are in the internal `yprBH_slot_func` (use `rFAMS:::yprBH_slot_func` to see that source code).
 #'
 #' @seealso \code{\link{yprBH_MinLL}} for estimating yield with the yield-per-recruit model using a minimum length limits, or \code{\link{dpmBH_MinLL}} for estimating yield with a dynamic pool model using a minimum length limit.
 #'
 #' See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_SlotLL.html}{this demonstration page} for more examples of this function.
+#'
+#' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #' @examples
 #' #Load other required packages for organizing output and plotting
@@ -82,16 +82,14 @@
 #' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 #' # conditional natural mortality vector
 #' cm <- seq(from = 0.1, to = 0.9, by = 0.1)
-#' # length of interest vector
-#' loi <- c(200,250,300,325,350)
 #'
-#' #Estimate yield based on a protected slot limit
-#'  Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
-#'                        cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-#'                        lhparms=LH,recruitmentTL=200,
-#'                        loi=c(200,250,300,325,350),label="250-325")
+#' # Estimate yield based on a protected slot limit
+#' Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
+#'                       cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
+#'                       lhparms=LH,recruitmentTL=200,
+#'                       loi=c(200,250,300,325,350),label="250-325")
 #'
-#'  Res_1
+#' Res_1
 #'
 #' # Plot results
 #' # Total Yield vs Conditional Natural Mortality (cm)
@@ -131,12 +129,11 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   iCheckloi(loi)
   iCheckSlotTL(lowerSL,lhparms[["Linf"]],"lowerSL")
   iCheckSlotTL(upperSL,lhparms[["Linf"]],"upperSL")
-  if (!is.null(label)) iChecklabel(label)
-
   # .... check that slot lengths are in correct order
   if (lowerSL>=upperSL) STOP("'lowerSL' must be less than 'upperSL'.")
   iCheckRecruitmentTL(recruitmentTL,lhparms[["Linf"]],lowerSL)
   iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=FALSE)
+  iChecklabel(label)
 
   # Setup data.frame of input values (varying cm, the rest constant)
   res <- expand.grid(lowerSL=lowerSL,upperSL=upperSL,

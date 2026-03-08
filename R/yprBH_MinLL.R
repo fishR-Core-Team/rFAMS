@@ -2,11 +2,11 @@
 #'
 #' @description Simulate yield under minimum length regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with (possibly) multiple values for minimum length limits for harvest (`minLL`), conditional fishing mortality (`cf`), and conditional natural mortality (`cm`).
 #'
-#' @param minLL A numeric vector of minimum length limits.
-#' @param cf A numeric vector of conditional fishing mortality.
-#' @param cm A numeric vector of conditional natural mortality.
+#' @param minLL A numeric vector of minimum length limits (in mm). All values must be less than `Linf` in `lhparms`.
+#' @param cf A numeric vector of conditional fishing mortality. All values must be between 0 and 1 (inclusive).
+#' @param cm A numeric vector of conditional natural mortality. All values must be between 0 and 1 (inclusive).
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
-#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
+#' @param loi A numeric vector of lengths (in mm) of interest. Used to determine number of fish that reach these lengths. All must be less than `Linf` in `lhparms`.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{FALSE}. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
 #' @details Details will be filled out later.
