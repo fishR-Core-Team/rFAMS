@@ -561,22 +561,22 @@ test_that("yprBH_SlotLL() output",{
 #
 # tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
 # dt <- format(Sys.Date(),format="%d_%b_%Y")
-# saveRDS(slotLL1p,paste0(tmpdir,"slotLL1p_",dt,".rds"))
-# saveRDS(slotLL2p,paste0(tmpdir,"slotLL2p_",dt,".rds"))
-# saveRDS(slotLL1h,paste0(tmpdir,"slotLL1h_",dt,".rds"))
-# saveRDS(slotLL2h,paste0(tmpdir,"slotLL2h_",dt,".rds"))
+# saveRDS(slotLL1p,paste0(tmpdir,"ypr_slotLL1p_",dt,".rds"))
+# saveRDS(slotLL2p,paste0(tmpdir,"ypr_slotLL2p_",dt,".rds"))
+# saveRDS(slotLL1h,paste0(tmpdir,"ypr_slotLL1h_",dt,".rds"))
+# saveRDS(slotLL2h,paste0(tmpdir,"ypr_slotLL2h_",dt,".rds"))
 
 test_that("yprBH_SlotLL() results",{
   # get list of files in datasnaps folder
   tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
   tmpfns <- list.files(tmpdir)
   # Load snapshots of "old" (i.e., last stable) outputs
-  slotLL1p_old <- readRDS(paste0(tmpdir,tmpfns[grepl("slotLL1p",tmpfns)]))
-  slotLL2p_old <- readRDS(paste0(tmpdir,tmpfns[grepl("slotLL2p",tmpfns)]))
-  slotLL1h_old <- readRDS(paste0(tmpdir,tmpfns[grepl("slotLL1h",tmpfns)]))
-  slotLL2h_old <- readRDS(paste0(tmpdir,tmpfns[grepl("slotLL2h",tmpfns)]))
+  slotLL1p_old <- readRDS(paste0(tmpdir,tmpfns[grepl("ypr_slotLL1p",tmpfns)]))
+  slotLL2p_old <- readRDS(paste0(tmpdir,tmpfns[grepl("ypr_slotLL2p",tmpfns)]))
+  slotLL1h_old <- readRDS(paste0(tmpdir,tmpfns[grepl("ypr_slotLL1h",tmpfns)]))
+  slotLL2h_old <- readRDS(paste0(tmpdir,tmpfns[grepl("ypr_slotLL2h",tmpfns)]))
 
-  # Compare new to "old" data.frames
+  # Compare new to "old" data.frames ... must have run "Get Results" code above
   expect_equal(slotLL1p,slotLL1p_old)
   expect_equal(slotLL2p,slotLL2p_old)
   expect_equal(slotLL1h,slotLL1h_old)
