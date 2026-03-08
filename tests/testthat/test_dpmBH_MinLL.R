@@ -10,10 +10,21 @@ test_that("dpmBH_MinLL() messages",{
   cf <- matrix(rep(c(rep(0,1),rep(0.33,(lhparms$tmax))),simyears),
                nrow=simyears,byrow=TRUE)
 
-  # ----- test for missing arguments
+  cm2 <- cm
+  cf2 <- cf
+  rownames(cm2) <- rownames(cf2) <- paste0("year_",1:simyears)
+  colnames(cm2) <- colnames(cf2) <- paste0("age_",0:lhparms$tmax)
+
+  # ----- no errors
   dpmBH_MinLL(simyears=simyears,minLL=minLL,cf=cf,cm=cm,rec=rec,
               lhparms=lhparms,species="Striped Bass",group="landlocked") |>
-  expect_no_error()
+    expect_no_error()
+  # ..... confirming no errors even when cm/cf matrices are named
+  dpmBH_MinLL(simyears=simyears,minLL=minLL,cf=cf2,cm=cm2,rec=rec,
+              lhparms=lhparms,species="Striped Bass",group="landlocked") |>
+    expect_no_error()
+
+  # ----- test for missing arguments
 
   # ----- test for bad values
   # ..... in minLL
