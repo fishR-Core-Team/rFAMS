@@ -19,15 +19,15 @@ dpmBH_MinLL(
 \arguments{
 \item{minLL}{A single numeric representing the minimum length limit for harvest in mm.}
 
-\item{cf}{A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age (i.e., \code{tmax} in \code{lhparms}).}
+\item{cf}{A matrix of conditional fishing mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., \code{tmax} in \code{lhparms}). All values must be between 0 and 1 (inclusive).}
 
-\item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age (i.e., \code{tmax} in \code{lhparms}).}
+\item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., \code{tmax} in \code{lhparms}). All values must be between 0 and 1 (inclusive).}
 
-\item{rec}{A numeric vector with length \code{simyears} that specifies the number of recruits each year. This vector can be generated using the \code{\link{genRecruits}}.}
+\item{rec}{A numeric vector with length \code{simyears} that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
-\item{simyears}{A single numeric for the number of years to simulate.}
+\item{simyears}{A single numeric for the number of years to simulate. Value must be a whole number greater than 1.}
 
 \item{species}{A single character to specify the species used in the simulation. This will define the length for \code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy} lengths from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.}
 

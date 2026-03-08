@@ -19,23 +19,23 @@ yprBH_SlotLL(
 )
 }
 \arguments{
-\item{lowerSL}{A single numeric representing the length (mm) of the lower slot limit in mm.}
+\item{lowerSL}{A single numeric representing the length of the lower slot limit in mm. See details. Must be less than \code{upperSL}.}
 
-\item{upperSL}{A single numeric representing the length (mm) of the upper slot limit in mm.}
+\item{upperSL}{A single numeric representing the length of the upper slot limit in mm. See details. Must be less than \code{Linf} in \code{lhparms}.}
 
-\item{cfunder}{A single numeric representing conditional fishing mortality under the lower slot limit length.}
+\item{cfunder}{A single numeric representing conditional fishing mortality under the lower slot limit length. Must be between 0 and 1 (inclusive).}
 
-\item{cfin}{A single numeric representing conditional fishing mortality between the lower and upper slot limit lengths (i.e., "in the slot").}
+\item{cfin}{A single numeric representing conditional fishing mortality between the lower and upper slot limit lengths (i.e., "in the slot"). Must be between 0 and 1 (inclusive).}
 
-\item{cfabove}{A single numeric representing conditional fishing mortality above the upper slot limit length.}
+\item{cfabove}{A single numeric representing conditional fishing mortality above the upper slot limit length. Must be between 0 and 1 (inclusive).}
 
-\item{cm}{A numeric vector of conditional natural mortality values.}
+\item{cm}{A numeric vector of conditional natural mortality values. All values must be between 0 and 1 (inclusive).}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
-\item{recruitmentTL}{A single numeric that represents the minimum length (mm) for recruiting to the fishery.}
+\item{recruitmentTL}{A single numeric that represents the minimum length (in mm) for recruiting to the fishery. Cannot be greater than \code{lowerSL}.}
 
-\item{loi}{A numeric vector of lengths (mm) of interest. Used to determine number of fish that reach these lengths.}
+\item{loi}{A numeric vector of lengths (in mm) of interest. Used to determine number of fish that reach these lengths. All must be less than \code{Linf} in \code{lhparms}.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 
@@ -108,16 +108,14 @@ library(tidyr)    #for pivot_longer
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 # conditional natural mortality vector
 cm <- seq(from = 0.1, to = 0.9, by = 0.1)
-# length of interest vector
-loi <- c(200,250,300,325,350)
 
-#Estimate yield based on a protected slot limit
- Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
-                       cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
-                       lhparms=LH,recruitmentTL=200,
-                       loi=c(200,250,300,325,350),label="250-325")
+# Estimate yield based on a protected slot limit
+Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
+                      cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
+                      lhparms=LH,recruitmentTL=200,
+                      loi=c(200,250,300,325,350),label="250-325")
 
- Res_1
+Res_1
 
 # Plot results
 # Total Yield vs Conditional Natural Mortality (cm)

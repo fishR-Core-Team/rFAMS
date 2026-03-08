@@ -7,15 +7,15 @@
 yprBH_MinLL(minLL, cf, cm, lhparms, loi = NULL, matchRicker = FALSE)
 }
 \arguments{
-\item{minLL}{A numeric vector of minimum length limits.}
+\item{minLL}{A numeric vector of minimum length limits (in mm). All values must be less than \code{Linf} in \code{lhparms}.}
 
-\item{cf}{A numeric vector of conditional fishing mortality.}
+\item{cf}{A numeric vector of conditional fishing mortality. All values must be between 0 and 1 (inclusive).}
 
-\item{cm}{A numeric vector of conditional natural mortality.}
+\item{cm}{A numeric vector of conditional natural mortality. All values must be between 0 and 1 (inclusive).}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
-\item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
+\item{loi}{A numeric vector of lengths (in mm) of interest. Used to determine number of fish that reach these lengths. All must be less than \code{Linf} in \code{lhparms}.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{FALSE}. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 }
