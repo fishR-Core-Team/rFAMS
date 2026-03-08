@@ -91,9 +91,7 @@ test_that("yprBH_MinLL() messages",{
   LH <- tmp
   LH["LWbeta"] <- 5
   yprBH_MinLL(minLL=300,cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_warning("A weight-length beta coefficient of 5 seems too large") |>
     expect_warning("A weight-length beta coefficient of 5 seems too large")
-  ## !!! May want to address this double warning
 })
 
 
@@ -105,7 +103,7 @@ lois <- c(300,400)
 minll1 <- 355
 cf1 <- 0.45
 cm1 <- 0.25
-minLL1 <- yprBH_func(minLL=minll1,cf=cf1,cm=cm1,lhparms=LH,loi=lois)
+minLL1 <- yprBH_MinLL(minLL=minll1,cf=cf1,cm=cm1,lhparms=LH,loi=lois)
 
 ## ----- multiple simulations ... lhparms as a list with lois
 minll2 <- c(200,300)

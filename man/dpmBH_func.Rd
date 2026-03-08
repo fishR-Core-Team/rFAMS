@@ -2,88 +2,33 @@
 % Please edit documentation in R/dpmBH_func.R
 \name{dpmBH_func}
 \alias{dpmBH_func}
-\title{Simulate yield using the dynamic pool model.}
+\title{Simulate yield under minimum length regulations using the dynamic pool model.}
 \usage{
-dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker = FALSE)
+dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker)
 }
 \arguments{
 \item{minLL}{A single numeric representing the minimum length limit for harvest in mm.}
 
-\item{cf}{A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.}
+\item{cf}{A matrix of conditional fishing mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age (i.e., \code{tmax} in \code{lhparms}).}
 
-\item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age.}
+\item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents age. Ages are age-0 through maximum age (i.e., \code{tmax} in \code{lhparms}).}
 
-\item{rec}{A single numeric representing number of recruits.}
+\item{rec}{A numeric vector with length \code{simyears} that specifies the number of recruits each year. This vector can be generated using the \code{\link{genRecruits}}.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
-\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
+\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{FALSE}. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 }
 \value{
-A data.frame with the following calculated values:
-\itemize{
-\item \code{age} is the age of the year class
-\item \code{length} is the mean length at age calculated using the von Bertalanffy growth model and provided parameters
-\item \code{weight} is the mean weight at age calculated using the log10 length-weight regression using the provided parameters
-\item \code{N_start} is the number of individuals at age at the start of the year.
-\item \code{exploitation} is the exploitation rate.
-\item \code{expect_nat_death} is the expectation of natural death.
-\item \code{cf} is the conditional fishing mortality at age.
-\item \code{cm} is the conditional natural mortality at age
-\item \code{F} is the instantaneous rate of fishing mortality.
-\item \code{M} is the instantaneous rate of natural mortality.
-\item \code{Z} is the instantaneous rate of total mortality.
-\item \code{S} is the (total) annual rate of survival
-\item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
-\item \code{Nt} is the number of fish at time tr (time they become harvestable size).
-\item \code{biomass} is the total biomass at age (g)
-\item \code{N_harvest} is the total number harvested at age
-\item \code{N_die} is the total number that die at age
-\item \code{yield} is the estimated yield (in g).
-}
-
-For convenience the data.frame also contains the model input values (\code{minLL}, \code{N0}, \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{tmax}).
-
-The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are as follows:
-
-\itemize{
-\item \code{minLL>=Linf}: The minimum length limit (minLL) being explored was greater than the given asymptotic mean length (Linf). For the purpose (only) of computing the time at recruitment to the fishery (tr) the Linf was set to minLL+0.1.
-\item \code{tr<t0}: The age at recruitment to the fishery (tr) was less than the hypothetical time when the mean length is zero (t0). The fish can't recruit to the fishery prior to having length 0 so tr was set to t0. This also assures that the time it takes to recruit to the fishery is greater than 0.
-\item \code{Y=Infinite}: The calculated yield (Y) was inifinity, which is impossible and suggests some other propblem. Yield was set to NA.
-\item \code{Y<0}: The calculated yield (Y) was negative, which is impossible. Yield was set to 0.
-\item \code{Nharv<0}: The calculated number of fish harvested (Nharv) was negative, which is not possible. Number harvested was set to 0.
-\item \code{Ndie<0}: The calculated number of fish recruiting to the fishery that died naturally (Ndie) was negative, which is not possible. Number that died was set to 0.
-\item \code{agvglen<minLL}: The average length of harvested fish was less than the given minimum length limit being explored, which is not possible (with only legal harvest). The average length was set to the minimum length limit.
-}
+A one row data.frame with the items described for the first data.frame returned by \code{\link{dpmBH_MinLL}}.
 }
 \description{
-Estimate yield-at-age using the Beverton-Holt Yield-per-Recruit (YPR) model for a single year-class. This main function accepts  a minimum length limit for harvest (\code{minLL}), a vector for conditional fishing mortality (\code{cf}), a vector of conditional natural mortality (\code{cm}), a vector of recruitment abundance (\code{rec}), and life history parameters (\code{lhparams}).
+An INTERNAL function used by \code{\link{dpmBH_MinLL}} to estimate yield under minimum length limit regulations using the Dynamic Pool (DPM) model with a provided minimum length limit for harvest (\code{minLL}), vector for conditional fishing mortality (\code{cf}), vector of conditional natural mortality (\code{cm}), vector of recruitment abundance (\code{rec}). This is the base function for \code{\link{dpmBH_MinLL}}, is NOT exported, and is NOT expected to be used directly by the user.
 }
 \details{
-Details will be filled out later
-}
-\examples{
-lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
-
-# simulate yield from a single year-class
-cm <- rep(0.18,(lhparms$tmax+1))
-cf <- c(rep(0,3), rep(0.33,(lhparms$tmax+1) - 3))
-
-Res_1 <- dpmBH_func(minLL=400,cm=cm,cf=cf,rec=1000,lhparms=lhparms,matchRicker=FALSE)
-
-Res_1
-
-}
-\references{
-Ricker, W.E. 1975. Computation and interpretation of biological statistics of fish populations. Technical Report Bulletin 191, Bulletin of the Fisheries Research Board of Canada. Was (is?) from \url{https://waves-vagues.dfo-mpo.gc.ca/library-bibliotheque/1485.pdf}.
-
-Slipke, J.W., and M.J. Maceina. 2014. Fishery analysis and modeling simulator. v1.64. American Fisheries Society, Bethesda, MD.
-}
-\seealso{
-\code{\link{yprBH_func}} for simulating yield using the dynamic pool model.
-
-See \href{https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html}{this demonstration page} for more plotting examples
+See details in \code{\link{dpmBH_MinLL}}.
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}
 }
+\keyword{internal}

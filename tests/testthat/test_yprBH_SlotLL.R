@@ -191,7 +191,6 @@ test_that("yprBH_SlotLL() messages",{
   LH["LWbeta"] <- 5
   yprBH_SlotLL(lowerSL=250,upperSL=325,cfunder=0.25,cfin=0,cfabove=0.2,cm=0.2,
                lhparms=LH,recruitmentTL=200) |>
-    expect_warning("A weight-length beta coefficient of 5 seems too large") |>
     expect_warning("A weight-length beta coefficient of 5 seems too large")
   ## !!! May want to address this double warning
 })

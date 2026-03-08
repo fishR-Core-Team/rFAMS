@@ -1,84 +1,18 @@
-## ===== Test Message Errors and Warnings ======================================
-test_that("yprBH_func() messages",{
-  suppressWarnings(LH <- makeLH(N0=100,tmax=15,Linf=2100,K=0.50,t0=-0.616,
-                                LWalpha=-5.453,LWbeta=3.10))
-  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_no_error()
-
-  # ----- test for missing arguments
-  yprBH_func(cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_error("Need to specify a minimum length \\(mm\\) limit for harvest")
-  yprBH_func(minLL=355,cm=0.25,lhparms=LH) |>
-    expect_error("Need to specify a conditional fishing mortality in 'cf'")
-  yprBH_func(minLL=355,cf=0.45,lhparms=LH) |>
-    expect_error("Need to specify a conditional natural mortality in 'cm'")
-  yprBH_func(minLL=355,cf=0.45,cm=0.25) |>
-    expect_error("Need to specify a list or vector of life history parameters")
-
-  # ----- test for bad values, more thorough testing is elsewhere;
-  #       e.g., iCheckLinf(), iCheckN0()
-  yprBH_func(minLL=-10,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_error("'minLL' must be >=0")
-  yprBH_func(minLL=35,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_warning("A minimum length limit of harvest of 35 mm seems too small")
-  yprBH_func(minLL=2135,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_error("A minimum length limit of harvest cannot be more than Linf")
-  yprBH_func(minLL=2035,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_warning("A minimum length limit of harvest of 2035 mm seems too large")
-  yprBH_func(minLL=355,cf=-0.45,cm=0.25,lhparms=LH) |>
-    expect_error("'cf' must be >=0")
-  yprBH_func(minLL=355,cf=1.45,cm=0.25,lhparms=LH) |>
-    expect_error("'cf' must be <=1")
-  yprBH_func(minLL=355,cf=0.45,cm=-0.25,lhparms=LH) |>
-    expect_error("'cm' must be >=0")
-  yprBH_func(minLL=355,cf=0.45,cm=1.25,lhparms=LH) |>
-    expect_error("'cm' must be <=1")
-  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=-100) |>
-    expect_error("'loi' must be >=0")
-  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=c(100,-200)) |>
-    expect_error("All 'loi' must be >=0")
-
-  # ----- spot tests for bad values in lhparms, more thorough testing is
-  #       elsewhere; e.g., iCheckLinf(), iCheckN0()
-  tmp <- list(N0=100,tmax=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
-  LH <- tmp
-  LH["N0"] <- -100
-  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_error("'N0' must be >=0")
-  LH <- tmp
-  LH["Linf"] <- "a"
-  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_error("'Linf' must be a number")
-  LH <- list(N0=100,tmax=15,Linf=2000,K=c(0.3,0.5),t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
-  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_error("Only use one value in 'K'")
-  LH <- tmp
-  LH["LWbeta"] <- 5
-  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_warning("A weight-length beta coefficient of 5 seems too large")
-
-  # ----- tests of warnings during calculations
-  LH <- makeLH(N0=100,tmax=15,Linf=1000,K=0.30,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
-  yprBH_func(minLL=1055,cf=0.45,cm=0.25,lhparms=LH) |>
-    expect_error("A minimum length limit of harvest cannot be more than Linf")
-  yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=1055) |>
-    expect_warning("The specified length of interest \\(=1055\\) is greater")
-  ## Need to find values that create the tr<t0 error
-})
-
-
 ## ===== Get Some Results for Use Below ========================================
 ## ----- lhparms as a list with and without lois
 LH <- makeLH(N0=100,tmax=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
-minLL1a <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,loi=c(200,300))
-minLL1b <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH)
-# saveRDS()
+minLL1a <- rFAMS:::yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,
+                              loi=c(200,300),matchRicker=FALSE)
+minLL1b <- rFAMS:::yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH
+                              ,loi=NULL,matchRicker=FALSE)
 
 ## ----- Same, but with lhparms as a vector with and without lois
 LH <- makeLH(N0=100,tmax=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10,
              restype="vector")
-minLL2a <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,loi=c(200,300))
-minLL2b <- yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH)
+minLL2a <- rFAMS:::yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,
+                              loi=c(200,300),matchRicker=FALSE)
+minLL2b <- rFAMS:::yprBH_func(cf=0.45,cm=0.25,minLL=355,lhparms=LH,
+                              loi=NULL,matchRicker=FALSE)
 
 ## expectations
 exp_nms1 <- c("yield","nharvest","ndie","nt","tr","avgwt","avglen","nAt200",
@@ -132,3 +66,73 @@ test_that("yprBH_func() results",{
   expect_equal(round(minLL1a$S,4),ores$S)
   expect_equal(dplyr::select(minLL1a,cf:tmax),dplyr::select(ores,cf:tmax))
 })
+
+
+
+# ## ===== Test Message Errors and Warnings ======================================
+# test_that("yprBH_func() messages",{
+#   suppressWarnings(LH <- makeLH(N0=100,tmax=15,Linf=2100,K=0.50,t0=-0.616,
+#                                 LWalpha=-5.453,LWbeta=3.10))
+#   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_no_error()
+#
+#   # ----- test for missing arguments
+#   yprBH_func(cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_error("Need to specify a minimum length \\(mm\\) limit for harvest")
+#   yprBH_func(minLL=355,cm=0.25,lhparms=LH) |>
+#     expect_error("Need to specify a conditional fishing mortality in 'cf'")
+#   yprBH_func(minLL=355,cf=0.45,lhparms=LH) |>
+#     expect_error("Need to specify a conditional natural mortality in 'cm'")
+#   yprBH_func(minLL=355,cf=0.45,cm=0.25) |>
+#     expect_error("Need to specify a list or vector of life history parameters")
+#
+#   # ----- test for bad values, more thorough testing is elsewhere;
+#   #       e.g., iCheckLinf(), iCheckN0()
+#   yprBH_func(minLL=-10,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_error("'minLL' must be >=0")
+#   yprBH_func(minLL=35,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_warning("A minimum length limit of harvest of 35 mm seems too small")
+#   yprBH_func(minLL=2135,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_error("A minimum length limit of harvest cannot be more than Linf")
+#   yprBH_func(minLL=2035,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_warning("A minimum length limit of harvest of 2035 mm seems too large")
+#   yprBH_func(minLL=355,cf=-0.45,cm=0.25,lhparms=LH) |>
+#     expect_error("'cf' must be >=0")
+#   yprBH_func(minLL=355,cf=1.45,cm=0.25,lhparms=LH) |>
+#     expect_error("'cf' must be <=1")
+#   yprBH_func(minLL=355,cf=0.45,cm=-0.25,lhparms=LH) |>
+#     expect_error("'cm' must be >=0")
+#   yprBH_func(minLL=355,cf=0.45,cm=1.25,lhparms=LH) |>
+#     expect_error("'cm' must be <=1")
+#   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=-100) |>
+#     expect_error("'loi' must be >=0")
+#   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=c(100,-200)) |>
+#     expect_error("All 'loi' must be >=0")
+#
+#   # ----- spot tests for bad values in lhparms, more thorough testing is
+#   #       elsewhere; e.g., iCheckLinf(), iCheckN0()
+#   tmp <- list(N0=100,tmax=15,Linf=2000,K=0.50,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
+#   LH <- tmp
+#   LH["N0"] <- -100
+#   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_error("'N0' must be >=0")
+#   LH <- tmp
+#   LH["Linf"] <- "a"
+#   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_error("'Linf' must be a number")
+#   LH <- list(N0=100,tmax=15,Linf=2000,K=c(0.3,0.5),t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
+#   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_error("Only use one value in 'K'")
+#   LH <- tmp
+#   LH["LWbeta"] <- 5
+#   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_warning("A weight-length beta coefficient of 5 seems too large")
+#
+#   # ----- tests of warnings during calculations
+#   LH <- makeLH(N0=100,tmax=15,Linf=1000,K=0.30,t0=-0.616,LWalpha=-5.453,LWbeta=3.10)
+#   yprBH_func(minLL=1055,cf=0.45,cm=0.25,lhparms=LH) |>
+#     expect_error("A minimum length limit of harvest cannot be more than Linf")
+#   yprBH_func(minLL=355,cf=0.45,cm=0.25,lhparms=LH,loi=1055) |>
+#     expect_warning("The specified length of interest \\(=1055\\) is greater")
+#   ## Need to find values that create the tr<t0 error
+# })

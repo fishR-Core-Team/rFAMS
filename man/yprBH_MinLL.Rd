@@ -2,7 +2,7 @@
 % Please edit documentation in R/yprBH_MinLL.R
 \name{yprBH_MinLL}
 \alias{yprBH_MinLL}
-\title{Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest}
+\title{Simulate expected yield under minimum length regulations using the Beverton-Holt Yield-per-Recruit model for a range of input parameters}
 \usage{
 yprBH_MinLL(minLL, cf, cm, lhparms, loi = NULL, matchRicker = FALSE)
 }
@@ -17,7 +17,7 @@ yprBH_MinLL(minLL, cf, cm, lhparms, loi = NULL, matchRicker = FALSE)
 
 \item{loi}{A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.}
 
-\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
+\item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{FALSE}. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 }
 \value{
 A data.frame with the following calculated values:
@@ -37,15 +37,31 @@ A data.frame with the following calculated values:
 \item \code{S} is the (total) annual rate of survival.
 }
 
-For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, and\code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax}).
+For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, and\code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax} from \code{lhparms}).
 
-The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are defined under "values" in the documentation for \code{\link{yprBH_func}}.
+The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are as follows:
+
+\itemize{
+\item \code{minLL>=Linf}: The minimum length limit (\code{minLL}) being explored was greater than the given asymptotic mean length (\code{Linf}). For the purpose (only) of computing the time at recruitment to the fishery (\code{tr}) the \code{Linf} was set to \code{minLL}+0.1.
+\item \code{tr<t0}: The age at recruitment to the fishery (\code{tr}) was less than the hypothetical time when the mean length is zero (\code{t0}). The fish can't recruit to the fishery prior to having length 0 so \code{tr} was set to \code{t0}. This also assures that the time it takes to recruit to the fishery is greater than 0.
+\item \code{Nt<0}: The number of fish recruiting to the fishery was less than 0. There cannot be negative fish, so \code{Nt} was then set to 0.
+\item \code{Nt>N0}: The number of fish recruiting to the fishery was more than the number of fish recruited to the populations. Fish cannot be added to the cohort, so \code{Nt} was set to \code{N0}.
+\item \code{Y=Infinite}: The calculated yield (\code{Y}) was inifinity, which is impossible and suggests some other problem. Yield was set to \code{NA}.
+\item \code{Y<0}: The calculated yield (\code{Y}) was negative, which is impossible. Yield was set to 0.
+\item \code{Nharv<0}: The calculated number of fish harvested (\code{Nharv}) was negative, which is not possible. Number harvested was set to 0.
+\item \code{Nharv>Nt}: The calculated number of fish harvested (\code{Nharv}) was greater than the number of fish recruiting to the fishery, which is impossible. The number harvested was set to the number recruiting to the fishery.
+\item \code{Ndie<0}: The calculated number of fish recruiting to the fishery that died naturally (\code{Ndie}) was negative, which is not possible. Number that died was set to 0.
+\item \code{Ndie>Nt}: The calculated number of fish recruiting to the fishery that died naturally (\code{Ndie}) was greater than the number of fish recruiting to the fishery, which is impossible. The number that died was set to the number recruiting to the fishery.
+\item \code{agvglen<minLL}: The average length of harvested fish was less than the given minimum length limit being explored, which is not possible (with only legal harvest). The average length was set to the minimum length limit.
+}
 }
 \description{
-Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
+Simulate yield under minimum length regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with (possibly) multiple values for minimum length limits for harvest (\code{minLL}), conditional fishing mortality (\code{cf}), and conditional natural mortality (\code{cm}).
 }
 \details{
-Details will be filled out later
+Details will be filled out later.
+
+Note that the main calculations are in the internal \code{yprBH_func} (use \code{rFAMS:::yprBH_func} to see that source code).
 }
 \examples{
 # Load other required packages for organizing output and plotting
@@ -91,9 +107,9 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
 
 }
 \seealso{
-\code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
+\code{\link{yprBH_SlotLL}} for estimating yield with the yield-per-recruit model and a slot limit, or \code{\link{dpmBH_MinLL}} for estimating yield with a dynamic pool model using a minimum length limit.
 
-See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html}{this demonstration page} for more plotting examples
+See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html}{this demonstration page} for more examples of this function.
 }
 \author{
 Jason C. Doll, \email{jason.doll@fmarion.edu}
