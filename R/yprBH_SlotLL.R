@@ -16,11 +16,10 @@
 #' @param recruitmentTL A single numeric that represents the minimum length (mm) for recruiting to the fishery.
 #' @param loi A numeric vector of lengths (mm) of interest. Used to determine number of fish that reach these lengths.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
-#' @param label An optional string to label the type of slot limit being simulated
+#' @param label An optional string to label the type of slot limit being simulated.
 #'
 #' @return A data.frame with the following calculated values:
 #' \itemize{
-#' \item label An optional string to label the type of slot limit being simulated
 #' \item `yieldTotal` is the calculated total yield
 #' \item `yieldUnder` is the calculated yield under the slot limit
 #' \item `yieldIn` is the calculated yield within the slot limit
@@ -65,7 +64,7 @@
 #' \item `SAbove` is the estimated total survival above the slot limit
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (`lowerSL`, `upperSL`, `cfUnder`, `cfIn`, `cfOver`, `cm` from input vectors; `N0`; `Linf`; `K`; `t0`; `LWalpha`; `LWbeta`; and `tmax` from `lhparms`).
+#' For convenience the data.frame also contains the model input values (`lowerSL`, `upperSL`, `cfUnder`, `cfIn`, `cfOver`, `cm` from input vectors; `N0`; `Linf`; `K`; `t0`; `LWalpha`; `LWbeta`; and `tmax` from `lhparms`) and, optionally, the string provided in `label`.
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'

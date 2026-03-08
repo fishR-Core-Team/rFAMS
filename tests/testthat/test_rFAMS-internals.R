@@ -689,6 +689,30 @@ test_that("iCheckSlottTL() messages",{
     expect_warning("A upper slot limit total length of 2000 mm seems too large")
 })
 
+test_that("iChecklabel() messages",{
+  # ----- No errors if NULL (just passes through) or a valid string
+  label <- NULL
+  iChecklabel(label) |>
+    expect_no_error()
+  label <- "Slot of 250-300 mm"
+  iChecklabel(label) |>
+    expect_no_error()
+
+  # ----- errors
+  label <- 3
+  iChecklabel(label) |>
+    expect_error("'label' must be a character")
+  label <- c("Derek","Jason")
+  iChecklabel(label) |>
+    expect_error("Only use one value in 'label'")
+  label <- ""
+  iChecklabel(label) |>
+    expect_error("String in 'label'is empty")
+  label <- matrix(c("Derek","Ogle","Jason","Doll"),nrow=2)
+  iChecklabel(label) |>
+    expect_error("Only use one value in 'label'")
+})
+
 test_that("iCheckrec() messages",{
   iCheckrec(optname="rec") |>
     expect_error("Need to specify a vector of recruitment abundance in")

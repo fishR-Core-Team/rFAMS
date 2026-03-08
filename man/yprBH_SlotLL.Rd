@@ -39,12 +39,11 @@ yprBH_SlotLL(
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 
-\item{label}{An optional string to label the type of slot limit being simulated}
+\item{label}{An optional string to label the type of slot limit being simulated.}
 }
 \value{
 A data.frame with the following calculated values:
 \itemize{
-\item label An optional string to label the type of slot limit being simulated
 \item \code{yieldTotal} is the calculated total yield
 \item \code{yieldUnder} is the calculated yield under the slot limit
 \item \code{yieldIn} is the calculated yield within the slot limit
@@ -89,7 +88,7 @@ A data.frame with the following calculated values:
 \item \code{SAbove} is the estimated total survival above the slot limit
 }
 
-For convenience the data.frame also contains the model input values (\code{lowerSL}, \code{upperSL}, \code{cfUnder}, \code{cfIn}, \code{cfOver}, \code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax} from \code{lhparms}).
+For convenience the data.frame also contains the model input values (\code{lowerSL}, \code{upperSL}, \code{cfUnder}, \code{cfIn}, \code{cfOver}, \code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax} from \code{lhparms}) and, optionally, the string provided in \code{label}.
 }
 \description{
 Simulate yield under slot length regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with (possibly) multiple values for conditional natural mortality (\code{cm}) and chosen values for the lower and upper lengths of the slot (i.e,. \code{lowerSL} and \code{upperSL}); conditional fishing mortality under (\code{cfunder}), in (\code{cfin}), and above (\code{cfabove}) the slot; and length when fish recruit to the fishery (\code{recruitmentTL}).

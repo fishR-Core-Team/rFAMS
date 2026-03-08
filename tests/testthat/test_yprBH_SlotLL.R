@@ -174,6 +174,20 @@ test_that("yprBH_SlotLL() messages",{
                cfunder=0.25,cfin=0,cfabove=0.2,cm=0.2,
                lhparms=LH,recruitmentTL=600) |>
     expect_error("'recruitmentTL' cannot be greater than 'Linf'")
+  # ..... in label
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.2,cm=0.2,
+               lhparms=LH,recruitmentTL=200,label=3) |>
+    expect_error("'label' must be a character")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.2,cm=0.2,
+               lhparms=LH,recruitmentTL=200,label="") |>
+    expect_error("String in 'label'is empty")
+  yprBH_SlotLL(lowerSL=250,upperSL=325,
+               cfunder=0.25,cfin=0,cfabove=0.2,cm=0.2,
+               lhparms=LH,recruitmentTL=200,label=c("Derek","Jason")) |>
+    expect_error("Only use one value in 'label")
+
   # ..... spot tests for bad values in lhparms ... more thorough testing is
   #       elsewhere; e.g., iCheckLinf(), iCheckN0()
   tmp <- list(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)

@@ -453,10 +453,17 @@ iCheckSlotType <- function(cfu,cfi,cfa,rtl,strict=FALSE) {
   }
 }
 
-# Check if lebel is character
-iChecklabel <- function(x,nm) {
-  if (!is.character(x)) STOP(nm," must be a character.")
-  if (length(x) != 1) STOP(nm, " must be of length 1.")
+#' Make check on label given to yprBH_SlotLL
+#' @param x A character string that represents a label
+#' @details Just pass through if `NULL`.
+#' @keywords internal
+iChecklabel <- function(x) {
+  if (!is.null(x)) {
+    nm <- iHndlArgName(deparse(substitute(x)))
+    iErrMore1(x,nm)
+    if (!is.character(x)) STOP(nm," must be a character.")
+    if (x=="") STOP("String in ",nm,"is empty.")
+  }
 }
 
 #' Make checks on number of recruits vector
