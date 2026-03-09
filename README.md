@@ -11,11 +11,11 @@
 
 Simulates the dynamics of exploited fish populations using the Jones
 modification of the Beverton-Holt equilibrium yield equation to compute
-yield-per-recruit and dynamic pool models (Ricker 1975)
-<https://publications.gc.ca/site/eng/480738/publication.html>. Allows
-users to evaluate minimum, slot, and inverted length limits on exploited
-fisheries using specified life history parameters. Users can simulate
-population under a variety of conditional fishing mortality and
+yield-per-recruit and dynamic pool models [(Ricker
+1975)](https://publications.gc.ca/site/eng/480738/publication.html).
+Allows users to evaluate minimum, slot, and inverted length limits on
+exploited fisheries using specified life history parameters. Users can
+simulate population under a variety of conditional fishing mortality and
 conditional natural mortality. Calculated quantities include number of
 fish harvested and dying naturally, mean weight and length of fish
 harvested, number of fish that reach specified lengths of interest,
@@ -25,10 +25,18 @@ indices.
 This package is maintained by [Jason Doll](mailto:jcdoll20@hotmail.com),
 Associate Professor of Fisheries at Francis Marion University
 
+Members of the [fishR Core Team](https://github.com/fishR-Core-Team)
+that have contributed to the development of this package include:  
+Jason Doll, Francis Marion University  
+Derek Ogle, Northland College (retired)  
+Maddie Lewis, Iowa Department of Natural Resources  
+Hadley Boehm, Minnesota Department of Natural Resources
+
 ### Support
 
-This project is supported in part by the American Fisheries Society Data
-and Technology Section (<https://units.fisheries.org/fits/>)
+This project is supported in part by the [American Fisheries
+Society](https://fisheries.org) and the [Data and Technology
+Section](https://units.fisheries.org/fits)
 
 ### Status
 
@@ -40,13 +48,13 @@ package](https://fishr-core-team.github.io/FSA/index.html)
 
 #### Equilibrium Modeling
 
-1.  Initial package development completed
+1.  Initial function completed
 2.  Add spawning potential ratio
 3.  Incorporate suggestions from the fisheries community.
 
 #### Dynamic Pool Modeling
 
-1.  Complete
+1.  Initial function completed
 2.  Add spawning potential ratio
 3.  Incorporate suggestions from the fisheries community.
 

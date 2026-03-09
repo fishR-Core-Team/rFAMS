@@ -18,6 +18,16 @@ navbar:
   left:
     - text: Reference
       href: reference/index.html
+    - text: Manual
+      menu:
+      - text: Mortality
+        href: articles/MANUAL_Mortality.html
+      - text: Mortality matrices with dynamic pool model
+        href: articles/MANUAL_MortalityDPM.html
+      - text: Growth
+        href: articles/MANUAL_Growth.html
+      - text: Weight-Length
+        href: articles/MANUAL_WeightLength.html
     - text: Demonstrations
       menu:
       - text: Create life history object
@@ -30,10 +40,6 @@ navbar:
         href: articles/dpmBH.html
       - text: ggplot2 for rFAMS
         href: articles/ggplot_for_rFAMS.html
-    - text: Manual
-      menu:
-      - text: Mortality
-        href: articles/MANUAL_Mortality.html
     - text: Explanations
       menu:
       - text: Comparing FAMS and Ricker YPR Equations

@@ -1,9 +1,9 @@
-# Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest
+# Simulate expected yield under minimum length regulations using the Beverton-Holt Yield-per-Recruit model for a range of input parameters
 
-Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model
-using ranges of values for conditional fishing mortality (`cf`),
-conditional natural mortality (`cm`), and minimum length limits for
-harvest (`minLL`).
+Simulate yield under minimum length regulations using the Beverton-Holt
+Yield-per-Recruit (YPR) model with (possibly) multiple values for
+minimum length limits for harvest (`minLL`), conditional fishing
+mortality (`cf`), and conditional natural mortality (`cm`).
 
 ## Usage
 
@@ -15,15 +15,18 @@ yprBH_MinLL(minLL, cf, cm, lhparms, loi = NULL, matchRicker = FALSE)
 
 - minLL:
 
-  A numeric vector of minimum length limits.
+  A numeric vector of minimum length limits (in mm). All values must be
+  less than `Linf` in `lhparms`.
 
 - cf:
 
-  A numeric vector of conditional fishing mortality.
+  A numeric vector of conditional fishing mortality. All values must be
+  between 0 and 1 (inclusive).
 
 - cm:
 
-  A numeric vector of conditional natural mortality.
+  A numeric vector of conditional natural mortality. All values must be
+  between 0 and 1 (inclusive).
 
 - lhparms:
 
@@ -34,14 +37,14 @@ yprBH_MinLL(minLL, cf, cm, lhparms, loi = NULL, matchRicker = FALSE)
 
 - loi:
 
-  A numeric vector for lengths of interest. Used to determine number of
-  fish that reach desired lengths.
+  A numeric vector of lengths (in mm) of interest. Used to determine
+  number of fish that reach these lengths. All must be less than `Linf`
+  in `lhparms`.
 
 - matchRicker:
 
   A logical that indicates whether the yield function should match that
-  in Ricker (1975). Defaults to `TRUE`. The only reason to changed to
-  `FALSE` is to try to match output from FAMS. See the [FAMS vs Ricker
+  in Ricker (1975). Defaults to `FALSE`. See the [FAMS vs Ricker
   article](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html).
 
 ## Value
@@ -79,28 +82,77 @@ A data.frame with the following calculated values:
 
 For convenience the data.frame also contains the model input values
 (`minLL`, `cf`, and`cm` from input vectors; `N0`; `Linf`; `K`; `t0`;
-`LWalpha`; `LWbeta`; and `tmax`).
+`LWalpha`; `LWbeta`; and `tmax` from `lhparms`).
 
 The data.frame also contains a `notes` value which may contain
 abbreviations for "issues" that occurred when computing the results and
-were adjusted for. The possible abbreviates are defined under "values"
-in the documentation for
-[`yprBH_func`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.md).
+were adjusted for. The possible abbreviates are as follows:
+
+- `minLL>=Linf`: The minimum length limit (`minLL`) being explored was
+  greater than the given asymptotic mean length (`Linf`). For the
+  purpose (only) of computing the time at recruitment to the fishery
+  (`tr`) the `Linf` was set to `minLL`+0.1.
+
+- `tr<t0`: The age at recruitment to the fishery (`tr`) was less than
+  the hypothetical time when the mean length is zero (`t0`). The fish
+  can't recruit to the fishery prior to having length 0 so `tr` was set
+  to `t0`. This also assures that the time it takes to recruit to the
+  fishery is greater than 0.
+
+- `Nt<0`: The number of fish recruiting to the fishery was less than 0.
+  There cannot be negative fish, so `Nt` was then set to 0.
+
+- `Nt>N0`: The number of fish recruiting to the fishery was more than
+  the number of fish recruited to the populations. Fish cannot be added
+  to the cohort, so `Nt` was set to `N0`.
+
+- `Y=Infinite`: The calculated yield (`Y`) was inifinity, which is
+  impossible and suggests some other problem. Yield was set to `NA`.
+
+- `Y<0`: The calculated yield (`Y`) was negative, which is impossible.
+  Yield was set to 0.
+
+- `Nharv<0`: The calculated number of fish harvested (`Nharv`) was
+  negative, which is not possible. Number harvested was set to 0.
+
+- `Nharv>Nt`: The calculated number of fish harvested (`Nharv`) was
+  greater than the number of fish recruiting to the fishery, which is
+  impossible. The number harvested was set to the number recruiting to
+  the fishery.
+
+- `Ndie<0`: The calculated number of fish recruiting to the fishery that
+  died naturally (`Ndie`) was negative, which is not possible. Number
+  that died was set to 0.
+
+- `Ndie>Nt`: The calculated number of fish recruiting to the fishery
+  that died naturally (`Ndie`) was greater than the number of fish
+  recruiting to the fishery, which is impossible. The number that died
+  was set to the number recruiting to the fishery.
+
+- `agvglen<minLL`: The average length of harvested fish was less than
+  the given minimum length limit being explored, which is not possible
+  (with only legal harvest). The average length was set to the minimum
+  length limit.
 
 ## Details
 
-Details will be filled out later
+Details will be filled out later.
+
+Note that the main calculations are in the internal `yprBH_func` (use
+`rFAMS:::yprBH_func` to see that source code).
 
 ## See also
 
-[`yprBH_func`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.md)
-for estimating yield from single values of `cf`, `cm`, and `minLL` for
-simulating yield with multiple values of `cf` and `cm` but a fixed value
-for `minLL`.
+[`yprBH_SlotLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md)
+for estimating yield with the yield-per-recruit model and a slot limit,
+or
+[`dpmBH_MinLL`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md)
+for estimating yield with a dynamic pool model using a minimum length
+limit.
 
 See [this demonstration
 page](https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html)
-for more plotting examples
+for more examples of this function.
 
 ## Author
 
@@ -150,6 +202,5 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
   xlab("Exploitation (u)") +
   ylab("Minimum length limit (mm)") +
   theme_bw()
-
 
 ```

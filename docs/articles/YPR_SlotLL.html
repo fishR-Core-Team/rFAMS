@@ -32,6 +32,15 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-manual" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Manual</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-manual">
+<li><a class="dropdown-item" href="../articles/MANUAL_Mortality.html">Mortality</a></li>
+    <li><a class="dropdown-item" href="../articles/MANUAL_MortalityDPM.html">Mortality matrices with dynamic pool model</a></li>
+    <li><a class="dropdown-item" href="../articles/MANUAL_Growth.html">Growth</a></li>
+    <li><a class="dropdown-item" href="../articles/MANUAL_WeightLength.html">Weight-Length</a></li>
+  </ul>
+</li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-demonstrations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Demonstrations</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-demonstrations">
@@ -40,12 +49,6 @@
     <li><a class="dropdown-item" href="../articles/YPR_SlotLL.html">Estimate yield based on a slot length limit</a></li>
     <li><a class="dropdown-item" href="../articles/dpmBH.html">Simulate a population using the dynamic pool model</a></li>
     <li><a class="dropdown-item" href="../articles/ggplot_for_rFAMS.html">ggplot2 for rFAMS</a></li>
-  </ul>
-</li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-manual" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Manual</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-manual">
-<li><a class="dropdown-item" href="../articles/MANUAL_Mortality.html">Mortality</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -70,8 +73,8 @@
 
       <h1>Estimate yield based on a slot limit</h1>
 
-      <p class="author">Jason Doll</p>
-      <p class="date">2026-02-26</p>
+
+      <p class="date">2026-03-09</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/YPR_SlotLL.qmd" class="external-link"><code>vignettes/articles/YPR_SlotLL.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -131,7 +134,7 @@
 <span><span class="co">#&gt; 14   ChenWatanabe 0.1018740 0.09685666 tmax=15, K=0.2, t0=-0.3</span></span>
 <span><span class="co">#&gt; 15        AVERAGE 0.3292984 0.27782360</span></span></code></pre></div>
 </div>
-<p>To estimate yield with a slot limit the user must specify the lower slot limit <code>lowerSL</code>, upper slot limit <code>upperSL</code>, and optional recruitment length limit <code>recruitmentTL</code> which is the minimum length fish could be harvested at if harvest is allowed under the slot limit. The user must also specify conditional fishing mortality under, within, and above the slot. Specifying cf is where the user will determine if the slot limit is a protective slot (set <code>cfin</code> = 0) with harvest under and above the slot, or an inverse slot (set <code>cfunder</code> and <code>cfabove</code> = 0) with harvest within the slot. In the example below, there is a protective slot and cm values range from 0.1 to 0.9 in increments of 0.1. It also monitors lengths of 200, 250, 300, and 350mm.</p>
+<p>To estimate yield with a slot limit the user must specify the lower slot limit <code>lowerSL</code>, upper slot limit <code>upperSL</code>, and optional recruitment length limit <code>recruitmentTL</code> which is the minimum length fish could be harvested at if harvest is allowed under the slot limit. The user must also specify conditional fishing mortality under, within, and above the slot. Specifying cf is where the user will determine if the slot limit is a protective slot (set <code>cfin</code> = 0) with harvest under and above the slot, or an inverse slot (set <code>cfunder</code> and <code>cfabove</code> = 0) with harvest within the slot. In the example below, there is a protective slot and cm values range from 0.1 to 0.9 in increments of 0.1. It also monitors lengths of 200, 250, 300, and 350mm. FInally, there is an optional string to <code>label</code> the simulation.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># conditional natural mortality vector</span></span>
@@ -139,11 +142,13 @@
 <span><span class="co"># length of interest vector</span></span>
 <span><span class="va">loi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">200</span>,<span class="fl">250</span>,<span class="fl">300</span>,<span class="fl">325</span>,<span class="fl">350</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">Res_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yprBH_SlotLL.html">yprBH_SlotLL</a></span><span class="op">(</span>recruitmentTL<span class="op">=</span><span class="fl">200</span>,lowerSL<span class="op">=</span><span class="fl">250</span>,upperSL<span class="op">=</span><span class="fl">325</span>, <span class="co">#Set recruitment and slot limit length</span></span>
-<span>                      cfunder<span class="op">=</span><span class="fl">0.45</span>,cfin<span class="op">=</span><span class="fl">0</span>,cfabove<span class="op">=</span><span class="fl">0.25</span>,        <span class="co">#Set cf under, in, and above slot limit</span></span>
+<span><span class="va">Res_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yprBH_SlotLL.html">yprBH_SlotLL</a></span><span class="op">(</span>lowerSL<span class="op">=</span><span class="fl">250</span>,upperSL<span class="op">=</span><span class="fl">325</span>,          <span class="co"># Set slot limit length</span></span>
+<span>                      cfunder<span class="op">=</span><span class="fl">0.45</span>,cfin<span class="op">=</span><span class="fl">0</span>,cfabove<span class="op">=</span><span class="fl">0.25</span>, <span class="co"># Set cf under, in, and above slot limit</span></span>
 <span>                      cm<span class="op">=</span><span class="va">cm</span>,                  <span class="co"># vector of cm</span></span>
 <span>                      lhparms<span class="op">=</span><span class="va">LH</span>,             <span class="co"># Specifies life history parameters</span></span>
-<span>                      loi<span class="op">=</span><span class="va">loi</span><span class="op">)</span>                <span class="co"># vector of lengths of interest</span></span></code></pre></div>
+<span>                      recruitmentTL<span class="op">=</span><span class="fl">200</span>,      <span class="co"># Set recruitment length</span></span>
+<span>                      loi<span class="op">=</span><span class="va">loi</span>,                <span class="co"># vector of lengths of interest</span></span>
+<span>                      label<span class="op">=</span><span class="st">"250 to 325"</span><span class="op">)</span>     <span class="co"># string to label simulation</span></span></code></pre></div>
 </div>
 <p>The output object will be a data.frame with the following calculated values:</p>
 <ul>
@@ -250,13 +255,13 @@
 <span><span class="co">#&gt; 4    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
 <span><span class="co">#&gt; 5    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
 <span><span class="co">#&gt; 6    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt;   LWbeta tmax</span></span>
-<span><span class="co">#&gt; 1  3.273   15</span></span>
-<span><span class="co">#&gt; 2  3.273   15</span></span>
-<span><span class="co">#&gt; 3  3.273   15</span></span>
-<span><span class="co">#&gt; 4  3.273   15</span></span>
-<span><span class="co">#&gt; 5  3.273   15</span></span>
-<span><span class="co">#&gt; 6  3.273   15</span></span></code></pre></div>
+<span><span class="co">#&gt;   LWbeta tmax      label</span></span>
+<span><span class="co">#&gt; 1  3.273   15 250 to 325</span></span>
+<span><span class="co">#&gt; 2  3.273   15 250 to 325</span></span>
+<span><span class="co">#&gt; 3  3.273   15 250 to 325</span></span>
+<span><span class="co">#&gt; 4  3.273   15 250 to 325</span></span>
+<span><span class="co">#&gt; 5  3.273   15 250 to 325</span></span>
+<span><span class="co">#&gt; 6  3.273   15 250 to 325</span></span></code></pre></div>
 </div>
 </section><section class="section level2"><h2 id="plot-results">Plot results<a class="anchor" aria-label="anchor" href="#plot-results"></a>
 </h2>
@@ -337,7 +342,44 @@
 </div>
 </div>
 </div>
-</section></section><script id="quarto-html-after-body" type="application/javascript">
+</section></section><section class="section level2"><h2 id="compare-yield-across-multiple-slot-limits">Compare yield across multiple slot limits<a class="anchor" aria-label="anchor" href="#compare-yield-across-multiple-slot-limits"></a>
+</h2>
+<p>The <code>label</code> argument can be used to plot and compare results from multiple slot limits. The last example simulates yield under two additional slot limits and creates a single figure to compare yield across the three slot limits.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Simulate yield using settings above with two additional slot limit ranges</span></span>
+<span></span>
+<span><span class="va">Res_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yprBH_SlotLL.html">yprBH_SlotLL</a></span><span class="op">(</span>lowerSL<span class="op">=</span><span class="fl">325</span>,upperSL<span class="op">=</span><span class="fl">375</span>,          <span class="co"># Set slot limit length</span></span>
+<span>                      cfunder<span class="op">=</span><span class="fl">0.45</span>,cfin<span class="op">=</span><span class="fl">0</span>,cfabove<span class="op">=</span><span class="fl">0.25</span>, <span class="co"># Set cf under, in, and above slot limit</span></span>
+<span>                      cm<span class="op">=</span><span class="va">cm</span>,                  <span class="co"># vector of cm</span></span>
+<span>                      lhparms<span class="op">=</span><span class="va">LH</span>,             <span class="co"># Specifies life history parameters</span></span>
+<span>                      recruitmentTL<span class="op">=</span><span class="fl">200</span>,      <span class="co"># Set recruitment length</span></span>
+<span>                      loi<span class="op">=</span><span class="va">loi</span>,                <span class="co"># vector of lengths of interest</span></span>
+<span>                      label<span class="op">=</span><span class="st">"325 to 375"</span><span class="op">)</span>     <span class="co"># string to label simulation</span></span>
+<span></span>
+<span><span class="va">Res_3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yprBH_SlotLL.html">yprBH_SlotLL</a></span><span class="op">(</span>lowerSL<span class="op">=</span><span class="fl">375</span>,upperSL<span class="op">=</span><span class="fl">450</span>,          <span class="co"># Set slot limit length</span></span>
+<span>                      cfunder<span class="op">=</span><span class="fl">0.45</span>,cfin<span class="op">=</span><span class="fl">0</span>,cfabove<span class="op">=</span><span class="fl">0.25</span>, <span class="co"># Set cf under, in, and above slot limit</span></span>
+<span>                      cm<span class="op">=</span><span class="va">cm</span>,                  <span class="co"># vector of cm</span></span>
+<span>                      lhparms<span class="op">=</span><span class="va">LH</span>,             <span class="co"># Specifies life history parameters</span></span>
+<span>                      recruitmentTL<span class="op">=</span><span class="fl">200</span>,      <span class="co"># Set recruitment length</span></span>
+<span>                      loi<span class="op">=</span><span class="va">loi</span>,                <span class="co"># vector of lengths of interest</span></span>
+<span>                      label<span class="op">=</span><span class="st">"375 to 450"</span><span class="op">)</span>     <span class="co"># string to label simulation</span></span>
+<span></span>
+<span><span class="va">Res_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">Res_1</span>,<span class="va">Res_2</span>,<span class="va">Res_3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span>data<span class="op">=</span><span class="va">Res_all</span>,mapping<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">cm</span>,y<span class="op">=</span><span class="va">yieldTotal</span>,color<span class="op">=</span><span class="va">label</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span></span>
+<span>    <span class="fu">theme_FAMS</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span><span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span>color<span class="op">=</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Slot limit"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="YPR_SlotLL_files/figure-html/Plot%20of%20yield%20across%20three%20slot%20limits-1.png" class="quarto-figure quarto-figure-center" width="720"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);

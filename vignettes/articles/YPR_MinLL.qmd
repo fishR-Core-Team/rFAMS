@@ -1,6 +1,5 @@
 ---
 title: "Estimate yield based on one or more minimum length limits"
-author: "Jason Doll"
 date: "`r Sys.Date()`"
 format: 
   html: 

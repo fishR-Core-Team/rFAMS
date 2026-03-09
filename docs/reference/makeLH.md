@@ -15,6 +15,9 @@ function). All parameter values are checked for sanity (e.g., Linf\>0).
 
 ``` r
 makeLH(N0, tmax, Linf, K, t0, LWalpha, LWbeta, restype = c("list", "vector"))
+
+# S3 method for class 'MAKELH'
+print(x, ...)
 ```
 
 ## Arguments
@@ -63,6 +66,14 @@ makeLH(N0, tmax, Linf, K, t0, LWalpha, LWbeta, restype = c("list", "vector"))
   A character that indicates the type of output (list or vector)
   returned by the function.
 
+- x:
+
+  An object created by `makeLH`.
+
+- ...:
+
+  Optional arguments to be passed to `print`.
+
 ## Value
 
 A named list or vector (depending on `restype`) that contains the given
@@ -77,16 +88,6 @@ vector is recommended as (i) values for `Linf`, `K`, `t0`, `LWalpha`,
 and `LWbeta` can be extracted from objects from appropriate model
 fitting and (ii) checks for impossible or improbable values for each
 parameter are performed; i.e.,
-
-## See also
-
-[this demonstration
-page](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html) for
-more plotting examples
-
-## Author
-
-Derek Ogle
 
     # Best practice for entering life history parameter values
     LH <- makeLH(N0=100,tmax=15,Linf=600,K=0.30,t0=-0.6,
@@ -103,6 +104,16 @@ value supplied by the user with the most decimals. Thus, a list is
 preferred as it will be easier to match what was given to what was
 expected to be given.
 
+## See also
+
+This [demonstration
+page](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html) for
+further examples.
+
+## Author
+
+Derek Ogle
+
 ## Examples
 
 ``` r
@@ -113,7 +124,7 @@ library(FSAdata)
 #> ## FSAdata v0.4.1. See ?FSAdata to find data for specific fisheries analyses.
 library(dplyr)
 
-# ----- Simple examples with explicity arguments for each -------------------
+# ----- Simple examples with explicit arguments for each --------------------
 makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1)
 #> $N0
 #> [1] 100
@@ -151,9 +162,9 @@ makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1,
 # create log10 values of weight and length
 data(WalleyeErie2,package="FSAdata")
 tmp <- WalleyeErie2 |>
-  filter(loc==2,year==2010) |>
-  mutate(logW=log10(w),
-         logL=log10(tl))
+  dplyr::filter(loc==2,year==2010) |>
+  dplyr::mutate(logW=log10(w),
+                logL=log10(tl))
 
 # Generate LVB results
 vb1 <- FSA::makeGrowthFun(type="von Bertalanffy")

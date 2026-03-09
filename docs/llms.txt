@@ -4,11 +4,11 @@
 
 Simulates the dynamics of exploited fish populations using the Jones
 modification of the Beverton-Holt equilibrium yield equation to compute
-yield-per-recruit and dynamic pool models (Ricker 1975)
-<https://publications.gc.ca/site/eng/480738/publication.html>. Allows
-users to evaluate minimum, slot, and inverted length limits on exploited
-fisheries using specified life history parameters. Users can simulate
-population under a variety of conditional fishing mortality and
+yield-per-recruit and dynamic pool models [(Ricker
+1975)](https://publications.gc.ca/site/eng/480738/publication.html).
+Allows users to evaluate minimum, slot, and inverted length limits on
+exploited fisheries using specified life history parameters. Users can
+simulate population under a variety of conditional fishing mortality and
 conditional natural mortality. Calculated quantities include number of
 fish harvested and dying naturally, mean weight and length of fish
 harvested, number of fish that reach specified lengths of interest,
@@ -18,10 +18,18 @@ indices.
 This package is maintained by [Jason Doll](mailto:jcdoll20@hotmail.com),
 Associate Professor of Fisheries at Francis Marion University
 
+Members of the [fishR Core Team](https://github.com/fishR-Core-Team)
+that have contributed to the development of this package include:  
+Jason Doll, Francis Marion University  
+Derek Ogle, Northland College (retired)  
+Maddie Lewis, Iowa Department of Natural Resources  
+Hadley Boehm, Minnesota Department of Natural Resources
+
 ### Support
 
-This project is supported in part by the American Fisheries Society Data
-and Technology Section (<https://units.fisheries.org/fits/>)
+This project is supported in part by the [American Fisheries
+Society](https://fisheries.org) and the [Data and Technology
+Section](https://units.fisheries.org/fits)
 
 ### Status
 
@@ -33,13 +41,13 @@ package](https://fishr-core-team.github.io/FSA/index.html)
 
 #### Equilibrium Modeling
 
-1.  Initial package development completed
+1.  Initial function completed
 2.  Add spawning potential ratio
 3.  Incorporate suggestions from the fisheries community.
 
 #### Dynamic Pool Modeling
 
-1.  Complete
+1.  Initial function completed
 2.  Add spawning potential ratio
 3.  Incorporate suggestions from the fisheries community.
 
@@ -86,37 +94,29 @@ Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
 
 ## All functions
 
-- [`dpmBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_func.md)
-  : Simulate yield using the dynamic pool model.
 - [`dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md)
-  : Main function to simulate expected yield using the Dynamic Pool
-  model for a range of input parameters, including minimum length limits
-  for harvest
+  : Simulate expected yield under minimum length regulations using the
+  Dynamic Pool model for a range of input parameters
 - [`est_natmort()`](https://fishr-core-team.github.io/rFAMS/reference/est_natmort.md)
   : Compute meta-analytic estimates of instantaneous and conditional
   natural mortality
 - [`genRecruits()`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
+  [`print(`*`<GENREC>`*`)`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
   : Generate a vector of number of recruits for the dynamic pool model.
 - [`makeLH()`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
+  [`print(`*`<MAKELH>`*`)`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   : Make a list or vector of life history parameters for
   yield-per-recruit analyses.
 - [`seeMorts()`](https://fishr-core-team.github.io/rFAMS/reference/seeMorts.md)
   [`summary(`*`<SEEMORTS>`*`)`](https://fishr-core-team.github.io/rFAMS/reference/seeMorts.md)
   : Convert vectors of conditional fishing and natural mortality rates
   to other mortality rates.
-- [`yprBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.md)
-  : Simulate expected yield using the Beverton-Holt Yield-per-Recruit
-  model for single input parameters
 - [`yprBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md)
-  : Simulate expected yield using the Beverton-Holt Yield-per-Recruit
-  model for a range of input parameters, including minimum length limits
-  for harvest
+  : Simulate expected yield under minimum length regulations using the
+  Beverton-Holt Yield-per-Recruit model for a range of input parameters
 - [`yprBH_SlotLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md)
-  : Simulate expected yield using the Beverton-Holt Yield Per Recruit
-  model for a slot limit
-- [`yprBH_slot_func()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_slot_func.md)
-  : Function to simulate expected yield using the Beverton-Holt Yield
-  Per Recruit model for single input parameters
+  : Simulate expected yield using under slot limit regulations using the
+  Beverton-Holt Yield-per-Recruit model
 
 # Articles
 
@@ -128,7 +128,11 @@ Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
   rFAMS](https://fishr-core-team.github.io/rFAMS/articles/ggplot_for_rFAMS.md):
 - [Create life history
   object](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.md):
+- [Growth](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Growth.md):
 - [Mortality](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Mortality.md):
+- [Mortality matrices with the dynamic pool
+  model](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_MortalityDPM.md):
+- [Weight-Length](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_WeightLength.md):
 - [Comparing FAMS and Ricker YPR
   Equations](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.md):
 - [Estimate yield based on one or more minimum length

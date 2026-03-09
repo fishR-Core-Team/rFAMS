@@ -2,9 +2,12 @@
 % Please edit documentation in R/MakeLH.R
 \name{makeLH}
 \alias{makeLH}
+\alias{print.MAKELH}
 \title{Make a list or vector of life history parameters for yield-per-recruit analyses.}
 \usage{
 makeLH(N0, tmax, Linf, K, t0, LWalpha, LWbeta, restype = c("list", "vector"))
+
+\method{print}{MAKELH}(x, ...)
 }
 \arguments{
 \item{N0}{A single numeric that represents the number of fish in the population at the hypothetical age of \code{t0}.}
@@ -22,6 +25,10 @@ makeLH(N0, tmax, Linf, K, t0, LWalpha, LWbeta, restype = c("list", "vector"))
 \item{LWbeta}{A single numeric that represents the point estimate of beta from the length-weight regression on the log10 scale.}
 
 \item{restype}{A character that indicates the type of output (list or vector) returned by the function.}
+
+\item{x}{An object created by \code{makeLH}.}
+
+\item{\dots}{Optional arguments to be passed to \code{print}.}
 }
 \value{
 A named list or vector (depending on \code{restype}) that contains the given (or extracted) life history parameters values that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{yprBH_SlotLL}}).
@@ -31,13 +38,24 @@ Efficiently construct either a vector or list that contains the seven life histo
 }
 \details{
 Use of this function for putting life history parameters into a list or vector is recommended as (i) values for \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta} can be extracted from objects from appropriate model fitting and (ii) checks for impossible or improbable values for each parameter are performed; i.e.,
+
+\if{html}{\out{<div class="sourceCode R">}}\preformatted{# Best practice for entering life history parameter values
+LH <- makeLH(N0=100,tmax=15,Linf=600,K=0.30,t0=-0.6,
+             LWalpha=-5.453,LWbeta=3.10)
+
+# Works but no checks on the values
+LH <- list(N0=100,tmax=15,Linf=600,K=0.30,t0=-0.6,
+           LWalpha=-5.453,LWbeta=3.10)
+}\if{html}{\out{</div>}}
+
+If a list is returned then values will be displayed with the number of decimals provided by the user. If a vector is returned then the number of decimals displayed will be the same for each value and will match the value supplied by the user with the most decimals. Thus, a list is preferred as it will be easier to match what was given to what was expected to be given.
 }
 \examples{
 library(FSA)
 library(FSAdata)
 library(dplyr)
 
-# ----- Simple examples with explicity arguments for each -------------------
+# ----- Simple examples with explicit arguments for each --------------------
 makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1)
 makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1,
        restype="vector")
@@ -52,9 +70,9 @@ makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1,
 # create log10 values of weight and length
 data(WalleyeErie2,package="FSAdata")
 tmp <- WalleyeErie2 |>
-  filter(loc==2,year==2010) |>
-  mutate(logW=log10(w),
-         logL=log10(tl))
+  dplyr::filter(loc==2,year==2010) |>
+  dplyr::mutate(logW=log10(w),
+                logL=log10(tl))
 
 # Generate LVB results
 vb1 <- FSA::makeGrowthFun(type="von Bertalanffy")
@@ -70,19 +88,8 @@ waeLH
 
 }
 \seealso{
-\href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{this demonstration page} for more plotting examples
+This \href{https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html}{demonstration page} for further examples.
 }
 \author{
 Derek Ogle
-
-\if{html}{\out{<div class="sourceCode R">}}\preformatted{# Best practice for entering life history parameter values
-LH <- makeLH(N0=100,tmax=15,Linf=600,K=0.30,t0=-0.6,
-             LWalpha=-5.453,LWbeta=3.10)
-
-# Works but no checks on the values
-LH <- list(N0=100,tmax=15,Linf=600,K=0.30,t0=-0.6,
-           LWalpha=-5.453,LWbeta=3.10)
-}\if{html}{\out{</div>}}
-
-If a list is returned then values will be displayed with the number of decimals provided by the user. If a vector is returned then the number of decimals displayed will be the same for each value and will match the value supplied by the user with the most decimals. Thus, a list is preferred as it will be easier to match what was given to what was expected to be given.
 }

@@ -1,100 +1,21 @@
-#' @title Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for single input parameters
+#' @title Simulate expected yield under slot length limits using the Beverton-Holt Yield-per-Recruit model
 #'
-#' @description Function to estimate yield using the Beverton-Holt YPR model. This main function accepts only single values for cf, cm, and minlength. Use the wrapper ypr() function for specifying range of cf, cm, and minlength
+#' @description An INTERNAL function used by \code{\link{yprBH_SlotLL}} to estimate yield under slot (protected or inverse/harvest) length limit regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with one value each of `cm` (and `lowerSL`, `upperSL`, `cfunder`, `cfin`, and `cfabove`). This is the base function for \code{\link{yprBH_SlotLL}}, is NOT exported, and is NOT expected to be used directly by the user.
 #'
-#' @param recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
-#' @param lowerSL A numeric representing the length of the lower slot limit in mm.
-#' @param upperSL A numeric representing the length of the upper slot limit in mm.
-#' @param cfunder Single value, conditional fishing mortality under the lower slot limit.
-#' @param cfin Single value, conditional fishing mortality within the lower and upper slot limit.
-#' @param cfabove Single value, conditional fishing mortality over the upper slot limit.
-#' @param cm A numeric representing conditional natural mortality
-#' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
-#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
-#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
+#' @inheritParams yprBH_SlotLL
+#' @param cm A SINGLE numeric representing conditional natural mortality.
 #'
-#' @details Details will be filled out later
+#' @details See details in \code{\link{yprBH_SlotLL}}.
 #'
-#' @return the following calculated and input values in a data.frame
-#' \itemize{
-#' \item yieldTotal is the calculated total yield
-#' \item yieldUnder is the calculated yield under the slot limit
-#' \item yieldIn is the calculated yield within the slot limit
-#' \item yieldAbove is the calculated yield above the slot limit
-#' \item nharvTotal is the calculated total number of harvested fish
-#' \item ndieTotal is the calculated total number of fish that die of natural death
-#' \item nharvestUnder is the number of harvested fish under the slot limit
-#' \item nharvestIn is the number of harvested fish within the slot limit
-#' \item nharvestAbove is the number of harvested fish above the slot limit
-#' \item n0die is the number of fish that die of natural death before entering the fishery at a minimum length
-#' \item ndieUnder is the number of fish that die of natural death between entering the fishery and the lower slot limit
-#' \item ndieIn is the number of fish that die of natural deaths within the slot limit
-#' \item ndieAbove is the number of fish that die of natural deaths above the slot limit
-#' \item nrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
-#' \item nrIn is the number of fish at time trIn (time they reach the lower slot limit size)
-#' \item nrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
-#' \item trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
-#' \item trIn is the time for a fish to recruit to a lower length limit of the slot limit
-#' \item trOver is the time for a fish to recruit to a upper length limit of the slot limit
-#' \item avglenUnder is the average length of fish harvested under the slot limit
-#' \item avglenIn is the average length of fish harvested within the slot limit
-#' \item avglenAbove is the average length of fish harvested above the slot limit
-#' \item avgwtUnder is the average weight of fish harvested under the slot limit
-#' \item avgwtIn is the average weight of fish harvested within the slot limit
-#' \item avgwtAbove is the average weight of fish harvested above the slot limit
-#' \item \code{nAtxxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
-#' \item cm A numeric representing conditional natural mortality
-#' \item expUnder is the exploitation rate under the slot limit
-#' \item expIn is the exploitation rate within the slot limit
-#' \item expAbove is the exploitation rate above the slot limit
-#' \item FUnder is the estimated instantaneous rate of fishing mortality under the slot limit
-#' \item FIn is the estimated instantaneous rate of fishing mortality within the slot limit
-#' \item FAbove is the estimated instantaneous rate of fishing mortality above the slot limit
-#' \item MUnder is the estimated  instantaneous rate of natural mortality under the slot limit
-#' \item MIn is the estimated  instantaneous rate of natural mortality within the slot limit
-#' \item MAbove is the estimated  instantaneous rate of natural mortality above the slot limit
-#' \item ZUnder is the estimated  instantaneous rate of total mortality under the slot limit
-#' \item ZIn is the estimated  instantaneous rate of total mortality within the slot limit
-#' \item ZAbove is the estimated  instantaneous rate of total mortality above the slot limit
-#' \item SUnder is the estimated total survival under the slot limit
-#' \item SIn is the estimated total survival within the slot limit
-#' \item SAbove is the estimated total survival above the slot limit
-#' \item cfUnder A numeric representing conditional fishing mortality
-#' \item cfIn A numeric representing conditional fishing mortality
-#' \item cfOver A numeric representing conditional fishing mortality
-#' \item recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
-#' \item lowerSL A numeric representing the length of the lower slot limit in mm.
-#' \item upperSL A numeric representing the length of the upper slot limit in mm.
-#' \item N0 A numeric representing the initial number of new recruits entering the fishery OR a vector or list that contains named values for each \code{N0}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, \code{LWbeta}, and \code{tmax}
-#' \item Linf A numeric representing the point estimate of the asymptotic mean length (L-infinity) from the von Bertalanffy growth model in mm
-#' \item K A numeric representing the point estimate of the Brody growth coefficient from the von Bertalanffy growth model
-#' \item t0 A numeric representing the point estimate of the x-intercept (i.e., theoretical age at a mean length of 0) from the von Bertalanffy growth model
-#' \item LWalpha A numeric representing the point estimate of alpha from the length-weight regression on the log10 scale.
-#' \item LWbeta A numeric representing the point estimate of beta from the length-weight regression on the log10 scale.
-#' \item tmax An integer representing maximum age in the population in years
-#' #' }
+#' @return A one row data.frame with the items described in \code{\link{yprBH_SlotLL}}.
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @examples
-#' # Life history parameters to be used below
-#' LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
-#'
-#' # Estimate yield with fixed parameters
-#' Res_1 <- yprBH_slot_func(recruitmentTL=200,lowerSL=250,upperSL=325,
-#'                        cfunder=0.25,cfin=0.6,cfabove=0.15,cm=0.4,
-#'                        lhparms=LH,loi=c(200,250,300,325,350))
-#' Res_1
-#'
-#'
-#' @rdname yprBH_slot_func
-#' @export
+#' @keywords internal
 
-yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,cm,
-                            lhparms,loi=NULL,matchRicker=FALSE){
-
-
-  # Extract individual life history values
+yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
+                            recruitmentTL,loi,matchRicker){
+  # ---- Extract individual life history values
   N0 <- lhparms[["N0"]]
   tmax <- lhparms[["tmax"]]
   Linf <- lhparms[["Linf"]]
@@ -102,23 +23,13 @@ yprBH_slot_func <- function(recruitmentTL,lowerSL,upperSL,cfunder,cfin,cfabove,c
   t0 <- lhparms[["t0"]]
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
+  # !!!!! Note that checks fof all inputs were made in yprBH_SlotLL()
 
-  # ---- Check inputs
-  iCheckN0(N0)
-  iCheckMaxAge(tmax)
-  iCheckLinf(Linf)
-  iCheckK(K)
-  iCheckt0(t0)
-  iCheckLWa(LWalpha)
-  iCheckLWb(LWbeta)
-  iCheckloi(loi)
-  iCheckcm(cm)
-  iCheckcfunder(cfunder)
-  iCheckcfin(cfin)
-  iCheckcfabove(cfabove)
-  iCheckrecruitTL(recruitmentTL)
-  iChecklowerSLTL(lowerSL)
-  iCheckupperSLTL(upperSL)
+  # !!!!! For a protected slot (so by here recruitmentTL should be NULL), set
+  #       recruitmentTL to the lowerSL of the slot limit (i.e, when fish would
+  #       first be available for harvest). This is needed for the
+  #       test against Linf below
+  if (is.null(recruitmentTL)) recruitmentTL <- lowerSL
 
   #needed to account for rounding issues of sequences
   cm <- round(cm,8)
