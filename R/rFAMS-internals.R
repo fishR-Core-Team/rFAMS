@@ -453,168 +453,78 @@ iCheckSlotType <- function(cfu,cfi,cfa,rtl,strict=FALSE) {
   }
 }
 
-# Check if lebel is character
-iChecklabel <- function(x,nm) {
-  if (!is.character(x)) STOP(nm," must be a character.")
-  if (length(x) != 1) STOP(nm, " must be of length 1.")
+#' Make check on label given to yprBH_SlotLL
+#' @param x A character string that represents a label
+#' @details Just pass through if `NULL`.
+#' @keywords internal
+iChecklabel <- function(x) {
+  if (!is.null(x)) {
+    nm <- iHndlArgName(deparse(substitute(x)))
+    iErrMore1(x,nm)
+    if (!is.character(x)) STOP(nm," must be a character.")
+    if (x=="") STOP("String in ",nm,"is empty.")
+  }
 }
 
-# Check Linf > Minimum length
-iCheckLLinf <- function(x, Linf) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (sum(x > Linf) >0 ) STOP("Harvest lengths in the vector (", nm, ") can't be greater than Linf")
+#' Make checks on number of recruits vector
+#' @param x A recruitment vector
+#' @details If `x` was created by `genRecruits()` then checking is skipped here as it would have been done there.
+#' @keywords internal
+iCheckrec <- function(x,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify a vector of recruitment abundance in ",nm,".")
+  if (!any(class(x)=="GENREC")) {
+    iErrNotVector(x,nm)
+    iErrNotNumeric(x,nm)
+    iErrLT(x,0,nm)
+  }
 }
 
-#Check that cf and cm are a numeric matrix
-iCheckcfcm_dpm <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if(!is.matrix(x))
-    STOP(nm, " must be a matrix")
-  if(!is.numeric(x))
-    STOP(nm, " must be a numeric data type")
-}
-
-#Check that recruitment is a numeric vector
-iCheckrec <- function(rec) {
-  if(!is.vector(rec))
-    STOP("rec must be a vector")
-  if(!is.numeric(rec))
-    STOP("rec must be a numeric data type")
-}
-
-# Check simyears
-iChecksimyears <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the number of simulations to run in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the number of simulations to run in ",nm,".")
+#' Make check on number of years to simulate
+#' @param x A single number for number of years to simulate
+#' @keywords internal
+iChecksimyears <- function(x,optname=NULL) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  if (missing(x) || is.null(x))
+    STOP("Need to specify a number of years to simulate in ",nm,".")
   iErrMore1(x,nm)
   iErrNotNumeric(x,nm)
+  iErrLT(x,1,nm)
+  if (!is.wholenumber(x)) STOP(nm," must be a whole number of years.")
+}
+
+#' Make checks of conditional mortality matrix for DPM functions
+#' @param x A matrix of conditional mortality values.
+#' @param syrs Number of simulation years (i.e., `simyears`)
+#' @param tmx Maximum age (i.e., `tmax`)
+#' @param optname A name to the error/warning  message for when the argument is missing, as it is not possible to extract an argument name when the argument is missing.
+#' @keywords internal
+iCheckCondMort2 <- function(x,syrs,tmx,optname) {
+  nm <- iHndlArgName(deparse(substitute(x)),optname)
+  # determine type of mortality ... fishing or natural based on nm
+  type <- ifelse(startsWith(nm,"'cf"),"fishing","natural")
+  # do the checks
+  if (missing(x) || is.null(x))
+    STOP(paste0("Need to specify a matrix of conditional ",type,
+                " mortalities in ",nm,"."))
+  if (!is.matrix(x))
+    STOP(nm," must be a matrix of conditional ",type," mortalities.")
+  if (!is.numeric(x)) STOP(nm," must be a numeric matrix.")
   iErrLT(x,0,nm)
-  if (!is.wholenumber(x)) WARN("The numer of simulation years is not a whole number,",
-                               " please check value in ",nm,".")
+  iErrGT(x,1,nm)
+  if (nrow(x)!=syrs)
+    STOP("Number of rows in ",nm," (=",nrow(x),
+         ") must equal 'simyears' (=",syrs,").")
+  if (ncol(x)!=(tmx+1))
+    STOP("Number of columns in ",nm," (",ncol(x),
+         ") must equal 'tmax'+1 (=",tmx+1,").")
 }
 
 iCheckspecies <- function(x) {
   nm <- paste0("'",deparse(substitute(x)),"'")
   if (missing(x)) STOP("Need to specify a species name in ",nm,". See the FSA::PSDlit function for a list of available species")
   if (is.null(x)) STOP("Need to specify a species name in ",nm,". See the FSA::PSDlit function for a list of available species")
-}
-
-# Check nR
-iChecknR <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the number of fixed recruits per year in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the number of fixed recruits per year in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check minR with uniform distribution
-iCheckminR <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the minimum number of recruits for the uniform method in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the minimum number of recruits for the uniform method in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check maxR with uniform distribution
-iCheckmaxR <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the maximum number of recruits for the uniform method in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the maximum number of recruits for the uniform method in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check minR with normal distribution
-iCheckminRNorm <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the minimum number of recruits for the normal method in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the minimum number of recruits for the normal method in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check maxR with normal distribution
-iCheckmaxRNorm <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the maximum number of recruits for the normal method in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the maximum number of recruits for the normal method in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check meanR with normal distribution
-iCheckmeanR <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the mean number of recruits for the normal method in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the mean number of recruits for the normal method in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check sdR with normal distribution
-iChecksdR <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the standard deviation of recruits for the normal method in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the standard deviation of recruits for the normal method in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check meanR with StrYC_Nth
-iCheckmeanRNth <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the mean number of recruits for the strong year class every Nth year method in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the mean number of recruits for the strong year class every Nth year method in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check nStr with StrYC_Nth
-iChecknStr <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the Nth year that a strong year class will occur in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the Nth year that a strong year class will occur in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check sizeStr with StrYC_Nth
-iChecksizeStr <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the multiplier for the strong year class relative to meanR for the strong year class every Nth year method in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the multiplier for the strong year class relative to meanR for the strong year class every Nth year method in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check meanR with randInt
-iCheckmeanRrandInt <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the mean number of recruits for the strong year class at random intervals in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the mean number of recruits for the strong year class at random intervals in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check avgFreq with randInt
-iCheckavgFreq <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the average frequency of a strong year class for the random intervals in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the average frequency of a strong year class for the random intervals in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
-}
-
-# Check sizeStr with randInt
-iChecksizeStrRrandInt <- function(x) {
-  nm <- paste0("'",deparse(substitute(x)),"'")
-  if (missing(x)) STOP("Need to specify the multiplier for the strong year class relative to meanR for the random interval in ",nm,".")
-  if (is.null(x)) STOP("Need to specify the multiplier for the strong year class relative to meanR for the random interval in ",nm,".")
-  iErrMore1(x,nm)
-  iErrNotNumeric(x,nm)
 }
 
 # Summarize dynamic pool model by year
@@ -699,3 +609,137 @@ isum_by_year <- function(res,species,group){
   return(Year_Summary)
 }
 
+
+# ====== Defunct (can probably be deleted)
+
+# # Check Linf > Minimum length
+# iCheckLLinf <- function(x, Linf) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (sum(x > Linf) >0 ) STOP("Harvest lengths in the vector (", nm, ") can't be greater than Linf")
+# }
+#
+# #Check that cf and cm are a numeric matrix
+# iCheckcfcm_dpm <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if(!is.matrix(x))
+#     STOP(nm, " must be a matrix")
+#   if(!is.numeric(x))
+#     STOP(nm, " must be a numeric data type")
+# }
+#
+# # Check nR
+# iChecknR <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the number of fixed recruits per year in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the number of fixed recruits per year in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check minR with uniform distribution
+# iCheckminR <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the minimum number of recruits for the uniform method in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the minimum number of recruits for the uniform method in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check maxR with uniform distribution
+# iCheckmaxR <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the maximum number of recruits for the uniform method in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the maximum number of recruits for the uniform method in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check minR with normal distribution
+# iCheckminRNorm <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the minimum number of recruits for the normal method in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the minimum number of recruits for the normal method in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check maxR with normal distribution
+# iCheckmaxRNorm <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the maximum number of recruits for the normal method in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the maximum number of recruits for the normal method in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check meanR with normal distribution
+# iCheckmeanR <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the mean number of recruits for the normal method in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the mean number of recruits for the normal method in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check sdR with normal distribution
+# iChecksdR <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the standard deviation of recruits for the normal method in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the standard deviation of recruits for the normal method in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check meanR with StrYC_Nth
+# iCheckmeanRNth <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the mean number of recruits for the strong year class every Nth year method in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the mean number of recruits for the strong year class every Nth year method in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check nStr with StrYC_Nth
+# iChecknStr <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the Nth year that a strong year class will occur in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the Nth year that a strong year class will occur in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check sizeStr with StrYC_Nth
+# iChecksizeStr <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the multiplier for the strong year class relative to meanR for the strong year class every Nth year method in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the multiplier for the strong year class relative to meanR for the strong year class every Nth year method in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check meanR with randInt
+# iCheckmeanRrandInt <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the mean number of recruits for the strong year class at random intervals in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the mean number of recruits for the strong year class at random intervals in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check avgFreq with randInt
+# iCheckavgFreq <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the average frequency of a strong year class for the random intervals in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the average frequency of a strong year class for the random intervals in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }
+#
+# # Check sizeStr with randInt
+# iChecksizeStrRrandInt <- function(x) {
+#   nm <- paste0("'",deparse(substitute(x)),"'")
+#   if (missing(x)) STOP("Need to specify the multiplier for the strong year class relative to meanR for the random interval in ",nm,".")
+#   if (is.null(x)) STOP("Need to specify the multiplier for the strong year class relative to meanR for the random interval in ",nm,".")
+#   iErrMore1(x,nm)
+#   iErrNotNumeric(x,nm)
+# }

@@ -91,9 +91,7 @@ test_that("yprBH_MinLL() messages",{
   LH <- tmp
   LH["LWbeta"] <- 5
   yprBH_MinLL(minLL=300,cf=0.3,cm=0.2,lhparms=LH) |>
-    expect_warning("A weight-length beta coefficient of 5 seems too large") |>
     expect_warning("A weight-length beta coefficient of 5 seems too large")
-  ## !!! May want to address this double warning
 })
 
 
@@ -105,7 +103,7 @@ lois <- c(300,400)
 minll1 <- 355
 cf1 <- 0.45
 cm1 <- 0.25
-minLL1 <- yprBH_func(minLL=minll1,cf=cf1,cm=cm1,lhparms=LH,loi=lois)
+minLL1 <- yprBH_MinLL(minLL=minll1,cf=cf1,cm=cm1,lhparms=LH,loi=lois)
 
 ## ----- multiple simulations ... lhparms as a list with lois
 minll2 <- c(200,300)
@@ -173,18 +171,18 @@ test_that("yprBH_MinLL() output",{
 #
 # tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
 # dt <- format(Sys.Date(),format="%d_%b_%Y")
-# saveRDS(minLL1,paste0(tmpdir,"minLL1_",dt,".rds"))
-# saveRDS(minLL2,paste0(tmpdir,"minLL2_",dt,".rds"))
+# saveRDS(minLL1,paste0(tmpdir,"ypr_minLL1_",dt,".rds"))
+# saveRDS(minLL2,paste0(tmpdir,"ypr_minLL2_",dt,".rds"))
 
 test_that("yprBH_MinLL() results",{
   # get list of files in datasnaps folder
   tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
   tmpfns <- list.files(tmpdir)
   # Load snapshots of "old" (i.e., last stable) outputs
-  minLL1_old <- readRDS(paste0(tmpdir,tmpfns[grepl("minLL1",tmpfns)]))
-  minLL2_old <- readRDS(paste0(tmpdir,tmpfns[grepl("minLL2",tmpfns)]))
+  minLL1_old <- readRDS(paste0(tmpdir,tmpfns[grepl("ypr_minLL1",tmpfns)]))
+  minLL2_old <- readRDS(paste0(tmpdir,tmpfns[grepl("ypr_minLL2",tmpfns)]))
 
-  # Compare new to "old" data.frames
+  # Compare new to "old" data.frames ... must have run "Get Results" code above
   expect_equal(minLL1,minLL1_old)
   expect_equal(minLL2,minLL2_old)
 })

@@ -1,42 +1,58 @@
-#' @title Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest
+#' @title Simulate expected yield under minimum length regulations using the Beverton-Holt Yield-per-Recruit model for a range of input parameters
 #'
-#' @description Estimate yield using the Beverton-Holt Yield-per-Recruit (YPR) model using ranges of values for conditional fishing mortality (\code{cf}), conditional natural mortality (\code{cm}), and minimum length limits for harvest (\code{minLL}).
+#' @description Simulate yield under minimum length regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with (possibly) multiple values for minimum length limits for harvest (`minLL`), conditional fishing mortality (`cf`), and conditional natural mortality (`cm`).
 #'
-#' @param minLL A numeric vector of minimum length limits.
-#' @param cf A numeric vector of conditional fishing mortality.
-#' @param cm A numeric vector of conditional natural mortality.
+#' @param minLL A numeric vector of minimum length limits (in mm). All values must be less than `Linf` in `lhparms`.
+#' @param cf A numeric vector of conditional fishing mortality. All values must be between 0 and 1 (inclusive).
+#' @param cm A numeric vector of conditional natural mortality. All values must be between 0 and 1 (inclusive).
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
-#' @param loi A numeric vector for lengths of interest. Used to determine number of fish that reach desired lengths.
-#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
+#' @param loi A numeric vector of lengths (in mm) of interest. Used to determine number of fish that reach these lengths. All must be less than `Linf` in `lhparms`.
+#' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{FALSE}. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
-#' @details Details will be filled out later
+#' @details Details will be filled out later.
+#'
+#' Note that the main calculations are in the internal `yprBH_func` (use `rFAMS:::yprBH_func` to see that source code).
 #'
 #' @return  A data.frame with the following calculated values:
 #' \itemize{
-#' \item \code{yield} is the estimated yield (in g).
-#' \item \code{exploitation} is the exploitation rate.
-#' \item \code{Nharvest} is the number of harvested fish.
-#' \item \code{Ndie} is the number of fish that die of natural deaths.
-#' \item \code{Nt} is the number of fish at time tr (time they become harvestable size).
-#' \item \code{avgwt} is the average weight of fish harvested.
-#' \item \code{avglen} is the average length of fish harvested.
-#' \item \code{tr} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
-#' \item \code{nAtxxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
-#' \item \code{F} is the instantaneous rate of fishing mortality.
-#' \item \code{M} is the instantaneous rate of natural mortality.
-#' \item \code{Z} is the instantaneous rate of total mortality.
-#' \item \code{S} is the (total) annual rate of survival.
+#' \item `yield` is the estimated yield (in g).
+#' \item `exploitation` is the exploitation rate.
+#' \item `Nharvest` is the number of harvested fish.
+#' \item `Ndie` is the number of fish that die of natural deaths.
+#' \item `Nt` is the number of fish at time tr (time they become harvestable size).
+#' \item `avgwt` is the average weight of fish harvested.
+#' \item `avglen` is the average length of fish harvested.
+#' \item `tr` is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery).
+#' \item `nAtxxx` is the number that reach the length of interest supplied. There will be one column for each length of interest.
+#' \item `F` is the instantaneous rate of fishing mortality.
+#' \item `M` is the instantaneous rate of natural mortality.
+#' \item `Z` is the instantaneous rate of total mortality.
+#' \item `S` is the (total) annual rate of survival.
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (\code{minLL}, \code{cf}, and\code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax}).
+#' For convenience the data.frame also contains the model input values (`minLL`, `cf`, and`cm` from input vectors; `N0`; `Linf`; `K`; `t0`; `LWalpha`; `LWbeta`; and `tmax` from `lhparms`).
 #'
-#' The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are defined under "values" in the documentation for \code{\link{yprBH_func}}.
+#' The data.frame also contains a \code{notes} value which may contain abbreviations for "issues" that occurred when computing the results and were adjusted for. The possible abbreviates are as follows:
+#'
+#' \itemize{
+#' \item `minLL>=Linf`: The minimum length limit (`minLL`) being explored was greater than the given asymptotic mean length (`Linf`). For the purpose (only) of computing the time at recruitment to the fishery (`tr`) the `Linf` was set to `minLL`+0.1.
+#' \item `tr<t0`: The age at recruitment to the fishery (`tr`) was less than the hypothetical time when the mean length is zero (`t0`). The fish can't recruit to the fishery prior to having length 0 so `tr` was set to `t0`. This also assures that the time it takes to recruit to the fishery is greater than 0.
+#' \item `Nt<0`: The number of fish recruiting to the fishery was less than 0. There cannot be negative fish, so `Nt` was then set to 0.
+#' \item `Nt>N0`: The number of fish recruiting to the fishery was more than the number of fish recruited to the populations. Fish cannot be added to the cohort, so `Nt` was set to `N0`.
+#' \item `Y=Infinite`: The calculated yield (`Y`) was inifinity, which is impossible and suggests some other problem. Yield was set to `NA`.
+#' \item `Y<0`: The calculated yield (`Y`) was negative, which is impossible. Yield was set to 0.
+#' \item `Nharv<0`: The calculated number of fish harvested (`Nharv`) was negative, which is not possible. Number harvested was set to 0.
+#' \item `Nharv>Nt`: The calculated number of fish harvested (`Nharv`) was greater than the number of fish recruiting to the fishery, which is impossible. The number harvested was set to the number recruiting to the fishery.
+#' \item `Ndie<0`: The calculated number of fish recruiting to the fishery that died naturally (`Ndie`) was negative, which is not possible. Number that died was set to 0.
+#' \item `Ndie>Nt`: The calculated number of fish recruiting to the fishery that died naturally (`Ndie`) was greater than the number of fish recruiting to the fishery, which is impossible. The number that died was set to the number recruiting to the fishery.
+#' \item `agvglen<minLL`: The average length of harvested fish was less than the given minimum length limit being explored, which is not possible (with only legal harvest). The average length was set to the minimum length limit.
+#' }
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
-#' @seealso \code{\link{yprBH_func}} for estimating yield from single values of \code{cf}, \code{cm}, and \code{minLL} for simulating yield with multiple values of \code{cf} and \code{cm} but a fixed value for \code{minLL}.
+#' @seealso \code{\link{yprBH_SlotLL}} for estimating yield with the yield-per-recruit model and a slot limit, or \code{\link{dpmBH_MinLL}} for estimating yield with a dynamic pool model using a minimum length limit.
 #'
-#'See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html}{this demonstration page} for more plotting examples
+#' See \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html}{this demonstration page} for more examples of this function.
 #'
 #' @examples
 #' # Load other required packages for organizing output and plotting

@@ -689,6 +689,178 @@ test_that("iCheckSlottTL() messages",{
     expect_warning("A upper slot limit total length of 2000 mm seems too large")
 })
 
+test_that("iChecklabel() messages",{
+  # ----- No errors if NULL (just passes through) or a valid string
+  label <- NULL
+  iChecklabel(label) |>
+    expect_no_error()
+  label <- "Slot of 250-300 mm"
+  iChecklabel(label) |>
+    expect_no_error()
+
+  # ----- errors
+  label <- 3
+  iChecklabel(label) |>
+    expect_error("'label' must be a character")
+  label <- c("Derek","Jason")
+  iChecklabel(label) |>
+    expect_error("Only use one value in 'label'")
+  label <- ""
+  iChecklabel(label) |>
+    expect_error("String in 'label'is empty")
+  label <- matrix(c("Derek","Ogle","Jason","Doll"),nrow=2)
+  iChecklabel(label) |>
+    expect_error("Only use one value in 'label'")
+})
+
+test_that("iCheckrec() messages",{
+  iCheckrec(optname="rec") |>
+    expect_error("Need to specify a vector of recruitment abundance in")
+  res <- NULL
+  iCheckrec(res) |>
+    expect_error("Need to specify a vector of recruitment abundance in")
+
+  # ----- Expect no error because res created by genRecruits
+  rec <- genRecruits(simyears=10,method="fixed",nR=100)
+  iCheckrec(rec) |>
+    expect_no_error()
+
+  # ----- Possibly have errors if vector created directly by user
+  # ..... no error
+  tmp <- rec <- c(100,100,100,100,100,100)
+  iCheckrec(rec) |>
+    expect_no_error()
+  # ..... errors
+  rec[1] <- -100
+  iCheckrec(rec) |>
+    expect_error("All 'rec' must be >=0")
+  rec <- tmp
+  rec[1] <- "a"
+  iCheckrec(rec) |>
+    expect_error("'rec' must be a number")
+  rec <- as.data.frame(tmp)
+  iCheckrec(rec) |>
+    expect_error("'rec' must be a vector")
+  rec <- matrix(tmp,nrow=2)
+  iCheckrec(rec) |>
+    expect_error("'rec' must be a vector")
+})
+
+test_that("iChecksimyears() messages",{
+  iChecksimyears(optname="simyears") |>
+    expect_error("Need to specify a number of years to simulate in")
+  simyears <- NULL
+  iChecksimyears(simyears) |>
+    expect_error("Need to specify a number of years to simulate in")
+
+  simyears <- -100
+  iChecksimyears(simyears) |>
+    expect_error("'simyears' must be >=1")
+  simyears <- "a"
+  iChecksimyears(simyears) |>
+    expect_error("'simyears' must be a number")
+  simyears <- c(100,200)
+  iChecksimyears(simyears) |>
+    expect_error("Only use one value in 'simyears'")
+  simyears <- 100.5
+  iChecksimyears(simyears) |>
+    expect_error("'simyears' must be a whole number of years")
+})
+
+test_that("iCheckCondMort2() messages",{
+  # ----- test that something was sent (optname is used in first ex just to test)
+  rFAMS:::iCheckCondMort2(optname="cf") |>
+    expect_error("Need to specify a matrix of conditional fishing")
+  rFAMS:::iCheckCondMort2(optname="cm") |>
+    expect_error("Need to specify a matrix of conditional natural")
+  cf <- NULL
+  rFAMS:::iCheckCondMort2(cf) |>
+    expect_error("Need to specify a matrix of conditional fishing")
+  cm <- NULL
+  rFAMS:::iCheckCondMort2(cm) |>
+    expect_error("Need to specify a matrix of conditional natural")
+
+  # ----- no error
+  simyears <- 5
+  tmax <- 3
+  tmp <- cf <- cm <- matrix(rep(0.3,simyears*(tmax+1)),nrow=simyears)
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_no_error()
+
+  # ----- test wrong input types or values for cm
+  cm[1,1] <- "a"
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("'cm' must be a numeric matrix")
+  cm <- tmp
+  cm[1,1] <- -0.3
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("All 'cm' must be >=0")
+  cm <- tmp
+  cm[1,1] <- 1.3
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("All 'cm' must be <=1")
+  cm <- tmp[-1,]
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("Number of rows in 'cm'")
+  cm <- rbind(tmp,tmp)
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("Number of rows in 'cm'")
+  cm <- tmp[,-1]
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("Number of columns in 'cm'")
+  cm <- cbind(tmp,tmp)
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("Number of columns in 'cm'")
+  cm <- data.frame(tmp)
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("'cm' must be a matrix of conditional natural")
+  cm <- tmp[1,]
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("'cm' must be a matrix of conditional natural")
+  cm <- tmp[,1]
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("'cm' must be a matrix of conditional natural")
+  cm <- c(0.3,0.3,0.4)
+  rFAMS:::iCheckCondMort2(cm,simyears,tmax) |>
+    expect_error("'cm' must be a matrix of conditional natural")
+
+  # ----- test wrong input types or values for cf
+  cf[1,1] <- "a"
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("'cf' must be a numeric matrix")
+  cf <- tmp
+  cf[1,1] <- -0.3
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("All 'cf' must be >=0")
+  cf <- tmp
+  cf[1,1] <- 1.3
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("All 'cf' must be <=1")
+  cf <- tmp[-1,]
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("Number of rows in 'cf'")
+  cf <- rbind(tmp,tmp)
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("Number of rows in 'cf'")
+  cf <- tmp[,-1]
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("Number of columns in 'cf'")
+  cf <- cbind(tmp,tmp)
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("Number of columns in 'cf'")
+  cf <- data.frame(tmp)
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("'cf' must be a matrix of conditional fishing")
+  cf <- tmp[1,]
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("'cf' must be a matrix of conditional fishing")
+  cf <- tmp[,1]
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("'cf' must be a matrix of conditional fishing")
+  cf <- c(0.3,0.3,0.4)
+  rFAMS:::iCheckCondMort2(cf,simyears,tmax) |>
+    expect_error("'cf' must be a matrix of conditional fishing")
+})
 
 
 
