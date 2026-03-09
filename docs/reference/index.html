@@ -19,6 +19,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-manual" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Manual</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-manual"><li><a class="dropdown-item" href="../articles/MANUAL_Mortality.html">Mortality</a></li>
+    <li><a class="dropdown-item" href="../articles/MANUAL_MortalityDPM.html">Mortality matrices with dynamic pool model</a></li>
     <li><a class="dropdown-item" href="../articles/MANUAL_Growth.html">Growth</a></li>
     <li><a class="dropdown-item" href="../articles/MANUAL_WeightLength.html">Weight-Length</a></li>
   </ul></li>
@@ -60,17 +61,10 @@
 
       <dl><dt>
 
-          <code><a href="dpmBH_func.html">dpmBH_func()</a></code>
-
-        </dt>
-        <dd>Simulate yield using the dynamic pool model.</dd>
-
-        <dt>
-
           <code><a href="dpmBH_MinLL.html">dpmBH_MinLL()</a></code>
 
         </dt>
-        <dd>Main function to simulate expected yield using the Dynamic Pool model for a range of input parameters, including minimum length limits for harvest</dd>
+        <dd>Simulate expected yield under minimum length regulations using the Dynamic Pool model for a range of input parameters</dd>
 
         <dt>
 
@@ -81,7 +75,7 @@
 
         <dt>
 
-          <code><a href="genRecruits.html">genRecruits()</a></code>
+          <code><a href="genRecruits.html">genRecruits()</a></code> <code><a href="genRecruits.html">print(<i>&lt;GENREC&gt;</i>)</a></code>
 
         </dt>
         <dd>Generate a vector of number of recruits for the dynamic pool model.</dd>
@@ -102,31 +96,17 @@
 
         <dt>
 
-          <code><a href="yprBH_func.html">yprBH_func()</a></code>
-
-        </dt>
-        <dd>Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for single input parameters</dd>
-
-        <dt>
-
           <code><a href="yprBH_MinLL.html">yprBH_MinLL()</a></code>
 
         </dt>
-        <dd>Simulate expected yield using the Beverton-Holt Yield-per-Recruit model for a range of input parameters, including minimum length limits for harvest</dd>
+        <dd>Simulate expected yield under minimum length regulations using the Beverton-Holt Yield-per-Recruit model for a range of input parameters</dd>
 
         <dt>
 
           <code><a href="yprBH_SlotLL.html">yprBH_SlotLL()</a></code>
 
         </dt>
-        <dd>Simulate expected yield using the Beverton-Holt Yield Per Recruit model for a slot limit</dd>
-
-        <dt>
-
-          <code><a href="yprBH_slot_func.html">yprBH_slot_func()</a></code>
-
-        </dt>
-        <dd>Function to simulate expected yield using the Beverton-Holt Yield Per Recruit model for single input parameters</dd>
+        <dd>Simulate expected yield using under slot limit regulations using the Beverton-Holt Yield-per-Recruit model</dd>
       </dl></div>
   </main></div>
 

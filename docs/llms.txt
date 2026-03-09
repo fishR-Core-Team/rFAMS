@@ -94,16 +94,14 @@ Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
 
 ## All functions
 
-- [`dpmBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_func.md)
-  : Simulate yield using the dynamic pool model.
 - [`dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md)
-  : Main function to simulate expected yield using the Dynamic Pool
-  model for a range of input parameters, including minimum length limits
-  for harvest
+  : Simulate expected yield under minimum length regulations using the
+  Dynamic Pool model for a range of input parameters
 - [`est_natmort()`](https://fishr-core-team.github.io/rFAMS/reference/est_natmort.md)
   : Compute meta-analytic estimates of instantaneous and conditional
   natural mortality
 - [`genRecruits()`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
+  [`print(`*`<GENREC>`*`)`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md)
   : Generate a vector of number of recruits for the dynamic pool model.
 - [`makeLH()`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   [`print(`*`<MAKELH>`*`)`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
@@ -113,19 +111,12 @@ Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
   [`summary(`*`<SEEMORTS>`*`)`](https://fishr-core-team.github.io/rFAMS/reference/seeMorts.md)
   : Convert vectors of conditional fishing and natural mortality rates
   to other mortality rates.
-- [`yprBH_func()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.md)
-  : Simulate expected yield using the Beverton-Holt Yield-per-Recruit
-  model for single input parameters
 - [`yprBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.md)
-  : Simulate expected yield using the Beverton-Holt Yield-per-Recruit
-  model for a range of input parameters, including minimum length limits
-  for harvest
+  : Simulate expected yield under minimum length regulations using the
+  Beverton-Holt Yield-per-Recruit model for a range of input parameters
 - [`yprBH_SlotLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md)
-  : Simulate expected yield using the Beverton-Holt Yield Per Recruit
-  model for a slot limit
-- [`yprBH_slot_func()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_slot_func.md)
-  : Function to simulate expected yield using the Beverton-Holt Yield
-  Per Recruit model for single input parameters
+  : Simulate expected yield using under slot limit regulations using the
+  Beverton-Holt Yield-per-Recruit model
 
 # Articles
 
@@ -139,6 +130,8 @@ Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
   object](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.md):
 - [Growth](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Growth.md):
 - [Mortality](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Mortality.md):
+- [Mortality matrices with the dynamic pool
+  model](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_MortalityDPM.md):
 - [Weight-Length](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_WeightLength.md):
 - [Comparing FAMS and Ricker YPR
   Equations](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.md):

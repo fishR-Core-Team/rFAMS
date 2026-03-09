@@ -10,6 +10,8 @@
   object](https://fishr-core-team.github.io/rFAMS/articles/MakeLH.md):
 - [Growth](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Growth.md):
 - [Mortality](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Mortality.md):
+- [Mortality matrices with the dynamic pool
+  model](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_MortalityDPM.md):
 - [Weight-Length](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_WeightLength.md):
 - [Comparing FAMS and Ricker YPR
   Equations](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.md):

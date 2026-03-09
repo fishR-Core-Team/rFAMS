@@ -22,6 +22,8 @@ navbar:
       menu:
       - text: Mortality
         href: articles/MANUAL_Mortality.html
+      - text: Mortality matrices with dynamic pool model
+        href: articles/MANUAL_MortalityDPM.html
       - text: Growth
         href: articles/MANUAL_Growth.html
       - text: Weight-Length

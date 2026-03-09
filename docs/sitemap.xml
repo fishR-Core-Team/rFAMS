@@ -6,6 +6,7 @@
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Growth.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Mortality.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/articles/MANUAL_MortalityDPM.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/MANUAL_WeightLength.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html</loc></url>
@@ -30,7 +31,9 @@
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckcm.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckcmVect.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckCondMort.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckCondMort2.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckK.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/iChecklabel.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckLHparms.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckLinf.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckLLinf.html</loc></url>
