@@ -68,7 +68,7 @@ iErrMore1 <- function(x,nm) {
 #' Error if x is not numeric
 #' @keywords internal
 iErrNotNumeric <- function(x,nm) {
-  if (!is.vector(x) && !is.atomic(x)) STOP(nm," must be a number.")
+  if (!is.numeric(x)) STOP(nm," must be a number.")
 }
 
 #' Error if x is (or any items in x are) less than value
