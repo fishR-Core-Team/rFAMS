@@ -27,7 +27,7 @@ library(tidyr)    ## for pivot_longer
 library(dplyr)    ## for filter
 ```
 
-The objective of this article is to demonstrate how to use rFAMS to calculate yield based on a protective slot length limit with multiple values of conditional natural mortality. Separate conditional fishing mortality for fish under slot, within slot, and above slot must be specified. This allows the user to investigate a protective slot where fish are protected from harvest within a length range (i.e., conditional fishing mortality within `cfin` = 0) and an inverted slot where small fish under the slot and large fish over the slot limit are protected while harvesting is allowed within the slot limit (i.e., conditional fishing mortality under `cfunder` = 0, conditional fishing moratlity in `cfin` = desired level of fishing mortality, and conditional fishing mortality above `cfabove` = 0).
+The objective of this article is to demonstrate how to use rFAMS to calculate yield based on a protective slot length limit with multiple values of conditional natural mortality. Separate conditional fishing mortality for fish below slot, within slot, and above slot must be specified. This allows the user to investigate a protective slot where fish are protected from harvest within a length range (i.e., conditional fishing mortality within `cfIn` = 0) and an inverted slot where small fish below the slot and large fish over the slot limit are protected while harvesting is allowed within the slot limit (i.e., conditional fishing mortality below `cfBelow` = 0, conditional fishing moratlity in `cfIn` = desired level of fishing mortality, and conditional fishing mortality above `cfAbove` = 0).
 
 # Build a life history parameter list
 The first step for using any of the rFAMS simulation models is to create an object with life history parameters using the `makeLH()` function. The `makeLH()` function creates a list of the life history parameters needed. Including, the initial number of recruits, maximum age of fish in your population, von Bertalanffy growth model parameters ($L_\infty$, $K$, and $t_0$), and parameters from the log10-transformed weight length model (alpha and beta). By default, the `makeLH()` returns a list. Growth length-weight model paramaters can be generated from functions in the [FSA package](https://fishr-core-team.github.io/FSA/index.html). The example below uses the following life history parameters:
@@ -48,7 +48,7 @@ LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 
 # Estimate yield for one minimum length limit and variable conditional fishing and conditional natural mortality.
 
-The function `yprBH_SlotLL()` function is used when yield is estimated with a slot limit and conditional fishing mortality is specified below, within, and above the slot. This function requires a recruitment length `recruitmentTL` (i.e., the length where fish are susceptible to harvest, this is NOT the lower slot limit); lower slot limit `lowerSL`; upper slot limit `upperSL`; conditional fishing mortality under the slot limit but above recruitment length `cfunder`; conditional fishing mortality within the slot limit `cfin`; conditional fishing mortality above the slot limit `cfabove`; specified conditional natural mortality `cm` by supplying a vector of one or more conditional natural mortality values; set any length of interest to monitor `loi`; and the life history parameters `lhparams`.
+The function `yprBH_SlotLL()` function is used when yield is estimated with a slot limit and conditional fishing mortality is specified below, within, and above the slot. This function requires a recruitment length `recruitmentTL` (i.e., the length where fish are susceptible to harvest, this is NOT the lower slot limit); lower slot limit `lowerSL`; upper slot limit `upperSL`; conditional fishing mortality below the slot limit but above recruitment length `cfBelow`; conditional fishing mortality within the slot limit `cfIn`; conditional fishing mortality above the slot limit `cfAbove`; specified conditional natural mortality `cm` by supplying a vector of one or more conditional natural mortality values; set any length of interest to monitor `loi`; and the life history parameters `lhparams`.
 
 rFAMS includes a function `est_natmort()` to estimate instantaneous natural mortality (M) and conditional natural mortality (cm) using parameters specified in the life history parameter object. See the [FSA package](https://fishr-core-team.github.io/FSA/index.html) for other methods of calculating M and cm. To generate the range and average M and cm using rFAMS:
 
@@ -57,7 +57,7 @@ rFAMS includes a function `est_natmort()` to estimate instantaneous natural mort
 est_natmort(LH, incl.avg = TRUE)
 ```
 
-To estimate yield with a slot limit the user must specify the lower slot limit `lowerSL`, upper slot limit `upperSL`, and optional recruitment length limit `recruitmentTL` which is the minimum length fish could be harvested at if harvest is allowed under the slot limit. The user must also specify conditional fishing mortality under, within, and above the slot. Specifying cf is where the user will determine if the slot limit is a protective slot (set `cfin` = 0) with harvest under and above the slot, or an inverse slot (set `cfunder` and `cfabove` = 0) with harvest within the slot. In the example below, there is a protective slot and cm values range from 0.1 to 0.9 in increments of 0.1. It also monitors lengths of 200, 250, 300, and 350mm. FInally, there is an optional string to `label` the simulation.
+To estimate yield with a slot limit the user must specify the lower slot limit `lowerSL`, upper slot limit `upperSL`, and optional recruitment length limit `recruitmentTL` which is the minimum length fish could be harvested at if harvest is allowed below the slot limit. The user must also specify conditional fishing mortality below, within, and above the slot. Specifying cf is where the user will determine if the slot limit is a protective slot (set `cfIn` = 0) with harvest below and above the slot, or an inverse slot (set `cfBelow` and `cfAbove` = 0) with harvest within the slot. In the example below, there is a protective slot and cm values range from 0.1 to 0.9 in increments of 0.1. It also monitors lengths of 200, 250, 300, and 350mm. FInally, there is an optional string to `label` the simulation.
 
 ```{r}
 #| label: estimate yield
@@ -67,7 +67,7 @@ cm <- seq(from = 0.1, to = 0.9, by = 0.1)
 loi <- c(200,250,300,325,350)
 
 Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,          # Set slot limit length
-                      cfunder=0.45,cfin=0,cfabove=0.25, # Set cf under, in, and above slot limit
+                      cfBelow=0.45,cfIn=0,cfAbove=0.25, # Set cf below, in, and above slot limit
                       cm=cm,                  # vector of cm
                       lhparms=LH,             # Specifies life history parameters
                       recruitmentTL=200,      # Set recruitment length
@@ -81,44 +81,44 @@ The output object will be a data.frame with the following calculated values:
 - yieldTotal is the calculated total yield
 - nharvTotal is the calculated total number of harvested fish
 - ndieTotal is the calculated total number of fish that die of natural death
-- yieldUnder is the calculated yield under the slot limit
+- yieldBelow is the calculated yield below the slot limit
 - yieldIn is the calculated yield within the slot limit
 - yieldAbove is the calculated yield above the slot limit
-- exploitationUnder is the exploitation rate under the slot limit
+- exploitationBelow is the exploitation rate below the slot limit
 - exploitationIn is the exploitation rate within the slot limit
 - exploitationAbove is the exploitation rate above the slot limit
-- nharvestUnder is the number of harvested fish under the slot limit
+- nharvestBelow is the number of harvested fish below the slot limit
 - nharvestIn is the number of harvested fish within the slot limit
 - nharvestAbove is the number of harvested fish above the slot limit
 - n0die is the number of fish that die of natural death before entering the fishery at a minimum length
-- ndieUnder is the number of fish that die of natural death under the slot limit
+- ndieBelow is the number of fish that die of natural death below the slot limit
 - ndieIn is the number of fish that die of natural deaths within the slot limit
 - ndieAbove is the number of fish that die of natural deaths above the slot limit
-- avglenUnder is the average length of fish harvested under the slot limit
+- avglenBelow is the average length of fish harvested below the slot limit
 - avglenIn is the average length of fish harvested within the slot limit
 - avglenAbove is the average length of fish harvested above the slot limit
-- avgwtUnder is the average weight of fish harvested under the slot limit
+- avgwtBelow is the average weight of fish harvested below the slot limit
 - avgwtIn is the average weight of fish harvested within the slot limit
 - avgwtAbove is the average weight of fish harvested above the slot limit
-- trUnder is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
+- trBelow is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 - trIn is the time for a fish to recruit to a lower length limit of the slot limit
 - trOver is the time for a fish to recruit to a upper length limit of the slot limit
-- nrUnder is the number of fish at time trUnder (time they become harvestable size under the slot limit)
+- nrBelow is the number of fish at time trBelow (time they become harvestable size below the slot limit)
 - nrIn is the number of fish at time trIn (time they reach the lower slot limit size)
 - nrAbove is the number of fish at time trAbove (time they reach the upper slot limit size)
-- FUnder is the estimated instantaneous rate of fishing mortality under the slot limit
+- FBelow is the estimated instantaneous rate of fishing mortality below the slot limit
 - FIn is the estimated instantaneous rate of fishing mortality within the slot limit
 - FAbove is the estimated instantaneous rate of fishing mortality above the slot limit
-- MUnder is the estimated instantaneous rate of natural mortality under the slot limit
+- MBelow is the estimated instantaneous rate of natural mortality below the slot limit
 - MIn is the estimated instantaneous rate of natural mortality within the slot limit
 - MAbove is the estimated instantaneous rate of natural mortality above the slot limit
-- ZUnder is the estimated instantaneous rate of total mortality under the slot limit
+- ZBelow is the estimated instantaneous rate of total mortality below the slot limit
 - ZIn is the estimated instantaneous rate of total mortality within the slot limit
 - ZAbove is the estimated instantaneous rate of total mortality above the slot limit
-- SUnder is the estimated total survival under the slot limit
+- SBelow is the estimated total survival below the slot limit
 - SIn is the estimated total survival within the slot limit
 - SAbove is the estimated total survival above the slot limit
-- cfUnder A numeric representing conditional fishing mortality
+- cfBelow A numeric representing conditional fishing mortality
 - cfIn A numeric representing conditional fishing mortality
 - cfOver A numeric representing conditional fishing mortality
 - recruitmentTL A numeric representing the minimum length limit for recruiting to the fishery in mm.
@@ -126,7 +126,7 @@ The output object will be a data.frame with the following calculated values:
 - upperSL A numeric representing the length of the upper slot limit in mm.
 - nAtxxx is the number that reach the length of interest supplied. There will be one column for each length of interest.
 
-For convenience the data.frame also contains the model input values (cf derived from cfUnder, cfIn, and cfOver; recruitmentTL; lowerSL; upperSL; cm derived from cmmin, cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).
+For convenience the data.frame also contains the model input values (cf derived from cfBelow, cfIn, and cfOver; recruitmentTL; lowerSL; upperSL; cm derived from cmmin, cmmax, and cminc; N0; Linf; K; t0; LWalpha; LWbeta; and tmax).
 
 View the first few rows of the output
 
@@ -187,16 +187,16 @@ The last example figure plots yield as a function of conditional natural mortali
 
 ```{r}
 #| label: Plot of yield across all sizes
-# Yield under, in, and above the slot limit vs Conditional Natural Mortality (cm)
+# Yield below, in, and above the slot limit vs Conditional Natural Mortality (cm)
 # Select columns for plotting
 plot_data <- Res_1 %>%
-  select(cm, yieldUnder, yieldIn, yieldAbove) %>%
+  select(cm, yieldBelow, yieldIn, yieldAbove) %>%
   pivot_longer(!cm, names_to="YieldCat",values_to="Yield")
 
 # Generate plot
 ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   geom_point() +
-  scale_color_discrete(name="Yield",labels=c("Above SL","Within SL","Under SL"))+
+  scale_color_discrete(name="Yield",labels=c("Above SL","Within SL","Below SL"))+
   geom_line() +
   labs(y="Total yield (g)",x="Conditional natural mortality (cm)") +
   theme_FAMS() +
@@ -206,14 +206,14 @@ ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
 
 # Compare yield across multiple slot limits
 
-The `label` argument can be used to plot and compare results from multiple slot limits. The last example simulates yield under two additional slot limits and creates a single figure to compare yield across the three slot limits.
+The `label` argument can be used to plot and compare results from multiple slot limits. The last example simulates yield below two additional slot limits and creates a single figure to compare yield across the three slot limits.
 
 ```{r}
 #| label: Plot of yield across three slot limits
 # Simulate yield using settings above with two additional slot limit ranges
 
 Res_2 <- yprBH_SlotLL(lowerSL=325,upperSL=375,          # Set slot limit length
-                      cfunder=0.45,cfin=0,cfabove=0.25, # Set cf under, in, and above slot limit
+                      cfBelow=0.45,cfIn=0,cfAbove=0.25, # Set cf below, in, and above slot limit
                       cm=cm,                  # vector of cm
                       lhparms=LH,             # Specifies life history parameters
                       recruitmentTL=200,      # Set recruitment length
@@ -221,7 +221,7 @@ Res_2 <- yprBH_SlotLL(lowerSL=325,upperSL=375,          # Set slot limit length
                       label="325 to 375")     # string to label simulation
 
 Res_3 <- yprBH_SlotLL(lowerSL=375,upperSL=450,          # Set slot limit length
-                      cfunder=0.45,cfin=0,cfabove=0.25, # Set cf under, in, and above slot limit
+                      cfBelow=0.45,cfIn=0,cfAbove=0.25, # Set cf below, in, and above slot limit
                       cm=cm,                  # vector of cm
                       lhparms=LH,             # Specifies life history parameters
                       recruitmentTL=200,      # Set recruitment length

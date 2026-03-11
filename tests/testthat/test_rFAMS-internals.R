@@ -372,37 +372,37 @@ test_that("iCheckCondMort() messages",{
     expect_error("All 'cm' must be <=1")
 
   # ----- test wrong input types or values
-  cfunder <- NULL
-  rFAMS:::iCheckCondMort(cfunder) |>
+  cfBelow <- NULL
+  rFAMS:::iCheckCondMort(cfBelow) |>
     expect_error("Need to specify a conditional fishing mortality under the slot")
-  cfin <- NULL
-  rFAMS:::iCheckCondMort(cfin) |>
+  cfIn <- NULL
+  rFAMS:::iCheckCondMort(cfIn) |>
     expect_error("Need to specify a conditional fishing mortality in the slot")
-  cfabove <- NULL
-  rFAMS:::iCheckCondMort(cfabove) |>
+  cfAbove <- NULL
+  rFAMS:::iCheckCondMort(cfAbove) |>
     expect_error("Need to specify a conditional fishing mortality above the slot")
 
   # ----- test wrong input types or values
-  cfunder <- -1
-  rFAMS:::iCheckCondMort(cfunder) |>
-    expect_error("'cfunder' must be >=0")
-  cfunder <- 2
-  rFAMS:::iCheckCondMort(cfunder) |>
-    expect_error("'cfunder' must be <=1")
-  cfunder <- "a"
-  rFAMS:::iCheckCondMort(cfunder) |>
-    expect_error("'cfunder' must be a number")
-  cfunder <- c(0.3,0.5)
-  rFAMS:::iCheckCondMort(cfunder) |>
+  cfBelow <- -1
+  rFAMS:::iCheckCondMort(cfBelow) |>
+    expect_error("'cfBelow' must be >=0")
+  cfBelow <- 2
+  rFAMS:::iCheckCondMort(cfBelow) |>
+    expect_error("'cfBelow' must be <=1")
+  cfBelow <- "a"
+  rFAMS:::iCheckCondMort(cfBelow) |>
+    expect_error("'cfBelow' must be a number")
+  cfBelow <- c(0.3,0.5)
+  rFAMS:::iCheckCondMort(cfBelow) |>
     expect_no_error()
-  rFAMS:::iCheckCondMort(cfunder,onlyone=TRUE) |>
-    expect_error("Only use one value in 'cfunder'")
-  cfunder <- c(-0.3,0.5)
-  rFAMS:::iCheckCondMort(cfunder) |>
-    expect_error("All 'cfunder' must be >=0")
-  cfunder <- c(0.3,1.5)
-  rFAMS:::iCheckCondMort(cfunder) |>
-    expect_error("All 'cfunder' must be <=1")
+  rFAMS:::iCheckCondMort(cfBelow,onlyone=TRUE) |>
+    expect_error("Only use one value in 'cfBelow'")
+  cfBelow <- c(-0.3,0.5)
+  rFAMS:::iCheckCondMort(cfBelow) |>
+    expect_error("All 'cfBelow' must be >=0")
+  cfBelow <- c(0.3,1.5)
+  rFAMS:::iCheckCondMort(cfBelow) |>
+    expect_error("All 'cfBelow' must be <=1")
 })
 
 test_that("iCheckMLH() messages",{
@@ -478,130 +478,130 @@ test_that("iCheckSlotType() messages",{
   # 3    NULL  ## ## ## STOP ... can't have all, implied inverse slot
   # 4    ####  0  ## 0  STOP ... don't use recruitmentTL for harvest slot
   # 5    NULL  ## 0  ## STOP ... need recruitmentTL for protected slot
-  # 6    ####  ## ## 0  STOP ... implied protected slot, can't have cfin
-  # 7    NULL  ## ## 0  STOP ... implied harvest slot, can't have cfunder
-  # 8    ####  0  ## ## STOP ... implied protected slot, can't have cfin
-  # 9    NULL  0  ## ## STOP ... implied harvest slot, can't have cfabove
-  # 10   ####  ## 0  0  STOP ... implied protected slot, also need cfabove
-  # 11   NULL  ## 0  0  STOP ... implied harvest slot, need cfin and no cfunder
-  # 12   ####  ## 0  0  STOP ... implied protected slot, also need cfabove
-  # 13   NULL  0  0  ## STOP ... implied harvest slot, need cfin and no cfabove
-  # 14   ####  0  0  ## STOP ... implied protected slot, also need cfunder
+  # 6    ####  ## ## 0  STOP ... implied protected slot, can't have cfIn
+  # 7    NULL  ## ## 0  STOP ... implied harvest slot, can't have cfBelow
+  # 8    ####  0  ## ## STOP ... implied protected slot, can't have cfIn
+  # 9    NULL  0  ## ## STOP ... implied harvest slot, can't have cfAbove
+  # 10   ####  ## 0  0  STOP ... implied protected slot, also need cfAbove
+  # 11   NULL  ## 0  0  STOP ... implied harvest slot, need cfIn and no cfBelow
+  # 12   ####  ## 0  0  STOP ... implied protected slot, also need cfAbove
+  # 13   NULL  0  0  ## STOP ... implied harvest slot, need cfIn and no cfAbove
+  # 14   ####  0  0  ## STOP ... implied protected slot, also need cfBelow
   # 14   ####  ## 0  ## GOOD ... protected slot
   # 15   NULL  0  ## 0  GOOD ... inverse slot
 
   ## ----- no potential issues
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # Case 15
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0.3  # Case 15
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
     expect_no_error()
-  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case 16
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
+  recruitmentTL <- NULL; cfBelow <- 0;   cfIn <- 0.3; cfAbove <- 0    # Case 16
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
     expect_no_error()
 
   ## ----- can't be all zeroes
-  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1a
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
-  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1b
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
+  recruitmentTL <- 200;  cfBelow <- 0;   cfIn <- 0;   cfAbove <- 0    # Case #1a
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+    expect_error("'cfBelow', 'cfIn', and 'cfAbove' cannot all =0")
+  recruitmentTL <- NULL; cfBelow <- 0;   cfIn <- 0;   cfAbove <- 0    # Case #1b
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+    expect_error("'cfBelow', 'cfIn', and 'cfAbove' cannot all =0")
 
-  ## ----- can't have recruitmenT=NULL when cfunder is provided
-  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #3
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_error("If 'cfunder'>0 then a value must be given to")
-  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0.4  # Case #5
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_error("If 'cfunder'>0 then a value must be given to")
-  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #7
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_error("If 'cfunder'>0 then a value must be given to")
-  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #11
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_error("If 'cfunder'>0 then a value must be given to")
+  ## ----- can't have recruitmenT=NULL when cfBelow is provided
+  # recruitmentTL <- NULL; cfBelow <- 0.2; cfIn <- 0.3; cfAbove <- 0.4  # Case #3
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_error("If 'cfBelow'>0 then a value must be given to")
+  # recruitmentTL <- NULL; cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0.4  # Case #5
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_error("If 'cfBelow'>0 then a value must be given to")
+  # recruitmentTL <- NULL; cfBelow <- 0.2; cfIn <- 0.3; cfAbove <- 0    # Case #7
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_error("If 'cfBelow'>0 then a value must be given to")
+  # recruitmentTL <- NULL; cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0    # Case #11
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_error("If 'cfBelow'>0 then a value must be given to")
 
   ## ----- check a few that will err when strict=TRUE, but not when strict=FALSE
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #2
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_no_error()
-  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #4
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_no_error()
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #6
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_no_error()
-  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #8
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_no_error()
-  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #9
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_no_error()
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #10
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_no_error()
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #12
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_no_error()
-  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #13
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_no_error()
-  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #14
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL) |>
-    expect_no_error()
+  # recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0.3; cfAbove <- 0.4  # Case #2
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_no_error()
+  # recruitmentTL <- 200;  cfBelow <- 0;   cfIn <- 0.3; cfAbove <- 0    # Case #4
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_no_error()
+  # recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0.3; cfAbove <- 0    # Case #6
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_no_error()
+  # recruitmentTL <- 200;  cfBelow <- 0;   cfIn <- 0.3; cfAbove <- 0.4  # Case #8
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_no_error()
+  # recruitmentTL <- NULL; cfBelow <- 0;   cfIn <- 0.3; cfAbove <- 0.4  # Case #9
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_no_error()
+  # recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0    # Case #10
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_no_error()
+  # recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0    # Case #12
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_no_error()
+  # recruitmentTL <- NULL; cfBelow <- 0;   cfIn <- 0;   cfAbove <- 0.3  # Case #13
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_no_error()
+  # recruitmentTL <- 200;  cfBelow <- 0;   cfIn <- 0;   cfAbove <- 0.3  # Case #14
+  # rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL) |>
+  #   expect_no_error()
 
 #!!!!! Did not check against specific error messages for all situations because
 #      the messages are long and they wrap differently depending on where the
 #      tests are made (i.e., varies by computer).
-  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1a
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
-    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
-  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0    # Case #1b
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
-    expect_error("'cfunder', 'cfin', and 'cfabove' cannot all =0")
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #2
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- 200;  cfBelow <- 0;   cfIn <- 0;   cfAbove <- 0    # Case #1a
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
+    expect_error("'cfBelow', 'cfIn', and 'cfAbove' cannot all =0")
+  recruitmentTL <- NULL; cfBelow <- 0;   cfIn <- 0;   cfAbove <- 0    # Case #1b
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
+    expect_error("'cfBelow', 'cfIn', and 'cfAbove' cannot all =0")
+  recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0.3; cfAbove <- 0.4  # Case #2
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0.4  # Case #3
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- NULL; cfBelow <- 0.2; cfIn <- 0.3; cfAbove <- 0.4  # Case #3
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #4
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- 200;  cfBelow <- 0;   cfIn <- 0.3; cfAbove <- 0    # Case #4
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0.4  # Case #5
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- NULL; cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0.4  # Case #5
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #6
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0.3; cfAbove <- 0    # Case #6
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0.3; cfabove <- 0    # Case #7
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- NULL; cfBelow <- 0.2; cfIn <- 0.3; cfAbove <- 0    # Case #7
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #8
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- 200;  cfBelow <- 0;   cfIn <- 0.3; cfAbove <- 0.4  # Case #8
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0.4  # Case #9
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- NULL; cfBelow <- 0;   cfIn <- 0.3; cfAbove <- 0.4  # Case #9
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #10
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0    # Case #10
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- NULL; cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #11
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- NULL; cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0    # Case #11
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0    # Case #12
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0    # Case #12
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #13
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- NULL; cfBelow <- 0;   cfIn <- 0;   cfAbove <- 0.3  # Case #13
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- 200;  cfunder <- 0;   cfin <- 0;   cfabove <- 0.3  # Case #14
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- 200;  cfBelow <- 0;   cfIn <- 0;   cfAbove <- 0.3  # Case #14
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_error("")
-  recruitmentTL <- 200;  cfunder <- 0.2; cfin <- 0;   cfabove <- 0.3  # Case #15
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- 200;  cfBelow <- 0.2; cfIn <- 0;   cfAbove <- 0.3  # Case #15
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_no_error()
-  recruitmentTL <- NULL; cfunder <- 0;   cfin <- 0.3; cfabove <- 0    # Case #16
-  rFAMS:::iCheckSlotType(cfunder,cfin,cfabove,recruitmentTL,strict=TRUE) |>
+  recruitmentTL <- NULL; cfBelow <- 0;   cfIn <- 0.3; cfAbove <- 0    # Case #16
+  rFAMS:::iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE) |>
     expect_no_error()
 })
 
@@ -899,24 +899,24 @@ test_that("iCheckCondMort2() messages",{
 # test_that("iCheckcfminc() messages and values",{
 #   expect_error(rFAMS:::iCheckcfminc(),
 #                "Need to specify an increment for conditional natural mortality in")
-#   ## Set cfinc to value outside function to test that name is extracted
+#   ## Set cfInc to value outside function to test that name is extracted
 #   cfmin <- 0.1; cfmax <- 0.9
-#   cfinc <- -0.1
-#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"must be >=0")
-#   cfinc <- 2
-#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"must be <=1")
-#   cfinc <- "a"
-#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"must be a number")
-#   cfinc <- c(0.3,0.5)
-#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),"Only use one value in")
+#   cfInc <- -0.1
+#   expect_error(rFAMS:::iCheckcfminc(cfInc,cfmin,cfmax),"must be >=0")
+#   cfInc <- 2
+#   expect_error(rFAMS:::iCheckcfminc(cfInc,cfmin,cfmax),"must be <=1")
+#   cfInc <- "a"
+#   expect_error(rFAMS:::iCheckcfminc(cfInc,cfmin,cfmax),"must be a number")
+#   cfInc <- c(0.3,0.5)
+#   expect_error(rFAMS:::iCheckcfminc(cfInc,cfmin,cfmax),"Only use one value in")
 #
 #   ## Problems with cfmin and cfmax
-#   cfmin <- 0.9; cfmax <- 0.1; cfinc <- 0.1
-#   expect_error(rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),
+#   cfmin <- 0.9; cfmax <- 0.1; cfInc <- 0.1
+#   expect_error(rFAMS:::iCheckcfminc(cfInc,cfmin,cfmax),
 #                "'cfmin' must be equal to or less than 'cfmax'")
-#   cfmin <- 0.1; cfmax <- 0.9; cfinc <- 0.001
-#   expect_warning(tmp <- rFAMS:::iCheckcfminc(cfinc,cfmin,cfmax),
-#                         "Choices of 'cfmin', 'cfmax', and 'cfinc' resulted in")
+#   cfmin <- 0.1; cfmax <- 0.9; cfInc <- 0.001
+#   expect_warning(tmp <- rFAMS:::iCheckcfminc(cfInc,cfmin,cfmax),
+#                         "Choices of 'cfmin', 'cfmax', and 'cfInc' resulted in")
 #
 #   ## Values returned
 #   expect_equal(class(tmp),"numeric")

@@ -2,14 +2,14 @@
 % Please edit documentation in R/yprBH_slot_func.R
 \name{yprBH_slot_func}
 \alias{yprBH_slot_func}
-\title{Simulate expected yield under slot length limits using the Beverton-Holt Yield-per-Recruit model}
+\title{Simulate expected yield below slot length limits using the Beverton-Holt Yield-per-Recruit model}
 \usage{
 yprBH_slot_func(
   lowerSL,
   upperSL,
-  cfunder,
-  cfin,
-  cfabove,
+  cfBelow,
+  cfIn,
+  cfAbove,
   cm,
   lhparms,
   recruitmentTL,
@@ -22,11 +22,11 @@ yprBH_slot_func(
 
 \item{upperSL}{A single numeric representing the length of the upper slot limit in mm. See details. Must be less than \code{Linf} in \code{lhparms}.}
 
-\item{cfunder}{A single numeric representing conditional fishing mortality under the lower slot limit length. Must be between 0 and 1 (inclusive).}
+\item{cfBelow}{A single numeric representing conditional fishing mortality below the lower slot limit length. Must be between 0 and 1 (inclusive).}
 
-\item{cfin}{A single numeric representing conditional fishing mortality between the lower and upper slot limit lengths (i.e., "in the slot"). Must be between 0 and 1 (inclusive).}
+\item{cfIn}{A single numeric representing conditional fishing mortality between the lower and upper slot limit lengths (i.e., "in the slot"). Must be between 0 and 1 (inclusive).}
 
-\item{cfabove}{A single numeric representing conditional fishing mortality above the upper slot limit length. Must be between 0 and 1 (inclusive).}
+\item{cfAbove}{A single numeric representing conditional fishing mortality above the upper slot limit length. Must be between 0 and 1 (inclusive).}
 
 \item{cm}{A SINGLE numeric representing conditional natural mortality.}
 
@@ -42,7 +42,7 @@ yprBH_slot_func(
 A one row data.frame with the items described in \code{\link{yprBH_SlotLL}}.
 }
 \description{
-An INTERNAL function used by \code{\link{yprBH_SlotLL}} to estimate yield under slot (protected or inverse/harvest) length limit regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with one value each of \code{cm} (and \code{lowerSL}, \code{upperSL}, \code{cfunder}, \code{cfin}, and \code{cfabove}). This is the base function for \code{\link{yprBH_SlotLL}}, is NOT exported, and is NOT expected to be used directly by the user.
+An INTERNAL function used by \code{\link{yprBH_SlotLL}} to estimate yield below slot (protected or inverse/harvest) length limit regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with one value each of \code{cm} (and \code{lowerSL}, \code{upperSL}, \code{cfBelow}, \code{cfIn}, and \code{cfAbove}). This is the base function for \code{\link{yprBH_SlotLL}}, is NOT exported, and is NOT expected to be used directly by the user.
 }
 \details{
 See details in \code{\link{yprBH_SlotLL}}.

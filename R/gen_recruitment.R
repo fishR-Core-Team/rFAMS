@@ -2,8 +2,8 @@
 #'
 #' @description This function is used to generate number of recruits across multiple years using different random functions.
 #'
-#' @param method A single string to call the method of generating a vector of recruits. `fixed` generates recruitment based on a fixed value for each year of simyears, `uniform` generates recruitment based on random values from a uniform distribution for each year of simyears, `normal` generates recruitment based on random values from a normal distribution for each year of simyears, `StrYC_Nth` generates recruitment based on a strong year class every Nth year, and `StrYC_randInt` generates recruitment based on a strong year classes at random intervals.
 #' @param simyears A single numeric that sets the number of years to simulate recruitment
+#' @param method A single string to call the method of generating a vector of recruits. `fixed` generates recruitment based on a fixed value for each year of simyears, `uniform` generates recruitment based on random values from a uniform distribution for each year of simyears, `normal` generates recruitment based on random values from a normal distribution for each year of simyears, `StrYC_Nth` generates recruitment based on a strong year class every Nth year, and `StrYC_randInt` generates recruitment based on a strong year classes at random intervals.
 #' @param nR A single numeric that sets the fixed number of recruitment. Used when `method="fixed"` or `method="StrYC_Nth"`.
 #' @param minR A single numeric that sets the minimum number of recruits during simulations. Used when `method="uniform"` or `method="normal"`.
 #' @param maxR A single numeric that sets the maximum number of recruits during simulations. Used when `method="uniform"` or `method="normal"`.

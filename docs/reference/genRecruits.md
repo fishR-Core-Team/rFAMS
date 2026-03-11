@@ -111,13 +111,13 @@ rec
 # by 25 and 75
 rec <- genRecruits(simyears=20,method="uniform",minR=25,maxR=75)
 rec
-#>  [1] 50 58 51 67 60 69 26 69 75 50 43 64 54 57 68 53 38 71 68 37
+#>  [1] 65 66 45 36 46 58 50 58 51 67 60 69 26 69 75 50 43 64 54 57
 
 # Generate recruits for 20 years based on a normal distribution with a mean
 # of 50, standard deviation of 10, and trucated to be between 25 and 75
 rec <- genRecruits(simyears=20,method="normal",minR=25,maxR=75,meanR=50,sdR=10)
 rec
-#>  [1] 48 38 40 61 51 55 33 35 53 63 52 63 55 56 49 52 49 69 63 57
+#>  [1] 61 43 61 48 38 40 61 51 55 33 35 53 63 52 63 55 56 49 52 49
 
 # Geneate recruits for 20 years based on a fixed number of recruits at 50 and
 # a strong year class every 5 years with recruits 2 times the mean recruits
@@ -131,6 +131,6 @@ rec
 # recruitswith the random interval averaging every 5 years.
 rec <- genRecruits(simyears=20,method="StrYC_randInt",nR=50,sizeStr=2,avgFreq=5)
 rec
-#>  [1]  50  50  50  50 100  50  50 100  50  50  50  50  50  50  50  50 100  50 100
+#>  [1] 100 100 100  50  50 100  50  50  50  50 100  50  50 100  50  50  50  50  50
 #> [20]  50
 ```

@@ -23,5 +23,5 @@
   : Simulate expected yield under minimum length regulations using the
   Beverton-Holt Yield-per-Recruit model for a range of input parameters
 - [`yprBH_SlotLL()`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md)
-  : Simulate expected yield using under slot limit regulations using the
+  : Simulate expected yield using below slot limit regulations using the
   Beverton-Holt Yield-per-Recruit model

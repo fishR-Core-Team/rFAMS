@@ -6,22 +6,22 @@ limits
 ## Usage
 
 ``` r
-iCheckSlotType(cfu, cfi, cfa, rtl, strict = FALSE)
+iCheckSlotType(cfu, cfi, cfa, rtl, strict = TRUE)
 ```
 
 ## Arguments
 
 - cfu:
 
-  A `cfunder` value.
+  A `cfBelow` value.
 
 - cfi:
 
-  A `cfin` value.
+  A `cfIn` value.
 
 - cfa:
 
-  A `cfabove` value.
+  A `cfAbove` value.
 
 - rtl:
 
@@ -34,12 +34,12 @@ iCheckSlotType(cfu, cfi, cfa, rtl, strict = FALSE)
 ## Details
 
 `strict` is a logical that indicates whether strict criterion for values
-of `recruitmentTL`, `cfunder`, `cfin`, and `cfabove` should be used. If
+of `recruitmentTL`, `cfBelow`, `cfIn`, and `cfAbove` should be used. If
 `strict=TRUE` then the only accepted combinations are that a
-`recruitmentTL` is given (i.e., not `NULL`), `cfunder`\>0, `cfabove`\>0,
-and `cfin`=0 (i.e., simulating a protected slot) or `recruitmentTL` is
-`NULL`, `cfunder`=0, `cfabove`=0, and `cfin`\>0 (i.e., simulating an
+`recruitmentTL` is given (i.e., not `NULL`), `cfBelow`\>0, `cfAbove`\>0,
+and `cfIn`=0 (i.e., simulating a protected slot) or `recruitmentTL` is
+`NULL`, `cfBelow`=0, `cfAbove`=0, and `cfIn`\>0 (i.e., simulating an
 inverse/harvest slot). If `strict=FALSE` then the only restrictions are
-that the three `cf`s cannot all =0, and that if `cfunder` is given them
+that the three `cf`s cannot all =0, and that if `cfBelow` is given them
 `recruitmentTL` cannot be `NULL`. **This argument allows us to model
 each type of restrictions while we ultimately decide which one to use.**

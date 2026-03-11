@@ -58,7 +58,7 @@ The `lhparms` requires a list or vector that is created with the `makeLH()` func
 LH <- makeLH(N0=100,tmax=15,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
 ```
 
-`cf` and `cm` are a matrix with rows = `simyears` (number of years specified in the simulation) and columns = `tmax` (maximum age). This example assigns a `cm` of 0 to the first year and 0.18 to the remaining years and is constant across ages; and a `cf` of 0 for the first year and 0.33 to the remaining years and is constant across ages. Note, Ages must be age-0 through maximum age. Thus, a `cf` and `cm` matrix will have maximum age plus on one rows.
+`cf` and `cm` are a matrix with rows = `simyears` (number of years specified in the simulation) and columns = `tmax` (maximum age). This example assigns a `cm` of 0 to the first year and 0.18 to the remaining years and is constant across ages; and a `cf` of 0 for the first year and 0.33 to the remaining years and is constant across ages. Note, Ages must be age-0 through maximum age. Thus, a `cf` and `cm` matrix will have maximum age plus one column.
 
 ```{r}
 #| label: DPM setup - cm and cf

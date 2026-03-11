@@ -85,13 +85,13 @@ test_that("dpmBH_MinLL() output",{
 # dt <- format(Sys.Date(),format="%d_%b_%Y")
 # saveRDS(minLL1,paste0(tmpdir,"dpm_minLL1_",dt,".rds"))
 
-# test_that("dmpBH_MinLL() results",{
-#   # get list of files in datasnaps folder
-#   tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
-#   tmpfns <- list.files(tmpdir)
-#   # Load snapshots of "old" (i.e., last stable) outputs
-#   minLL1_old <- readRDS(paste0(tmpdir,tmpfns[grepl("dpm_minLL1",tmpfns)]))
-#
-#   # Compare new to "old" data.frames ... must have run "Get Results" code above
-#   expect_equal(minLL1,minLL1_old)
-# })
+test_that("dmpBH_MinLL() results",{
+  # get list of files in datasnaps folder
+  tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
+  tmpfns <- list.files(tmpdir)
+  # Load snapshots of "old" (i.e., last stable) outputs
+  minLL1_old <- readRDS(paste0(tmpdir,tmpfns[grepl("dpm_minLL1",tmpfns)]))
+
+  # Compare new to "old" data.frames ... must have run "Get Results" code above
+  expect_equal(minLL1,minLL1_old)
+})

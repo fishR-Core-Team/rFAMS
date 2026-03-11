@@ -1,10 +1,10 @@
-# Simulate expected yield using under slot limit regulations using the Beverton-Holt Yield-per-Recruit model
+# Simulate expected yield using below slot limit regulations using the Beverton-Holt Yield-per-Recruit model
 
-Simulate yield under slot length regulations using the Beverton-Holt
+Simulate yield below slot length regulations using the Beverton-Holt
 Yield-per-Recruit (YPR) model with (possibly) multiple values for
 conditional natural mortality (`cm`) and chosen values for the lower and
 upper lengths of the slot (i.e,. `lowerSL` and `upperSL`); conditional
-fishing mortality under (`cfunder`), in (`cfin`), and above (`cfabove`)
+fishing mortality below (`cfBelow`), in (`cfIn`), and above (`cfAbove`)
 the slot; and length when fish recruit to the fishery (`recruitmentTL`).
 
 ## Usage
@@ -13,9 +13,9 @@ the slot; and length when fish recruit to the fishery (`recruitmentTL`).
 yprBH_SlotLL(
   lowerSL,
   upperSL,
-  cfunder,
-  cfin,
-  cfabove,
+  cfBelow,
+  cfIn,
+  cfAbove,
   cm,
   lhparms,
   recruitmentTL = NULL,
@@ -37,18 +37,18 @@ yprBH_SlotLL(
   A single numeric representing the length of the upper slot limit
   in mm. See details. Must be less than `Linf` in `lhparms`.
 
-- cfunder:
+- cfBelow:
 
-  A single numeric representing conditional fishing mortality under the
+  A single numeric representing conditional fishing mortality below the
   lower slot limit length. Must be between 0 and 1 (inclusive).
 
-- cfin:
+- cfIn:
 
   A single numeric representing conditional fishing mortality between
   the lower and upper slot limit lengths (i.e., "in the slot"). Must be
   between 0 and 1 (inclusive).
 
-- cfabove:
+- cfAbove:
 
   A single numeric representing conditional fishing mortality above the
   upper slot limit length. Must be between 0 and 1 (inclusive).
@@ -93,7 +93,7 @@ A data.frame with the following calculated values:
 
 - `yieldTotal` is the calculated total yield
 
-- `yieldUnder` is the calculated yield under the slot limit
+- `yieldBelow` is the calculated yield below the slot limit
 
 - `yieldIn` is the calculated yield within the slot limit
 
@@ -104,7 +104,7 @@ A data.frame with the following calculated values:
 - `ndieTotal` is the calculated total number of fish that die of natural
   death
 
-- `nharvestUnder` is the number of harvested fish under the slot limit
+- `nharvestBelow` is the number of harvested fish below the slot limit
 
 - `nharvestIn` is the number of harvested fish within the slot limit
 
@@ -113,7 +113,7 @@ A data.frame with the following calculated values:
 - `n0die` is the number of fish that die of natural death before
   entering the fishery at a minimum length
 
-- `ndieUnder` is the number of fish that die of natural death between
+- `ndieBelow` is the number of fish that die of natural death between
   entering the fishery and the lower slot limit
 
 - `ndieIn` is the number of fish that die of natural deaths within the
@@ -122,8 +122,8 @@ A data.frame with the following calculated values:
 - `ndieAbove` is the number of fish that die of natural deaths above the
   slot limit
 
-- `nrUnder` is the number of fish at time trUnder (time they become
-  harvestable size under the slot limit)
+- `nrBelow` is the number of fish at time trBelow (time they become
+  harvestable size below the slot limit)
 
 - `nrIn` is the number of fish at time trIn (time they reach the lower
   slot limit size)
@@ -131,7 +131,7 @@ A data.frame with the following calculated values:
 - `nrAbove` is the number of fish at time trAbove (time they reach the
   upper slot limit size)
 
-- `trUnder` is the time for a fish to recruit to a minimum length limit
+- `trBelow` is the time for a fish to recruit to a minimum length limit
   (i.e., time to enter fishery)
 
 - `trIn` is the time for a fish to recruit to a lower length limit of
@@ -140,7 +140,7 @@ A data.frame with the following calculated values:
 - `trOver` is the time for a fish to recruit to a upper length limit of
   the slot limit
 
-- `avglenUnder` is the average length of fish harvested under the slot
+- `avglenBelow` is the average length of fish harvested below the slot
   limit
 
 - `avglenIn` is the average length of fish harvested within the slot
@@ -149,7 +149,7 @@ A data.frame with the following calculated values:
 - `avglenAbove` is the average length of fish harvested above the slot
   limit
 
-- `avgwtUnder` is the average weight of fish harvested under the slot
+- `avgwtBelow` is the average weight of fish harvested below the slot
   limit
 
 - `avgwtIn` is the average weight of fish harvested within the slot
@@ -163,14 +163,14 @@ A data.frame with the following calculated values:
 
 - `cm` A numeric representing conditional natural mortality
 
-- `expUnder` is the exploitation rate under the slot limit
+- `expBelow` is the exploitation rate below the slot limit
 
 - `expIn` is the exploitation rate within the slot limit
 
 - `expAbove` is the exploitation rate above the slot limit
 
-- `FUnder` is the estimated instantaneous rate of fishing mortality
-  under the slot limit
+- `FBelow` is the estimated instantaneous rate of fishing mortality
+  below the slot limit
 
 - `FIn` is the estimated instantaneous rate of fishing mortality within
   the slot limit
@@ -178,8 +178,8 @@ A data.frame with the following calculated values:
 - `FAbove` is the estimated instantaneous rate of fishing mortality
   above the slot limit
 
-- `MUnder` is the estimated instantaneous rate of natural mortality
-  under the slot limit
+- `MBelow` is the estimated instantaneous rate of natural mortality
+  below the slot limit
 
 - `MIn` is the estimated instantaneous rate of natural mortality within
   the slot limit
@@ -187,7 +187,7 @@ A data.frame with the following calculated values:
 - `MAbove` is the estimated instantaneous rate of natural mortality
   above the slot limit
 
-- `ZUnder` is the estimated instantaneous rate of total mortality under
+- `ZBelow` is the estimated instantaneous rate of total mortality below
   the slot limit
 
 - `ZIn` is the estimated instantaneous rate of total mortality within
@@ -196,14 +196,14 @@ A data.frame with the following calculated values:
 - `ZAbove` is the estimated instantaneous rate of total mortality above
   the slot limit
 
-- `SUnder` is the estimated total survival under the slot limit
+- `SBelow` is the estimated total survival below the slot limit
 
 - `SIn` is the estimated total survival within the slot limit
 
 - `SAbove` is the estimated total survival above the slot limit
 
 For convenience the data.frame also contains the model input values
-(`lowerSL`, `upperSL`, `cfUnder`, `cfIn`, `cfOver`, `cm` from input
+(`lowerSL`, `upperSL`, `cfBelow`, `cfIn`, `cfOver`, `cm` from input
 vectors; `N0`; `Linf`; `K`; `t0`; `LWalpha`; `LWbeta`; and `tmax` from
 `lhparms`) and, optionally, the string provided in `label`.
 
@@ -246,12 +246,12 @@ cm <- seq(from = 0.1, to = 0.9, by = 0.1)
 
 # Estimate yield based on a protected slot limit
 Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
-                      cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
+                      cfBelow=0.25,cfIn=0.0,cfAbove=0.15,cm=cm,
                       lhparms=LH,recruitmentTL=200,
                       loi=c(200,250,300,325,350),label="250-325")
 
 Res_1
-#>    yieldTotal yieldUnder yieldIn   yieldAbove nharvTotal ndieTotal
+#>    yieldTotal yieldBelow yieldIn   yieldAbove nharvTotal ndieTotal
 #> 1 46197.75428 2134.02263       0 44063.731657 46.4972295 33.877878
 #> 2 19470.46525 1661.31736       0 17809.147884 26.2230471 40.820004
 #> 3  8398.37800 1251.53890       0  7146.839100 15.3741194 37.919849
@@ -261,7 +261,7 @@ Res_1
 #> 7   292.44938  210.78782       0    81.661558  1.5937619 10.403811
 #> 8   103.91797   90.75603       0    13.161937  0.6667805  5.207535
 #> 9    22.48605   21.80087       0     0.685181  0.1607166  1.572193
-#>   nharvestUnder nharvestIn nharvestAbove    n0die ndieUnder     ndieIn
+#>   nharvestBelow nharvestIn nharvestAbove    n0die ndieBelow     ndieIn
 #> 1    14.3001921          0  32.197037424 16.93639  5.237294  7.7673445
 #> 2    11.1865599          0  15.036487211 32.49751  8.676970 11.4974691
 #> 3     8.4736976          0   6.900421751 46.64404 10.505888 12.2698331
@@ -271,7 +271,7 @@ Res_1
 #> 7     1.4775667          0   0.116195279 88.00243  6.183736  3.3592771
 #> 8     0.6466386          0   0.020141855 94.12568  3.617621  1.3904478
 #> 9     0.1595880          0   0.001128596 98.26709  1.277330  0.2788736
-#>     ndieAbove   nrUnder       nrIn     nrAbove  trUnder     trIn  trOver
+#>     ndieAbove   nrBelow       nrIn     nrAbove  trBelow     trIn  trOver
 #> 1 20.87323905 83.063612 63.5261255 55.75878105 1.761224 2.443479 3.68129
 #> 2 20.64556520 67.502485 47.6389553 36.14148621 1.761224 2.443479 3.68129
 #> 3 15.14412843 53.355962 34.3763764 22.10654334 1.761224 2.443479 3.68129
@@ -281,7 +281,7 @@ Res_1
 #> 7  0.86079792 11.997573  4.3362705  0.97699339 1.761224 2.443479 3.68129
 #> 8  0.19946640  5.874316  1.6100560  0.21960825 1.761224 2.443479 3.68129
 #> 9  0.01599007  1.732910  0.2959923  0.01711867 1.761224 2.443479 3.68129
-#>   avglenUnder avglenIn avglenAbove avgwtUnder avgwtIn avgwtAbove    nAt200
+#>   avglenBelow avglenIn avglenAbove avgwtBelow avgwtIn avgwtAbove    nAt200
 #> 1    225.5013        0    443.8067   149.2303       0  1368.5648 83.063612
 #> 2    225.1683        0    424.6353   148.5101       0  1184.3955 67.502485
 #> 3    224.7908        0    407.5833   147.6969       0  1035.7105 53.355962
@@ -291,7 +291,7 @@ Res_1
 #> 7    222.4198        0    362.0448   142.6588       0   702.7958 11.997573
 #> 8    221.3140        0    354.0829   140.3505       0   653.4620  5.874316
 #> 9    219.4936        0    346.2120   136.6072       0   607.1089  1.732910
-#>       nAt250      nAt300      nAt325     nAt350  cm  expUnder expIn   expAbove
+#>       nAt250      nAt300      nAt325     nAt350  cm  expBelow expIn   expAbove
 #> 1 63.5261255 58.45086262 55.75878105 48.8794721 0.1 0.2378792     0 0.14257140
 #> 2 47.6389553 39.93702691 36.14148621 29.9002613 0.2 0.2252683     0 0.13484863
 #> 3 34.3763764 25.93244414 22.10654334 17.1270909 0.3 0.2120703     0 0.12677377
@@ -301,7 +301,7 @@ Res_1
 #> 7  4.3362705  1.67453146  0.97699339  0.4990840 0.7 0.1494673     0 0.08860398
 #> 8  1.6100560  0.45129000  0.21960825  0.0919120 0.8 0.1288953     0 0.07612528
 #> 9  0.2959923  0.04797287  0.01711867  0.0050959 0.9 0.1027330     0 0.06032395
-#>      FUnder FIn    FAbove    MUnder       MIn    MAbove    ZUnder       ZIn
+#>      FBelow FIn    FAbove    MBelow       MIn    MAbove    ZBelow       ZIn
 #> 1 0.2876821   0 0.1625189 0.1053605 0.1053605 0.1053605 0.3930426 0.1053605
 #> 2 0.2876821   0 0.1625189 0.2231436 0.2231436 0.2231436 0.5108256 0.2231436
 #> 3 0.2876821   0 0.1625189 0.3566749 0.3566749 0.3566749 0.6443570 0.3566749
@@ -311,7 +311,7 @@ Res_1
 #> 7 0.2876821   0 0.1625189 1.2039728 1.2039728 1.2039728 1.4916549 1.2039728
 #> 8 0.2876821   0 0.1625189 1.6094379 1.6094379 1.6094379 1.8971200 1.6094379
 #> 9 0.2876821   0 0.1625189 2.3025851 2.3025851 2.3025851 2.5902672 2.3025851
-#>      ZAbove SUnder SIn SAbove cfUnder cfIn cfOver recruitmentTL lowerSL upperSL
+#>      ZAbove SBelow SIn SAbove cfBelow cfIn cfOver recruitmentTL lowerSL upperSL
 #> 1 0.2678794  0.675 0.9  0.765    0.25    0   0.15           200     250     325
 #> 2 0.3856625  0.600 0.8  0.680    0.25    0   0.15           200     250     325
 #> 3 0.5191939  0.525 0.7  0.595    0.25    0   0.15           200     250     325
@@ -342,16 +342,16 @@ ggplot(data=Res_1,mapping=aes(x=cm,y=yieldTotal)) +
 
 
 
-# Yield under, in, and above the slot limit vs Conditional Natural Mortality (cm)
+# Yield below, in, and above the slot limit vs Conditional Natural Mortality (cm)
 # Select columns for plotting
 plot_data <- Res_1 |>
-  select(cm, yieldUnder, yieldIn, yieldAbove) |>
+  select(cm, yieldBelow, yieldIn, yieldAbove) |>
   pivot_longer(!cm, names_to="YieldCat",values_to="Yield")
 
 # Generate plot
 ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   geom_point() +
-  scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Under SL"))+
+  scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Below SL"))+
   geom_line() +
   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
   theme_bw() +
