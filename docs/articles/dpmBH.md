@@ -83,7 +83,7 @@ example assigns a `cm` of 0 to the first year and 0.18 to the remaining
 years and is constant across ages; and a `cf` of 0 for the first year
 and 0.33 to the remaining years and is constant across ages. Note, Ages
 must be age-0 through maximum age. Thus, a `cf` and `cm` matrix will
-have maximum age plus on one rows.
+have maximum age plus one column.
 
 ``` r
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(LH$tmax))), simyears),nrow=simyears,byrow=TRUE)
@@ -143,18 +143,27 @@ head(out1[[1]])  #Summary by age
 #> 5 274569.3   400 1000 1349.5 0.111 0.065 -5.2147  3.153   15      
 #> 6 245109.6   400 1000 1349.5 0.111 0.065 -5.2147  3.153   15
 head(out1[[2]])  #Summary by year
-#> # A tibble: 6 × 16
-#>    year age_1plus Yield_age_1plus Total_biomass nharvest_age_1plus
-#>   <int>     <dbl>           <dbl>         <dbl>              <dbl>
-#> 1     2     1000               0         30350.                 0 
-#> 2     3     1820               0        238288.                 0 
-#> 3     4     2492.         205139.       774864.               158.
-#> 4     5     2898.         479709.      1467028.               280.
-#> 5     6     3121.         724818.      2128305.               348.
-#> 6     7     3243.         921629.      2683609.               384.
-#> # ℹ 11 more variables: ndie_age_1plus <dbl>, memorable <int>, preferred <int>,
-#> #   quality <int>, stock <int>, substock <int>, trophy <dbl>, PSD <dbl>,
-#> #   PSD_P <dbl>, PSD_M <dbl>, PSD_T <dbl>
+#>   year age_1plus Yield_age_1plus Total_biomass nharvest_age_1plus
+#> 1    2  1000.000             0.0      30350.37             0.0000
+#> 2    3  1820.000             0.0     238287.81             0.0000
+#> 3    4  2492.400        205139.2     774863.69           158.2815
+#> 4    5  2897.809        479708.5    1467027.76           280.4299
+#> 5    6  3120.541        724818.1    2128305.03           347.5383
+#> 6    7  3242.910        921629.3    2683608.77           384.4076
+#>   ndie_age_1plus memorable preferred quality stock substock trophy       PSD
+#> 1       180.0000         0         0       0     0     2000      0 0.0000000
+#> 2       327.6000         0         0       0     0     2820      0 0.0000000
+#> 3       436.3094         0         0       0   672     2820      0 0.0000000
+#> 4       496.8383         0         0       0  1077     2820      0 0.0000000
+#> 5       530.0929         0         0     222  1077     2820      0 0.1709007
+#> 6       548.3630         0         0     344  1077     2820      0 0.2420830
+#>   PSD_P PSD_M PSD_T
+#> 1     0     0     0
+#> 2     0     0     0
+#> 3     0     0     0
+#> 4     0     0     0
+#> 5     0     0     0
+#> 6     0     0     0
 ```
 
 ## Plot Results

@@ -1,6 +1,6 @@
-#' @title Simulate expected yield under slot length limits using the Beverton-Holt Yield-per-Recruit model
+#' @title Simulate expected yield below slot length limits using the Beverton-Holt Yield-per-Recruit model
 #'
-#' @description An INTERNAL function used by \code{\link{yprBH_SlotLL}} to estimate yield under slot (protected or inverse/harvest) length limit regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with one value each of `cm` (and `lowerSL`, `upperSL`, `cfunder`, `cfin`, and `cfabove`). This is the base function for \code{\link{yprBH_SlotLL}}, is NOT exported, and is NOT expected to be used directly by the user.
+#' @description An INTERNAL function used by \code{\link{yprBH_SlotLL}} to estimate yield below slot (protected or inverse/harvest) length limit regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with one value each of `cm` (and `lowerSL`, `upperSL`, `cfBelow`, `cfIn`, and `cfAbove`). This is the base function for \code{\link{yprBH_SlotLL}}, is NOT exported, and is NOT expected to be used directly by the user.
 #'
 #' @inheritParams yprBH_SlotLL
 #' @param cm A SINGLE numeric representing conditional natural mortality.
@@ -13,7 +13,7 @@
 #'
 #' @keywords internal
 
-yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
+yprBH_slot_func <- function(lowerSL,upperSL,cfBelow,cfIn,cfAbove,cm,lhparms,
                             recruitmentTL,loi,matchRicker){
   # ---- Extract individual life history values
   N0 <- lhparms[["N0"]]
@@ -23,7 +23,7 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   t0 <- lhparms[["t0"]]
   LWalpha <- lhparms[["LWalpha"]]
   LWbeta <- lhparms[["LWbeta"]]
-  # !!!!! Note that checks fof all inputs were made in yprBH_SlotLL()
+  # !!!!! Note that checks of all inputs were made in yprBH_SlotLL()
 
   # !!!!! For a protected slot (so by here recruitmentTL should be NULL), set
   #       recruitmentTL to the lowerSL of the slot limit (i.e, when fish would
@@ -39,15 +39,15 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   Winf <- 10^(LWalpha+log10(Linf)*LWbeta)
 
 
-  # Yield under the slot limit####
+  # Yield below the slot limit####
   # Instantaneous mortality rates (F,M,Z) ... rearrange of FAMS equations 4:16 & 4:17
-  F_under <- -1*log(1-cfunder)
-  M_under <- -1*log(1-cm)
-  Z_under <- F_under+M_under
+  F_Below <- -1*log(1-cfBelow)
+  M_Below <- -1*log(1-cm)
+  Z_Below <- F_Below+M_Below
   # Annual survival rate (S)
-  S_under <- exp(-Z_under)
+  S_Below <- exp(-Z_Below)
   # Exploitation rate (u) ... rearrange of FAMS equation 4:14
-  exploitation_under <- (1-S_under)*(F_under/Z_under)
+  exploitation_Below <- (1-S_Below)*(F_Below/Z_Below)
 
   # Time (years) when fish recruit to the fishery (tr) ... FAMS equation 6:2
   #   needed adjustment if minlength<Linf
@@ -61,49 +61,49 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
 
   # Number recruiting to fishery based on time at minimum length (tr) ...
   #    FAMS equation 6:3
-  Nr_under <- N0*exp(-M_under*tr)
+  Nr_Below <- N0*exp(-M_Below*tr)
   # Adjust Nr if less than 0 or greater than start, otherwise keep Nr as calculated
   #    not clear that this is done in FAMS
-  if (Nr_under<0) {
-    Nr_under <- 0
-  }else if (Nr_under>N0) {
-    Nr_under <- N0}
+  if (Nr_Below<0) {
+    Nr_Below <- 0
+  }else if (Nr_Below>N0) {
+    Nr_Below <- N0}
 
   #Max age at lower slot
   tmax_lowerSL <- ((log(1-lowerSL/Linf))/-K)+t0
 
   # Convenience calculations for beta function below ... per FAMS definitions
-  P <- Z_under/K
+  P <- Z_Below/K
   Q <- LWbeta+1
   X <- exp(-K*r)
   Xi <- exp(-K*(tmax_lowerSL-t0))
 
   # FAMS equation 6:1
-  Y_under <- ((F_under*Nr_under*exp(Z_under*r)*Winf)/K)*
+  Y_Below <- ((F_Below*Nr_Below*exp(Z_Below*r)*Winf)/K)*
     (beta(P,Q)*stats::pbeta(X,P,Q)-beta(P,Q)*stats::pbeta(Xi,P,Q))
 
-  # ... if matchRicker then Y_under is "corrected" to match equation 10.22 in Ricker
-  if (matchRicker) Y_under <- Y_under*exp(M_under*t0)
+  # ... if matchRicker then Y_Below is "corrected" to match equation 10.22 in Ricker
+  if (matchRicker) Y_Below <- Y_Below*exp(M_Below*t0)
 
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size
 
-  #Calculate the number of fish between recruitment size and lower slot limit size (Nr_under)
+  #Calculate the number of fish between recruitment size and lower slot limit size (Nr_Below)
   #Calculate the number that remain then determine what proportion of lost fish are due to fishing and natural mortality
-  Nharv_under <- (Nr_under - (Nr_under*exp(-Z_under* (tmax_lowerSL-tr)))) * (F_under/Z_under)
-  Ndie_under <- (Nr_under - (Nr_under*exp(-Z_under* (tmax_lowerSL-tr)))) * (M_under/Z_under)
+  Nharv_Below <- (Nr_Below - (Nr_Below*exp(-Z_Below* (tmax_lowerSL-tr)))) * (F_Below/Z_Below)
+  Ndie_Below <- (Nr_Below - (Nr_Below*exp(-Z_Below* (tmax_lowerSL-tr)))) * (M_Below/Z_Below)
 
-  N0die <-(N0 - Nr_under) #number that die prior to recruiting to the fishery
+  N0die <-(N0 - Nr_Below) #number that die prior to recruiting to the fishery
 
   #Check for division by 0 if inverse slot is used = no F below slot so no harvest below slot
-  if(Nharv_under==0){
-    avgwt_under = 0
-    avglen_under = 0
+  if(Nharv_Below==0){
+    avgwt_Below = 0
+    avglen_Below = 0
   } else{
     # Mean weight of harvested fish ... FAMS equation 6:6
-    avgwt_under <- Y_under/Nharv_under
+    avgwt_Below <- Y_Below/Nharv_Below
     # Mean length of harvest fish ... from mean weight and weight-length parameters
-    avglen_under <- 10^((log10(avgwt_under) - LWalpha)/LWbeta)
+    avglen_Below <- 10^((log10(avgwt_Below) - LWalpha)/LWbeta)
   }
 
 
@@ -113,7 +113,7 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
 
   # Instantaneous mortality rates (F,M,Z) ... rearrange of FAMS equations 4:16 & 4:17
   #Need in cf for F
-  F_in <- -1*log(1-cfin)
+  F_in <- -1*log(1-cfIn)
   M_in <- -1*log(1-cm)
   Z_in <- F_in+M_in
   # Annual survival rate (S)
@@ -121,7 +121,7 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   # Exploitation rate (u) ... rearrange of FAMS equation 4:14
   exploitation_in <- (1-S_in)*(F_in/Z_in)
 
-  Nr_in = Nr_under*exp(-Z_under* (tmax_lowerSL-tr)) #number reaching slot limit after all mortality under slot
+  Nr_in = Nr_Below*exp(-Z_Below* (tmax_lowerSL-tr)) #number reaching slot limit after all mortality Below slot
   P <- Z_in/K
   Q <- LWbeta+1
   X <- exp(-K*(tmax_lowerSL-t0))
@@ -157,44 +157,44 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
   #yield over slot######
 
   #Parameters for over slot
-  F_above <- -1*log(1-cfabove)
-  M_above <- -1*log(1-cm)
-  Z_above <- F_above+M_above
+  F_Above <- -1*log(1-cfAbove)
+  M_Above <- -1*log(1-cm)
+  Z_Above <- F_Above+M_Above
   # Annual survival rate (S)
-  S_above <- exp(-Z_above)
+  S_Above <- exp(-Z_Above)
   # Exploitation rate (u) ... rearrange of FAMS equation 4:14
-  exploitation_above <- (1-S_above)*(F_above/Z_above)
+  exploitation_Above <- (1-S_Above)*(F_Above/Z_Above)
 
 
-  Nr_above <- Nr_in*exp(-Z_in* (tmax_upperSL-tmax_lowerSL))
-  P <- Z_above/K
+  Nr_Above <- Nr_in*exp(-Z_in* (tmax_upperSL-tmax_lowerSL))
+  P <- Z_Above/K
   Q <- LWbeta+1
   X <- exp(-K*(tmax_upperSL-t0))
   Xi <- exp(-K*(tmax-t0))
 
-  Y_above <- ((F_above*Nr_above*exp(Z_above*(tmax_upperSL-t0))*Winf)/K)*
+  Y_Above <- ((F_Above*Nr_Above*exp(Z_Above*(tmax_upperSL-t0))*Winf)/K)*
     (beta(P,Q)*stats::pbeta(X,P,Q)-beta(P,Q)*stats::pbeta(Xi,P,Q))
 
   # ... if matchRicker then Y_in is "corrected" to match equation 10.22 in Ricker
-  if (matchRicker) Y_above <- Y_above*exp(M_above*t0)
+  if (matchRicker) Y_Above <- Y_Above*exp(M_Above*t0)
 
   # Number of fish harvested ... FAMS equation 6:4 and 6:5 does not work for slot limit because it needs the number between
   # recruitment size and lower slot size
 
-  #Use the number of fish between upper slot limit and maximum age (Nr_above)
+  #Use the number of fish between upper slot limit and maximum age (Nr_Above)
   #Calculate the number that remain then determine what proportion of lost fish are due to fishing and natural mortality
-  Nharv_above <- (Nr_above - (Nr_above*exp(-Z_above* (tmax-tmax_upperSL)))) * (F_above/Z_above)
-  Ndie_above <- (Nr_above - (Nr_above*exp(-Z_above* (tmax-tmax_upperSL)))) * (M_above/Z_above)
+  Nharv_Above <- (Nr_Above - (Nr_Above*exp(-Z_Above* (tmax-tmax_upperSL)))) * (F_Above/Z_Above)
+  Ndie_Above <- (Nr_Above - (Nr_Above*exp(-Z_Above* (tmax-tmax_upperSL)))) * (M_Above/Z_Above)
 
   #Check for division by 0 if inverse slot is used = no F below slot so no harvest below slot
-  if(Nharv_above==0){
-    avgwt_above = 0
-    avglen_above = 0
+  if(Nharv_Above==0){
+    avgwt_Above = 0
+    avglen_Above = 0
   } else{
     # Mean weight of harvested fish ... FAMS equation 6:6
-    avgwt_above <- Y_above/Nharv_above
+    avgwt_Above <- Y_Above/Nharv_Above
     # Mean length of harvest fish ... from mean weight and weight-length parameters
-    avglen_above <- 10^((log10(avgwt_above) - LWalpha)/LWbeta)
+    avglen_Above <- 10^((log10(avgwt_Above) - LWalpha)/LWbeta)
   }
 
   #Find out where tloi is in relation to time to lower slot and upper slot.
@@ -204,7 +204,7 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
     tloi <- rep(NA,length(loi))
     Nloi <- rep(NA,length(loi))
 
-    Nr_under <- N0*exp(-M_under*tr)
+    Nr_Below <- N0*exp(-M_Below*tr)
     for(x in 1:length(loi)){
       #Time to length of interest
       if(loi[x] > Linf){
@@ -218,20 +218,20 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
         tloi[x] <- ((log(1-loi[x]/Linf))/-K)+t0
         if(tloi[x] < tmax_lowerSL){ #time to reach length of interest is less than time to recruit then only M applied
           if(tloi[x] < tr){
-            Nloi[x] <- N0*exp(-Z_under*tloi[x])
+            Nloi[x] <- N0*exp(-Z_Below*tloi[x])
           } else {
-            Nloi[x] <- Nr_under*exp(-Z_under*(tloi[x]-tr))
+            Nloi[x] <- Nr_Below*exp(-Z_Below*(tloi[x]-tr))
           }
 
         } else if (tloi[x] < tmax_upperSL) { #else apply M and F
-          #Nloi[x] <- Nr_in*exp(-Z_under*tmax_lowerSL)
+          #Nloi[x] <- Nr_in*exp(-Z_Below*tmax_lowerSL)
           #Nloi[x] <- Nloi[x]*exp(-Z_in*(tloi[x]-tmax_lowerSL))
           Nloi[x] <- Nr_in*exp(-Z_in*(tloi[x]-tmax_lowerSL))
         } else {
-          # Nloi[x] <- N0*exp(-Z_under*tmax_lowerSL)
+          # Nloi[x] <- N0*exp(-Z_Below*tmax_lowerSL)
           # Nloi[x] <- Nloi[x]*exp(-Z_in*(tmax_upperSL))
-          # Nloi[x] <- Nloi[x]*exp(-Z_above*(tloi[x]-tmax_upperSL))
-          Nloi[x] <- Nr_above*exp(-Z_above*(tloi[x]-tmax_upperSL))
+          # Nloi[x] <- Nloi[x]*exp(-Z_Above*(tloi[x]-tmax_upperSL))
+          Nloi[x] <- Nr_Above*exp(-Z_Above*(tloi[x]-tmax_upperSL))
         }
       }
     }
@@ -242,52 +242,52 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfunder,cfin,cfabove,cm,lhparms,
 
   #Combinde dataframe for output
   tmp1 <- data.frame(
-    yieldTotal = Y_under+Y_in+Y_above,
-    yieldUnder=Y_under,
+    yieldTotal = Y_Below+Y_in+Y_Above,
+    yieldBelow=Y_Below,
     yieldIn=Y_in,
-    yieldAbove=Y_above,
-    nharvTotal = Nharv_under+Nharv_in+Nharv_above,
-    ndieTotal = Ndie_under+Ndie_in+Ndie_above,
-    nharvestUnder=Nharv_under,
+    yieldAbove=Y_Above,
+    nharvTotal = Nharv_Below+Nharv_in+Nharv_Above,
+    ndieTotal = Ndie_Below+Ndie_in+Ndie_Above,
+    nharvestBelow=Nharv_Below,
     nharvestIn=Nharv_in,
-    nharvestAbove=Nharv_above,
+    nharvestAbove=Nharv_Above,
     n0die=N0die,
-    ndieUnder=Ndie_under,
+    ndieBelow=Ndie_Below,
     ndieIn=Ndie_in,
-    ndieAbove=Ndie_above,
-    nrUnder=Nr_under,
+    ndieAbove=Ndie_Above,
+    nrBelow=Nr_Below,
     nrIn=Nr_in,
-    nrAbove=Nr_above,
-    trUnder=tr,
+    nrAbove=Nr_Above,
+    trBelow=tr,
     trIn=tmax_lowerSL,
     trOver=tmax_upperSL,
-    avglenUnder=avglen_under,
+    avglenBelow=avglen_Below,
     avglenIn=avglen_in,
-    avglenAbove=avglen_above,
-    avgwtUnder=avgwt_under,
+    avglenAbove=avglen_Above,
+    avgwtBelow=avgwt_Below,
     avgwtIn=avgwt_in,
-    avgwtAbove=avgwt_above
+    avgwtAbove=avgwt_Above
   )
   tmp2 <- data.frame(
     cm=cm,
-    expUnder=exploitation_under,
+    expBelow=exploitation_Below,
     expIn=exploitation_in,
-    expAbove=exploitation_above,
-    FUnder=F_under,
+    expAbove=exploitation_Above,
+    FBelow=F_Below,
     FIn=F_in,
-    FAbove=F_above,
-    MUnder=M_under,
+    FAbove=F_Above,
+    MBelow=M_Below,
     MIn=M_in,
-    MAbove=M_above,
-    ZUnder=Z_under,
+    MAbove=M_Above,
+    ZBelow=Z_Below,
     ZIn=Z_in,
-    ZAbove=Z_above,
-    SUnder=S_under,
+    ZAbove=Z_Above,
+    SBelow=S_Below,
     SIn=S_in,
-    SAbove=S_above,
-    cfUnder=cfunder,
-    cfIn=cfin,
-    cfOver=cfabove,
+    SAbove=S_Above,
+    cfBelow=cfBelow,
+    cfIn=cfIn,
+    cfOver=cfAbove,
     recruitmentTL=recruitmentTL,
     lowerSL=lowerSL,
     upperSL=upperSL,

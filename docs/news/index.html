@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,16 +51,23 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.0.2.9000" id="rfams-0029000">rFAMS 0.0.2.9000<a class="anchor" aria-label="anchor" href="#rfams-0029000"></a></h2>
-<ul><li><p>This is the start of the next version</p></li>
-<li><p>Removed <code>yprBH_MinLL_fixed()</code> and <code>yprBH_Min_var()</code>, and replaced with a single function <code>ypr_BH_MinLL()</code>. The new function will allow for single or multiple minimum length limits with the same function.</p></li>
-<li><p>Modified <code>ypr_BH_MinLL()</code> to require vector input for minLL, cf, and cm. Instead of asking users to supply min, max, and increment for each, the user now supplies a single or multiple values in a vector. The vector can be of any sequence.</p></li>
-<li><p>Modified <code>ypr_BH_SlotLL()</code> to require vector input for cm. Instead of asking users to supply min, max, and increment for each, the user now supplies a single or multiple values in a vector. The vector can be of any sequence.</p></li>
-<li><p>Renamed <code>dpmBH_MinLL_fixed()</code> to <code><a href="../reference/dpmBH_MinLL.html">dpmBH_MinLL()</a></code> for consistent function names.</p></li>
-<li><p><code><a href="../reference/iCheckCondMort.html">iCheckCondMort()</a></code>: Added. Currently only used in <code>showMorts()</code>. However, I think that this is more general than some other functions and, thus, could replace <code>iCheckcf()</code>, <code>iCheckcm()</code>, <code>iCheckcfVect()</code>, <code>iCheckcmVect()</code>, and possibly a few others.</p></li>
-<li><p><code><a href="../reference/iErrGT.html">iErrGT()</a></code>: Modified to allow for checks on a vector rather than just a single value, which it still works for.</p></li>
-<li><p><code><a href="../reference/iErrLT.html">iErrLT()</a></code>: Modified to allow for checks on a vector rather than just a single value, which it still works for.</p></li>
-<li><p><code><a href="../reference/seeMorts.html">seeMorts()</a></code>: Added.</p></li>
+<h2 class="pkg-version" data-toc-text="0.0.3" id="rfams-003">rFAMS 0.0.3<a class="anchor" aria-label="anchor" href="#rfams-003"></a></h2>
+<ul><li>This is the start of the next version</li>
+<li>Removed <code>yprBH_MinLL_fixed()</code> and <code>yprBH_Min_var()</code>, and replaced with a single function <code>ypr_BH_MinLL()</code>. The new function will allow for single or multiple minimum length limits with the same function.</li>
+<li>Modified <code>ypr_BH_MinLL()</code> to require vector input for minLL, cf, and cm. Instead of asking users to supply min, max, and increment for each, the user now supplies a single or multiple values in a vector. The vector can be of any sequence.</li>
+<li>Modified <code>ypr_BH_SlotLL()</code> to require vector input for cm. Instead of asking users to supply min, max, and increment for each, the user now supplies a single or multiple values in a vector. The vector can be of any sequence.</li>
+<li>Renamed <code>dpmBH_MinLL_fixed()</code> to <code><a href="../reference/dpmBH_MinLL.html">dpmBH_MinLL()</a></code> for consistent function names.</li>
+<li>
+<code><a href="../reference/iCheckCondMort.html">iCheckCondMort()</a></code>: Added. Currently only used in <code>showMorts()</code>. However, I think that this is more general than some other functions and, thus, could replace <code>iCheckcf()</code>, <code>iCheckcm()</code>, <code>iCheckcfVect()</code>, <code>iCheckcmVect()</code>, and possibly a few others.</li>
+<li>
+<code><a href="../reference/iErrGT.html">iErrGT()</a></code>: Modified to allow for checks on a vector rather than just a single value, which it still works for.</li>
+<li>
+<code><a href="../reference/iErrLT.html">iErrLT()</a></code>: Modified to allow for checks on a vector rather than just a single value, which it still works for.</li>
+<li>
+<code><a href="../reference/seeMorts.html">seeMorts()</a></code>: Added.</li>
+<li>Internal checks have been expanded to cover more user inputs and provide better warnings.</li>
+<li>
+<code>_func()</code> have are no longer “exported”. They remain in the package but a help document is not created for them. These functions are not intended to be directly interacted with by the user.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.2" id="rfams-002">rFAMS 0.0.2<a class="anchor" aria-label="anchor" href="#rfams-002"></a></h2><p class="text-muted">CRAN release: 2026-02-10</p>

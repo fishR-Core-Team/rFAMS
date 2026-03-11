@@ -96,7 +96,7 @@ iErrGT <- function(x,value,nm) {
 #' Error if x is not a vector
 #' @keywords internal
 iErrNotVector <- function(x,nm) {
-  if (!is.vector(x)) STOP(nm," must be a vector.")
+  if (!is.vector(x) | !is.atomic(x)) STOP(nm," must be a vector.")
 }
 
 
@@ -288,9 +288,9 @@ iCheckCondMort <- function(x,optname=NULL,onlyone=FALSE) {
   # determine extra description for fishing mortality if a Slot limit
   slotdesc <- ""  # default for if nm="cf" or nm="cm"
   if (type=="fishing") {
-    if (nm=="'cfunder'") slotdesc <- "under the slot limit"
-    else if (nm=="'cfin'") slotdesc <- "in the slot limit"
-    else if (nm=="'cfabove'") slotdesc <- "above the slot limit"
+    if (nm=="'cfBelow'") slotdesc <- "under the slot limit"
+    else if (nm=="'cfIn'") slotdesc <- "in the slot limit"
+    else if (nm=="'cfAbove'") slotdesc <- "above the slot limit"
   }
   # put a message together
   tmpmsg <- paste0("Need to specify a conditional ",type,
@@ -385,31 +385,31 @@ iCheckSlotTL <- function(x,Linf,optname) {
 }
 
 #' Make checks of combinations of `cf` values and `recruitmentTL` for slot limits
-#' @param cfu A `cfunder` value.
-#' @param cfi A `cfin` value.
-#' @param cfa A `cfabove` value.
+#' @param cfu A `cfBelow` value.
+#' @param cfi A `cfIn` value.
+#' @param cfa A `cfAbove` value.
 #' @param rtl A `recruitmentTL` value.
 #' @param strict A logical that indicates how strict the test should be. See details.
 #' @keywords internal
 #'
 #' @details
-#' `strict` is a logical that indicates whether strict criterion for values of `recruitmentTL`, `cfunder`, `cfin`, and `cfabove` should be used. If `strict=TRUE` then the only accepted combinations are that a `recruitmentTL` is given (i.e., not `NULL`), `cfunder`>0, `cfabove`>0, and `cfin`=0 (i.e., simulating a protected slot) or `recruitmentTL` is `NULL`, `cfunder`=0, `cfabove`=0, and `cfin`>0 (i.e., simulating an inverse/harvest slot). If `strict=FALSE` then the only restrictions are that the three `cf`s cannot all =0, and that if `cfunder` is given them `recruitmentTL` cannot be `NULL`. **This argument allows us to model each type of restrictions while we ultimately decide which one to use.**
-iCheckSlotType <- function(cfu,cfi,cfa,rtl,strict=FALSE) {
-  # ===== determine what of cfunder, cfin, cfbelow, and recruitmentTL were given
-  #       e.g., ug==TRUE if cfunder is given (i.e., >0)
+#' `strict` is a logical that indicates whether strict criterion for values of `recruitmentTL`, `cfBelow`, `cfIn`, and `cfAbove` should be used. If `strict=TRUE` then the only accepted combinations are that a `recruitmentTL` is given (i.e., not `NULL`), `cfBelow`>0, `cfAbove`>0, and `cfIn`=0 (i.e., simulating a protected slot) or `recruitmentTL` is `NULL`, `cfBelow`=0, `cfAbove`=0, and `cfIn`>0 (i.e., simulating an inverse/harvest slot). If `strict=FALSE` then the only restrictions are that the three `cf`s cannot all =0, and that if `cfBelow` is given them `recruitmentTL` cannot be `NULL`. **This argument allows us to model each type of restrictions while we ultimately decide which one to use.**
+iCheckSlotType <- function(cfu,cfi,cfa,rtl,strict=TRUE) {
+  # ===== determine what of cfBelow, cfIn, cfbelow, and recruitmentTL were given
+  #       e.g., ug==TRUE if cfBelow is given (i.e., >0)
   ug <- cfu>0
   ig <- cfi>0
   ag <- cfa>0
   rg <- !is.null(rtl)
 
   # ===== Stop immediately if no mortality rates are given
-  if (!ug & !ig & !ag) STOP("'cfunder', 'cfin', and 'cfabove' cannot all =0.") #1
+  if (!ug & !ig & !ag) STOP("'cfBelow', 'cfIn', and 'cfAbove' cannot all =0.") #1
 
   # ===== Check for combos of cfs and recruitmentTL by slot type
   if (!strict) {
     # ===== do not use strict criterion
     if (ug & !rg)
-      STOP("If 'cfunder'>0 then a value must be given to 'recruitmentLT' ",
+      STOP("If 'cfBelow'>0 then a value must be given to 'recruitmentLT' ",
            "(i.e., it cannot be NULL)")
   } else {
     # ===== use strict criterion
@@ -421,33 +421,33 @@ iCheckSlotType <- function(cfu,cfi,cfa,rtl,strict=FALSE) {
 
     # ..... check for combinations of cfs and recruitmentTL
     if (rg & ug & ig & ag)
-      STOP(tmp1p,"'cfin' should =0.")  #2
+      STOP(tmp1p,"'cfIn' should =0.")  #2
     else if (!rg & ug & ig & ag)
-      STOP(tmp1h,"'cfunder' and 'cfabove' should =0.") #3
+      STOP(tmp1h,"'cfBelow' and 'cfAbove' should =0.") #3
     else if (rg & !ug & ig & !ag)
-      STOP("'cfin'>0, 'cfunder'=0, and 'cfabove'=0 implies you are trying to simulate an ",
-           "inverse/harvest slot. If so, 'recruitmentTL' must not be 'NULL'.")
+      STOP("'cfIn'>0, 'cfBelow'=0, and 'cfAbove'=0 implies you are trying to simulate an ",
+           "inverse/harvest slot. If so, 'recruitmentTL' must be 'NULL'.")
     else if (!rg & ug & !ig & ag)
-      STOP("'cfin'=0, 'cfunder'>0, and 'cfabove'>0 implies you are trying to simulate a ",
+      STOP("'cfIn'=0, 'cfBelow'>0, and 'cfAbove'>0 implies you are trying to simulate a ",
            "protected slot. If so, 'recruitmentTL' must not be 'NULL'.") #5
     else if (rg & ug & ig & !ag)
-      STOP(tmp1p,"'cfin' should =0 and 'cfabove' (along with 'cfunder') should be >0.") #6
+      STOP(tmp1p,"'cfIn' should =0 and 'cfAbove' (along with 'cfBelow') should be >0.") #6
     else if (!rg & ug & ig & !ag)
-      STOP(tmp1h,"'cfunder' (along with 'cfabove') should =0.") #7
+      STOP(tmp1h,"'cfBelow' (along with 'cfAbove') should =0.") #7
     else if (rg & !ug & ig & ag)
-      STOP(tmp1p,"'cfin' should =0 and 'cfunder' (along with 'cfabove') should be >0.") #8
+      STOP(tmp1p,"'cfIn' should =0 and 'cfBelow' (along with 'cfAbove') should be >0.") #8
     else if (!rg & !ug & ig & ag)
-      STOP(tmp1h,"'cfabove' (along with 'cfunder') should =0.") #9
+      STOP(tmp1h,"'cfAbove' (along with 'cfBelow') should =0.") #9
     else if (rg & ug & !ig & !ag)
-      STOP(tmp1p,"'cfabove' (along with 'cfunder') should be >0.") #10
+      STOP(tmp1p,"'cfAbove' (along with 'cfBelow') should be >0.") #10
     else if (!rg & ug & !ig & !ag)
-      STOP(tmp1h,"'cfin' should be >0 and 'cfunder' (along with 'cfabove') should be 0.") #11
+      STOP(tmp1h,"'cfIn' should be >0 and 'cfBelow' (along with 'cfAbove') should be 0.") #11
     else if (rg & ug & !ig & !ag)
-      STOP(tmp1p,"'cfabove' (along with 'cfunder') should be >0.") #12
+      STOP(tmp1p,"'cfAbove' (along with 'cfBelow') should be >0.") #12
     else if (!rg & !ug & !ig & ag)
-      STOP(tmp1h,"'cfin' should be >0 and 'cfabove' (along with 'cfunder') should be 0.") #13
+      STOP(tmp1h,"'cfIn' should be >0 and 'cfAbove' (along with 'cfBelow') should be 0.") #13
     else if (rg & !ug & !ig & ag)
-      STOP(tmp1p,"'cfunder' (along with 'cfabove') should =0.") #14
+      STOP(tmp1p,"'cfBelow' (along with 'cfAbove') should =0.") #14
     # !!!!! rg, ug, !ig, ag is a good protected slot ... so no STOP() #15
     #       !rg, !ug, ig, !ag is a good inverse/harvest slot ... so no STOP() #16
   }
@@ -605,7 +605,7 @@ isum_by_year <- function(res,species,group){
 
   # merged_df <- dplyr::left_join(psd_summary,Year_Summary, by = "year") |>
   #   dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, N_harvest_age_1plus, N_die_age_1plus), ~dplyr::coalesce(., 0)))
-
+  Year_Summary <- as.data.frame(Year_Summary)
   return(Year_Summary)
 }
 

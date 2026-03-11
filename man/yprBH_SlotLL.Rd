@@ -2,14 +2,14 @@
 % Please edit documentation in R/yprBH_SlotLL.R
 \name{yprBH_SlotLL}
 \alias{yprBH_SlotLL}
-\title{Simulate expected yield using under slot limit regulations using the Beverton-Holt Yield-per-Recruit model}
+\title{Simulate expected yield using below slot limit regulations using the Beverton-Holt Yield-per-Recruit model}
 \usage{
 yprBH_SlotLL(
   lowerSL,
   upperSL,
-  cfunder,
-  cfin,
-  cfabove,
+  cfBelow,
+  cfIn,
+  cfAbove,
   cm,
   lhparms,
   recruitmentTL = NULL,
@@ -23,11 +23,11 @@ yprBH_SlotLL(
 
 \item{upperSL}{A single numeric representing the length of the upper slot limit in mm. See details. Must be less than \code{Linf} in \code{lhparms}.}
 
-\item{cfunder}{A single numeric representing conditional fishing mortality under the lower slot limit length. Must be between 0 and 1 (inclusive).}
+\item{cfBelow}{A single numeric representing conditional fishing mortality below the lower slot limit length. Must be between 0 and 1 (inclusive).}
 
-\item{cfin}{A single numeric representing conditional fishing mortality between the lower and upper slot limit lengths (i.e., "in the slot"). Must be between 0 and 1 (inclusive).}
+\item{cfIn}{A single numeric representing conditional fishing mortality between the lower and upper slot limit lengths (i.e., "in the slot"). Must be between 0 and 1 (inclusive).}
 
-\item{cfabove}{A single numeric representing conditional fishing mortality above the upper slot limit length. Must be between 0 and 1 (inclusive).}
+\item{cfAbove}{A single numeric representing conditional fishing mortality above the upper slot limit length. Must be between 0 and 1 (inclusive).}
 
 \item{cm}{A numeric vector of conditional natural mortality values. All values must be between 0 and 1 (inclusive).}
 
@@ -45,53 +45,53 @@ yprBH_SlotLL(
 A data.frame with the following calculated values:
 \itemize{
 \item \code{yieldTotal} is the calculated total yield
-\item \code{yieldUnder} is the calculated yield under the slot limit
+\item \code{yieldBelow} is the calculated yield below the slot limit
 \item \code{yieldIn} is the calculated yield within the slot limit
 \item \code{yieldAbove} is the calculated yield above the slot limit
 \item \code{nharvTotal} is the calculated total number of harvested fish
 \item \code{ndieTotal} is the calculated total number of fish that die of natural death
-\item \code{nharvestUnder} is the number of harvested fish under the slot limit
+\item \code{nharvestBelow} is the number of harvested fish below the slot limit
 \item \code{nharvestIn} is the number of harvested fish within the slot limit
 \item \code{nharvestAbove} is the number of harvested fish above the slot limit
 \item \code{n0die} is the number of fish that die of natural death before entering the fishery at a minimum length
-\item \code{ndieUnder} is the number of fish that die of natural death between entering the fishery and the lower slot limit
+\item \code{ndieBelow} is the number of fish that die of natural death between entering the fishery and the lower slot limit
 \item \code{ndieIn} is the number of fish that die of natural deaths within the slot limit
 \item \code{ndieAbove} is the number of fish that die of natural deaths above the slot limit
-\item \code{nrUnder} is the number of fish at time trUnder (time they become harvestable size under the slot limit)
+\item \code{nrBelow} is the number of fish at time trBelow (time they become harvestable size below the slot limit)
 \item \code{nrIn} is the number of fish at time trIn (time they reach the lower slot limit size)
 \item \code{nrAbove} is the number of fish at time trAbove (time they reach the upper slot limit size)
-\item \code{trUnder} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
+\item \code{trBelow} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 \item \code{trIn} is the time for a fish to recruit to a lower length limit of the slot limit
 \item \code{trOver} is the time for a fish to recruit to a upper length limit of the slot limit
-\item \code{avglenUnder} is the average length of fish harvested under the slot limit
+\item \code{avglenBelow} is the average length of fish harvested below the slot limit
 \item \code{avglenIn} is the average length of fish harvested within the slot limit
 \item \code{avglenAbove} is the average length of fish harvested above the slot limit
-\item \code{avgwtUnder} is the average weight of fish harvested under the slot limit
+\item \code{avgwtBelow} is the average weight of fish harvested below the slot limit
 \item \code{avgwtIn} is the average weight of fish harvested within the slot limit
 \item \code{avgwtAbove} is the average weight of fish harvested above the slot limit
 \item \code{nAtxxx} is the number that reach the length of interest supplied. There will be one column for each length of interest.
 \item \code{cm} A numeric representing conditional natural mortality
-\item \code{expUnder} is the exploitation rate under the slot limit
+\item \code{expBelow} is the exploitation rate below the slot limit
 \item \code{expIn} is the exploitation rate within the slot limit
 \item \code{expAbove} is the exploitation rate above the slot limit
-\item \code{FUnder} is the estimated instantaneous rate of fishing mortality under the slot limit
+\item \code{FBelow} is the estimated instantaneous rate of fishing mortality below the slot limit
 \item \code{FIn} is the estimated instantaneous rate of fishing mortality within the slot limit
 \item \code{FAbove} is the estimated instantaneous rate of fishing mortality above the slot limit
-\item \code{MUnder} is the estimated  instantaneous rate of natural mortality under the slot limit
+\item \code{MBelow} is the estimated  instantaneous rate of natural mortality below the slot limit
 \item \code{MIn} is the estimated  instantaneous rate of natural mortality within the slot limit
 \item \code{MAbove} is the estimated  instantaneous rate of natural mortality above the slot limit
-\item \code{ZUnder} is the estimated  instantaneous rate of total mortality under the slot limit
+\item \code{ZBelow} is the estimated  instantaneous rate of total mortality below the slot limit
 \item \code{ZIn} is the estimated  instantaneous rate of total mortality within the slot limit
 \item \code{ZAbove} is the estimated  instantaneous rate of total mortality above the slot limit
-\item \code{SUnder} is the estimated total survival under the slot limit
+\item \code{SBelow} is the estimated total survival below the slot limit
 \item \code{SIn} is the estimated total survival within the slot limit
 \item \code{SAbove} is the estimated total survival above the slot limit
 }
 
-For convenience the data.frame also contains the model input values (\code{lowerSL}, \code{upperSL}, \code{cfUnder}, \code{cfIn}, \code{cfOver}, \code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax} from \code{lhparms}) and, optionally, the string provided in \code{label}.
+For convenience the data.frame also contains the model input values (\code{lowerSL}, \code{upperSL}, \code{cfBelow}, \code{cfIn}, \code{cfOver}, \code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax} from \code{lhparms}) and, optionally, the string provided in \code{label}.
 }
 \description{
-Simulate yield under slot length regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with (possibly) multiple values for conditional natural mortality (\code{cm}) and chosen values for the lower and upper lengths of the slot (i.e,. \code{lowerSL} and \code{upperSL}); conditional fishing mortality under (\code{cfunder}), in (\code{cfin}), and above (\code{cfabove}) the slot; and length when fish recruit to the fishery (\code{recruitmentTL}).
+Simulate yield below slot length regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with (possibly) multiple values for conditional natural mortality (\code{cm}) and chosen values for the lower and upper lengths of the slot (i.e,. \code{lowerSL} and \code{upperSL}); conditional fishing mortality below (\code{cfBelow}), in (\code{cfIn}), and above (\code{cfAbove}) the slot; and length when fish recruit to the fishery (\code{recruitmentTL}).
 }
 \details{
 Details will be filled out later.
@@ -111,7 +111,7 @@ cm <- seq(from = 0.1, to = 0.9, by = 0.1)
 
 # Estimate yield based on a protected slot limit
 Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
-                      cfunder=0.25,cfin=0.0,cfabove=0.15,cm=cm,
+                      cfBelow=0.25,cfIn=0.0,cfAbove=0.15,cm=cm,
                       lhparms=LH,recruitmentTL=200,
                       loi=c(200,250,300,325,350),label="250-325")
 
@@ -126,16 +126,16 @@ ggplot(data=Res_1,mapping=aes(x=cm,y=yieldTotal)) +
   theme_bw()
 
 
-# Yield under, in, and above the slot limit vs Conditional Natural Mortality (cm)
+# Yield below, in, and above the slot limit vs Conditional Natural Mortality (cm)
 # Select columns for plotting
 plot_data <- Res_1 |>
-  select(cm, yieldUnder, yieldIn, yieldAbove) |>
+  select(cm, yieldBelow, yieldIn, yieldAbove) |>
   pivot_longer(!cm, names_to="YieldCat",values_to="Yield")
 
 # Generate plot
 ggplot(data=plot_data,mapping=aes(x=cm,y=Yield,group=YieldCat,color=YieldCat)) +
   geom_point() +
-  scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Under SL"))+
+  scale_color_discrete(name="Yield",labels=c("Above SL","In SL","Below SL"))+
   geom_line() +
   labs(y="Total Yield (g)",x="Conditional Natural Mortality (cm)") +
   theme_bw() +

@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@
       <h1>Simulate a population using the dynamic pool model</h1>
 
 
-      <p class="date">2026-03-09</p>
+      <p class="date">2026-03-11</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/dpmBH.qmd" class="external-link"><code>vignettes/articles/dpmBH.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -117,7 +117,7 @@
 <code class="sourceCode R"><span><span class="co"># create life history parameter object</span></span>
 <span><span class="va">LH</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/makeLH.html">makeLH</a></span><span class="op">(</span>N0<span class="op">=</span><span class="fl">100</span>,tmax<span class="op">=</span><span class="fl">15</span>,Linf<span class="op">=</span><span class="fl">1349.5</span>,K<span class="op">=</span><span class="fl">0.111</span>,t0<span class="op">=</span><span class="fl">0.065</span>,LWalpha<span class="op">=</span><span class="op">-</span><span class="fl">5.2147</span>,LWbeta<span class="op">=</span><span class="fl">3.153</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p><code>cf</code> and <code>cm</code> are a matrix with rows = <code>simyears</code> (number of years specified in the simulation) and columns = <code>tmax</code> (maximum age). This example assigns a <code>cm</code> of 0 to the first year and 0.18 to the remaining years and is constant across ages; and a <code>cf</code> of 0 for the first year and 0.33 to the remaining years and is constant across ages. Note, Ages must be age-0 through maximum age. Thus, a <code>cf</code> and <code>cm</code> matrix will have maximum age plus on one rows.</p>
+<p><code>cf</code> and <code>cm</code> are a matrix with rows = <code>simyears</code> (number of years specified in the simulation) and columns = <code>tmax</code> (maximum age). This example assigns a <code>cm</code> of 0 to the first year and 0.18 to the remaining years and is constant across ages; and a <code>cf</code> of 0 for the first year and 0.33 to the remaining years and is constant across ages. Note, Ages must be age-0 through maximum age. Thus, a <code>cf</code> and <code>cm</code> matrix will have maximum age plus one column.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.18</span>,<span class="op">(</span><span class="va">LH</span><span class="op">$</span><span class="va">tmax</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">simyears</span><span class="op">)</span>,nrow<span class="op">=</span><span class="va">simyears</span>,byrow<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
@@ -162,18 +162,27 @@
 <span><span class="co">#&gt; 5 274569.3   400 1000 1349.5 0.111 0.065 -5.2147  3.153   15      </span></span>
 <span><span class="co">#&gt; 6 245109.6   400 1000 1349.5 0.111 0.065 -5.2147  3.153   15</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">out1</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>  <span class="co">#Summary by year</span></span>
-<span><span class="co">#&gt; # A tibble: 6 × 16</span></span>
-<span><span class="co">#&gt;    year age_1plus Yield_age_1plus Total_biomass nharvest_age_1plus</span></span>
-<span><span class="co">#&gt;   &lt;int&gt;     &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;              &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1     2     1000               0         30350.                 0 </span></span>
-<span><span class="co">#&gt; 2     3     1820               0        238288.                 0 </span></span>
-<span><span class="co">#&gt; 3     4     2492.         205139.       774864.               158.</span></span>
-<span><span class="co">#&gt; 4     5     2898.         479709.      1467028.               280.</span></span>
-<span><span class="co">#&gt; 5     6     3121.         724818.      2128305.               348.</span></span>
-<span><span class="co">#&gt; 6     7     3243.         921629.      2683609.               384.</span></span>
-<span><span class="co">#&gt; # ℹ 11 more variables: ndie_age_1plus &lt;dbl&gt;, memorable &lt;int&gt;, preferred &lt;int&gt;,</span></span>
-<span><span class="co">#&gt; #   quality &lt;int&gt;, stock &lt;int&gt;, substock &lt;int&gt;, trophy &lt;dbl&gt;, PSD &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   PSD_P &lt;dbl&gt;, PSD_M &lt;dbl&gt;, PSD_T &lt;dbl&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;   year age_1plus Yield_age_1plus Total_biomass nharvest_age_1plus</span></span>
+<span><span class="co">#&gt; 1    2  1000.000             0.0      30350.37             0.0000</span></span>
+<span><span class="co">#&gt; 2    3  1820.000             0.0     238287.81             0.0000</span></span>
+<span><span class="co">#&gt; 3    4  2492.400        205139.2     774863.69           158.2815</span></span>
+<span><span class="co">#&gt; 4    5  2897.809        479708.5    1467027.76           280.4299</span></span>
+<span><span class="co">#&gt; 5    6  3120.541        724818.1    2128305.03           347.5383</span></span>
+<span><span class="co">#&gt; 6    7  3242.910        921629.3    2683608.77           384.4076</span></span>
+<span><span class="co">#&gt;   ndie_age_1plus memorable preferred quality stock substock trophy       PSD</span></span>
+<span><span class="co">#&gt; 1       180.0000         0         0       0     0     2000      0 0.0000000</span></span>
+<span><span class="co">#&gt; 2       327.6000         0         0       0     0     2820      0 0.0000000</span></span>
+<span><span class="co">#&gt; 3       436.3094         0         0       0   672     2820      0 0.0000000</span></span>
+<span><span class="co">#&gt; 4       496.8383         0         0       0  1077     2820      0 0.0000000</span></span>
+<span><span class="co">#&gt; 5       530.0929         0         0     222  1077     2820      0 0.1709007</span></span>
+<span><span class="co">#&gt; 6       548.3630         0         0     344  1077     2820      0 0.2420830</span></span>
+<span><span class="co">#&gt;   PSD_P PSD_M PSD_T</span></span>
+<span><span class="co">#&gt; 1     0     0     0</span></span>
+<span><span class="co">#&gt; 2     0     0     0</span></span>
+<span><span class="co">#&gt; 3     0     0     0</span></span>
+<span><span class="co">#&gt; 4     0     0     0</span></span>
+<span><span class="co">#&gt; 5     0     0     0</span></span>
+<span><span class="co">#&gt; 6     0     0     0</span></span></code></pre></div>
 </div>
 </section><section class="section level2"><h2 id="plot-results">Plot Results<a class="anchor" aria-label="anchor" href="#plot-results"></a>
 </h2>
