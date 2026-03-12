@@ -47,7 +47,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R CMD check results
 
-There were no ERRORs or WARNINGs or NOTEs.
+There were no ERRORs or WARNINGs or other NOTEs.
 
 ## Downstream dependencies
 

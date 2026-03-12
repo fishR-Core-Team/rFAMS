@@ -1,3 +1,6 @@
+# rFAMS 0.0.3.9000
+* This is the start of the next version
+
 # rFAMS 0.0.3
 * This is the start of the next version
 * Removed `yprBH_MinLL_fixed()` and `yprBH_Min_var()`, and replaced with a single function `ypr_BH_MinLL()`. The new function will allow for single or multiple minimum length limits with the same function.
