@@ -96,3 +96,17 @@ page](https://github.com/fishR-Core-Team/rFAMS/issues).
 
 Please adhere to the [Code of
 Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
+
+ 
+
+[![Project Status: Active - The project has reached a stable, usable
+state and is being actively
+developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![CRAN
+Version](http://www.r-pkg.org/badges/version/rFAMS)](http://www.r-pkg.org/pkg/rFAMS)
+[![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![R-CMD-check](https://github.com/fishR-Core-Team/rFAMS/workflows/R-CMD-check/badge.svg)](https://github.com/fishR-Core-Team/rFAMS/actions)
+[![CRAN RStudio mirror downloads
+rate](http://cranlogs.r-pkg.org/badges/rFAMS) ![CRAN RSTudio mirror
+downloads
+total](http://cranlogs.r-pkg.org/badges/grand-total/rFAMS)](http://www.r-pkg.org/pkg/rFAMS)
