@@ -61,7 +61,7 @@ package](https://fishr-core-team.github.io/FSA/index.html)
 #### RShiny Development
 
 1.  Initial development completed
-2.  Test with CRAN released rFAMS v0.0.2
+2.  Test with CRAN released rFAMS v0.0.3
 
 ### Installation
 
