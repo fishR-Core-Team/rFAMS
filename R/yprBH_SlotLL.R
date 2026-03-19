@@ -20,7 +20,7 @@
 #' \item `yieldBelow` is the calculated yield below the slot limit
 #' \item `yieldIn` is the calculated yield within the slot limit
 #' \item `yieldAbove` is the calculated yield above the slot limit
-#' \item `nharvTotal` is the calculated total number of harvested fish
+#' \item `nharvTotal` is the calculated total number of harvested fish below, in and above slot.
 #' \item `ndieTotal` is the calculated total number of fish that die of natural death
 #' \item `nharvestBelow` is the number of harvested fish below the slot limit
 #' \item `nharvestIn` is the number of harvested fish within the slot limit
@@ -34,7 +34,7 @@
 #' \item `nrAbove` is the number of fish at time trAbove (time they reach the upper slot limit size)
 #' \item `trBelow` is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 #' \item `trIn` is the time for a fish to recruit to a lower length limit of the slot limit
-#' \item `trOver` is the time for a fish to recruit to a upper length limit of the slot limit
+#' \item `trAbove` is the time for a fish to recruit to a upper length limit of the slot limit
 #' \item `avglenBelow` is the average length of fish harvested below the slot limit
 #' \item `avglenIn` is the average length of fish harvested within the slot limit
 #' \item `avglenAbove` is the average length of fish harvested above the slot limit
@@ -60,7 +60,7 @@
 #' \item `SAbove` is the estimated total survival above the slot limit
 #' }
 #'
-#' For convenience the data.frame also contains the model input values (`lowerSL`, `upperSL`, `cfBelow`, `cfIn`, `cfOver`, `cm` from input vectors; `N0`; `Linf`; `K`; `t0`; `LWalpha`; `LWbeta`; and `tmax` from `lhparms`) and, optionally, the string provided in `label`.
+#' For convenience the data.frame also contains the model input values (`lowerSL`, `upperSL`, `cfBelow`, `cfIn`, `cfAbove`, `cm` from input vectors; `N0`; `Linf`; `K`; `t0`; `LWalpha`; `LWbeta`; and `tmax` from `lhparms`) and, optionally, the string provided in `label`.
 #'
 #' @details Details will be filled out later.
 #'

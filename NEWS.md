@@ -1,5 +1,5 @@
 # rFAMS 0.0.3.9000
-* This is the start of the next version
+* Changed output of yprBH_SlotLL() from trOver to trAbove and from cfOver to cfAbove.
 
 # rFAMS 0.0.3
 * This is the start of the next version

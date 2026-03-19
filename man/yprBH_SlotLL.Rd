@@ -48,7 +48,7 @@ A data.frame with the following calculated values:
 \item \code{yieldBelow} is the calculated yield below the slot limit
 \item \code{yieldIn} is the calculated yield within the slot limit
 \item \code{yieldAbove} is the calculated yield above the slot limit
-\item \code{nharvTotal} is the calculated total number of harvested fish
+\item \code{nharvTotal} is the calculated total number of harvested fish below, in and above slot.
 \item \code{ndieTotal} is the calculated total number of fish that die of natural death
 \item \code{nharvestBelow} is the number of harvested fish below the slot limit
 \item \code{nharvestIn} is the number of harvested fish within the slot limit
@@ -62,7 +62,7 @@ A data.frame with the following calculated values:
 \item \code{nrAbove} is the number of fish at time trAbove (time they reach the upper slot limit size)
 \item \code{trBelow} is the time for a fish to recruit to a minimum length limit (i.e., time to enter fishery)
 \item \code{trIn} is the time for a fish to recruit to a lower length limit of the slot limit
-\item \code{trOver} is the time for a fish to recruit to a upper length limit of the slot limit
+\item \code{trAbove} is the time for a fish to recruit to a upper length limit of the slot limit
 \item \code{avglenBelow} is the average length of fish harvested below the slot limit
 \item \code{avglenIn} is the average length of fish harvested within the slot limit
 \item \code{avglenAbove} is the average length of fish harvested above the slot limit
@@ -88,7 +88,7 @@ A data.frame with the following calculated values:
 \item \code{SAbove} is the estimated total survival above the slot limit
 }
 
-For convenience the data.frame also contains the model input values (\code{lowerSL}, \code{upperSL}, \code{cfBelow}, \code{cfIn}, \code{cfOver}, \code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax} from \code{lhparms}) and, optionally, the string provided in \code{label}.
+For convenience the data.frame also contains the model input values (\code{lowerSL}, \code{upperSL}, \code{cfBelow}, \code{cfIn}, \code{cfAbove}, \code{cm} from input vectors; \code{N0}; \code{Linf}; \code{K}; \code{t0}; \code{LWalpha}; \code{LWbeta}; and \code{tmax} from \code{lhparms}) and, optionally, the string provided in \code{label}.
 }
 \description{
 Simulate yield below slot length regulations using the Beverton-Holt Yield-per-Recruit (YPR) model with (possibly) multiple values for conditional natural mortality (\code{cm}) and chosen values for the lower and upper lengths of the slot (i.e,. \code{lowerSL} and \code{upperSL}); conditional fishing mortality below (\code{cfBelow}), in (\code{cfIn}), and above (\code{cfAbove}) the slot; and length when fish recruit to the fishery (\code{recruitmentTL}).

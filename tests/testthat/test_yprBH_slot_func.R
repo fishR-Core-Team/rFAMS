@@ -37,11 +37,11 @@ hslot2b <- yprBH_slot_func(lowerSL=250,upperSL=325,
 exp_nms2 <- c("yieldTotal","yieldBelow","yieldIn","yieldAbove","nharvTotal",
               "ndieTotal","nharvestBelow","nharvestIn","nharvestAbove","n0die",
               "ndieBelow","ndieIn","ndieAbove","nrBelow","nrIn","nrAbove",
-              "trBelow","trIn","trOver","avglenBelow","avglenIn","avglenAbove",
+              "trBelow","trIn","trAbove","avglenBelow","avglenIn","avglenAbove",
               "avgwtBelow","avgwtIn","avgwtAbove","nAt200","nAt300","cm",
               "expBelow","expIn","expAbove","FBelow","FIn","FAbove","MBelow",
               "MIn","MAbove","ZBelow","ZIn","ZAbove","SBelow","SIn","SAbove",
-              "cfBelow","cfIn","cfOver","recruitmentTL","lowerSL","upperSL","N0",
+              "cfBelow","cfIn","cfAbove","recruitmentTL","lowerSL","upperSL","N0",
               "Linf","K","t0","LWalpha","LWbeta","tmax")
 exp_nms1 <- exp_nms2[!startsWith(exp_nms2,"nAt")]
 
