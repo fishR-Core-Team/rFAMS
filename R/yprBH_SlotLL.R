@@ -20,7 +20,7 @@
 #' \item `yieldBelow` is the calculated yield below the slot limit
 #' \item `yieldIn` is the calculated yield within the slot limit
 #' \item `yieldAbove` is the calculated yield above the slot limit
-#' \item `nharvTotal` is the calculated total number of harvested fish below, in and above slot.
+#' \item `nharvestTotal` is the calculated total number of harvested fish below, in and above slot.
 #' \item `ndieTotal` is the calculated total number of fish that die of natural death
 #' \item `nharvestBelow` is the number of harvested fish below the slot limit
 #' \item `nharvestIn` is the number of harvested fish within the slot limit

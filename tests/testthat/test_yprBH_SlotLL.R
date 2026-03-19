@@ -401,7 +401,7 @@ slotLL2h <- yprBH_SlotLL(lowerSL=lowerSL,upperSL=upperSL,cm=cm,
                          lhparms=LH,loi=lois,recruitmentTL=recruitmentTLh)
 
 exp_nms1 <- c("yieldTotal","yieldBelow","yieldIn","yieldAbove",
-              "nharvTotal","ndieTotal","nharvestBelow","nharvestIn","nharvestAbove",
+              "nharvestTotal","ndieTotal","nharvestBelow","nharvestIn","nharvestAbove",
               "n0die","ndieBelow","ndieIn","ndieAbove","nrBelow","nrIn","nrAbove",
               "trBelow","trIn","trAbove","avglenBelow","avglenIn","avglenAbove",
               "avgwtBelow","avgwtIn","avgwtAbove","nAt300","nAt400","cm","expBelow",

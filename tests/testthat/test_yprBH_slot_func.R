@@ -34,7 +34,7 @@ hslot2b <- yprBH_slot_func(lowerSL=250,upperSL=325,
                            lhparms=LH,recruitmentTL=NULL,loi=c(200,300),matchRicker=FALSE)
 
 ## expectations
-exp_nms2 <- c("yieldTotal","yieldBelow","yieldIn","yieldAbove","nharvTotal",
+exp_nms2 <- c("yieldTotal","yieldBelow","yieldIn","yieldAbove","nharvestTotal",
               "ndieTotal","nharvestBelow","nharvestIn","nharvestAbove","n0die",
               "ndieBelow","ndieIn","ndieAbove","nrBelow","nrIn","nrAbove",
               "trBelow","trIn","trAbove","avglenBelow","avglenIn","avglenAbove",
