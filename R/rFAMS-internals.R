@@ -54,6 +54,34 @@ iHndlArgName <- function(x,optname=NULL) {
   paste0("'",ifelse(x=="",optname,x),"'")
 }
 
+
+#===== Make mortality vectors for age corresponding to the length intervals in L_t
+#      based on user-provided mortalities in mort by each interval defined by L
+iMakeFM_t <- function(L_t,L,mort) {
+  # Check if first length break is 0, if not add it to L
+  if (L[1]!=0) L <- c(0,L)
+  # Populate mortality vector with mortality for last interval
+  mortv <- rep(mort[length(mort)],length(L_t))
+
+  # Change mortality vector values base on length interval
+  for (i in 2:length(L)) mortv[L_t<L[i] & L_t>=L[i-1]] <- mort[i-1]
+  # return mortality vector
+  mortv
+}
+
+#===== Make fecundity estimates for each age corresponding to the length intervals
+#      in L_t from provided fecundity-length relationship and age-at-maturity
+iMakeFecundity <- function(FLR,FLRint,FLRslope,t,L_t,MatAge) {
+  # Adjust depending on if FLRint & FLRslope is from linear or exponential model
+  if (FLR == "linear") Fec_t <- FLRint + L_t * FLRslope
+  else Fec_t <- exp(FLRint + log(L_t) * FLRslope)
+  # Set fecundities to 0 for ages < age-at-maturity
+  Fec_t[t<MatAge] <- 0
+  # Return fecundity vector
+  Fec_t
+}
+
+
 # ===== General Error Checks
 #' Error if more than one item in x
 #' @keywords internal
@@ -538,28 +566,25 @@ isum_by_year <- function(res,species,group){
     psd.cuts <- FSA::psdVal(species, group=group, units = "mm")
   }
 
-  #Return PSD age cuts
-  psd.age.cuts<-rep(0,6)
-  psd.age.cuts[1] <- ((log(1-unname(psd.cuts[1])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[2] <- ((log(1-unname(psd.cuts[2])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[3] <- ((log(1-unname(psd.cuts[3])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[4] <- ((log(1-unname(psd.cuts[4])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[5] <- ((log(1-unname(psd.cuts[5])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[6] <- ((log(1-unname(psd.cuts[6])/res$Linf[1]))/-res$K[1])+res$t0[1]
+  #Return PSD length cuts
+  psd.length.cuts<-rep(0,6)
+  psd.length.cuts[1] <- unname(psd.cuts[1])
+  psd.length.cuts[2] <- unname(psd.cuts[2])
+  psd.length.cuts[3] <- unname(psd.cuts[3])
+  psd.length.cuts[4] <- unname(psd.cuts[4])
+  psd.length.cuts[5] <- unname(psd.cuts[5])
+  psd.length.cuts[6] <- unname(psd.cuts[6])
 
   psd_calc<-res |>
     dplyr::mutate(
       gcat = dplyr::case_when(
-        age < psd.age.cuts[2] ~ names(psd.cuts[1]),
-        age < psd.age.cuts[3] ~ names(psd.cuts[2]),
-        age < psd.age.cuts[4] ~ names(psd.cuts[3]),
-        age < psd.age.cuts[5] ~ names(psd.cuts[4]),
-        age < psd.age.cuts[6] ~ names(psd.cuts[5]),
+        length < psd.length.cuts[2] ~ names(psd.cuts[1]),
+        length < psd.length.cuts[3] ~ names(psd.cuts[2]),
+        length < psd.length.cuts[4] ~ names(psd.cuts[3]),
+        length < psd.length.cuts[5] ~ names(psd.cuts[4]),
+        length < psd.length.cuts[6] ~ names(psd.cuts[5]),
         TRUE ~ names(psd.cuts[6])
       ))
-
-  # it is unclear how FAMS calculates PSD. Output shows number at PSD categories
-  # however, using those numbers do not match reported PSD's
 
   # Add length category to output
   year_summary <- psd_calc |>
@@ -601,13 +626,15 @@ isum_by_year <- function(res,species,group){
                      Total_biomass = sum(biomass), nharvest_age_1plus = sum(nharvest),
                      ndie_age_1plus = sum(ndie)) |>
     dplyr::right_join(psd_summary, by = "year") |>
-    dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, nharvest_age_1plus, ndie_age_1plus), ~dplyr::coalesce(., 0)))
+    dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, nharvest_age_1plus, ndie_age_1plus), ~dplyr::coalesce(., 0))) |>
+    dplyr::arrange(year)
 
   # merged_df <- dplyr::left_join(psd_summary,Year_Summary, by = "year") |>
   #   dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, N_harvest_age_1plus, N_die_age_1plus), ~dplyr::coalesce(., 0)))
   Year_Summary <- as.data.frame(Year_Summary)
   return(Year_Summary)
 }
+
 
 
 # ====== Defunct (can probably be deleted)

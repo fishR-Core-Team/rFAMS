@@ -39,6 +39,8 @@ This project is supported in part by the [American Fisheries Society](https://fi
 
 The package currently replicates all yield per recruit and dynamic pool modeling in FAMS with the exception of spawning potential ratio. Spawning potential ratio calculations will be added at a later date. Life history parameters can be estimated using [FSA package](https://fishr-core-team.github.io/FSA/index.html)
 
+rFAMS is an independent open-source package developed for the fisheries community. it is not affiliated with, funded by, or associated with FAMS software products.
+
 #### Equilibrium Modeling
 
 1.  Initial function completed

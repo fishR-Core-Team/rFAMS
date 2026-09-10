@@ -15,7 +15,9 @@ yprBH_SlotLL(
   recruitmentTL = NULL,
   loi = NULL,
   matchRicker = FALSE,
-  label = NULL
+  label = NULL,
+  SPRdat = NULL,
+  SaveSPR_int = FALSE
 )
 }
 \arguments{
@@ -40,6 +42,10 @@ yprBH_SlotLL(
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 
 \item{label}{An optional string to label the type of slot limit being simulated.}
+
+\item{SPRdat}{A named list that contains values for each \code{FLR}, \code{FLRint}, \code{FLRslope}, \code{MatAge}, \code{percF}, \code{percFSpawn}, and \code{ageInterval}. See \code{\link{makeSPR}} for definitions of these parameters.}
+
+\item{SaveSPR_int}{A Boolean set to \code{TRUE} to save intermediate calculations of SPR to a file titled \code{SPR_intermediates.rds} in your working directory. This can be a very large file, depending on how many length, cf, and cm are passed and is typically only needed to confirm calculations. SPR will automatically be appended to the output dataframe with or without this option set to \code{TRUE}}
 }
 \value{
 A data.frame with the following calculated values:

@@ -11,6 +11,8 @@
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param recruitmentTL A single numeric that represents the minimum length (in mm) for recruiting to the fishery. Cannot be greater than `lowerSL`.
 #' @param loi A numeric vector of lengths (in mm) of interest. Used to determine number of fish that reach these lengths. All must be less than `Linf` in `lhparms`.
+#' @param SPRdat A named list that contains values for each `FLR`, `FLRint`, `FLRslope`, `MatAge`, `percF`, `percFSpawn`, and `ageInterval`. See \code{\link{makeSPR}} for definitions of these parameters.
+#' @param SaveSPR_int A Boolean set to `TRUE` to save intermediate calculations of SPR to a file titled `SPR_intermediates.rds` in your working directory. This can be a very large file, depending on how many length, cf, and cm are passed and is typically only needed to confirm calculations. SPR will automatically be appended to the output dataframe with or without this option set to `TRUE`
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{TRUE}. The only reason to changed to \code{FALSE} is to try to match output from FAMS. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #' @param label An optional string to label the type of slot limit being simulated.
 #'
@@ -119,7 +121,7 @@
 #' @rdname yprBH_SlotLL
 #' @export
 yprBH_SlotLL<-function(lowerSL,upperSL,cfBelow,cfIn,cfAbove,cm,lhparms,
-                       recruitmentTL=NULL,loi=NULL,matchRicker=FALSE,label=NULL){
+                       recruitmentTL=NULL,loi=NULL,matchRicker=FALSE,label=NULL,SPRdat=NULL,SaveSPR_int = FALSE){
   # ---- Check inputs
   iCheckLHparms(lhparms,"lhparms")
   iCheckCondMort(cm,"cm")
@@ -135,6 +137,39 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfBelow,cfIn,cfAbove,cm,lhparms,
   iCheckSlotType(cfBelow,cfIn,cfAbove,recruitmentTL,strict=TRUE)
   iChecklabel(label)
 
+  # ---- Compute and save SPR
+  if (!is.null(SPRdat)) {
+    L <- c(recruitmentTL,lowerSL,upperSL)
+    cf <- c(cfBelow,cfIn,cfAbove)
+    cm <- cm
+
+    #res <- expand.grid(L = minLL, cf = cf, cm = cm)
+    res <- expand.grid(cm = cm)
+
+    final_results <- purrr::pmap(res,
+                                 function(cm) {
+                                   static_spr(tmax = lhparms$tmax, ageInterval = SPRdat$ageInterval,
+                                              Linf = lhparms$Linf, K = lhparms$K, t0 = lhparms$t0,
+                                              FLR = SPRdat$FLR, FLRint = SPRdat$FLRint, FLRslope = SPRdat$FLRslope,
+                                              MatAge = SPRdat$MatAge, percF = SPRdat$percF, percFSpawn = SPRdat$percFSpawn,
+                                              L = L, cf = cf, cm = cm
+                                   )
+                                 }
+    )
+
+    SPR_df <- do.call(rbind,
+                      lapply(final_results, function(x)
+                        data.frame(
+                          P_fished = x$P_fished, P_unfished = x$P_unfished, SPR = x$SPR)
+                      )
+    )
+
+
+    if (isTRUE(SaveSPR_int)) {
+      saveRDS(final_results, "SPR_intermediates.rds")
+    }
+  }
+
   # Setup data.frame of input values (varying cm, the rest constant)
   res <- expand.grid(lowerSL=lowerSL,upperSL=upperSL,
                      cfBelow=cfBelow,cfIn=cfIn,cfAbove=cfAbove,
@@ -147,6 +182,12 @@ yprBH_SlotLL<-function(lowerSL,upperSL,cfBelow,cfIn,cfAbove,cm,lhparms,
 
   # Optionally create a column with label
   if (!is.null(label)) res$label <- label
+
+
+  # ---- Return data.frame with both output values and input parameters for SPR
+  if(!is.null(SPRdat)){
+    res <- cbind(res,SPR_df)
+  }
 
   # Return result
   return(res)

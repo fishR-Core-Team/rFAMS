@@ -1,5 +1,6 @@
 # rFAMS 0.0.3.9000
 * Changed output of yprBH_SlotLL() from trOver to trAbove and from cfOver to cfAbove.
+* Added static spawning potential ratio (SPR) to yield per recruit model and transitional SPR to dynamic pool model
 
 # rFAMS 0.0.3
 * This is the start of the next version

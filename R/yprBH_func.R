@@ -26,7 +26,7 @@ yprBH_func <- function(minLL,cf,cm,lhparms,loi,matchRicker){
   LWbeta <- lhparms[["LWbeta"]]
   # ----- Prepare notes vector
   notes <- NULL
-  # !!!!! Note that checks fof all inputs were made in yprBH_MinLL()
+  # !!!!! Note that checks of all inputs were made in yprBH_MinLL()
 
   # ---- Prep intermediate calculations needed to calculate Yield
   # Maximum theoretical weight derived from L-inf and weight to length regression

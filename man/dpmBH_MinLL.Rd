@@ -13,6 +13,7 @@ dpmBH_MinLL(
   simyears,
   species = NULL,
   group = NULL,
+  SPRdat = NULL,
   matchRicker = FALSE
 )
 }
@@ -32,6 +33,8 @@ dpmBH_MinLL(
 \item{species}{A single character to specify the species used in the simulation. This will define the length for \code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy} lengths from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.}
 
 \item{group}{A single character to specify the sub-group name for \code{species} which may be required when defining the \code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy} length categories from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.}
+
+\item{SPRdat}{A named list that contains values for each \code{FLR}, \code{FLRint}, \code{FLRslope}, \code{MatAge}, \code{percF}, and \code{percFSpawn}. See \code{\link{makeSPR}} for definitions of these parameters.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{FALSE}. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 }
@@ -71,19 +74,20 @@ The second list item named \code{sumbyYear} contains a data.frame with the follo
 \item \code{Total_biomass} is the total biomass of age-1 plus fish per year.
 \item \code{N_harvest_Age_1plus} is the number of age-1 plus fish that are harvested per year.
 \item \code{N_die_Age_1plus} is the number of age-1 plus fish that die per year.
-\item \code{substock} is the number of substock sized fish at age and year at the beginning of the year.
-\item \code{stock} is the number of stock sized fish at age and year at the beginning of the year.
-\item \code{quality} is the number of quality sized fish at age and year at the beginning of the year.
-\item \code{preferred} is the number of preferred sized fish at age and year at the beginning of the year.
-\item \code{memorable} is the number of memorable sized fish at age and year at the beginning of the year.
-\item \code{trophy} is the number of trophy sized fish at age and year at the beginning of the year.
+\item \code{substock} is the incremental number of substock sized fish at age and year at the beginning of the year.
+\item \code{stock} is the incremental number of stock sized fish at age and year at the beginning of the year.
+\item \code{quality} is the incremental number of quality sized fish at age and year at the beginning of the year.
+\item \code{preferred} is the incremental number of preferred sized fish at age and year at the beginning of the year.
+\item \code{memorable} is the incremental number of memorable sized fish at age and year at the beginning of the year.
+\item \code{trophy} is the incremental number of trophy sized fish at age and year at the beginning of the year.
 \item \code{PSD} is the number of quality sized fish divided by the number of stock sized multiplied by 100.
 \item \code{PSD_P} is the number of preferred sized fish divided by the number of stock sized multiplied by 100.
 \item \code{PSD_M} is the number of memorable sized fish divided by the number of stock sized multiplied by 100.
 \item \code{PSD_T} is the number of trophy sized fish divided by the number of stock sized multiplied by 100.
+\item \code{wtSPR} is the weighted transitional spawning potential ratio. This value is set to 0 for all simulation years less than the maximum age to ensure the population has reach equilibrium.
 }
 
-PSD-X are calculated based on the number of fish in each category (\code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy}) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish.
+PSD-X are calculated based on the number of fish in each category (\code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy}) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish. Note that the number in each size category are incremental. That is, the number of stock size fish is the number greater than stock size but less than quality size.
 }
 \description{
 Simulate yield under minimum length regulations using the Dynamic Pool (DPM) model with (possibly) multiple values for conditional fishing mortality (\code{cf}) and conditional natural mortality (\code{cm}).

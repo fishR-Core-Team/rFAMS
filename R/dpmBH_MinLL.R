@@ -10,6 +10,7 @@
 #' @param simyears A single numeric for the number of years to simulate. Value must be a whole number greater than 1.
 #' @param species A single character to specify the species used in the simulation. This will define the length for `stock`, `quality`, `preferred`, `memorable`, and `trophy` lengths from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.
 #' @param group A single character to specify the sub-group name for `species` which may be required when defining the `stock`, `quality`, `preferred`, `memorable`, and `trophy` length categories from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.
+#' @param SPRdat A named list that contains values for each `FLR`, `FLRint`, `FLRslope`, `MatAge`, `percF`, and `percFSpawn`. See \code{\link{makeSPR}} for definitions of these parameters.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to `FALSE`. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
 #' @return  A list with two data.frame object. The first list item named `sumbyAge` contains a data.frame with the following calculated values in a summary by age:
@@ -47,19 +48,20 @@
 #' \item `Total_biomass` is the total biomass of age-1 plus fish per year.
 #' \item `N_harvest_Age_1plus` is the number of age-1 plus fish that are harvested per year.
 #' \item `N_die_Age_1plus` is the number of age-1 plus fish that die per year.
-#' \item `substock` is the number of substock sized fish at age and year at the beginning of the year.
-#' \item `stock` is the number of stock sized fish at age and year at the beginning of the year.
-#' \item `quality` is the number of quality sized fish at age and year at the beginning of the year.
-#' \item `preferred` is the number of preferred sized fish at age and year at the beginning of the year.
-#' \item `memorable` is the number of memorable sized fish at age and year at the beginning of the year.
-#' \item `trophy` is the number of trophy sized fish at age and year at the beginning of the year.
+#' \item `substock` is the incremental number of substock sized fish at age and year at the beginning of the year.
+#' \item `stock` is the incremental number of stock sized fish at age and year at the beginning of the year.
+#' \item `quality` is the incremental number of quality sized fish at age and year at the beginning of the year.
+#' \item `preferred` is the incremental number of preferred sized fish at age and year at the beginning of the year.
+#' \item `memorable` is the incremental number of memorable sized fish at age and year at the beginning of the year.
+#' \item `trophy` is the incremental number of trophy sized fish at age and year at the beginning of the year.
 #' \item `PSD` is the number of quality sized fish divided by the number of stock sized multiplied by 100.
 #' \item `PSD_P` is the number of preferred sized fish divided by the number of stock sized multiplied by 100.
 #' \item `PSD_M` is the number of memorable sized fish divided by the number of stock sized multiplied by 100.
 #' \item `PSD_T` is the number of trophy sized fish divided by the number of stock sized multiplied by 100.
+#' \item `wtSPR` is the weighted transitional spawning potential ratio. This value is set to 0 for all simulation years less than the maximum age to ensure the population has reach equilibrium.
 #' }
 #'
-#' PSD-X are calculated based on the number of fish in each category (`stock`, `quality`, `preferred`, `memorable`, and `trophy`) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish.
+#' PSD-X are calculated based on the number of fish in each category (`stock`, `quality`, `preferred`, `memorable`, and `trophy`) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish. Note that the number in each size category are incremental. That is, the number of stock size fish is the number greater than stock size but less than quality size.
 #'
 #' @details Details will be filled out later.
 #'
@@ -136,7 +138,7 @@
 #' @export
 
 dpmBH_MinLL <- function(minLL,cf,cm,rec,lhparms,simyears,
-                        species=NULL,group=NULL,matchRicker=FALSE){
+                        species=NULL,group=NULL,SPRdat=NULL,matchRicker=FALSE){
 
   # ---- Check inputs
   iCheckMLH(minLL,lhparms$Linf)
@@ -166,6 +168,14 @@ dpmBH_MinLL <- function(minLL,cf,cm,rec,lhparms,simyears,
   res<-subset(res,res$year<=simyears)
 
   res <- list(sumbyAge=res,sumbyYear=isum_by_year(res,species=species,group=group))
+
+  # ---- Compute and save SPR
+  if (!is.null(SPRdat)) {
+    res$sumbyYear$wtSPR<-c(0,wtrans_spr(res$sumbyAge,SPRdat))
+    res$sumbyYear <- res$sumbyYear |>
+      dplyr::mutate(wtSPR = dplyr::if_else(year<lhparms$tmax, 0, wtSPR))
+  }
+
   # ---- Return data.frame with both output values and input parameters.
   # ---- Contains a summary by age and summary by year
   return(res)
