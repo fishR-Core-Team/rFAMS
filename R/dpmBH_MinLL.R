@@ -5,9 +5,15 @@
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
 #' @param cf A matrix of conditional fishing mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., `tmax` in `lhparms`). All values must be between 0 and 1 (inclusive).
 #' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., `tmax` in `lhparms`). All values must be between 0 and 1 (inclusive).
-#' @param rec A numeric vector with length `simyears` that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param simyears A single numeric for the number of years to simulate. Value must be a whole number greater than 1.
+#' @param recruitment_type A string that indicates if recruitment is being supplied as a vector (which requires `recv`) or based on a stock-recruitment model (requires `stockrecruit` and relevant coefficients)
+#' @param stockrecruit A string that indicates the type of stock-recruitment model
+#' @param a A single numeric to represent alpha in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.
+#' @param b A single numeric to represent beta in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.
+#' @param c A single numeric to represent c in the Shepherd stock-recruitment models.
+#' @param sigmaR A single numeric to represent standard deviation of annual recruits in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.
+#' @param recv A numeric vector with length `simyears` that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.
 #' @param species A single character to specify the species used in the simulation. This will define the length for `stock`, `quality`, `preferred`, `memorable`, and `trophy` lengths from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.
 #' @param group A single character to specify the sub-group name for `species` which may be required when defining the `stock`, `quality`, `preferred`, `memorable`, and `trophy` length categories from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.
 #' @param SPRdat A named list that contains values for each `FLR`, `FLRint`, `FLRslope`, `MatAge`, `percF`, and `percFSpawn`. See \code{\link{makeSPR}} for definitions of these parameters.
@@ -89,7 +95,7 @@
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
 #' out<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
-#'                  cm = cm, rec = rec, lhparms = lhparms,
+#'                  cm = cm, recruitment_type = c("vector"), recv = rec, lhparms = lhparms,
 #'                  matchRicker=FALSE,species="Striped Bass",group="landlocked")
 #'
 #' #Use summary by year data frame to plot yield vs year
@@ -116,7 +122,8 @@
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
 #' out_2<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
-#'                    rec = rec, lhparms = lhparms,simyears = simyears,
+#'                    recruitment_type = c("vector"), recv = rec, lhparms = lhparms,
+#'                    simyears = simyears,
 #'                    species="Striped Bass",group="landlocked",matchRicker=FALSE)
 #'
 #' #Use summary by year data frame to plot yield vs year
@@ -137,32 +144,93 @@
 #' @rdname dpmBH_MinLL
 #' @export
 
-dpmBH_MinLL <- function(minLL,cf,cm,rec,lhparms,simyears,
+dpmBH_MinLL <- function(minLL,cf,cm,recruitment_type=c("vector","stockrecruit"),stockrecruit=c("Ricker","BevertonHolt","Shepherd"),
+                        lhparms,simyears,a=NULL,b=NULL,c=NULL,sigmaR=NULL,recv=NULL,
                         species=NULL,group=NULL,SPRdat=NULL,matchRicker=FALSE){
 
+  # Need to add a check.
+  # If "vector" than needs to supply recv.
+  # if "Ricker" than needs to supply alpha, beta, and sigmaR
+
   # ---- Check inputs
+  iCheckStockRecruitment(recruitment_type = recruitment_type,stockrecruit = stockrecruit,
+                     recv = recv,a = a,b = b,c = c,sigmaR = sigmaR,SPRdat = SPRdat)
   iCheckMLH(minLL,lhparms$Linf)
   iCheckspecies(species)
   iChecksimyears(simyears)
   iCheckCondMort2(cf,simyears,lhparms$tmax,"cf")
   iCheckCondMort2(cm,simyears,lhparms$tmax,"cm")
-  iCheckrec(rec)
+  if (recruitment_type == "vector") {
+    iCheckrec(recv)
+  }
+
+  recruitment_type <- match.arg(recruitment_type)
+  stockrecruit <- match.arg(stockrecruit)
 
   #needed to account for rounding issues of sequences
   cf <- round(cf,8)
   cm <- round(cm,8)
 
-  res<-dpmBH_func(minLL = minLL, cf = cf[1,], cm= cm[1,], rec = rec[1], lhparms = lhparms,matchRicker=FALSE)
-  yearsum<-data.frame(year= seq(1:nrow(res)), yc = rep(1,length(seq(1:nrow(res)))))
+  #I need to find a way to specify multiple sets of parameters for different functions.
+
+  #calculate recruitment function
+  #Set recruitment
+  if (recruitment_type == "vector") {
+    rec_x <- recv[1]
+  }else {
+    SS <- rep(NA,simyears)
+    recr <- rep(NA,simyears)
+    rec_x <- recr[1] <- lhparms$N0 #initialize first-year recruitment
+  }
+
+  res<-dpmBH_func(minLL = minLL, cf = cf[1,], cm= cm[1,], rec = rec_x, lhparms = lhparms,matchRicker=FALSE)
+  yearsum<-data.frame(year= seq_len(nrow(res)), yc = rep(1,length(seq(1:nrow(res)))))
   res<-cbind(yearsum,res)
 
+  # Prep spawning vectors
+  if (recruitment_type == "stockrecruit") {
+    percFSpawn_all <- c(0, SPRdat$percFSpawn)
+    percFemale_all <- c(0, SPRdat$percF)
+  }
+
   for(x in 2:simyears){
-    out<-dpmBH_func(minLL = minLL, cf = cf[x,], cm= cm[x,], rec = rec[x], lhparms = lhparms,matchRicker=FALSE)
+    #age at maturity is in the SPR object, but what if user doesn't provide a SPR object?
+    # SS = abundance * percent mature * percent female? percent female and percent mature at age in the SPR object too
+    #res[res$year == (x - 1), ] #returns all fish from previous year.
+    #makeSPR starts at age-1 but data frame starts at age-0 so add a 0 at the start of percent mature and percent female
+
+    if(recruitment_type == "vector"){
+      rec_x <- recv[x]
+    } else if(recruitment_type == "stockrecruit"){
+
+      if(x < lhparms$tmax){
+        recr[x] <- lhparms$N0
+      } else {
+        if(x<(lhparms$tmax+2)){ #I had x<32 for some reason when tmax was 30. Must have linked to max age + 1 for age-0 This should only be called for the first two ages
+          percFSpawning <- percFSpawn_all[1:(x-1)]
+          percFemale <- percFemale_all[1:(x-1)]
+        } else {
+          percFSpawning <- percFSpawn_all
+          percFemale <- percFemale_all
+        }
+        SS[x] <- res |>
+          dplyr::filter(year == (x - 1)) |>
+          dplyr::mutate(ss_1 = nstart * percFSpawning * percFemale) |>
+          dplyr::summarize(SS = sum(ss_1, na.rm = TRUE)) |>
+          dplyr::pull(SS)
+
+        #Select recruitment functions
+        recr[x] <- iCalcRecruitment(stockrecruit = stockrecruit,ss = SS[x],a = a,b = b,c = c,sigmaR = sigmaR)
+        #rec_x <- recr[x]
+      }
+      rec_x <- recr[x]
+    }
+
+    out<-dpmBH_func(minLL = minLL, cf = cf[x,], cm= cm[x,], rec = rec_x, lhparms = lhparms,matchRicker=FALSE)
+
     yearsum<-data.frame(year= x:(nrow(out)+x-1), yc = rep(x,length(x:(nrow(out)+x-1))))
     out<-cbind(yearsum,out)
-
     res<-rbind(res,out)
-
   }
 
   res<-subset(res,res$year<=simyears)

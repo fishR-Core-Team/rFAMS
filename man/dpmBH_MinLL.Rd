@@ -8,9 +8,15 @@ dpmBH_MinLL(
   minLL,
   cf,
   cm,
-  rec,
+  recruitment_type = c("vector", "stockrecruit"),
+  stockrecruit = c("Ricker", "BevertonHolt", "Shepherd"),
   lhparms,
   simyears,
+  a = NULL,
+  b = NULL,
+  c = NULL,
+  sigmaR = NULL,
+  recv = NULL,
   species = NULL,
   group = NULL,
   SPRdat = NULL,
@@ -24,11 +30,23 @@ dpmBH_MinLL(
 
 \item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., \code{tmax} in \code{lhparms}). All values must be between 0 and 1 (inclusive).}
 
-\item{rec}{A numeric vector with length \code{simyears} that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.}
+\item{recruitment_type}{A string that indicates if recruitment is being supplied as a vector (which requires \code{recv}) or based on a stock-recruitment model (requires \code{stockrecruit} and relevant coefficients)}
+
+\item{stockrecruit}{A string that indicates the type of stock-recruitment model}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
 \item{simyears}{A single numeric for the number of years to simulate. Value must be a whole number greater than 1.}
+
+\item{a}{A single numeric to represent alpha in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.}
+
+\item{b}{A single numeric to represent beta in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.}
+
+\item{c}{A single numeric to represent c in the Shepherd stock-recruitment models.}
+
+\item{sigmaR}{A single numeric to represent standard deviation of annual recruits in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.}
+
+\item{recv}{A numeric vector with length \code{simyears} that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.}
 
 \item{species}{A single character to specify the species used in the simulation. This will define the length for \code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy} lengths from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.}
 
@@ -113,7 +131,7 @@ cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
 out<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
-                 cm = cm, rec = rec, lhparms = lhparms,
+                 cm = cm, recruitment_type = c("vector"), recv = rec, lhparms = lhparms,
                  matchRicker=FALSE,species="Striped Bass",group="landlocked")
 
 #Use summary by year data frame to plot yield vs year
@@ -140,7 +158,8 @@ cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
 out_2<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
-                   rec = rec, lhparms = lhparms,simyears = simyears,
+                   recruitment_type = c("vector"), recv = rec, lhparms = lhparms,
+                   simyears = simyears,
                    species="Striped Bass",group="landlocked",matchRicker=FALSE)
 
 #Use summary by year data frame to plot yield vs year

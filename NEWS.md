@@ -1,6 +1,7 @@
 # rFAMS 0.0.3.9000
 * Changed output of yprBH_SlotLL() from trOver to trAbove and from cfOver to cfAbove.
 * Added static spawning potential ratio (SPR) to yield per recruit model and transitional SPR to dynamic pool model
+* Modified dynamic pool model to allow stock recruitment model and user supplied vector of recruitment. New arguments added: `recruitment_type`=c("vector","stockrecruit"),`stockrecruit`=c("Ricker","BevertonHolt","Shepherd"), and rec is now `recv` to represent the vector of recruitment
 
 # rFAMS 0.0.3
 * This is the start of the next version

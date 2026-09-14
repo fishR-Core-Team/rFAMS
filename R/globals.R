@@ -6,6 +6,6 @@ utils::globalVariables(
     "S_noexp_t", "S_exp_t",
     "S_noexp_t1", "S_exp_t1",
     "Eggs_exp", "Eggs_noexp", "M", "P_a", "S_exp", "S_noexp", "Z", "age", "nstart",
-    "totaleggs_exp", "totaleggs_noexp", "wtSPR", "yc", "year"
+    "totaleggs_exp", "totaleggs_noexp", "wtSPR", "yc", "year","ss_1"
   )
 )
