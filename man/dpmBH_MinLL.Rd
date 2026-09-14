@@ -108,7 +108,7 @@ The second list item named \code{sumbyYear} contains a data.frame with the follo
 PSD-X are calculated based on the number of fish in each category (\code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy}) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish. Note that the number in each size category are incremental. That is, the number of stock size fish is the number greater than stock size but less than quality size.
 }
 \description{
-Simulate yield under minimum length regulations using the Dynamic Pool (DPM) model with (possibly) multiple values for conditional fishing mortality (\code{cf}) and conditional natural mortality (\code{cm}).
+Simulate yield and transitional spawning potential ratio under minimum length regulations using the Dynamic Pool (DPM) model with (possibly) multiple values for conditional fishing mortality (\code{cf}) and conditional natural mortality (\code{cm}). Recruitment options can be a user supplied vector or based on one of three stock-recruitment models.
 }
 \details{
 Details will be filled out later.
@@ -122,10 +122,12 @@ library(ggplot2)
 
 # Example of simulating yield with the dynamic pool model,
 
+# Seetings for all examples
 lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
             LWalpha=-5.2147,LWbeta=3.153)
-simyears <- 50
+simyears <- 150
 minLL <- 400
+
 rec <- genRecruits(method = "fixed", nR = 100, simyears = simyears)
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
@@ -172,6 +174,39 @@ ggplot(data=out_2[[2]],mapping=aes(x=year,y=PSD)) +
 #Plot date using summary by age
 #Plot yield vs age for each year class
 ggplot(data=out_2[[1]],mapping=aes(x=age,y=yield,group=yc,color=yc)) +
+  geom_point() +
+  geom_line() +
+  labs(y="Total yield (g)",x="Age") +
+  theme_bw()
+
+#Recruitment based on a Ricker stock-recruitment model
+cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+
+SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+                 percF=c(0,0,0,rep(0.50,27)),
+                 percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+
+out_3<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
+                   recruitment_type = c("stockrecruit"), stockrecruit = c("Ricker"),
+                   a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
+                   lhparms = lhparms, simyears = simyears,
+                   species="Striped Bass",group="landlocked",matchRicker=FALSE)
+
+#Use summary by year data frame to plot yield vs year
+out_3[[2]] |>
+  dplyr::filter(year>35) |> #Filter out years before equilibrium
+  ggplot(mapping=aes(x=year,y=PSD)) +
+  geom_point() +
+  geom_line() +
+  labs(y="PSD",x="Year") +
+  theme_bw()
+
+#Plot date using summary by age
+#Plot yield vs age for each year class
+out_3[[1]] |>
+  dplyr::filter(year>35) |> #Filter out years before equilibrium
+  ggplot(mapping=aes(x=age,y=yield,group=yc,color=yc)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Age") +

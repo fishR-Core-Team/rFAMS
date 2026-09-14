@@ -116,3 +116,40 @@ ggplot(data=plotdat,mapping=aes(x=age,y=yield)) +
   geom_line() +
   labs(y="Total yield (g)",x="Age") +
   theme_bw()
+
+lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
+            LWalpha=-5.2147,LWbeta=3.153)
+simyears <- 150
+minLL <- 400
+
+cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+
+SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+                 percF=c(0,0,0,rep(0.50,27)),
+                 percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+
+out_3<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
+                   recruitment_type = c("stockrecruit"), stockrecruit = c("Ricker"),
+                   a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
+                   lhparms = lhparms, simyears = simyears,
+                   species="Striped Bass",group="landlocked",matchRicker=FALSE)
+
+#Use summary by year data frame to plot yield vs year
+out_3[[2]] |>
+dplyr::filter(year>35) |> #Filter out years before equilibrium
+ggplot(mapping=aes(x=year,y=PSD)) +
+  geom_point() +
+  geom_line() +
+  labs(y="PSD",x="Year") +
+  theme_bw()
+
+#Plot date using summary by age
+#Plot yield vs age for each year class
+out_3[[1]] |>
+dplyr::filter(year>35) |> #Filter out years before equilibrium
+ggplot(mapping=aes(x=age,y=yield,group=yc,color=yc)) +
+  geom_point() +
+  geom_line() +
+  labs(y="Total yield (g)",x="Age") +
+  theme_bw()
