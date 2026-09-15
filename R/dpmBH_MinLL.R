@@ -250,13 +250,11 @@ dpmBH_MinLL <- function(minLL,cf,cm,recruitment_type=c("vector","stockrecruit"),
         }
         SS[x] <- res |>
           dplyr::filter(year == (x - 1)) |>
-          dplyr::mutate(ss_1 = nstart * percFSpawning * percFemale) |>
-          dplyr::summarize(SS = sum(ss_1, na.rm = TRUE)) |>
+          dplyr::summarize(SS = sum(nstart * percFSpawning * percFemale, na.rm=TRUE)) |>
           dplyr::pull(SS)
 
         #Select recruitment functions
         recr[x] <- iCalcRecruitment(stockrecruit = stockrecruit,ss = SS[x],a = a,b = b,c = c,sigmaR = sigmaR)
-        #rec_x <- recr[x]
       }
       rec_x <- recr[x]
     }
