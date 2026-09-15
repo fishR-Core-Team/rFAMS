@@ -80,7 +80,7 @@ test_that("dpmBH_MinLL() output",{
 # ..... Use CTRL-SHIFT-C to uncomment/comment selected lines in RStudio
 # !!!!! These don't test true accuracy of results, but will detect if anything
 #       has changed since the last "thought-to-be-stable" results.
-#
+
 # tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
 # dt <- format(Sys.Date(),format="%d_%b_%Y")
 # saveRDS(minLL1,paste0(tmpdir,"dpm_minLL1_",dt,".rds"))

@@ -116,13 +116,7 @@ isum_by_year <- function(res,species,group){
   }
 
   #Return PSD length cuts
-  psd.length.cuts<-rep(0,6)
-  psd.length.cuts[1] <- unname(psd.cuts[1])
-  psd.length.cuts[2] <- unname(psd.cuts[2])
-  psd.length.cuts[3] <- unname(psd.cuts[3])
-  psd.length.cuts[4] <- unname(psd.cuts[4])
-  psd.length.cuts[5] <- unname(psd.cuts[5])
-  psd.length.cuts[6] <- unname(psd.cuts[6])
+  psd.length.cuts <- unname(psd.cuts)
 
   psd_calc<-res |>
     dplyr::mutate(
@@ -140,7 +134,8 @@ isum_by_year <- function(res,species,group){
     dplyr::group_by(year,gcat,length) |>
     dplyr::summarise(count = floor(sum(nstart)),
                      .groups = "drop") |>
-    tidyr::uncount(count)
+    tidyr::uncount(count) |>
+    dplyr::mutate(gcat = factor(gcat, levels = c("substock", "stock", "quality", "preferred", "memorable", "trophy")))
 
   psd_crosstab <- stats::xtabs(~year + gcat, data = year_summary) #create crosstab
   psd_summary <- as.data.frame.matrix(psd_crosstab) #convert to dataframe

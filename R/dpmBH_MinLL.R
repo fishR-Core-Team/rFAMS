@@ -49,11 +49,11 @@
 #'
 #' \itemize{
 #' \item `year` is the year number for the simulation
-#' \item `Age_1plus` is the total number of fish age-1 plus per year.
-#' \item `Yield_Age_1plus` is the total year of age-1 plus fish per year.
+#' \item `age_1plus` is the total number of fish age-1 plus per year.
+#' \item `Yield_age_1plus` is the total year of age-1 plus fish per year.
 #' \item `Total_biomass` is the total biomass of age-1 plus fish per year.
-#' \item `N_harvest_Age_1plus` is the number of age-1 plus fish that are harvested per year.
-#' \item `N_die_Age_1plus` is the number of age-1 plus fish that die per year.
+#' \item `n_harvest_age_1plus` is the number of age-1 plus fish that are harvested per year.
+#' \item `n_die_age_1plus` is the number of age-1 plus fish that die per year.
 #' \item `substock` is the incremental number of substock sized fish at age and year at the beginning of the year.
 #' \item `stock` is the incremental number of stock sized fish at age and year at the beginning of the year.
 #' \item `quality` is the incremental number of quality sized fish at age and year at the beginning of the year.
