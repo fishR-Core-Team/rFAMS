@@ -93,8 +93,8 @@ sr_error <- function(sigma_R) {
 
 #' calculate recruitment in dpm model
 #' @keywords internal
-iCalcRecruitment <- function(stockrecruit, ss, a, b, c = NULL, sigmaR) {
-  recr <- switch(stockrecruit,
+iCalcRecruitment <- function(srmod, ss, a, b, c = NULL, sigmaR) {
+  recr <- switch(srmod,
     "Ricker" = a * ss * exp(-b * ss + sr_error(sigmaR)),
     "BevertonHolt" =((a * ss) / (1 + b * ss)) * exp(sr_error(sigmaR)),
     "Shepherd" = ((a * ss) / (1 + (b * ss)^c)) *exp(sr_error(sigmaR))
@@ -656,7 +656,7 @@ iCheckspecies <- function(x) {
   if (is.null(x)) STOP("Need to specify a species name in ",nm,". See the FSA::PSDlit function for a list of available species")
 }
 
-iCheckStockRecruitment <- function(recruitment_type,stockrecruit = NULL,recv = NULL,a = NULL,b = NULL,c = NULL,sigmaR = NULL,SPRdat = NULL) {
+iCheckStockRecruitment <- function(recruitment_type,srmod = NULL,recv = NULL,a = NULL,b = NULL,c = NULL,sigmaR = NULL,SPRdat = NULL) {
 
   recruitment_type <- match.arg(recruitment_type,c("vector", "stockrecruit"))
 
@@ -671,24 +671,24 @@ iCheckStockRecruitment <- function(recruitment_type,stockrecruit = NULL,recv = N
            call. = FALSE)
     }
   } else {
-    stockrecruit <- match.arg(stockrecruit,c("Ricker", "BevertonHolt", "Shepherd"))
+    srmod <- match.arg(srmod,c("Ricker", "BevertonHolt", "Shepherd",NULL))
 
     if (is.null(SPRdat)) {
       stop("'SPRdat' must be supplied when recruitment_type='stockrecruit'.",
            call. = FALSE)
     }
 
-    if (stockrecruit %in% c("Ricker", "BevertonHolt")) {
+    if (srmod %in% c("Ricker", "BevertonHolt")) {
       if (is.null(a))
-        stop("'a' must be supplied for the ", stockrecruit,
+        stop("'a' must be supplied for the ", srmod,
              " stock-recruit model.", call. = FALSE)
       if (is.null(b))
-        stop("'b' must be supplied for the ", stockrecruit,
+        stop("'b' must be supplied for the ", srmod,
              " stock-recruit model.", call. = FALSE)
       if (is.null(sigmaR))
-        stop("'sigmaR' must be supplied for the ", stockrecruit,
+        stop("'sigmaR' must be supplied for the ", srmod,
              " stock-recruit model.", call. = FALSE)
-    } else if (stockrecruit == "Shepherd") {
+    } else if (srmod == "Shepherd") {
       if (is.null(a))
         stop("'a' must be supplied for the Shepherd stock-recruit model.",
              call. = FALSE)

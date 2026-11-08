@@ -1,6 +1,7 @@
 # Create life history object
 
 ``` r
+
 library(rFAMS)
 library(FSA)     ## for growth model 
 library(FSAdata) ## for data used in example
@@ -39,6 +40,7 @@ objects below (LHparamsList and LHparamsVector) can then be used in any
 of the core rFAMS functions.
 
 ``` r
+
 #Return parameters as a list
 LHparamsList <- makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1)
 #View life history object
@@ -84,6 +86,7 @@ information about fitting von Bertalanffy growth models and
 length-weight models.
 
 ``` r
+
 ## Load data from FSAdata package, restrict to one location and year,
 ##   create log10 values of weight and length
 data(WalleyeErie2,package="FSAdata")
@@ -106,6 +109,7 @@ The model object created above are then passed through the
 function in the `Linf` and `LWalpha` arguments.
 
 ``` r
+
 ## Make life-history list with those results
 waeLH <- makeLH(N0=100,tmax=20,Linf=fit1,LWalpha=fit2)
 waeLH

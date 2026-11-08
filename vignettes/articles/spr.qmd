@@ -1,0 +1,29 @@
+---
+title: "Spawning Potential Ratio"
+date: "`r Sys.Date()`"
+format: 
+  html: 
+    code-fold: false
+    toc: true
+    toc-depth: 2
+    reference-location: margin
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+    echo: true
+    fig-width: 7.5
+    fig-height: 4.5
+    fig-align: center
+---
+
+```{r}
+#| label: setup
+#| results: hide
+#| message: false
+library(rFAMS)
+library(ggplot2)  ## to make figures
+library(dplyr)    ## for filter
+```
+
+This article will include details of how spawning potential ratio (SRP) is calculated in `rFAMS`

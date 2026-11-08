@@ -130,7 +130,7 @@ SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge =
                  percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
 
 out_3<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
-                   recruitment_type = c("stockrecruit"), stockrecruit = c("Ricker"),
+                   recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
                    a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
                    lhparms = lhparms, simyears = simyears,
                    species="Striped Bass",group="landlocked",matchRicker=FALSE)
@@ -152,4 +152,99 @@ ggplot(mapping=aes(x=age,y=yield,group=yc,color=yc)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Age") +
+  theme_bw()
+
+
+
+lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
+            LWalpha=-5.2147,LWbeta=3.153)
+simyears <- 150
+minLL <- 400
+
+rec <- genRecruits(method = "fixed", nR = 100, simyears = simyears)
+cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+
+out<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
+                 cm = cm, recruitment_type = c("vector"), recv = rec, lhparms = lhparms,
+                 matchRicker=FALSE,species="Striped Bass",group="landlocked")
+
+
+#Recruitment based on a Ricker stock-recruitment model
+cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+
+SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+                 percF=c(0,0,0,rep(0.50,27)),
+                 percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+
+out_3<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
+                   recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
+                   a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
+                   lhparms = lhparms, simyears = simyears,
+                   species="Striped Bass",group="landlocked",matchRicker=FALSE)
+
+
+# Example of multiple length limits for dpm
+
+simyears <- 100
+minLL <- 400
+LH <- makeLH(N0=100,tmax=15,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
+cm <- matrix(rep(c(rep(0,1), rep(0.18,(LH$tmax))), simyears),nrow=simyears,byrow=TRUE)
+cf <- matrix(rep(c(rep(0,1), rep(0.33,(LH$tmax))), simyears),nrow=simyears,byrow=TRUE)
+SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+                 percF=c(0,0,0,rep(0.50,12)), #required to be length of tmax
+                 percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,9)))  #required to be length of tmax
+
+out457<-dpmBH_MinLL(simyears = simyears, minLL = 457, cf = cf, cm = cm,
+                   recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
+                   a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
+                   lhparms = LH, matchRicker=FALSE,species="Striped Bass",group="landlocked")
+
+out559<-dpmBH_MinLL(simyears = simyears, minLL = 559, cf = cf, cm = cm,
+                   recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
+                   a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
+                   lhparms = LH, matchRicker=FALSE,species="Striped Bass",group="landlocked")
+
+out610<-dpmBH_MinLL(simyears = simyears, minLL = 610, cf = cf, cm = cm,
+                    recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
+                    a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
+                    lhparms = LH, matchRicker=FALSE,species="Striped Bass",group="landlocked")
+
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+SPR_all <- bind_rows(
+  out457[[2]] |> select(year, wtSPR) |> mutate(MLL = "457 mm"),
+  out559[[2]] |> select(year, wtSPR) |> mutate(MLL = "559 mm"),
+  out610[[2]] |> select(year, wtSPR) |> mutate(MLL = "610 mm")
+)
+
+# Filter years > 24
+SPR_filtered <- SPR_all |>
+  filter(year > 24)
+
+# Mean and SD by minimum length limit
+SPR_summary <- SPR_filtered |>
+  group_by(MLL) %>%
+  summarise(
+    MeanSPR = mean(wtSPR, na.rm = TRUE),
+    SDSPR = sd(wtSPR, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+SPR_summary
+
+#Plot the results
+ggplot(SPR_summary,
+       aes(x = MLL, y = MeanSPR)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = MeanSPR - SDSPR,
+                    ymax = MeanSPR + SDSPR),
+                width = 0.15) +
+  labs(x = "Minimum Length Limit",
+       y = "Mean wtSPR",
+       title = "Spawning Potential Ratio by Minimum Length Limit") +
   theme_bw()

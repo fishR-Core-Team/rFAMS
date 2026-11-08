@@ -1,6 +1,7 @@
 # Estimate yield based on a slot limit
 
 ``` r
+
 library(rFAMS)
 library(ggplot2)  ## to make figures
 library(tidyr)    ## for pivot_longer
@@ -53,6 +54,7 @@ below uses the following life history parameters:
   on the log10 scale, set to 3.273.
 
 ``` r
+
 # create life history parameter object
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 ```
@@ -83,6 +85,7 @@ methods of calculating M and cm. To generate the range and average M and
 cm using rFAMS:
 
 ``` r
+
 est_natmort(LH, incl.avg = TRUE)
 #>            method         M         cm                  givens
 #> 1       HoenigNLS 0.4100226 0.33636478                 tmax=15
@@ -116,6 +119,7 @@ lengths of 200, 250, 300, and 350mm. FInally, there is an optional
 string to `label` the simulation.
 
 ``` r
+
 # conditional natural mortality vector
 cm <- seq(from = 0.1, to = 0.9, by = 0.1)
 # length of interest vector
@@ -218,28 +222,29 @@ LWbeta; and tmax).
 View the first few rows of the output
 
 ``` r
+
 head(Res_1)
-#>   yieldTotal yieldBelow yieldIn yieldAbove nharvTotal ndieTotal nharvestBelow
-#> 1  42308.228  3964.9645       0 38343.2634  59.552529  22.98342     26.910336
-#> 2  20226.339  3091.0064       0 17135.3322  37.501897  29.91042     21.080642
-#> 3   9822.674  2332.2837       0  7490.3901  23.975727  29.36807     15.993708
-#> 4   4809.573  1686.3402       0  3123.2330  15.291391  25.37745     11.637517
-#> 5   2347.811  1150.4916       0  1197.3190   9.519571  19.98013      7.999040
-#> 6   1120.509   721.7631       0   398.7459   5.608765  14.30432      5.063981
-#>   nharvestIn nharvestAbove    n0die ndieBelow   ndieIn ndieAbove  nrBelow
-#> 1          0    32.6421933 16.93639  4.742575 6.285991 11.954858 83.06361
-#> 2          0    16.4212547 32.49751  7.868381 9.304722 12.737315 67.50249
-#> 3          0     7.9820193 46.64404  9.541990 9.929784  9.896294 53.35596
-#> 4          0     3.6538739 59.32995  9.943750 8.945661  6.488039 40.67005
-#> 5          0     1.5205306 70.50022  9.274288 7.042243  3.663598 29.49978
-#> 6          0     0.5447837 80.08692  7.761445 4.807692  1.735180 19.91308
-#>        nrIn   nrAbove  trBelow     trIn  trOver avglenBelow avglenIn
-#> 1 51.410701 45.124710 1.761224 2.443479 3.68129    224.6247        0
-#> 2 38.553462 29.248740 1.761224 2.443479 3.68129    224.2924        0
-#> 3 27.820264 17.890480 1.761224 2.443479 3.68129    223.9166        0
-#> 4 19.088779 10.143117 1.761224 2.443479 3.68129    223.4842        0
-#> 5 12.226450  5.184207 1.761224 2.443479 3.68129    222.9755        0
-#> 6  7.087658  2.279967 1.761224 2.443479 3.68129    222.3578        0
+#>   yieldTotal yieldBelow yieldIn yieldAbove nharvestTotal ndieTotal
+#> 1  42308.228  3964.9645       0 38343.2634     59.552529  22.98342
+#> 2  20226.339  3091.0064       0 17135.3322     37.501897  29.91042
+#> 3   9822.674  2332.2837       0  7490.3901     23.975727  29.36807
+#> 4   4809.573  1686.3402       0  3123.2330     15.291391  25.37745
+#> 5   2347.811  1150.4916       0  1197.3190      9.519571  19.98013
+#> 6   1120.509   721.7631       0   398.7459      5.608765  14.30432
+#>   nharvestBelow nharvestIn nharvestAbove    n0die ndieBelow   ndieIn ndieAbove
+#> 1     26.910336          0    32.6421933 16.93639  4.742575 6.285991 11.954858
+#> 2     21.080642          0    16.4212547 32.49751  7.868381 9.304722 12.737315
+#> 3     15.993708          0     7.9820193 46.64404  9.541990 9.929784  9.896294
+#> 4     11.637517          0     3.6538739 59.32995  9.943750 8.945661  6.488039
+#> 5      7.999040          0     1.5205306 70.50022  9.274288 7.042243  3.663598
+#> 6      5.063981          0     0.5447837 80.08692  7.761445 4.807692  1.735180
+#>    nrBelow      nrIn   nrAbove  trBelow     trIn trAbove avglenBelow avglenIn
+#> 1 83.06361 51.410701 45.124710 1.761224 2.443479 3.68129    224.6247        0
+#> 2 67.50249 38.553462 29.248740 1.761224 2.443479 3.68129    224.2924        0
+#> 3 53.35596 27.820264 17.890480 1.761224 2.443479 3.68129    223.9166        0
+#> 4 40.67005 19.088779 10.143117 1.761224 2.443479 3.68129    223.4842        0
+#> 5 29.49978 12.226450  5.184207 1.761224 2.443479 3.68129    222.9755        0
+#> 6 19.91308  7.087658  2.279967 1.761224 2.443479 3.68129    222.3578        0
 #>   avglenAbove avgwtBelow avgwtIn avgwtAbove   nAt200    nAt250    nAt300
 #> 1    423.5651   147.3398       0  1174.6534 83.06361 51.410701 47.303370
 #> 2    408.5157   146.6277       0  1043.4850 67.50249 38.553462 32.320412
@@ -261,13 +266,13 @@ head(Res_1)
 #> 4 0.5108256 0.5108256 0.5108256 1.1086626 0.5108256 0.7985077  0.330 0.6  0.450
 #> 5 0.6931472 0.6931472 0.6931472 1.2909842 0.6931472 0.9808293  0.275 0.5  0.375
 #> 6 0.9162907 0.9162907 0.9162907 1.5141277 0.9162907 1.2039728  0.220 0.4  0.300
-#>   cfBelow cfIn cfOver recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha
-#> 1    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
-#> 2    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
-#> 3    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
-#> 4    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
-#> 5    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
-#> 6    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#>   cfBelow cfIn cfAbove recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha
+#> 1    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 2    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 3    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 4    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 5    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528
+#> 6    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528
 #>   LWbeta tmax      label
 #> 1  3.273   15 250 to 325
 #> 2  3.273   15 250 to 325
@@ -283,6 +288,7 @@ We will now create a series of figures to aid in interpreting the
 output. First, a custom theme is created to use across all plots.
 
 ``` r
+
 # Custom theme for plots (to make look nice)
 theme_FAMS <- function(...) {
  theme_bw() +
@@ -303,6 +309,7 @@ The first figure will be a yield curve that displays the relationship
 between yield as a function of conditional natural mortality.
 
 ``` r
+
 # Total Yield vs Conditional Natural Mortality (cm)
 ggplot(data=Res_1,mapping=aes(x=cm,y=yieldTotal)) +
   geom_point() +
@@ -320,6 +327,7 @@ a specified length. This figure creates a plot showing the number of
 fish reaching 350mm as a function of conditional natural mortality.
 
 ``` r
+
 #Plot number of fish reaching 350 mm as a function of cm
 ggplot(data=Res_1,mapping=aes(x=cm ,y=`nAt350`)) +
   geom_point() +
@@ -335,6 +343,7 @@ mortality across the three size classes; above slot limit, within slot
 limit, and above slot limit.
 
 ``` r
+
 # Yield below, in, and above the slot limit vs Conditional Natural Mortality (cm)
 # Select columns for plotting
 plot_data <- Res_1 %>%
@@ -362,6 +371,7 @@ additional slot limits and creates a single figure to compare yield
 across the three slot limits.
 
 ``` r
+
 # Simulate yield using settings above with two additional slot limit ranges
 
 Res_2 <- yprBH_SlotLL(lowerSL=325,upperSL=375,          # Set slot limit length

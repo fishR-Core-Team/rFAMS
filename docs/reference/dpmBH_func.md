@@ -37,13 +37,6 @@ dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker)
   i.e., `tmax` in `lhparms`). All values must be between 0 and 1
   (inclusive).
 
-- rec:
-
-  A numeric vector with length `simyears` that specifies the number of
-  recruits each year. This vector is best generated using the
-  [`genRecruits`](https://fishr-core-team.github.io/rFAMS/reference/genRecruits.md).
-  All values must be greater than 0.
-
 - lhparms:
 
   A named vector or list that contains values for each `N0`, `tmax`,

@@ -22,6 +22,7 @@ the YPR and DPM models in `rFAMS`.
 The following packages are used in this article.
 
 ``` r
+
 library(rFAMS)
 library(ggplot2)
 library(ggtext)   # for element_markdown()
@@ -139,6 +140,7 @@ obtained and the first few rows examined below. Note that weights and
 lengths are in `w` and `tl`, respectively.[^1]
 
 ``` r
+
 data(WalleyeErie2,package="FSAdata")
 head(WalleyeErie2)
 #>     setID loc grid year  tl   w  sex    mat age
@@ -156,6 +158,7 @@ will be isolated using
 `dplyr`.[^2] These data are stored in the new data.frame `waeredux`.
 
 ``` r
+
 waeredux <- WalleyeErie2 |>
   dplyr::filter(loc==3,year==2010)
 ```
@@ -167,6 +170,7 @@ data.frame with
 common (i.e., base 10) logarithms.[^3]
 
 ``` r
+
 waeredux <- waeredux |>
   dplyr::mutate(logw=log10(w),
                 logtl=log10(tl))
@@ -186,6 +190,7 @@ A simple linear regression model is fit with
 The result should be saved to an object for further analysis.
 
 ``` r
+
 waelm <- lm(logw~logtl,data=waeredux)
 ```
 
@@ -197,6 +202,7 @@ under the name of the “X” variable (here `logtl`). Thus, the estimate of
 $`log_{10}(a)`$ is -5.877308 and the estimate of $`b`$ is 3.341721.
 
 ``` r
+
 coef(waelm)
 #> (Intercept)       logtl 
 #>   -5.877308    3.341721
@@ -212,6 +218,7 @@ or model fitting. Below demonstrates one way to do this with
 `ggplot2`.[^4]
 
 ``` r
+
 ggplot(data=waeredux,mapping=aes(x=logtl,y=logw)) +
   geom_point(alpha=0.5) +
   geom_smooth(method="lm") +
@@ -248,6 +255,7 @@ two weight-length relationship parameters estimated in the previous
 section.
 
 ``` r
+
 LH <- makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,
              LWalpha=-5.877308,LWbeta=3.341721)
 LH
@@ -283,6 +291,7 @@ will extract the parameter estimates from the
 history parameter list.
 
 ``` r
+
 LH <- makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,
              LWalpha=waelm)
 LH

@@ -33,6 +33,7 @@ for use in the YPR and DPM models in `rFAMS`.
 The following packages are used in this article.
 
 ``` r
+
 library(rFAMS)
 library(FSA)
 library(ggplot2)
@@ -128,6 +129,7 @@ the first few rows examined below. Note that lengths and ages are in
 `tl` and `age`, respectively.[^4]
 
 ``` r
+
 data(WalleyeErie2,package="FSAdata")
 head(WalleyeErie2)
 #>     setID loc grid year  tl   w  sex    mat age
@@ -145,6 +147,7 @@ will be isolated using
 `dplyr`. These data are stored in the new data.frame `waeredux`.
 
 ``` r
+
 waeredux <- WalleyeErie2 |>
   dplyr::filter(loc==3,year==2010)
 ```
@@ -168,6 +171,7 @@ required. The result should be assigned to an object for further use
 below.
 
 ``` r
+
 gstrts <- FSA::findGrowthStarts(tl~age,data=waeredux)
 gstrts   # starting values, not the best-fit values
 #>       Linf          K         t0 
@@ -186,6 +190,7 @@ traditional VBGF is the default for
 [`makeGrowthFun()`](https://fishr-core-team.github.io/FSA/reference/makeGrowthFun.html).
 
 ``` r
+
 vbfun <- FSA::makeGrowthFun()
 vbfun
 #> function (t, Linf, K = NULL, t0 = NULL) 
@@ -197,7 +202,7 @@ vbfun
 #>     }
 #>     Linf * (1 - exp(-K * (t - t0)))
 #> }
-#> <bytecode: 0x00000199a6d6f0e8>
+#> <bytecode: 0x0000013073194f90>
 #> <environment: namespace:FSA>
 ```
 
@@ -207,6 +212,7 @@ function returns a mean length given the values of `t` (i.e., age),
 `Linf`, `K`, and `t0` (as shown in the top line of the function).
 
 ``` r
+
 vb1(3,Linf=450,K=0.4,t0=-0.5)    # mean length at age-3
 #> [1] 339.0314
 vb1(3:6,Linf=450,K=0.4,t0=-0.5)  # mean lengths at age-3 to age-6
@@ -223,6 +229,7 @@ data in `data=`, and the saved starting values in `start=`. The result
 should be saved to an object.
 
 ``` r
+
 resvb1 <- nls(tl~vbfun(age,Linf,K,t0),data=waeredux,start=gstrts)
 ```
 
@@ -231,6 +238,7 @@ Estimated values for the parameters are extracted from the saved
 [`coef()`](https://rdrr.io/r/stats/coef.html).
 
 ``` r
+
 coef(resvb1)   # best-fit values
 #>        Linf           K          t0 
 #> 595.0451068   0.5233219  -0.8861433
@@ -253,6 +261,7 @@ show the fitted VBGF against the observed data is shown below with the
 result in [Figure 2](#fig-VBWAE).
 
 ``` r
+
 ggplot(data=waeredux,aes(y=tl,x=age)) +
   geom_point(size=2.5,alpha=0.2) +
   scale_y_continuous(name="Total Length (mm)",limits=c(0,NA)) +
@@ -284,6 +293,7 @@ parameters. Three of these arguments are `Linf=`, `K=` and `t0=` for the
 three VBGF parameters estimated in the previous section.
 
 ``` r
+
 LH <- makeLH(N0=100,tmax=15,Linf=595.0451068,K=0.5233219,t0=-0.8861433,
              LWalpha=-5.877308,LWbeta=3.341721)
 LH
@@ -318,6 +328,7 @@ will extract the parameter estimates from the
 history parameter list.
 
 ``` r
+
 LH <- makeLH(N0=100,tmax=15,Linf=resvb1,
              LWalpha=-5.877308,LWbeta=3.341721)
 LH

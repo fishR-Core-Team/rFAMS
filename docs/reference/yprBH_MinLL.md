@@ -8,7 +8,16 @@ mortality (`cf`), and conditional natural mortality (`cm`).
 ## Usage
 
 ``` r
-yprBH_MinLL(minLL, cf, cm, lhparms, loi = NULL, matchRicker = FALSE)
+yprBH_MinLL(
+  minLL,
+  cf,
+  cm,
+  lhparms,
+  loi = NULL,
+  SPRdat = NULL,
+  SaveSPR_int = FALSE,
+  matchRicker = FALSE
+)
 ```
 
 ## Arguments
@@ -40,6 +49,22 @@ yprBH_MinLL(minLL, cf, cm, lhparms, loi = NULL, matchRicker = FALSE)
   A numeric vector of lengths (in mm) of interest. Used to determine
   number of fish that reach these lengths. All must be less than `Linf`
   in `lhparms`.
+
+- SPRdat:
+
+  A named list that contains values for each `FLR`, `FLRint`,
+  `FLRslope`, `MatAge`, `percF`, `percFSpawn`, and `ageInterval`. See
+  [`makeSPR`](https://fishr-core-team.github.io/rFAMS/reference/makeSPR.md)
+  for definitions of these parameters.
+
+- SaveSPR_int:
+
+  A Boolean set to `TRUE` to save intermediate calculations of SPR to a
+  file titled `SPR_intermediates.rds` in your working directory. This
+  can be a very large file, depending on how many length, cf, and cm are
+  passed and is typically only needed to confirm calculations. SPR will
+  automatically be appended to the output dataframe with or without this
+  option set to `TRUE`
 
 - matchRicker:
 

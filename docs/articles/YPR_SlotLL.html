@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Estimate yield based on a slot limit • rFAMS</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="YPR_SlotLL_files/libs/quarto-html/popper.min.js"></script><script src="YPR_SlotLL_files/libs/quarto-html/tippy.umd.min.js"></script><link href="YPR_SlotLL_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="YPR_SlotLL_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,8 @@
 <li><a class="dropdown-item" href="../articles/MakeLH.html">Create life history object</a></li>
     <li><a class="dropdown-item" href="../articles/YPR_MinLL.html">Estimate yield based on one or more minimum length limits</a></li>
     <li><a class="dropdown-item" href="../articles/YPR_SlotLL.html">Estimate yield based on a slot length limit</a></li>
-    <li><a class="dropdown-item" href="../articles/dpmBH.html">Simulate a population using the dynamic pool model</a></li>
+    <li><a class="dropdown-item" href="../articles/dpmBHvector.html">Dynamic pool model (vector recruitment)</a></li>
+    <li><a class="dropdown-item" href="../articles/dpmBHricker.html">Dynamic pool model (Ricker recruitment)</a></li>
     <li><a class="dropdown-item" href="../articles/ggplot_for_rFAMS.html">ggplot2 for rFAMS</a></li>
   </ul>
 </li>
@@ -55,6 +56,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-explanations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Explanations</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-explanations">
 <li><a class="dropdown-item" href="../articles/YPR_FAMSvRICKER.html">Comparing FAMS and Ricker YPR Equations</a></li>
+    <li><a class="dropdown-item" href="../articles/spr.html">Description of spawning potential ratio</a></li>
+    <li><a class="dropdown-item" href="../articles/stock_recruitment.html">Description of stock-recruitment models</a></li>
   </ul>
 </li>
       </ul>
@@ -74,7 +77,7 @@
       <h1>Estimate yield based on a slot limit</h1>
 
 
-      <p class="date">2026-03-15</p>
+      <p class="date">2026-11-08</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/YPR_SlotLL.qmd" class="external-link"><code>vignettes/articles/YPR_SlotLL.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -206,27 +209,27 @@
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Res_1</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   yieldTotal yieldBelow yieldIn yieldAbove nharvTotal ndieTotal nharvestBelow</span></span>
-<span><span class="co">#&gt; 1  42308.228  3964.9645       0 38343.2634  59.552529  22.98342     26.910336</span></span>
-<span><span class="co">#&gt; 2  20226.339  3091.0064       0 17135.3322  37.501897  29.91042     21.080642</span></span>
-<span><span class="co">#&gt; 3   9822.674  2332.2837       0  7490.3901  23.975727  29.36807     15.993708</span></span>
-<span><span class="co">#&gt; 4   4809.573  1686.3402       0  3123.2330  15.291391  25.37745     11.637517</span></span>
-<span><span class="co">#&gt; 5   2347.811  1150.4916       0  1197.3190   9.519571  19.98013      7.999040</span></span>
-<span><span class="co">#&gt; 6   1120.509   721.7631       0   398.7459   5.608765  14.30432      5.063981</span></span>
-<span><span class="co">#&gt;   nharvestIn nharvestAbove    n0die ndieBelow   ndieIn ndieAbove  nrBelow</span></span>
-<span><span class="co">#&gt; 1          0    32.6421933 16.93639  4.742575 6.285991 11.954858 83.06361</span></span>
-<span><span class="co">#&gt; 2          0    16.4212547 32.49751  7.868381 9.304722 12.737315 67.50249</span></span>
-<span><span class="co">#&gt; 3          0     7.9820193 46.64404  9.541990 9.929784  9.896294 53.35596</span></span>
-<span><span class="co">#&gt; 4          0     3.6538739 59.32995  9.943750 8.945661  6.488039 40.67005</span></span>
-<span><span class="co">#&gt; 5          0     1.5205306 70.50022  9.274288 7.042243  3.663598 29.49978</span></span>
-<span><span class="co">#&gt; 6          0     0.5447837 80.08692  7.761445 4.807692  1.735180 19.91308</span></span>
-<span><span class="co">#&gt;        nrIn   nrAbove  trBelow     trIn  trOver avglenBelow avglenIn</span></span>
-<span><span class="co">#&gt; 1 51.410701 45.124710 1.761224 2.443479 3.68129    224.6247        0</span></span>
-<span><span class="co">#&gt; 2 38.553462 29.248740 1.761224 2.443479 3.68129    224.2924        0</span></span>
-<span><span class="co">#&gt; 3 27.820264 17.890480 1.761224 2.443479 3.68129    223.9166        0</span></span>
-<span><span class="co">#&gt; 4 19.088779 10.143117 1.761224 2.443479 3.68129    223.4842        0</span></span>
-<span><span class="co">#&gt; 5 12.226450  5.184207 1.761224 2.443479 3.68129    222.9755        0</span></span>
-<span><span class="co">#&gt; 6  7.087658  2.279967 1.761224 2.443479 3.68129    222.3578        0</span></span>
+<span><span class="co">#&gt;   yieldTotal yieldBelow yieldIn yieldAbove nharvestTotal ndieTotal</span></span>
+<span><span class="co">#&gt; 1  42308.228  3964.9645       0 38343.2634     59.552529  22.98342</span></span>
+<span><span class="co">#&gt; 2  20226.339  3091.0064       0 17135.3322     37.501897  29.91042</span></span>
+<span><span class="co">#&gt; 3   9822.674  2332.2837       0  7490.3901     23.975727  29.36807</span></span>
+<span><span class="co">#&gt; 4   4809.573  1686.3402       0  3123.2330     15.291391  25.37745</span></span>
+<span><span class="co">#&gt; 5   2347.811  1150.4916       0  1197.3190      9.519571  19.98013</span></span>
+<span><span class="co">#&gt; 6   1120.509   721.7631       0   398.7459      5.608765  14.30432</span></span>
+<span><span class="co">#&gt;   nharvestBelow nharvestIn nharvestAbove    n0die ndieBelow   ndieIn ndieAbove</span></span>
+<span><span class="co">#&gt; 1     26.910336          0    32.6421933 16.93639  4.742575 6.285991 11.954858</span></span>
+<span><span class="co">#&gt; 2     21.080642          0    16.4212547 32.49751  7.868381 9.304722 12.737315</span></span>
+<span><span class="co">#&gt; 3     15.993708          0     7.9820193 46.64404  9.541990 9.929784  9.896294</span></span>
+<span><span class="co">#&gt; 4     11.637517          0     3.6538739 59.32995  9.943750 8.945661  6.488039</span></span>
+<span><span class="co">#&gt; 5      7.999040          0     1.5205306 70.50022  9.274288 7.042243  3.663598</span></span>
+<span><span class="co">#&gt; 6      5.063981          0     0.5447837 80.08692  7.761445 4.807692  1.735180</span></span>
+<span><span class="co">#&gt;    nrBelow      nrIn   nrAbove  trBelow     trIn trAbove avglenBelow avglenIn</span></span>
+<span><span class="co">#&gt; 1 83.06361 51.410701 45.124710 1.761224 2.443479 3.68129    224.6247        0</span></span>
+<span><span class="co">#&gt; 2 67.50249 38.553462 29.248740 1.761224 2.443479 3.68129    224.2924        0</span></span>
+<span><span class="co">#&gt; 3 53.35596 27.820264 17.890480 1.761224 2.443479 3.68129    223.9166        0</span></span>
+<span><span class="co">#&gt; 4 40.67005 19.088779 10.143117 1.761224 2.443479 3.68129    223.4842        0</span></span>
+<span><span class="co">#&gt; 5 29.49978 12.226450  5.184207 1.761224 2.443479 3.68129    222.9755        0</span></span>
+<span><span class="co">#&gt; 6 19.91308  7.087658  2.279967 1.761224 2.443479 3.68129    222.3578        0</span></span>
 <span><span class="co">#&gt;   avglenAbove avgwtBelow avgwtIn avgwtAbove   nAt200    nAt250    nAt300</span></span>
 <span><span class="co">#&gt; 1    423.5651   147.3398       0  1174.6534 83.06361 51.410701 47.303370</span></span>
 <span><span class="co">#&gt; 2    408.5157   146.6277       0  1043.4850 67.50249 38.553462 32.320412</span></span>
@@ -248,13 +251,13 @@
 <span><span class="co">#&gt; 4 0.5108256 0.5108256 0.5108256 1.1086626 0.5108256 0.7985077  0.330 0.6  0.450</span></span>
 <span><span class="co">#&gt; 5 0.6931472 0.6931472 0.6931472 1.2909842 0.6931472 0.9808293  0.275 0.5  0.375</span></span>
 <span><span class="co">#&gt; 6 0.9162907 0.9162907 0.9162907 1.5141277 0.9162907 1.2039728  0.220 0.4  0.300</span></span>
-<span><span class="co">#&gt;   cfBelow cfIn cfOver recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha</span></span>
-<span><span class="co">#&gt; 1    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 2    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 3    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 4    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 5    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
-<span><span class="co">#&gt; 6    0.45    0   0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
+<span><span class="co">#&gt;   cfBelow cfIn cfAbove recruitmentTL lowerSL upperSL  N0 Linf   K   t0 LWalpha</span></span>
+<span><span class="co">#&gt; 1    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
+<span><span class="co">#&gt; 2    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
+<span><span class="co">#&gt; 3    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
+<span><span class="co">#&gt; 4    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
+<span><span class="co">#&gt; 5    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
+<span><span class="co">#&gt; 6    0.45    0    0.25           200     250     325 100  592 0.2 -0.3  -5.528</span></span>
 <span><span class="co">#&gt;   LWbeta tmax      label</span></span>
 <span><span class="co">#&gt; 1  3.273   15 250 to 325</span></span>
 <span><span class="co">#&gt; 2  3.273   15 250 to 325</span></span>
@@ -472,7 +475,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

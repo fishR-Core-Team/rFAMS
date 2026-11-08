@@ -9,7 +9,7 @@ dpmBH_MinLL(
   cf,
   cm,
   recruitment_type = c("vector", "stockrecruit"),
-  stockrecruit = c("Ricker", "BevertonHolt", "Shepherd"),
+  srmod = c("Ricker", "BevertonHolt", "Shepherd"),
   lhparms,
   simyears,
   a = NULL,
@@ -30,9 +30,9 @@ dpmBH_MinLL(
 
 \item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., \code{tmax} in \code{lhparms}). All values must be between 0 and 1 (inclusive).}
 
-\item{recruitment_type}{A string that indicates if recruitment is being supplied as a vector (which requires \code{recv}) or based on a stock-recruitment model (requires \code{stockrecruit} and relevant coefficients)}
+\item{recruitment_type}{A string that indicates if recruitment is being supplied as a \code{vector} (which requires \code{recv} also specified or based on a stock-recruitment model, \code{stockrecruit} (which requires relevant coefficients also specified)}
 
-\item{stockrecruit}{A string that indicates the type of stock-recruitment model}
+\item{srmod}{A string that indicates the type of stock-recruitment model, \code{Ricker}, \code{BevertonHolt}, \code{Shepherd}. Required when \code{recruitment_type} = \code{stockrecruit}.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
@@ -87,11 +87,11 @@ The second list item named \code{sumbyYear} contains a data.frame with the follo
 
 \itemize{
 \item \code{year} is the year number for the simulation
-\item \code{Age_1plus} is the total number of fish age-1 plus per year.
-\item \code{Yield_Age_1plus} is the total year of age-1 plus fish per year.
+\item \code{age_1plus} is the total number of fish age-1 plus per year.
+\item \code{Yield_age_1plus} is the total year of age-1 plus fish per year.
 \item \code{Total_biomass} is the total biomass of age-1 plus fish per year.
-\item \code{N_harvest_Age_1plus} is the number of age-1 plus fish that are harvested per year.
-\item \code{N_die_Age_1plus} is the number of age-1 plus fish that die per year.
+\item \code{n_harvest_age_1plus} is the number of age-1 plus fish that are harvested per year.
+\item \code{n_die_age_1plus} is the number of age-1 plus fish that die per year.
 \item \code{substock} is the incremental number of substock sized fish at age and year at the beginning of the year.
 \item \code{stock} is the incremental number of stock sized fish at age and year at the beginning of the year.
 \item \code{quality} is the incremental number of quality sized fish at age and year at the beginning of the year.
@@ -188,7 +188,7 @@ SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge =
                  percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
 
 out_3<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
-                   recruitment_type = c("stockrecruit"), stockrecruit = c("Ricker"),
+                   recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
                    a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
                    lhparms = lhparms, simyears = simyears,
                    species="Striped Bass",group="landlocked",matchRicker=FALSE)

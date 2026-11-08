@@ -51,6 +51,7 @@ below to facilitate working through the different examples. Note that
 `lhparms` with `lhparms[["tmax"]]` or `lhparms$tmax`.
 
 ``` r
+
 tmax <- 5
 simyears <- 10
 ```
@@ -68,6 +69,7 @@ ages and years. A vector with this value repeated for the product of
 to [`matrix()`](https://rdrr.io/r/base/matrix.html).
 
 ``` r
+
 tmp <- rep(0.3,(tmax+1)*simyears)
 tmp
 #>  [1] 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
@@ -82,6 +84,7 @@ column, but is by row below. Note that the number of rows is defined by
 `simyears`.[^3]
 
 ``` r
+
 cm <- matrix(tmp,byrow=TRUE,nrow=simyears)
 cm
 #>       [,1] [,2] [,3] [,4] [,5] [,6]
@@ -102,6 +105,7 @@ shown below with `dimnames=` (note that row names are given first in the
 list, followed by column names).[^4]
 
 ``` r
+
 cm <- matrix(tmp,byrow=TRUE,nrow=simyears,
              dimnames=list(paste0("yr_",1:simyears),paste0("age_",0:tmax)))
 cm
@@ -130,6 +134,7 @@ age-0 fish with a set of 0.2 values repeated (with
 [`rep()`](https://rdrr.io/r/base/rep.html)) for ages 1-`tmax`..
 
 ``` r
+
 tmp <- c(0.05,rep(0.2,tmax))
 tmp
 #> [1] 0.05 0.20 0.20 0.20 0.20 0.20
@@ -139,6 +144,7 @@ This vector is then repeated for each simulation year for input into
 [`matrix()`](https://rdrr.io/r/base/matrix.html).
 
 ``` r
+
 tmp <- rep(tmp,simyears)
 tmp
 #>  [1] 0.05 0.20 0.20 0.20 0.20 0.20 0.05 0.20 0.20 0.20 0.20 0.20 0.05 0.20 0.20
@@ -150,6 +156,7 @@ tmp
 Finally, these values are entered by row into a matrix.
 
 ``` r
+
 cm <- matrix(tmp,byrow=TRUE,nrow=simyears,
              dimnames=list(paste0("yr_",1:simyears),paste0("age_",0:tmax)))
 cm
@@ -179,6 +186,7 @@ enough here) or by combining the results of multiple uses of
 $`cm`$ described above).
 
 ``` r
+
 tmp <- c(0.2,0.2,0.2,0.15,0.15,0.15,0.15,0.1,0.1,0.1)   # either this or next line works
 tmp <- c(rep(0.2,3),rep(0.15,4),rep(0.1,3))             #   don't need both
 ```
@@ -187,6 +195,7 @@ For longer vectors such as this it may be worthwhile to make sure you
 have entered the required number of values.
 
 ``` r
+
 length(tmp)==simyears    # Should be TRUE if simyears values entered
 #> [1] TRUE
 ```
@@ -196,6 +205,7 @@ for use in [`matrix()`](https://rdrr.io/r/base/matrix.html). Note
 `byrow=FALSE` here because the values should be placed by column first.
 
 ``` r
+
 tmp <- rep(tmp,tmax+1)
 cm <- matrix(tmp,byrow=FALSE,nrow=simyears,
              dimnames=list(paste0("yr_",1:simyears),paste0("age_",0:tmax)))
@@ -222,6 +232,7 @@ age* are entered separately for the three blocks of years for which
 $`cm`$ does not change by age.
 
 ``` r
+
 tmp1 <- c(0.1,0.20,0.20,0.15,0.15,0.10)
 tmp2 <- c(0.1,0.15,0.15,0.15,0.15,0.15)
 tmp3 <- c(0.1,0.15,0.15,0.10,0.10,0.10)
@@ -231,6 +242,7 @@ Each of these is then repeated by how many years are in the block where
 those $`cm`$ values don’t vary by age.
 
 ``` r
+
 tmp1 <- rep(tmp1,4)
 tmp2 <- rep(tmp2,4)
 tmp3 <- rep(tmp3,2)
@@ -240,6 +252,7 @@ Those three vectors are then combined together for
 [`matrix()`](https://rdrr.io/r/base/matrix.html).
 
 ``` r
+
 tmp <- c(tmp1,tmp2,tmp3)
 cm <- matrix(tmp,byrow=TRUE,nrow=simyears,
              dimnames=list(paste0("yr_",1:simyears),paste0("age_",0:tmax)))
@@ -268,6 +281,7 @@ help with data entry as the entered vector will look similar to the
 desired matrix.
 
 ``` r
+
 vals <- c(0.00,0.10,0.15,0.15,0.15,0.10,
           0.05,0.10,0.15,0.10,0.10,0.10,
           0.05,0.15,0.20,0.15,0.15,0.05,
@@ -284,6 +298,7 @@ It is a good idea to make sure the required number of values have been
 entered.
 
 ``` r
+
 length(vals)==simyears*(tmax+1)
 #> [1] TRUE
 ```
@@ -292,6 +307,7 @@ This vector is then given to
 [`matrix()`](https://rdrr.io/r/base/matrix.html).
 
 ``` r
+
 cm <- matrix(vals,byrow=TRUE,nrow=simyears,
              dimnames=list(paste0("yr_",1:simyears),paste0("age_",0:tmax)))
 cm

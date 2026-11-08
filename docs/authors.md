@@ -12,13 +12,13 @@ Source:
 [`inst/CITATION`](https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/inst/CITATION)
 
 Doll JC, Ogle DH (2026). *rFAMS: Fisheries Analysis and Modeling
-Simulator*. R package version 0.0.3.9000,
-<https://github.com/fishR-Core-Team/rFAMS/>.
+Simulator*. R package version 0.0.4,
+<https://fishr-core-team.github.io/rFAMS/>.
 
     @Manual{,
       title = {rFAMS: Fisheries Analysis and Modeling Simulator},
       author = {Jason C. Doll and Derek H. Ogle},
       year = {2026},
-      note = {R package version 0.0.3.9000},
-      url = {https://github.com/fishR-Core-Team/rFAMS/},
+      note = {R package version 0.0.4},
+      url = {https://fishr-core-team.github.io/rFAMS/},
     }

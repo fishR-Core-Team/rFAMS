@@ -4,7 +4,7 @@
 \alias{iCalcRecruitment}
 \title{calculate recruitment in dpm model}
 \usage{
-iCalcRecruitment(stockrecruit, ss, a, b, c = NULL, sigmaR)
+iCalcRecruitment(srmod, ss, a, b, c = NULL, sigmaR)
 }
 \description{
 calculate recruitment in dpm model

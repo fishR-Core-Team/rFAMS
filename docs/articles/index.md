@@ -2,8 +2,11 @@
 
 ### All vignettes
 
-- [Simulate a population using the dynamic pool
-  model](https://fishr-core-team.github.io/rFAMS/articles/dpmBH.md):
+- [Simulate a population using the dynamic pool model with a Ricker
+  stock-recruitment
+  curve](https://fishr-core-team.github.io/rFAMS/articles/dpmBHricker.md):
+- [Simulate a population using the dynamic pool model with a recruitment
+  vector](https://fishr-core-team.github.io/rFAMS/articles/dpmBHvector.md):
 - [Quick Introduction to ggplot2 for
   rFAMS](https://fishr-core-team.github.io/rFAMS/articles/ggplot_for_rFAMS.md):
 - [Create life history
@@ -13,6 +16,10 @@
 - [Mortality matrices with the dynamic pool
   model](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_MortalityDPM.md):
 - [Weight-Length](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_WeightLength.md):
+- [Spawning Potential
+  Ratio](https://fishr-core-team.github.io/rFAMS/articles/spr.md):
+- [Stock-recruitment
+  curves](https://fishr-core-team.github.io/rFAMS/articles/stock_recruitment.md):
 - [Comparing FAMS and Ricker YPR
   Equations](https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.md):
 - [Estimate yield based on one or more minimum length

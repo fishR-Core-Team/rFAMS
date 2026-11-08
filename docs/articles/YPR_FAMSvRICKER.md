@@ -97,6 +97,7 @@ Ricker result) between the two results.
 Code
 
 ``` r
+
 FAMSvRicker1 <- function(N0,F,M,tr,t0) {
   Nt <- N0*exp(-M*tr)
   r <- tr-t0
@@ -118,6 +119,7 @@ can be quite great over the range of reasonable $`t_0`$ values.
 Code
 
 ``` r
+
 tmp <- FAMSvRicker1(100,0.2,0.3,1,seq(-2,2,length.out=100))
 
 ggplot(data=tmp,mapping=aes(y=percdiff,x=t0)) +
@@ -139,6 +141,7 @@ $`e^{Mt_0}`$ term.
 Code
 
 ``` r
+
 FAMSvRicker <- function(N0,F,M,tr,t0,tlambda,Linf,K,a,b) {
   Nt <- N0*exp(-M*tr)
   r <- tr-t0
@@ -165,6 +168,7 @@ between the two equations.
 Code
 
 ``` r
+
 tmp <- FAMSvRicker(N0=100,F=0.2,M=0.3,tr=1,t0=seq(-2,1,length.out=100),
                    tlambda=10,Linf=500,K=3.1,a=-5.6,b=3.1)
 ggplot(data=tmp,mapping=aes(y=percdiff,x=t0)) +
@@ -183,6 +187,7 @@ the “corrected” FAMS equation is used.
 Code
 
 ``` r
+
 ggplot(data=tmp,mapping=aes(y=cpercdiff,x=t0)) +
   geom_point() +
   geom_hline(yintercept=0,color="red",linetype="dashed") +

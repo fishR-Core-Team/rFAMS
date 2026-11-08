@@ -7,8 +7,8 @@
 #' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., `tmax` in `lhparms`). All values must be between 0 and 1 (inclusive).
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param simyears A single numeric for the number of years to simulate. Value must be a whole number greater than 1.
-#' @param recruitment_type A string that indicates if recruitment is being supplied as a vector (which requires `recv`) or based on a stock-recruitment model (requires `stockrecruit` and relevant coefficients)
-#' @param stockrecruit A string that indicates the type of stock-recruitment model
+#' @param recruitment_type A string that indicates if recruitment is being supplied as a `vector` (which requires `recv` also specified or based on a stock-recruitment model, `stockrecruit` (which requires relevant coefficients also specified)
+#' @param srmod A string that indicates the type of stock-recruitment model, `Ricker`, `BevertonHolt`, `Shepherd`. Required when `recruitment_type` = `stockrecruit`.
 #' @param a A single numeric to represent alpha in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.
 #' @param b A single numeric to represent beta in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.
 #' @param c A single numeric to represent c in the Shepherd stock-recruitment models.
@@ -152,7 +152,7 @@
 #'                  percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
 #'
 #' out_3<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
-#'                    recruitment_type = c("stockrecruit"), stockrecruit = c("Ricker"),
+#'                    recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
 #'                    a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
 #'                    lhparms = lhparms, simyears = simyears,
 #'                    species="Striped Bass",group="landlocked",matchRicker=FALSE)
@@ -179,7 +179,7 @@
 #' @rdname dpmBH_MinLL
 #' @export
 
-dpmBH_MinLL <- function(minLL,cf,cm,recruitment_type=c("vector","stockrecruit"),stockrecruit=c("Ricker","BevertonHolt","Shepherd"),
+dpmBH_MinLL <- function(minLL,cf,cm,recruitment_type=c("vector","stockrecruit"),srmod=c("Ricker","BevertonHolt","Shepherd"),
                         lhparms,simyears,a=NULL,b=NULL,c=NULL,sigmaR=NULL,recv=NULL,
                         species=NULL,group=NULL,SPRdat=NULL,matchRicker=FALSE){
 
@@ -188,7 +188,8 @@ dpmBH_MinLL <- function(minLL,cf,cm,recruitment_type=c("vector","stockrecruit"),
   # if "Ricker" than needs to supply alpha, beta, and sigmaR
 
   # ---- Check inputs
-  iCheckStockRecruitment(recruitment_type = recruitment_type,stockrecruit = stockrecruit,
+  if(recruitment_type == "vector") {srmod = NULL}
+  iCheckStockRecruitment(recruitment_type = recruitment_type,srmod = srmod,
                      recv = recv,a = a,b = b,c = c,sigmaR = sigmaR,SPRdat = SPRdat)
   iCheckMLH(minLL,lhparms$Linf)
   iCheckspecies(species)
@@ -200,7 +201,7 @@ dpmBH_MinLL <- function(minLL,cf,cm,recruitment_type=c("vector","stockrecruit"),
   }
 
   recruitment_type <- match.arg(recruitment_type)
-  stockrecruit <- match.arg(stockrecruit)
+  srmod <- match.arg(srmod)
 
   #needed to account for rounding issues of sequences
   cf <- round(cf,8)
@@ -254,7 +255,7 @@ dpmBH_MinLL <- function(minLL,cf,cm,recruitment_type=c("vector","stockrecruit"),
           dplyr::pull(SS)
 
         #Select recruitment functions
-        recr[x] <- iCalcRecruitment(stockrecruit = stockrecruit,ss = SS[x],a = a,b = b,c = c,sigmaR = sigmaR)
+        recr[x] <- iCalcRecruitment(srmod = srmod,ss = SS[x],a = a,b = b,c = c,sigmaR = sigmaR)
       }
       rec_x <- recr[x]
     }

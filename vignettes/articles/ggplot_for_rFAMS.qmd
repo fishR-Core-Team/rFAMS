@@ -607,7 +607,7 @@ ggplot(data=tmp2long,mapping=aes(x=cf,y=n,color=Length)) +
 ## Returned Lists of data.frames
 The dynamic pool model implemented in `dpmBH_MinLL()` returns an object that is a list of two data.frames, which is more complex than what is returned from other functions in `rFAMS`. However, accessing these two data.frames is fairly simple and is illustrated here.
 
-The code below is copied from this [this article](https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html) that demonstrates how to use `dpmBH_MinLL()`.^[See [the documentation for `dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.html) for more details).] The results were assigned to `minLL_2` in the last line.
+The code below is copied from this [this article](https://fishr-core-team.github.io/rFAMS/articles/dpmBHVector.html) that demonstrates how to use `dpmBH_MinLL()`.^[See [the documentation for `dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.html) for more details).] The results were assigned to `minLL_2` in the last line.
 
 ```{r}
 # set number of simulation years
@@ -623,9 +623,9 @@ cf <- matrix(rep(c(rep(0,1), rep(0.33,(LH$tmax))), simyears),nrow=simyears,byrow
 rec <- genRecruits(method="fixed",nR=1000,simyears=simyears)
 # run the DPM model of a 400 mm minimum length limit for 40 years
 # assume this is for landlocked Striped Bass
-minLL_2 <- dpmBH_MinLL(simyears=simyears,minLL=minLL,
-                       cf=cf,cm=cm,rec=rec,lhparms=LH,matchRicker=FALSE,
-                       species="Striped Bass",group="landlocked")
+minLL_2 <- dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf, cm = cm,
+                  recruitment_type = "vector", recv=rec,
+                  lhparms = LH, matchRicker=FALSE,species="Striped Bass",group="landlocked")
 ```
 
 The results in `minLL_2` consist of two data.frames -- `sumbyAge` and `sumbyYear` -- which are simulation summarized arranged by age and by year.

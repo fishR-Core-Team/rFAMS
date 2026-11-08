@@ -15,14 +15,15 @@ harvested, number of fish that reach specified lengths of interest,
 total number of fish and biomass in the population, and stock density
 indices.
 
-This package is maintained by [Jason Doll](mailto:jcdoll20@hotmail.com),
-Associate Professor of Fisheries at Francis Marion University
+This package is maintained by [Jason
+Doll](mailto:rfams.package@gmail.com), Associate Professor of Fisheries
+at Francis Marion University
 
 Members of the [fishR Core Team](https://github.com/fishR-Core-Team)
-that have contributed to the development of this package include:  
-Jason Doll, Francis Marion University  
-Derek Ogle, Northland College (retired)  
-Maddie Lewis, Iowa Department of Natural Resources  
+that have contributed to the development of this package include:\
+Jason Doll, Francis Marion University\
+Derek Ogle, Northland College (retired)\
+Maddie Lewis, Iowa Department of Natural Resources\
 Hadley Boehm, Minnesota Department of Natural Resources
 
 ### Support
@@ -39,6 +40,10 @@ Spawning potential ratio calculations will be added at a later date.
 Life history parameters can be estimated using [FSA
 package](https://fishr-core-team.github.io/FSA/index.html)
 
+rFAMS is an independent open-source package developed for the fisheries
+community. it is not affiliated with, funded by, or associated with FAMS
+software products.
+
 #### Equilibrium Modeling
 
 1.  Initial function completed
@@ -54,7 +59,7 @@ package](https://fishr-core-team.github.io/FSA/index.html)
 #### RShiny Development
 
 1.  Initial development completed
-2.  Test with CRAN released rFAMS v0.0.2
+2.  Test with CRAN released rFAMS v0.0.3
 
 ### Installation
 
@@ -63,6 +68,7 @@ version](https://CRAN.R-project.org/package=rFAMS) from CRAN may be
 installed with
 
 ``` r
+
 install.packages("rFAMS")
 ```
 
@@ -71,6 +77,7 @@ version](https://github.com/fishR-Core-Team/rFAMS/tree/dev) may be
 installed from GitHub with
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("fishR-Core-Team/rFAMS@dev")
 ```
@@ -94,12 +101,12 @@ Conduct](https://fishr-core-team.github.io/rFAMS/CODE_OF_CONDUCT.html).
 
 [![Project Status: Active - The project has reached a stable, usable
 state and is being actively
-developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![CRAN
-Version](http://www.r-pkg.org/badges/version/rFAMS)](http://www.r-pkg.org/pkg/rFAMS)
+Version](https://www.r-pkg.org/badges/version/rFAMS)](https://www.r-pkg.org:443/pkg/rFAMS)
 [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.md)
 [![R-CMD-check](https://github.com/fishR-Core-Team/rFAMS/workflows/R-CMD-check/badge.svg)](https://github.com/fishR-Core-Team/rFAMS/actions)
 [![CRAN RStudio mirror downloads
 rate](http://cranlogs.r-pkg.org/badges/rFAMS)![CRAN RSTudio mirror
 downloads
-total](http://cranlogs.r-pkg.org/badges/grand-total/rFAMS)](http://www.r-pkg.org/pkg/rFAMS)
+total](http://cranlogs.r-pkg.org/badges/grand-total/rFAMS)](https://www.r-pkg.org/pkg/rFAMS)
