@@ -1,6 +1,9 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://fishr-core-team.github.io/rFAMS/404.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/articles/articles/dpmBH.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/articles/dpmBHricker.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/articles/dpmBHvector.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/ggplot_for_rFAMS.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/index.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/MakeLH.html</loc></url>
@@ -8,6 +11,8 @@
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/MANUAL_Mortality.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/MANUAL_MortalityDPM.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/MANUAL_WeightLength.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/articles/spr.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/articles/stock_recruitment.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/YPR_MinLL.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/articles/YPR_SlotLL.html</loc></url>
@@ -20,6 +25,7 @@
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/est_natmort.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/genRecruits.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCalcRecruitment.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckavgFreq.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckcf.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iCheckcfabove.html</loc></url>
@@ -74,14 +80,20 @@
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iErrNotVector.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iHndlArgName.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/iIbeta.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/iMakeFecundity.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/iMakeFM_t.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/index.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/is.wholenumber.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/isum_by_year.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/makeLH.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/makeSPR.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/rFAMS-internals.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/seeMorts.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/sr_error.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/static_spr.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/STOP.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/WARN.html</loc></url>
+<url><loc>https://fishr-core-team.github.io/rFAMS/reference/wtrans_spr.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/yprBH_func.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/yprBH_MinLL.html</loc></url>
 <url><loc>https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.html</loc></url>

@@ -1,15 +1,22 @@
 #' @title Simulate expected yield under minimum length regulations using the Dynamic Pool model for a range of input parameters
 #'
-#' @description Simulate yield under minimum length regulations using the Dynamic Pool (DPM) model with (possibly) multiple values for conditional fishing mortality (`cf`) and conditional natural mortality (`cm`).
+#' @description Simulate yield and transitional spawning potential ratio under minimum length regulations using the Dynamic Pool (DPM) model with (possibly) multiple values for conditional fishing mortality (`cf`) and conditional natural mortality (`cm`). Recruitment options can be a user supplied vector or based on one of three stock-recruitment models.
 #'
 #' @param minLL A single numeric representing the minimum length limit for harvest in mm.
 #' @param cf A matrix of conditional fishing mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., `tmax` in `lhparms`). All values must be between 0 and 1 (inclusive).
 #' @param cm A matrix of conditional natural mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., `tmax` in `lhparms`). All values must be between 0 and 1 (inclusive).
-#' @param rec A numeric vector with length `simyears` that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.
 #' @param lhparms A named vector or list that contains values for each `N0`, `tmax`, `Linf`, `K`, `t0`, `LWalpha`, and `LWbeta`. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.
 #' @param simyears A single numeric for the number of years to simulate. Value must be a whole number greater than 1.
+#' @param recruitment_type A string that indicates if recruitment is being supplied as a `vector` (which requires `recv` also specified or based on a stock-recruitment model, `stockrecruit` (which requires relevant coefficients also specified)
+#' @param srmod A string that indicates the type of stock-recruitment model, `Ricker`, `BevertonHolt`, `Shepherd`. Required when `recruitment_type` = `stockrecruit`.
+#' @param a A single numeric to represent alpha in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.
+#' @param b A single numeric to represent beta in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.
+#' @param c A single numeric to represent c in the Shepherd stock-recruitment models.
+#' @param sigmaR A single numeric to represent standard deviation of annual recruits in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.
+#' @param recv A numeric vector with length `simyears` that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.
 #' @param species A single character to specify the species used in the simulation. This will define the length for `stock`, `quality`, `preferred`, `memorable`, and `trophy` lengths from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.
 #' @param group A single character to specify the sub-group name for `species` which may be required when defining the `stock`, `quality`, `preferred`, `memorable`, and `trophy` length categories from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.
+#' @param SPRdat A named list that contains values for each `FLR`, `FLRint`, `FLRslope`, `MatAge`, `percF`, and `percFSpawn`. See \code{\link{makeSPR}} for definitions of these parameters.
 #' @param matchRicker A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to `FALSE`. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.
 #'
 #' @return  A list with two data.frame object. The first list item named `sumbyAge` contains a data.frame with the following calculated values in a summary by age:
@@ -42,24 +49,25 @@
 #'
 #' \itemize{
 #' \item `year` is the year number for the simulation
-#' \item `Age_1plus` is the total number of fish age-1 plus per year.
-#' \item `Yield_Age_1plus` is the total year of age-1 plus fish per year.
+#' \item `age_1plus` is the total number of fish age-1 plus per year.
+#' \item `Yield_age_1plus` is the total year of age-1 plus fish per year.
 #' \item `Total_biomass` is the total biomass of age-1 plus fish per year.
-#' \item `N_harvest_Age_1plus` is the number of age-1 plus fish that are harvested per year.
-#' \item `N_die_Age_1plus` is the number of age-1 plus fish that die per year.
-#' \item `substock` is the number of substock sized fish at age and year at the beginning of the year.
-#' \item `stock` is the number of stock sized fish at age and year at the beginning of the year.
-#' \item `quality` is the number of quality sized fish at age and year at the beginning of the year.
-#' \item `preferred` is the number of preferred sized fish at age and year at the beginning of the year.
-#' \item `memorable` is the number of memorable sized fish at age and year at the beginning of the year.
-#' \item `trophy` is the number of trophy sized fish at age and year at the beginning of the year.
+#' \item `n_harvest_age_1plus` is the number of age-1 plus fish that are harvested per year.
+#' \item `n_die_age_1plus` is the number of age-1 plus fish that die per year.
+#' \item `substock` is the incremental number of substock sized fish at age and year at the beginning of the year.
+#' \item `stock` is the incremental number of stock sized fish at age and year at the beginning of the year.
+#' \item `quality` is the incremental number of quality sized fish at age and year at the beginning of the year.
+#' \item `preferred` is the incremental number of preferred sized fish at age and year at the beginning of the year.
+#' \item `memorable` is the incremental number of memorable sized fish at age and year at the beginning of the year.
+#' \item `trophy` is the incremental number of trophy sized fish at age and year at the beginning of the year.
 #' \item `PSD` is the number of quality sized fish divided by the number of stock sized multiplied by 100.
 #' \item `PSD_P` is the number of preferred sized fish divided by the number of stock sized multiplied by 100.
 #' \item `PSD_M` is the number of memorable sized fish divided by the number of stock sized multiplied by 100.
 #' \item `PSD_T` is the number of trophy sized fish divided by the number of stock sized multiplied by 100.
+#' \item `wtSPR` is the weighted transitional spawning potential ratio. This value is set to 0 for all simulation years less than the maximum age to ensure the population has reach equilibrium.
 #' }
 #'
-#' PSD-X are calculated based on the number of fish in each category (`stock`, `quality`, `preferred`, `memorable`, and `trophy`) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish.
+#' PSD-X are calculated based on the number of fish in each category (`stock`, `quality`, `preferred`, `memorable`, and `trophy`) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish. Note that the number in each size category are incremental. That is, the number of stock size fish is the number greater than stock size but less than quality size.
 #'
 #' @details Details will be filled out later.
 #'
@@ -78,16 +86,18 @@
 #'
 #' # Example of simulating yield with the dynamic pool model,
 #'
+#' # Seetings for all examples
 #' lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
 #'             LWalpha=-5.2147,LWbeta=3.153)
-#' simyears <- 50
+#' simyears <- 150
 #' minLL <- 400
+#'
 #' rec <- genRecruits(method = "fixed", nR = 100, simyears = simyears)
 #' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
 #' out<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
-#'                  cm = cm, rec = rec, lhparms = lhparms,
+#'                  cm = cm, recruitment_type = c("vector"), recv = rec, lhparms = lhparms,
 #'                  matchRicker=FALSE,species="Striped Bass",group="landlocked")
 #'
 #' #Use summary by year data frame to plot yield vs year
@@ -114,7 +124,8 @@
 #' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 #'
 #' out_2<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
-#'                    rec = rec, lhparms = lhparms,simyears = simyears,
+#'                    recruitment_type = c("vector"), recv = rec, lhparms = lhparms,
+#'                    simyears = simyears,
 #'                    species="Striped Bass",group="landlocked",matchRicker=FALSE)
 #'
 #' #Use summary by year data frame to plot yield vs year
@@ -132,40 +143,141 @@
 #'   labs(y="Total yield (g)",x="Age") +
 #'   theme_bw()
 #'
+#' #Recruitment based on a Ricker stock-recruitment model
+#' cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+#' cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+#'
+#' SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+#'                  percF=c(0,0,0,rep(0.50,27)),
+#'                  percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+#'
+#' out_3<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
+#'                    recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
+#'                    a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
+#'                    lhparms = lhparms, simyears = simyears,
+#'                    species="Striped Bass",group="landlocked",matchRicker=FALSE)
+#'
+#' #Use summary by year data frame to plot yield vs year
+#' out_3[[2]] |>
+#'   dplyr::filter(year>35) |> #Filter out years before equilibrium
+#'   ggplot(mapping=aes(x=year,y=PSD)) +
+#'   geom_point() +
+#'   geom_line() +
+#'   labs(y="PSD",x="Year") +
+#'   theme_bw()
+#'
+#' #Plot date using summary by age
+#' #Plot yield vs age for each year class
+#' out_3[[1]] |>
+#'   dplyr::filter(year>35) |> #Filter out years before equilibrium
+#'   ggplot(mapping=aes(x=age,y=yield,group=yc,color=yc)) +
+#'   geom_point() +
+#'   geom_line() +
+#'   labs(y="Total yield (g)",x="Age") +
+#'   theme_bw()
+#'
 #' @rdname dpmBH_MinLL
 #' @export
 
-dpmBH_MinLL <- function(minLL,cf,cm,rec,lhparms,simyears,
-                        species=NULL,group=NULL,matchRicker=FALSE){
+dpmBH_MinLL <- function(minLL,cf,cm,recruitment_type=c("vector","stockrecruit"),srmod=c("Ricker","BevertonHolt","Shepherd"),
+                        lhparms,simyears,a=NULL,b=NULL,c=NULL,sigmaR=NULL,recv=NULL,
+                        species=NULL,group=NULL,SPRdat=NULL,matchRicker=FALSE){
+
+  # Need to add a check.
+  # If "vector" than needs to supply recv.
+  # if "Ricker" than needs to supply alpha, beta, and sigmaR
 
   # ---- Check inputs
+  if(recruitment_type == "vector") {srmod = NULL}
+  iCheckStockRecruitment(recruitment_type = recruitment_type,srmod = srmod,
+                     recv = recv,a = a,b = b,c = c,sigmaR = sigmaR,SPRdat = SPRdat)
   iCheckMLH(minLL,lhparms$Linf)
   iCheckspecies(species)
   iChecksimyears(simyears)
   iCheckCondMort2(cf,simyears,lhparms$tmax,"cf")
   iCheckCondMort2(cm,simyears,lhparms$tmax,"cm")
-  iCheckrec(rec)
+  if (recruitment_type == "vector") {
+    iCheckrec(recv)
+  }
+
+  recruitment_type <- match.arg(recruitment_type)
+  srmod <- match.arg(srmod)
 
   #needed to account for rounding issues of sequences
   cf <- round(cf,8)
   cm <- round(cm,8)
 
-  res<-dpmBH_func(minLL = minLL, cf = cf[1,], cm= cm[1,], rec = rec[1], lhparms = lhparms,matchRicker=FALSE)
-  yearsum<-data.frame(year= seq(1:nrow(res)), yc = rep(1,length(seq(1:nrow(res)))))
+  #I need to find a way to specify multiple sets of parameters for different functions.
+
+  #calculate recruitment function
+  #Set recruitment
+  if (recruitment_type == "vector") {
+    rec_x <- recv[1]
+  }else {
+    SS <- rep(NA,simyears)
+    recr <- rep(NA,simyears)
+    rec_x <- recr[1] <- lhparms$N0 #initialize first-year recruitment
+  }
+
+  res<-dpmBH_func(minLL = minLL, cf = cf[1,], cm= cm[1,], rec = rec_x, lhparms = lhparms,matchRicker=matchRicker)
+  yearsum<-data.frame(year= seq_len(nrow(res)), yc = rep(1,length(seq(1:nrow(res)))))
   res<-cbind(yearsum,res)
 
+  # Prep spawning vectors
+  if (recruitment_type == "stockrecruit") {
+    percFSpawn_all <- c(0, SPRdat$percFSpawn)
+    percFemale_all <- c(0, SPRdat$percF)
+  }
+
   for(x in 2:simyears){
-    out<-dpmBH_func(minLL = minLL, cf = cf[x,], cm= cm[x,], rec = rec[x], lhparms = lhparms,matchRicker=FALSE)
+    #age at maturity is in the SPR object, but what if user doesn't provide a SPR object?
+    # SS = abundance * percent mature * percent female? percent female and percent mature at age in the SPR object too
+    #res[res$year == (x - 1), ] #returns all fish from previous year.
+    #makeSPR starts at age-1 but data frame starts at age-0 so add a 0 at the start of percent mature and percent female
+
+    if(recruitment_type == "vector"){
+      rec_x <- recv[x]
+    } else if(recruitment_type == "stockrecruit"){
+
+      if(x < lhparms$tmax){
+        recr[x] <- lhparms$N0
+      } else {
+        if(x<(lhparms$tmax+2)){ #I had x<32 for some reason when tmax was 30. Must have linked to max age + 1 for age-0 This should only be called for the first two ages
+          percFSpawning <- percFSpawn_all[1:(x-1)]
+          percFemale <- percFemale_all[1:(x-1)]
+        } else {
+          percFSpawning <- percFSpawn_all
+          percFemale <- percFemale_all
+        }
+        SS[x] <- res |>
+          dplyr::filter(year == (x - 1)) |>
+          dplyr::summarize(SS = sum(nstart * percFSpawning * percFemale, na.rm=TRUE)) |>
+          dplyr::pull(SS)
+
+        #Select recruitment functions
+        recr[x] <- iCalcRecruitment(srmod = srmod,ss = SS[x],a = a,b = b,c = c,sigmaR = sigmaR)
+      }
+      rec_x <- recr[x]
+    }
+
+    out<-dpmBH_func(minLL = minLL, cf = cf[x,], cm= cm[x,], rec = rec_x, lhparms = lhparms,matchRicker=matchRicker)
+
     yearsum<-data.frame(year= x:(nrow(out)+x-1), yc = rep(x,length(x:(nrow(out)+x-1))))
     out<-cbind(yearsum,out)
-
     res<-rbind(res,out)
-
   }
 
   res<-subset(res,res$year<=simyears)
 
   res <- list(sumbyAge=res,sumbyYear=isum_by_year(res,species=species,group=group))
+
+  # ---- Compute and save SPR
+  if (!is.null(SPRdat)) {
+    res$sumbyYear$wtSPR<-c(0,wtrans_spr(res$sumbyAge,SPRdat))
+    res$sumbyYear <- res$sumbyYear |>
+      dplyr::mutate(wtSPR = dplyr::if_else(year<lhparms$tmax, 0, wtSPR))
+  }
+
   # ---- Return data.frame with both output values and input parameters.
   # ---- Contains a summary by age and summary by year
   return(res)

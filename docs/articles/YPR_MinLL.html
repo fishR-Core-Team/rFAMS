@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Estimate yield based on one or more minimum length limits • rFAMS</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="YPR_MinLL_files/libs/quarto-html/popper.min.js"></script><script src="YPR_MinLL_files/libs/quarto-html/tippy.umd.min.js"></script><link href="YPR_MinLL_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="YPR_MinLL_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,8 @@
 <li><a class="dropdown-item" href="../articles/MakeLH.html">Create life history object</a></li>
     <li><a class="dropdown-item" href="../articles/YPR_MinLL.html">Estimate yield based on one or more minimum length limits</a></li>
     <li><a class="dropdown-item" href="../articles/YPR_SlotLL.html">Estimate yield based on a slot length limit</a></li>
-    <li><a class="dropdown-item" href="../articles/dpmBH.html">Simulate a population using the dynamic pool model</a></li>
+    <li><a class="dropdown-item" href="../articles/dpmBHvector.html">Dynamic pool model (vector recruitment)</a></li>
+    <li><a class="dropdown-item" href="../articles/dpmBHricker.html">Dynamic pool model (Ricker recruitment)</a></li>
     <li><a class="dropdown-item" href="../articles/ggplot_for_rFAMS.html">ggplot2 for rFAMS</a></li>
   </ul>
 </li>
@@ -55,6 +56,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-explanations" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Explanations</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-explanations">
 <li><a class="dropdown-item" href="../articles/YPR_FAMSvRICKER.html">Comparing FAMS and Ricker YPR Equations</a></li>
+    <li><a class="dropdown-item" href="../articles/spr.html">Description of spawning potential ratio</a></li>
+    <li><a class="dropdown-item" href="../articles/stock_recruitment.html">Description of stock-recruitment models</a></li>
   </ul>
 </li>
       </ul>
@@ -74,7 +77,7 @@
       <h1>Estimate yield based on one or more minimum length limits</h1>
 
 
-      <p class="date">2026-03-15</p>
+      <p class="date">2026-11-08</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/YPR_MinLL.qmd" class="external-link"><code>vignettes/articles/YPR_MinLL.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -436,7 +439,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

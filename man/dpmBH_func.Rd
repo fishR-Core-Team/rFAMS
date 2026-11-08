@@ -13,8 +13,6 @@ dpmBH_func(minLL, cf, cm, rec, lhparms, matchRicker)
 
 \item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., \code{tmax} in \code{lhparms}). All values must be between 0 and 1 (inclusive).}
 
-\item{rec}{A numeric vector with length \code{simyears} that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.}
-
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{FALSE}. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}

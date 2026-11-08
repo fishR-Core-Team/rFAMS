@@ -154,9 +154,9 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfBelow,cfIn,cfAbove,cm,lhparms,
     avglen_in <- 10^((log10(avgwt_in) - LWalpha)/LWbeta)
   }
 
-  #yield over slot######
+  #yield Above slot######
 
-  #Parameters for over slot
+  #Parameters for Above slot
   F_Above <- -1*log(1-cfAbove)
   M_Above <- -1*log(1-cm)
   Z_Above <- F_Above+M_Above
@@ -246,7 +246,7 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfBelow,cfIn,cfAbove,cm,lhparms,
     yieldBelow=Y_Below,
     yieldIn=Y_in,
     yieldAbove=Y_Above,
-    nharvTotal = Nharv_Below+Nharv_in+Nharv_Above,
+    nharvestTotal = Nharv_Below+Nharv_in+Nharv_Above,
     ndieTotal = Ndie_Below+Ndie_in+Ndie_Above,
     nharvestBelow=Nharv_Below,
     nharvestIn=Nharv_in,
@@ -260,7 +260,7 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfBelow,cfIn,cfAbove,cm,lhparms,
     nrAbove=Nr_Above,
     trBelow=tr,
     trIn=tmax_lowerSL,
-    trOver=tmax_upperSL,
+    trAbove=tmax_upperSL,
     avglenBelow=avglen_Below,
     avglenIn=avglen_in,
     avglenAbove=avglen_Above,
@@ -287,7 +287,7 @@ yprBH_slot_func <- function(lowerSL,upperSL,cfBelow,cfIn,cfAbove,cm,lhparms,
     SAbove=S_Above,
     cfBelow=cfBelow,
     cfIn=cfIn,
-    cfOver=cfAbove,
+    cfAbove=cfAbove,
     recruitmentTL=recruitmentTL,
     lowerSL=lowerSL,
     upperSL=upperSL,

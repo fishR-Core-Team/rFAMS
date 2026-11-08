@@ -36,14 +36,20 @@ navbar:
         href: articles/YPR_MinLL.html
       - text: Estimate yield based on a slot length limit
         href: articles/YPR_SlotLL.html
-      - text: Simulate a population using the dynamic pool model
-        href: articles/dpmBH.html
+      - text: Dynamic pool model (vector recruitment)
+        href: articles/dpmBHvector.html
+      - text: Dynamic pool model (Ricker recruitment)
+        href: articles/dpmBHricker.html
       - text: ggplot2 for rFAMS
         href: articles/ggplot_for_rFAMS.html
     - text: Explanations
       menu:
       - text: Comparing FAMS and Ricker YPR Equations
         href: articles/YPR_FAMSvRICKER.html
+      - text: Description of spawning potential ratio
+        href: articles/spr.html
+      - text: Description of stock-recruitment models
+        href: articles/stock_recruitment.html
   right:
     - icon: fa-newspaper
       href: news/index.html

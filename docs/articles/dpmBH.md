@@ -1,6 +1,7 @@
 # Simulate a population using the dynamic pool model
 
 ``` r
+
 library(rFAMS)
 library(ggplot2)  ## to make figures
 library(dplyr)    ## for filter
@@ -50,6 +51,7 @@ simulates a population for 50 years with a minimum length limit of
 400mm.
 
 ``` r
+
 simyears <- 50
 minLL <- 400
 ```
@@ -73,6 +75,7 @@ more details. The example below uses the following life history
 parameters:
 
 ``` r
+
 # create life history parameter object
 LH <- makeLH(N0=100,tmax=15,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
 ```
@@ -86,6 +89,7 @@ must be age-0 through maximum age. Thus, a `cf` and `cm` matrix will
 have maximum age plus one column.
 
 ``` r
+
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(LH$tmax))), simyears),nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(LH$tmax))), simyears),nrow=simyears,byrow=TRUE)
 ```
@@ -98,6 +102,7 @@ recruitment. This example sets recruitment to a fixed 1000 individuals
 each year.
 
 ``` r
+
 rec <- genRecruits(method = "fixed", nR = 1000, simyears = simyears)
 ```
 
@@ -113,6 +118,7 @@ package](https://fishr-core-team.github.io/FSA/index.html) for more
 information about PSD categories.
 
 ``` r
+
 #run dynamic pool simulations
 out1<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = rec, lhparms = LH, matchRicker=FALSE,species="Striped Bass",group="landlocked")
 ```
@@ -120,6 +126,7 @@ out1<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf, cm = cm, rec = re
 View the first few lines of each summary
 
 ``` r
+
 head(out1[[1]])  #Summary by age
 #>   year yc age   length     weight    nstart exploitation expect_nat_death   cf
 #> 1    1  1   0   0.0000    0.00000 1000.0000    0.0000000        0.0000000 0.00
@@ -176,6 +183,7 @@ data summarized by year. First, a custom theme is created to use across
 all plots.
 
 ``` r
+
 # Custom theme for plots (to make look nice)
 theme_FAMS <- function(...) {
  theme_bw() +
@@ -198,6 +206,7 @@ was fixed across all year classes, all year classes will have the same
 age vs total yield.
 
 ``` r
+
 #Plot date using summary by age for a specific year class
 #filter for year class = 40
 plotdat<- out1[[1]] |> filter(yc==40)
@@ -214,6 +223,7 @@ ggplot(data=plotdat,mapping=aes(x=age,y=yield)) +
 
 ``` r
 
+
 #Plot Number harvested vs age
 ggplot(data=plotdat,mapping=aes(x=age,y=nharvest)) +
   geom_point() +
@@ -225,6 +235,7 @@ ggplot(data=plotdat,mapping=aes(x=age,y=nharvest)) +
 ![](dpmBH_files/figure-html/summary%20by%20age-2.png)
 
 ``` r
+
 
 #Plot Number biomass vs age
 ggplot(data=plotdat,mapping=aes(x=age,y=biomass)) +
@@ -245,6 +256,7 @@ present in the population. This is because recruitment, cm, and cf are
 held constant across years.
 
 ``` r
+
 #Use summary by year data frame to plot PSD vs year
 ggplot(data=out1[[2]],mapping=aes(x=year,y=PSD)) +
   geom_point() +
@@ -256,6 +268,7 @@ ggplot(data=out1[[2]],mapping=aes(x=year,y=PSD)) +
 ![](dpmBH_files/figure-html/summary%20by%20year-1.png)
 
 ``` r
+
 
 #Use summary by year data frame to plot yield vs year
 ggplot(data=out1[[2]],mapping=aes(x=year,y=Yield_age_1plus)) +

@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 
 Simulates the dynamics of exploited fish populations using the Jones modification of the Beverton-Holt equilibrium yield equation to compute yield-per-recruit and dynamic pool models [(Ricker 1975)](https://publications.gc.ca/site/eng/480738/publication.html). Allows users to evaluate minimum, slot, and inverted length limits on exploited fisheries using specified life history parameters. Users can simulate population under a variety of conditional fishing mortality and conditional natural mortality. Calculated quantities include number of fish harvested and dying naturally, mean weight and length of fish harvested, number of fish that reach specified lengths of interest, total number of fish and biomass in the population, and stock density indices.
 
-This package is maintained by [Jason Doll](mailto:jcdoll20@hotmail.com), Associate Professor of Fisheries at Francis Marion University
+This package is maintained by [Jason Doll](mailto:rfams.package@gmail.com), Associate Professor of Fisheries at Francis Marion University
 
 Members of the [fishR Core Team](https://github.com/fishR-Core-Team) that have contributed to the development of this package include:\
 Jason Doll, Francis Marion University\
@@ -38,6 +38,8 @@ This project is supported in part by the [American Fisheries Society](https://fi
 ### Status
 
 The package currently replicates all yield per recruit and dynamic pool modeling in FAMS with the exception of spawning potential ratio. Spawning potential ratio calculations will be added at a later date. Life history parameters can be estimated using [FSA package](https://fishr-core-team.github.io/FSA/index.html)
+
+rFAMS is an independent open-source package developed for the fisheries community. it is not affiliated with, funded by, or associated with FAMS software products.
 
 #### Equilibrium Modeling
 
@@ -84,9 +86,9 @@ Please adhere to the [Code of Conduct](https://fishr-core-team.github.io/rFAMS/C
 
 &nbsp;
 
-[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![CRAN Version](http://www.r-pkg.org/badges/version/rFAMS)](http://www.r-pkg.org/pkg/rFAMS)
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![CRAN Version](https://www.r-pkg.org/badges/version/rFAMS)](https://www.r-pkg.org:443/pkg/rFAMS)
 [![License](http://img.shields.io/badge/license-GPL%20%28%3E=%202%29-brightgreen.svg?style=flat)](http://www.gnu.org/licenses/gpl-2.0.html)
 [![R-CMD-check](https://github.com/fishR-Core-Team/rFAMS/workflows/R-CMD-check/badge.svg)](https://github.com/fishR-Core-Team/rFAMS/actions)
 [![CRAN RStudio mirror downloads rate](http://cranlogs.r-pkg.org/badges/rFAMS)
-![CRAN RSTudio mirror downloads total](http://cranlogs.r-pkg.org/badges/grand-total/rFAMS)](http://www.r-pkg.org/pkg/rFAMS)
+![CRAN RSTudio mirror downloads total](http://cranlogs.r-pkg.org/badges/grand-total/rFAMS)](https://www.r-pkg.org/pkg/rFAMS)

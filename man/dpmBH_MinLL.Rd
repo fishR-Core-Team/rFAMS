@@ -8,11 +8,18 @@ dpmBH_MinLL(
   minLL,
   cf,
   cm,
-  rec,
+  recruitment_type = c("vector", "stockrecruit"),
+  srmod = c("Ricker", "BevertonHolt", "Shepherd"),
   lhparms,
   simyears,
+  a = NULL,
+  b = NULL,
+  c = NULL,
+  sigmaR = NULL,
+  recv = NULL,
   species = NULL,
   group = NULL,
+  SPRdat = NULL,
   matchRicker = FALSE
 )
 }
@@ -23,15 +30,29 @@ dpmBH_MinLL(
 
 \item{cm}{A matrix of conditional natural mortality where each row represents a year and each column represents an age (age-0 through maximum age; i.e., \code{tmax} in \code{lhparms}). All values must be between 0 and 1 (inclusive).}
 
-\item{rec}{A numeric vector with length \code{simyears} that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.}
+\item{recruitment_type}{A string that indicates if recruitment is being supplied as a \code{vector} (which requires \code{recv} also specified or based on a stock-recruitment model, \code{stockrecruit} (which requires relevant coefficients also specified)}
+
+\item{srmod}{A string that indicates the type of stock-recruitment model, \code{Ricker}, \code{BevertonHolt}, \code{Shepherd}. Required when \code{recruitment_type} = \code{stockrecruit}.}
 
 \item{lhparms}{A named vector or list that contains values for each \code{N0}, \code{tmax}, \code{Linf}, \code{K}, \code{t0}, \code{LWalpha}, and \code{LWbeta}. See \code{\link{makeLH}} for definitions of these life history parameters. Also see details.}
 
 \item{simyears}{A single numeric for the number of years to simulate. Value must be a whole number greater than 1.}
 
+\item{a}{A single numeric to represent alpha in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.}
+
+\item{b}{A single numeric to represent beta in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.}
+
+\item{c}{A single numeric to represent c in the Shepherd stock-recruitment models.}
+
+\item{sigmaR}{A single numeric to represent standard deviation of annual recruits in the Ricker, Beverton-Holt, and Shepherd stock-recruitment models.}
+
+\item{recv}{A numeric vector with length \code{simyears} that specifies the number of recruits each year. This vector is best generated using the \code{\link{genRecruits}}. All values must be greater than 0.}
+
 \item{species}{A single character to specify the species used in the simulation. This will define the length for \code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy} lengths from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.}
 
 \item{group}{A single character to specify the sub-group name for \code{species} which may be required when defining the \code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy} length categories from the FSA package. See the \code{\link[FSA]{PSDlit}} documentation.}
+
+\item{SPRdat}{A named list that contains values for each \code{FLR}, \code{FLRint}, \code{FLRslope}, \code{MatAge}, \code{percF}, and \code{percFSpawn}. See \code{\link{makeSPR}} for definitions of these parameters.}
 
 \item{matchRicker}{A logical that indicates whether the yield function should match that in Ricker (1975). Defaults to \code{FALSE}. See the \href{https://fishr-core-team.github.io/rFAMS/articles/YPR_FAMSvRICKER.html}{FAMS vs Ricker article}.}
 }
@@ -66,27 +87,28 @@ The second list item named \code{sumbyYear} contains a data.frame with the follo
 
 \itemize{
 \item \code{year} is the year number for the simulation
-\item \code{Age_1plus} is the total number of fish age-1 plus per year.
-\item \code{Yield_Age_1plus} is the total year of age-1 plus fish per year.
+\item \code{age_1plus} is the total number of fish age-1 plus per year.
+\item \code{Yield_age_1plus} is the total year of age-1 plus fish per year.
 \item \code{Total_biomass} is the total biomass of age-1 plus fish per year.
-\item \code{N_harvest_Age_1plus} is the number of age-1 plus fish that are harvested per year.
-\item \code{N_die_Age_1plus} is the number of age-1 plus fish that die per year.
-\item \code{substock} is the number of substock sized fish at age and year at the beginning of the year.
-\item \code{stock} is the number of stock sized fish at age and year at the beginning of the year.
-\item \code{quality} is the number of quality sized fish at age and year at the beginning of the year.
-\item \code{preferred} is the number of preferred sized fish at age and year at the beginning of the year.
-\item \code{memorable} is the number of memorable sized fish at age and year at the beginning of the year.
-\item \code{trophy} is the number of trophy sized fish at age and year at the beginning of the year.
+\item \code{n_harvest_age_1plus} is the number of age-1 plus fish that are harvested per year.
+\item \code{n_die_age_1plus} is the number of age-1 plus fish that die per year.
+\item \code{substock} is the incremental number of substock sized fish at age and year at the beginning of the year.
+\item \code{stock} is the incremental number of stock sized fish at age and year at the beginning of the year.
+\item \code{quality} is the incremental number of quality sized fish at age and year at the beginning of the year.
+\item \code{preferred} is the incremental number of preferred sized fish at age and year at the beginning of the year.
+\item \code{memorable} is the incremental number of memorable sized fish at age and year at the beginning of the year.
+\item \code{trophy} is the incremental number of trophy sized fish at age and year at the beginning of the year.
 \item \code{PSD} is the number of quality sized fish divided by the number of stock sized multiplied by 100.
 \item \code{PSD_P} is the number of preferred sized fish divided by the number of stock sized multiplied by 100.
 \item \code{PSD_M} is the number of memorable sized fish divided by the number of stock sized multiplied by 100.
 \item \code{PSD_T} is the number of trophy sized fish divided by the number of stock sized multiplied by 100.
+\item \code{wtSPR} is the weighted transitional spawning potential ratio. This value is set to 0 for all simulation years less than the maximum age to ensure the population has reach equilibrium.
 }
 
-PSD-X are calculated based on the number of fish in each category (\code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy}) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish.
+PSD-X are calculated based on the number of fish in each category (\code{stock}, \code{quality}, \code{preferred}, \code{memorable}, and \code{trophy}) at the beginning of the year. That is, the length-at-age during the start of the year is used to assign PSD-X categories at age. For example, if Quality size is 300mm, an age-1 fish at 275mm at the start of the year would not be counted as a quality-sized fish, but an age-2 fish at 325mm at the start of the year would be counted as a quality-sized fish. Note that the number in each size category are incremental. That is, the number of stock size fish is the number greater than stock size but less than quality size.
 }
 \description{
-Simulate yield under minimum length regulations using the Dynamic Pool (DPM) model with (possibly) multiple values for conditional fishing mortality (\code{cf}) and conditional natural mortality (\code{cm}).
+Simulate yield and transitional spawning potential ratio under minimum length regulations using the Dynamic Pool (DPM) model with (possibly) multiple values for conditional fishing mortality (\code{cf}) and conditional natural mortality (\code{cm}). Recruitment options can be a user supplied vector or based on one of three stock-recruitment models.
 }
 \details{
 Details will be filled out later.
@@ -100,16 +122,18 @@ library(ggplot2)
 
 # Example of simulating yield with the dynamic pool model,
 
+# Seetings for all examples
 lhparms <- makeLH(N0=100,tmax=30,Linf=1349.5,K=0.111,t0=0.065,
             LWalpha=-5.2147,LWbeta=3.153)
-simyears <- 50
+simyears <- 150
 minLL <- 400
+
 rec <- genRecruits(method = "fixed", nR = 100, simyears = simyears)
 cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
 out<-dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf,
-                 cm = cm, rec = rec, lhparms = lhparms,
+                 cm = cm, recruitment_type = c("vector"), recv = rec, lhparms = lhparms,
                  matchRicker=FALSE,species="Striped Bass",group="landlocked")
 
 #Use summary by year data frame to plot yield vs year
@@ -136,7 +160,8 @@ cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,
 cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
 
 out_2<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
-                   rec = rec, lhparms = lhparms,simyears = simyears,
+                   recruitment_type = c("vector"), recv = rec, lhparms = lhparms,
+                   simyears = simyears,
                    species="Striped Bass",group="landlocked",matchRicker=FALSE)
 
 #Use summary by year data frame to plot yield vs year
@@ -149,6 +174,39 @@ ggplot(data=out_2[[2]],mapping=aes(x=year,y=PSD)) +
 #Plot date using summary by age
 #Plot yield vs age for each year class
 ggplot(data=out_2[[1]],mapping=aes(x=age,y=yield,group=yc,color=yc)) +
+  geom_point() +
+  geom_line() +
+  labs(y="Total yield (g)",x="Age") +
+  theme_bw()
+
+#Recruitment based on a Ricker stock-recruitment model
+cm <- matrix(rep(c(rep(0,1), rep(0.18,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+cf <- matrix(rep(c(rep(0,1), rep(0.33,(lhparms$tmax))), simyears),nrow=simyears,byrow=TRUE)
+
+SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,
+                 percF=c(0,0,0,rep(0.50,27)),
+                 percFSpawn = c(0,0,0,0.24,0.24,0.53,rep(1.00,24)))
+
+out_3<-dpmBH_MinLL(minLL = minLL, cf = cf, cm = cm,
+                   recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
+                   a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
+                   lhparms = lhparms, simyears = simyears,
+                   species="Striped Bass",group="landlocked",matchRicker=FALSE)
+
+#Use summary by year data frame to plot yield vs year
+out_3[[2]] |>
+  dplyr::filter(year>35) |> #Filter out years before equilibrium
+  ggplot(mapping=aes(x=year,y=PSD)) +
+  geom_point() +
+  geom_line() +
+  labs(y="PSD",x="Year") +
+  theme_bw()
+
+#Plot date using summary by age
+#Plot yield vs age for each year class
+out_3[[1]] |>
+  dplyr::filter(year>35) |> #Filter out years before equilibrium
+  ggplot(mapping=aes(x=age,y=yield,group=yc,color=yc)) +
   geom_point() +
   geom_line() +
   labs(y="Total yield (g)",x="Age") +

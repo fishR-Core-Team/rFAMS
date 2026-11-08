@@ -15,6 +15,9 @@
   [`print(`*`<MAKELH>`*`)`](https://fishr-core-team.github.io/rFAMS/reference/makeLH.md)
   : Make a list or vector of life history parameters for
   yield-per-recruit analyses.
+- [`makeSPR()`](https://fishr-core-team.github.io/rFAMS/reference/makeSPR.md)
+  : Make a list or vector of life history parameters for
+  yield-per-recruit analyses.
 - [`seeMorts()`](https://fishr-core-team.github.io/rFAMS/reference/seeMorts.md)
   [`summary(`*`<SEEMORTS>`*`)`](https://fishr-core-team.github.io/rFAMS/reference/seeMorts.md)
   : Convert vectors of conditional fishing and natural mortality rates

@@ -54,6 +54,135 @@ iHndlArgName <- function(x,optname=NULL) {
   paste0("'",ifelse(x=="",optname,x),"'")
 }
 
+
+#' Make mortality vectors for age corresponding to the length intervals in L_t
+#'      based on user-provided mortalities in mort by each interval defined by L
+#' @keywords internal
+iMakeFM_t <- function(L_t,L,mort) {
+  # Check if first length break is 0, if not add it to L
+  if (L[1]!=0) L <- c(0,L)
+  # Populate mortality vector with mortality for last interval
+  mortv <- rep(mort[length(mort)],length(L_t))
+
+  # Change mortality vector values base on length interval
+  for (i in 2:length(L)) mortv[L_t<L[i] & L_t>=L[i-1]] <- mort[i-1]
+  # return mortality vector
+  mortv
+}
+
+#' Make fecundity estimates for each age corresponding to the length intervals
+#'      in L_t from provided fecundity-length relationship and age-at-maturity
+#' @keywords internal
+iMakeFecundity <- function(FLR,FLRint,FLRslope,t,L_t,MatAge) {
+  # Adjust depending on if FLRint & FLRslope is from linear or exponential model
+  if (FLR == "linear") Fec_t <- FLRint + L_t * FLRslope
+  else Fec_t <- exp(FLRint + log(L_t) * FLRslope)
+  # Set fecundities to 0 for ages < age-at-maturity
+  Fec_t[t<MatAge] <- 0
+  # Return fecundity vector
+  Fec_t
+}
+
+#' Bias correction for stock-recruitment models
+#' https://doi.org/10.1139/f2011-092
+#' @keywords internal
+sr_error <- function(sigma_R) {
+  if (sigma_R <= 0) return(0)
+  stats::rnorm(1,mean = -0.5 * sigma_R^2,sd   = sigma_R)
+}
+
+#' calculate recruitment in dpm model
+#' @keywords internal
+iCalcRecruitment <- function(srmod, ss, a, b, c = NULL, sigmaR) {
+  recr <- switch(srmod,
+    "Ricker" = a * ss * exp(-b * ss + sr_error(sigmaR)),
+    "BevertonHolt" =((a * ss) / (1 + b * ss)) * exp(sr_error(sigmaR)),
+    "Shepherd" = ((a * ss) / (1 + (b * ss)^c)) *exp(sr_error(sigmaR))
+  )
+  max(0, recr)
+}
+
+
+#' Summarize dynamic pool model by year
+#' @keywords internal
+isum_by_year <- function(res,species,group){
+  year<-gcat<-nstart<-count<-quality<-stock<-preferred<-memorable<-trophy<-age<-yield<-biomass<-nharvest<-ndie<-age_1plus<-Yield_age_1plus<-Total_biomass<-nharvest_age_1plus<-ndie_age_1plus<-NULL
+  #Calculate PSD's based on number of individuals at length at the start of the year
+  #Return a simplified object for calculation of PSD
+  if(is.null(group)){
+    psd.cuts <- FSA::psdVal(species, units = "mm")
+  }else{
+    psd.cuts <- FSA::psdVal(species, group=group, units = "mm")
+  }
+
+  #Return PSD length cuts
+  psd.length.cuts <- unname(psd.cuts)
+
+  psd_calc<-res |>
+    dplyr::mutate(
+      gcat = dplyr::case_when(
+        length < psd.length.cuts[2] ~ names(psd.cuts[1]),
+        length < psd.length.cuts[3] ~ names(psd.cuts[2]),
+        length < psd.length.cuts[4] ~ names(psd.cuts[3]),
+        length < psd.length.cuts[5] ~ names(psd.cuts[4]),
+        length < psd.length.cuts[6] ~ names(psd.cuts[5]),
+        TRUE ~ names(psd.cuts[6])
+      ))
+
+  # Add length category to output
+  year_summary <- psd_calc |>
+    dplyr::group_by(year,gcat,length) |>
+    dplyr::summarise(count = floor(sum(nstart)),
+                     .groups = "drop") |>
+    tidyr::uncount(count) |>
+    dplyr::mutate(gcat = factor(gcat, levels = c("substock", "stock", "quality", "preferred", "memorable", "trophy")))
+
+  psd_crosstab <- stats::xtabs(~year + gcat, data = year_summary) #create crosstab
+  psd_summary <- as.data.frame.matrix(psd_crosstab) #convert to dataframe
+  psd_summary <- cbind(year = as.numeric(row.names(psd_crosstab)), psd_summary) #add row names for year
+
+  # psdCalc(~length,data=year_summary,"Striped Bass", group="landlocked", units = "mm")
+
+  # Add missing columns for calculating PSD
+  tmp<-c()
+  for(x in 1:length(names(psd.cuts))){
+    if(names(psd.cuts)[x] %in% names(psd_summary)==FALSE){
+      #tmp <- c(tmp,names(psd.cuts)[x])
+      psd_summary[,names(psd.cuts)[x]] = 0
+    }
+
+  }
+
+  # calculate PSD, PSD_P, PSD_M, PSD_T
+  psd_summary <- psd_summary |>
+    dplyr::mutate(PSD = (quality + preferred + memorable + trophy) / (stock + quality + preferred+ memorable + trophy),
+                  PSD_P = (preferred + memorable + trophy) / (stock + quality + preferred+ memorable + trophy),
+                  PSD_M = (memorable + trophy) / (stock + quality + preferred+ memorable + trophy),
+                  PSD_T = trophy / (stock + quality + preferred+ memorable + trophy) ,
+                  year = as.integer((year)))
+
+  psd_summary[is.na(psd_summary)] <- 0 #replace NaN with 0
+
+  # summary for age-1+
+  Year_Summary <- res |>
+    dplyr::filter(age > 0) |>
+    dplyr::group_by(year) |>
+    dplyr::summarize(age_1plus = sum(nstart), Yield_age_1plus = sum(yield),
+                     Total_biomass = sum(biomass), nharvest_age_1plus = sum(nharvest),
+                     ndie_age_1plus = sum(ndie)) |>
+    dplyr::right_join(psd_summary, by = "year") |>
+    dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, nharvest_age_1plus, ndie_age_1plus), ~dplyr::coalesce(., 0))) |>
+    dplyr::arrange(year)
+
+  # merged_df <- dplyr::left_join(psd_summary,Year_Summary, by = "year") |>
+  #   dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, N_harvest_age_1plus, N_die_age_1plus), ~dplyr::coalesce(., 0)))
+  Year_Summary <- as.data.frame(Year_Summary)
+  return(Year_Summary)
+}
+
+
+
+
 # ===== General Error Checks
 #' Error if more than one item in x
 #' @keywords internal
@@ -527,87 +656,57 @@ iCheckspecies <- function(x) {
   if (is.null(x)) STOP("Need to specify a species name in ",nm,". See the FSA::PSDlit function for a list of available species")
 }
 
-# Summarize dynamic pool model by year
-isum_by_year <- function(res,species,group){
-  year<-gcat<-nstart<-count<-quality<-stock<-preferred<-memorable<-trophy<-age<-yield<-biomass<-nharvest<-ndie<-age_1plus<-Yield_age_1plus<-Total_biomass<-nharvest_age_1plus<-ndie_age_1plus<-NULL
-  #Calculate PSD's based on number of individuals at length at the start of the year
-  #Return a simplified object for calculation of PSD
-  if(is.null(group)){
-    psd.cuts <- FSA::psdVal(species, units = "mm")
-  }else{
-    psd.cuts <- FSA::psdVal(species, group=group, units = "mm")
+iCheckStockRecruitment <- function(recruitment_type,srmod = NULL,recv = NULL,a = NULL,b = NULL,c = NULL,sigmaR = NULL,SPRdat = NULL) {
+
+  recruitment_type <- match.arg(recruitment_type,c("vector", "stockrecruit"))
+
+  if (recruitment_type == "stockrecruit" && is.null(SPRdat)) {
+    stop("'SPRdat' must be supplied when recruitment_type='stockrecruit'.",
+         call. = FALSE)
   }
 
-  #Return PSD age cuts
-  psd.age.cuts<-rep(0,6)
-  psd.age.cuts[1] <- ((log(1-unname(psd.cuts[1])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[2] <- ((log(1-unname(psd.cuts[2])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[3] <- ((log(1-unname(psd.cuts[3])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[4] <- ((log(1-unname(psd.cuts[4])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[5] <- ((log(1-unname(psd.cuts[5])/res$Linf[1]))/-res$K[1])+res$t0[1]
-  psd.age.cuts[6] <- ((log(1-unname(psd.cuts[6])/res$Linf[1]))/-res$K[1])+res$t0[1]
+  if (recruitment_type == "vector") {
+    if (is.null(recv)) {
+      stop("'recv' must be supplied when recruitment_type='vector'.",
+           call. = FALSE)
+    }
+  } else {
+    srmod <- match.arg(srmod,c("Ricker", "BevertonHolt", "Shepherd",NULL))
 
-  psd_calc<-res |>
-    dplyr::mutate(
-      gcat = dplyr::case_when(
-        age < psd.age.cuts[2] ~ names(psd.cuts[1]),
-        age < psd.age.cuts[3] ~ names(psd.cuts[2]),
-        age < psd.age.cuts[4] ~ names(psd.cuts[3]),
-        age < psd.age.cuts[5] ~ names(psd.cuts[4]),
-        age < psd.age.cuts[6] ~ names(psd.cuts[5]),
-        TRUE ~ names(psd.cuts[6])
-      ))
-
-  # it is unclear how FAMS calculates PSD. Output shows number at PSD categories
-  # however, using those numbers do not match reported PSD's
-
-  # Add length category to output
-  year_summary <- psd_calc |>
-    dplyr::group_by(year,gcat,length) |>
-    dplyr::summarise(count = floor(sum(nstart))) |>
-    tidyr::uncount(count)
-
-  psd_crosstab <- stats::xtabs(~year + gcat, data = year_summary) #create crosstab
-  psd_summary <- as.data.frame.matrix(psd_crosstab) #convert to dataframe
-  psd_summary <- cbind(year = as.numeric(row.names(psd_crosstab)), psd_summary) #add row names for year
-
-  # psdCalc(~length,data=year_summary,"Striped Bass", group="landlocked", units = "mm")
-
-  # Add missing columns for calculating PSD
-  tmp<-c()
-  for(x in 1:length(names(psd.cuts))){
-    if(names(psd.cuts)[x] %in% names(psd_summary)==FALSE){
-      #tmp <- c(tmp,names(psd.cuts)[x])
-      psd_summary[,names(psd.cuts)[x]] = 0
+    if (is.null(SPRdat)) {
+      stop("'SPRdat' must be supplied when recruitment_type='stockrecruit'.",
+           call. = FALSE)
     }
 
+    if (srmod %in% c("Ricker", "BevertonHolt")) {
+      if (is.null(a))
+        stop("'a' must be supplied for the ", srmod,
+             " stock-recruit model.", call. = FALSE)
+      if (is.null(b))
+        stop("'b' must be supplied for the ", srmod,
+             " stock-recruit model.", call. = FALSE)
+      if (is.null(sigmaR))
+        stop("'sigmaR' must be supplied for the ", srmod,
+             " stock-recruit model.", call. = FALSE)
+    } else if (srmod == "Shepherd") {
+      if (is.null(a))
+        stop("'a' must be supplied for the Shepherd stock-recruit model.",
+             call. = FALSE)
+      if (is.null(b))
+        stop("'b' must be supplied for the Shepherd stock-recruit model.",
+             call. = FALSE)
+      if (is.null(c))
+        stop("'c' must be supplied for the Shepherd stock-recruit model.",
+             call. = FALSE)
+      if (is.null(sigmaR))
+        stop("'sigmaR' must be supplied for the Shepherd stock-recruit model.",
+             call. = FALSE)
+    }
   }
-
-  # calculate PSD, PSD_P, PSD_M, PSD_T
-  psd_summary <- psd_summary |>
-    dplyr::mutate(PSD = (quality + preferred + memorable + trophy) / (stock + quality + preferred+ memorable + trophy),
-                  PSD_P = (preferred + memorable + trophy) / (stock + quality + preferred+ memorable + trophy),
-                  PSD_M = (memorable + trophy) / (stock + quality + preferred+ memorable + trophy),
-                  PSD_T = trophy / (stock + quality + preferred+ memorable + trophy) ,
-                  year = as.integer((year)))
-
-  psd_summary[is.na(psd_summary)] <- 0 #replace NaN with 0
-
-  # summary for age-1+
-  Year_Summary <- res |>
-    dplyr::filter(age > 0) |>
-    dplyr::group_by(year) |>
-    dplyr::summarize(age_1plus = sum(nstart), Yield_age_1plus = sum(yield),
-                     Total_biomass = sum(biomass), nharvest_age_1plus = sum(nharvest),
-                     ndie_age_1plus = sum(ndie)) |>
-    dplyr::right_join(psd_summary, by = "year") |>
-    dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, nharvest_age_1plus, ndie_age_1plus), ~dplyr::coalesce(., 0)))
-
-  # merged_df <- dplyr::left_join(psd_summary,Year_Summary, by = "year") |>
-  #   dplyr::mutate(dplyr::across(c(age_1plus, Yield_age_1plus, Total_biomass, N_harvest_age_1plus, N_die_age_1plus), ~dplyr::coalesce(., 0)))
-  Year_Summary <- as.data.frame(Year_Summary)
-  return(Year_Summary)
+  invisible(TRUE)
 }
+
+
 
 
 # ====== Defunct (can probably be deleted)

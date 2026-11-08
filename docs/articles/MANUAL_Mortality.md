@@ -23,6 +23,7 @@ estimated for use in `rFAMS`.
 The following packages are used in this article.
 
 ``` r
+
 library(rFAMS)
 library(ggplot2)
 ```
@@ -409,6 +410,7 @@ history parameters as an input. This list is best created with
 from `rFAMS`.[^9]
 
 ``` r
+
 lhex <- makeLH(N0=100,tmax=15,Linf=500,K=0.3,t0=-0.5,LWalpha=-5.613,LWbeta=3.1)
 ```
 
@@ -418,6 +420,7 @@ then the necessary life history parameters will be extracted for use in
 models to estimate $`cm`$ (and $`M`$).[^10]
 
 ``` r
+
 est_natmort(lhex)
 #>            method          M         cm                  givens
 #> 1       HoenigNLS 0.41002265 0.33636478                 tmax=15
@@ -442,6 +445,7 @@ including the average `cm` (and `M`) to the bottom of the output with
 `incl.avg=TRUE`.
 
 ``` r
+
 est_natmort(lhex,incl.avg=TRUE)
 #>            method          M         cm                  givens
 #> 1       HoenigNLS 0.41002265 0.33636478                 tmax=15
@@ -467,6 +471,7 @@ result to an object and then selecting the last item in the `cm`
 variable.
 
 ``` r
+
 res <- est_natmort(lhex,incl.avg=TRUE)
 avg_cm <- res$cm[nrow(res)]
 avg_cm
@@ -477,6 +482,7 @@ Individual or sets of models can be chosen with `method=`. For example,
 using only the `HamelCope` model is illustrated below.
 
 ``` r
+
 est_natmort(lhex,method="HamelCope")
 #>      method    M        cm  givens
 #> 1 HamelCope 0.36 0.3023237 tmax=15
@@ -490,6 +496,7 @@ from `FSA`.
 Multiple models can be used by including the method names in a vector.
 
 ``` r
+
 est_natmort(lhex,method=c("HamelCope","HoenigNLS"))
 #>      method         M        cm  givens
 #> 1 HamelCope 0.3600000 0.3023237 tmax=15
@@ -504,6 +511,7 @@ proportion of individuals that survive to the maximum age to be given in
 `PS=`.[^11]
 
 ``` r
+
 est_natmort(lhex,method="QuinnDeriso",PS=0.02)
 #>        method         M        cm           givens
 #> 1 QuinnDeriso 0.2608015 0.2295662 PS=0.02, tmax=15
@@ -513,6 +521,7 @@ This same calculation can be made without giving the life history list
 as long as all of the required inputs are specifically declared.
 
 ``` r
+
 est_natmort(method="QuinnDeriso",tmax=15,PS=0.02)
 #>        method         M        cm           givens
 #> 1 QuinnDeriso 0.2608015 0.2295662 PS=0.02, tmax=15
@@ -528,6 +537,7 @@ the life history list and must then be specifically declared in
 [`est_natmort()`](https://fishr-core-team.github.io/rFAMS/reference/est_natmort.md).
 
 ``` r
+
 est_natmort(lhex,method="rFAMS",PS=0.02,Winf=5000,Temp=9,incl.avg=TRUE)
 #>            method          M         cm                  givens
 #> 1       HoenigNLS 0.41002265 0.33636478                 tmax=15
@@ -551,6 +561,7 @@ Finally, [Figure 6](#fig-metaMex) illustrates how one might examine
 multiple estimates of $`cm`$ with the mean highlighted.[^13]
 
 ``` r
+
 res <- est_natmort(lhex,incl.avg=TRUE)
 
 ggplot(data=res,mapping=aes(x=reorder(method,cm),y=cm)) +

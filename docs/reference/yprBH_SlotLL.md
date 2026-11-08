@@ -21,7 +21,9 @@ yprBH_SlotLL(
   recruitmentTL = NULL,
   loi = NULL,
   matchRicker = FALSE,
-  label = NULL
+  label = NULL,
+  SPRdat = NULL,
+  SaveSPR_int = FALSE
 )
 ```
 
@@ -87,6 +89,22 @@ yprBH_SlotLL(
 
   An optional string to label the type of slot limit being simulated.
 
+- SPRdat:
+
+  A named list that contains values for each `FLR`, `FLRint`,
+  `FLRslope`, `MatAge`, `percF`, `percFSpawn`, and `ageInterval`. See
+  [`makeSPR`](https://fishr-core-team.github.io/rFAMS/reference/makeSPR.md)
+  for definitions of these parameters.
+
+- SaveSPR_int:
+
+  A Boolean set to `TRUE` to save intermediate calculations of SPR to a
+  file titled `SPR_intermediates.rds` in your working directory. This
+  can be a very large file, depending on how many length, cf, and cm are
+  passed and is typically only needed to confirm calculations. SPR will
+  automatically be appended to the output dataframe with or without this
+  option set to `TRUE`
+
 ## Value
 
 A data.frame with the following calculated values:
@@ -99,7 +117,8 @@ A data.frame with the following calculated values:
 
 - `yieldAbove` is the calculated yield above the slot limit
 
-- `nharvTotal` is the calculated total number of harvested fish
+- `nharvestTotal` is the calculated total number of harvested fish
+  below, in and above slot.
 
 - `ndieTotal` is the calculated total number of fish that die of natural
   death
@@ -137,7 +156,7 @@ A data.frame with the following calculated values:
 - `trIn` is the time for a fish to recruit to a lower length limit of
   the slot limit
 
-- `trOver` is the time for a fish to recruit to a upper length limit of
+- `trAbove` is the time for a fish to recruit to a upper length limit of
   the slot limit
 
 - `avglenBelow` is the average length of fish harvested below the slot
@@ -203,7 +222,7 @@ A data.frame with the following calculated values:
 - `SAbove` is the estimated total survival above the slot limit
 
 For convenience the data.frame also contains the model input values
-(`lowerSL`, `upperSL`, `cfBelow`, `cfIn`, `cfOver`, `cm` from input
+(`lowerSL`, `upperSL`, `cfBelow`, `cfIn`, `cfAbove`, `cm` from input
 vectors; `N0`; `Linf`; `K`; `t0`; `LWalpha`; `LWbeta`; and `tmax` from
 `lhparms`) and, optionally, the string provided in `label`.
 
@@ -251,16 +270,16 @@ Res_1 <- yprBH_SlotLL(lowerSL=250,upperSL=325,
                       loi=c(200,250,300,325,350),label="250-325")
 
 Res_1
-#>    yieldTotal yieldBelow yieldIn   yieldAbove nharvTotal ndieTotal
-#> 1 46197.75428 2134.02263       0 44063.731657 46.4972295 33.877878
-#> 2 19470.46525 1661.31736       0 17809.147884 26.2230471 40.820004
-#> 3  8398.37800 1251.53890       0  7146.839100 15.3741194 37.919849
-#> 4  3685.37197  903.25539       0  2782.116585  9.1781028 31.485803
-#> 5  1625.61154  614.90035       0  1010.711189  5.4378755 24.061504
-#> 6   707.41176  384.73474       0   322.677013  3.0898650 16.823205
-#> 7   292.44938  210.78782       0    81.661558  1.5937619 10.403811
-#> 8   103.91797   90.75603       0    13.161937  0.6667805  5.207535
-#> 9    22.48605   21.80087       0     0.685181  0.1607166  1.572193
+#>    yieldTotal yieldBelow yieldIn   yieldAbove nharvestTotal ndieTotal
+#> 1 46197.75428 2134.02263       0 44063.731657    46.4972295 33.877878
+#> 2 19470.46525 1661.31736       0 17809.147884    26.2230471 40.820004
+#> 3  8398.37800 1251.53890       0  7146.839100    15.3741194 37.919849
+#> 4  3685.37197  903.25539       0  2782.116585     9.1781028 31.485803
+#> 5  1625.61154  614.90035       0  1010.711189     5.4378755 24.061504
+#> 6   707.41176  384.73474       0   322.677013     3.0898650 16.823205
+#> 7   292.44938  210.78782       0    81.661558     1.5937619 10.403811
+#> 8   103.91797   90.75603       0    13.161937     0.6667805  5.207535
+#> 9    22.48605   21.80087       0     0.685181     0.1607166  1.572193
 #>   nharvestBelow nharvestIn nharvestAbove    n0die ndieBelow     ndieIn
 #> 1    14.3001921          0  32.197037424 16.93639  5.237294  7.7673445
 #> 2    11.1865599          0  15.036487211 32.49751  8.676970 11.4974691
@@ -271,7 +290,7 @@ Res_1
 #> 7     1.4775667          0   0.116195279 88.00243  6.183736  3.3592771
 #> 8     0.6466386          0   0.020141855 94.12568  3.617621  1.3904478
 #> 9     0.1595880          0   0.001128596 98.26709  1.277330  0.2788736
-#>     ndieAbove   nrBelow       nrIn     nrAbove  trBelow     trIn  trOver
+#>     ndieAbove   nrBelow       nrIn     nrAbove  trBelow     trIn trAbove
 #> 1 20.87323905 83.063612 63.5261255 55.75878105 1.761224 2.443479 3.68129
 #> 2 20.64556520 67.502485 47.6389553 36.14148621 1.761224 2.443479 3.68129
 #> 3 15.14412843 53.355962 34.3763764 22.10654334 1.761224 2.443479 3.68129
@@ -311,26 +330,26 @@ Res_1
 #> 7 0.2876821   0 0.1625189 1.2039728 1.2039728 1.2039728 1.4916549 1.2039728
 #> 8 0.2876821   0 0.1625189 1.6094379 1.6094379 1.6094379 1.8971200 1.6094379
 #> 9 0.2876821   0 0.1625189 2.3025851 2.3025851 2.3025851 2.5902672 2.3025851
-#>      ZAbove SBelow SIn SAbove cfBelow cfIn cfOver recruitmentTL lowerSL upperSL
-#> 1 0.2678794  0.675 0.9  0.765    0.25    0   0.15           200     250     325
-#> 2 0.3856625  0.600 0.8  0.680    0.25    0   0.15           200     250     325
-#> 3 0.5191939  0.525 0.7  0.595    0.25    0   0.15           200     250     325
-#> 4 0.6733446  0.450 0.6  0.510    0.25    0   0.15           200     250     325
-#> 5 0.8556661  0.375 0.5  0.425    0.25    0   0.15           200     250     325
-#> 6 1.0788097  0.300 0.4  0.340    0.25    0   0.15           200     250     325
-#> 7 1.3664917  0.225 0.3  0.255    0.25    0   0.15           200     250     325
-#> 8 1.7719568  0.150 0.2  0.170    0.25    0   0.15           200     250     325
-#> 9 2.4651040  0.075 0.1  0.085    0.25    0   0.15           200     250     325
-#>    N0 Linf   K   t0 LWalpha LWbeta tmax   label
-#> 1 100  592 0.2 -0.3  -5.528  3.273   15 250-325
-#> 2 100  592 0.2 -0.3  -5.528  3.273   15 250-325
-#> 3 100  592 0.2 -0.3  -5.528  3.273   15 250-325
-#> 4 100  592 0.2 -0.3  -5.528  3.273   15 250-325
-#> 5 100  592 0.2 -0.3  -5.528  3.273   15 250-325
-#> 6 100  592 0.2 -0.3  -5.528  3.273   15 250-325
-#> 7 100  592 0.2 -0.3  -5.528  3.273   15 250-325
-#> 8 100  592 0.2 -0.3  -5.528  3.273   15 250-325
-#> 9 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#>      ZAbove SBelow SIn SAbove cfBelow cfIn cfAbove recruitmentTL lowerSL
+#> 1 0.2678794  0.675 0.9  0.765    0.25    0    0.15           200     250
+#> 2 0.3856625  0.600 0.8  0.680    0.25    0    0.15           200     250
+#> 3 0.5191939  0.525 0.7  0.595    0.25    0    0.15           200     250
+#> 4 0.6733446  0.450 0.6  0.510    0.25    0    0.15           200     250
+#> 5 0.8556661  0.375 0.5  0.425    0.25    0    0.15           200     250
+#> 6 1.0788097  0.300 0.4  0.340    0.25    0    0.15           200     250
+#> 7 1.3664917  0.225 0.3  0.255    0.25    0    0.15           200     250
+#> 8 1.7719568  0.150 0.2  0.170    0.25    0    0.15           200     250
+#> 9 2.4651040  0.075 0.1  0.085    0.25    0    0.15           200     250
+#>   upperSL  N0 Linf   K   t0 LWalpha LWbeta tmax   label
+#> 1     325 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 2     325 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 3     325 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 4     325 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 5     325 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 6     325 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 7     325 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 8     325 100  592 0.2 -0.3  -5.528  3.273   15 250-325
+#> 9     325 100  592 0.2 -0.3  -5.528  3.273   15 250-325
 
 # Plot results
 # Total Yield vs Conditional Natural Mortality (cm)

@@ -43,7 +43,7 @@ pdat<-data.frame(agevec = agevec, num_at_age =num_at_age) %>%
 # P_fem_spawn <- c(0.24,0.24,0.53,rep(1.00,24))
 #
 
-###This seems to work - but need to make a matrix of F and M to accomodate age and year specific mortality####
+###This seems to work - but need to make a matrix of F and M to accommodate age and year specific mortality####
 #This matches EXACTLY! Why isn't it matching in staticSPR.R?
 Linf <- 1349.5
 k <- 0.111

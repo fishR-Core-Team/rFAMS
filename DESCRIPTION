@@ -1,8 +1,8 @@
 Package: rFAMS
-Version: 0.0.3.9000
-Date: 2026-3-11
+Version: 0.0.4
+Date: 2026-11-08
 Title: Fisheries Analysis and Modeling Simulator
-Authors@R: c(person(c("Jason","C."), "Doll", email="jcdoll20@hotmail.com",
+Authors@R: c(person(c("Jason","C."), "Doll", email="rfams.package@gmail.com",
            role = c("aut", "cre")),
            person(c("Derek","H."), "Ogle", email="DerekOgle51@gmail.com",
            role=c("aut"))
@@ -15,7 +15,8 @@ Description: Simulates the dynamics of exploited fish populations using the Jone
              and conditional natural mortality. Calculated quantities include number of fish harvested and dying naturally, 
              mean weight and length of fish harvested, number of fish that reach specified lengths of interest, total number 
              of fish and biomass in the population, and stock density indices.
-URL: https://github.com/fishR-Core-Team/rFAMS/
+URL: https://fishr-core-team.github.io/rFAMS/,
+     https://github.com/fishR-Core-Team/rFAMS
 BugReports: https://github.com/fishR-Core-Team/rFAMS/issues
 License: GPL (>= 2)
 Depends:
@@ -37,6 +38,6 @@ Suggests:
     tidyr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Config/Needs/website: quarto
+Config/roxygen2/version: 8.1.1

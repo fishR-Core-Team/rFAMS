@@ -1,6 +1,7 @@
 # Estimate yield based on one or more minimum length limits
 
 ``` r
+
 library(rFAMS)
 library(ggplot2)  ## to make figures
 library(tidyr)    ## for pivot_longer
@@ -45,6 +46,7 @@ below uses the following life history parameters:
   on the log10 scale, set to 3.273.
 
 ``` r
+
 # create life history parameter object
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 ```
@@ -70,6 +72,7 @@ methods of calculating M and cm. To generate the range and average M and
 cm using rFAMS:
 
 ``` r
+
 est_natmort(LH, incl.avg = TRUE)
 #>            method         M         cm                  givens
 #> 1       HoenigNLS 0.4100226 0.33636478                 tmax=15
@@ -97,6 +100,7 @@ minimum length limit of 200mm, cf from 0.1 to 0.9 with increments of
 250, 300, and 350mm.
 
 ``` r
+
 # Build numeric vector for minimum length limits
 minLL <- seq(from = 200, to = 500, by = 50)
 # Single or variable minimum length limits can be specified by
@@ -144,6 +148,7 @@ Linf; K; t0; LWalpha; LWbeta; and tmax).
 View the first few rows of the output
 
 ``` r
+
 head(Res_1)
 #>      yield nharvest     ndie       nt       tr     avgwt   avglen   nAt400
 #> 1 40818.31 41.53181 41.53181 83.06361 1.761224  982.8204 401.1080 39.15698
@@ -174,6 +179,7 @@ We will now create a series of figures to aid in interpreting the
 output. First, a custom theme is created to use across all plots.
 
 ``` r
+
 # Custom theme for plots (to make look nice)
 theme_FAMS <- function(...) {
  theme_bw() +
@@ -197,6 +203,7 @@ close to the estimated mean `cm` above of 0.27, and a minimum length
 limit of 400 mm.
 
 ``` r
+
 # Round cm to account for "floating point arithmetic inaccuracies"
 # will be fixed in next version of rFAMS so this isn't needed
 Res_1$cm <- round(Res_1$cm,8)
@@ -219,6 +226,7 @@ multiple minimum lengths for a specified conditional natural morality
 limit of 400 mm.
 
 ``` r
+
 # Round cm to account for "floating point arithmetic inaccuracies"
 # will be fixed in next version of rFAMS so this isn't needed
 Res_1$cm <- round(Res_1$cm,8)
@@ -244,6 +252,7 @@ conditional natural mortality `cm` of 0.30 which was filtered out in the
 code block above, and a minimum length limit of 400 mm.
 
 ``` r
+
 # Extract results for cm=0.40 and minimum length limit=400
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30,minLL==400)
 
@@ -261,6 +270,7 @@ of interests we monitored as a function of exploitation with conditional
 natural mortality `cm` of 0.30 which was filtered out above.
 
 ``` r
+
 # Select columns for plotting and convert to long
 plot_data_long <- plot_dat %>%
  select(exploitation,`nAt400`, `nAt450`, `nAt500`, `nAt550`) %>%
@@ -286,6 +296,7 @@ The final two graphs demonstrate how to construct isopleths using the
 is filtered for a conditional natural mortality `cm` of 0.30.
 
 ``` r
+
 # Extract results for cm=0.40
 plot_dat <- Res_1 |> dplyr::filter(cm==0.30)
 
@@ -301,6 +312,7 @@ ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=yield)) +
 ![](YPR_MinLL_files/figure-html/Isoploths-1.png)
 
 ``` r
+
 
 # Same isopleth as previous but using number harvested instead of yield
 ggplot(data=plot_dat,mapping=aes(x=exploitation,y=minLL,z=nharvest)) +

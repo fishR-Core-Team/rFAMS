@@ -30,6 +30,7 @@ constructed simply from the code at or near the end of each section.
 The following packages are used in this article.
 
 ``` r
+
 library(rFAMS)
 library(dplyr)   # for data wrangling
 library(tidyr)   # for data wrangling
@@ -52,6 +53,7 @@ various lengths; etc.) along with given values for the simulation that
 are stored in a data.frame assigned to the name `minLL_1`.
 
 ``` r
+
 # Declare life history parameters to be used below
 LH <- makeLH(N0=100,tmax=15,Linf=592,K=0.20,t0=-0.3,LWalpha=-5.528,LWbeta=3.273)
 # Declare minimum length limit
@@ -72,6 +74,7 @@ The first six rows of this data.frame can be examined with
 variable names in this output (e.g., `yield`, `nharvest`, `cf`).
 
 ``` r
+
 head(minLL_1)
 #>      yield nharvest     ndie       nt       tr    avgwt   avglen   nAt200
 #> 1     0.00  0.00000 62.71738 62.71738 2.090724      NaN      NaN 67.50249
@@ -109,6 +112,7 @@ clarity, show how `cf` ranges from 0.0 to 0.5 with `cm`=0.2, and then
 repeats for `cm`=0.3.
 
 ``` r
+
 minLL_1 |>
   select(cf,cm,nharvest) |>
   head(n=12)
@@ -143,6 +147,7 @@ to guard against possible floating point issues related to how 0.30
 might be stored in the data.frame.[^3]
 
 ``` r
+
 tmp1 <- minLL_1 |>                    # all variables in returned in tmp1
   dplyr::filter(dplyr::near(cm,0.30))
 tmp1 |> select(cf,cm,nharvest)        # but display only 3 for simplicity
@@ -188,6 +193,7 @@ was “added” (i.e., the `+`) to the
 object.[^7]
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_line()
 ```
@@ -199,6 +205,7 @@ using
 [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html).
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_point()
 ```
@@ -211,6 +218,7 @@ It is also possible to declare `data=` and
 [`ggplot()`](https://ggplot2.tidyverse.org/reference/ggplot.html).
 
 ``` r
+
 ggplot() +
   geom_line(data=tmp1,mapping=aes(x=cf,y=nharvest))
 ```
@@ -226,6 +234,7 @@ more efficient methods exist in `ggplot2` to construct this type of
 graph.[^8]
 
 ``` r
+
 ggplot() +
   geom_line(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_point(data=tmp1,mapping=aes(x=cf,y=ndie))
@@ -251,6 +260,7 @@ each layer are in
 whereas those that differ between layers are in the separate `geom_`s.
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf)) +
   geom_line(mapping=aes(y=nharvest)) +
   geom_point(mapping=aes(y=ndie))
@@ -263,6 +273,7 @@ above, multiple layers (i.e., `geom_`s) may be used in one graph. Here
 the relationship is shown as a line and with points.
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_line() +
   geom_point()
@@ -277,6 +288,7 @@ and the size of the points is increased in
 [`geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html).
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=exploitation,y=nharvest)) +
   geom_line(linewidth=1) +
   geom_point(size=3)
@@ -298,6 +310,7 @@ respectively. Below the titles of the axes are modified with a string in
 `name=`.[^9]
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_line(linewidth=1) +
   geom_point(size=3) +
@@ -325,6 +338,7 @@ Below the expansion is removed (i.e., 0) at the lower and set to 2%
 (i.e., 0.02) at the upper ends of each axis.
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_line(linewidth=1) +
   geom_point(size=3) +
@@ -345,6 +359,7 @@ which removes the “grayish” background and gridlines inside the plot
 region and darkens the axis scales and text among other things.[^12]
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_line(linewidth=1) +
   geom_point(size=3) +
@@ -365,6 +380,7 @@ All of the variables returned by
 are numeric, except for `notes`.
 
 ``` r
+
 str(minLL_1)
 #> 'data.frame':    30 obs. of  27 variables:
 #>  $ yield       : num  0 17132 21570 21599 20266 ...
@@ -414,6 +430,7 @@ case, the original `cm` variable that is numeric still exists and a new
 `fcm` variable that is a factor is created in the same data.frame.
 
 ``` r
+
 minLL_1 <- minLL_1 |>
   dplyr::mutate(fcm=as.factor(cm))
 
@@ -436,6 +453,7 @@ mapped to `color=` in
 colors to be used for separate lines based on the “categories” in `cfm`.
 
 ``` r
+
 ggplot(data=minLL_1,mapping=aes(x=cf,y=nharvest,color=fcm)) +
   geom_line()
 ```
@@ -447,6 +465,7 @@ The separation of colors will carry through to the points if
 is added.
 
 ``` r
+
 ggplot(data=minLL_1,mapping=aes(x=cf,y=nharvest,color=fcm)) +
   geom_line() +
   geom_point()
@@ -465,6 +484,7 @@ ensuing `geom_`s, whereas those declared in a `geom_` will only be used
 for that `geom_`.
 
 ``` r
+
 ggplot(data=minLL_1,mapping=aes(x=cf,y=nharvest)) +
   geom_line(mapping=aes(color=fcm)) +
   geom_point()
@@ -476,6 +496,7 @@ Of course, the other modifications made above can also be made
 here.[^15]
 
 ``` r
+
 ggplot(data=minLL_1,mapping=aes(x=cf,y=nharvest,color=fcm)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -493,6 +514,7 @@ functions.[^16] Here, for example, the line colors will follow a grey
 scale.
 
 ``` r
+
 ggplot(data=minLL_1,mapping=aes(x=cf,y=nharvest,color=fcm)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -513,6 +535,7 @@ be changed using `labels=` in the `scale_color_` function. For example,
 here I append “cm=” to each `cm` value.
 
 ``` r
+
 ggplot(data=minLL_1,mapping=aes(x=cf,y=nharvest,color=fcm)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -532,6 +555,7 @@ Here, the legend is moved to the top-left corner of the plot
 region.[^18]
 
 ``` r
+
 ggplot(data=minLL_1,mapping=aes(x=cf,y=nharvest,color=fcm)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -554,6 +578,7 @@ example, a graph where the color of the lines come from a continous
 scale based on the value of `cm` is created below.
 
 ``` r
+
 ggplot(data=minLL_1,mapping=aes(x=cf,y=nharvest,color=cm,group=cm)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -582,6 +607,7 @@ with the name of the grouping variable within
 [`vars()`](https://dplyr.tidyverse.org/reference/vars.html).[^20]
 
 ``` r
+
 ggplot(data=minLL_1,mapping=aes(x=cf,y=nharvest)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -608,6 +634,7 @@ specific lengths at various levels of conditional fishing mortality.
 Doing this requires the variables shown below.[^22]
 
 ``` r
+
 tmp2 <- minLL_1 |>
   select(cf,cm,starts_with("nAt"))
 head(tmp2)
@@ -658,6 +685,7 @@ is given to `values_to=`. A name for the variable that will contain
 “labels” for what these values represent is given to `names_to=`.[^28]
 
 ``` r
+
 tmp2long <- tmp2 |>
   tidyr::pivot_longer(tidyr::starts_with("nAt"),
                       values_to="n",
@@ -685,6 +713,7 @@ will be a character). This common prefix can be dropped by using
 call.
 
 ``` r
+
 tmp2long <- tmp2 |>
   tidyr::pivot_longer(tidyr::starts_with("nAt"),
                       values_to="n",
@@ -710,11 +739,13 @@ numbers of fish surviving to the four lengths against `cf` only for when
 `cm` is 0.30.
 
 ``` r
+
 tmp3 <- tmp2long |>
   dplyr::filter(dplyr::near(cm,0.3))
 ```
 
 ``` r
+
 ggplot(data=tmp3,mapping=aes(x=cf,y=n,color=Length)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -731,6 +762,7 @@ The same relationship can also be examined for the separate values of
 `cm` via faceting.
 
 ``` r
+
 ggplot(data=tmp2long,mapping=aes(x=cf,y=n,color=Length)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -758,6 +790,7 @@ corresponds to just the numbers at 350 mm is first created from the long
 data.frame created above.[^29]
 
 ``` r
+
 tmp4 <- tmp2long |>
   dplyr::filter(Length=="350")
 ```
@@ -781,6 +814,7 @@ surviving to 350 mm (i.e., `n`) relative to values of `cf` and `cm` is
 shown below.[^30]
 
 ``` r
+
 ggplot(data=tmp4,mapping=aes(x=cf,y=cm,z=n)) +
   metR::geom_contour2()
 ```
@@ -795,6 +829,7 @@ to `after_stat(level)` where `level` is calculated behind-the-scenes by
 to be values connected by the contour lines.[^31]
 
 ``` r
+
 ggplot(data=tmp4,mapping=aes(x=cf,y=cm,z=n)) +
   metR::geom_contour2(mapping=aes(label=after_stat(level)))
 ```
@@ -808,6 +843,7 @@ skipped when placing the labels) and `label.placer=label_placer_n(n=1)`
 to label all or most of the contours.
 
 ``` r
+
 ggplot(data=tmp4,mapping=aes(x=cf,y=cm,z=n)) +
   metR::geom_contour2(mapping=aes(label=after_stat(level)),
                       label.placer=label_placer_n(n=1),skip=0)
@@ -819,6 +855,7 @@ Of course, the usual modifications can be made to make the graph more
 visually appealing.
 
 ``` r
+
 ggplot(data=tmp4,mapping=aes(x=cf,y=cm,z=n)) +
   metR::geom_contour2(mapping=aes(label=after_stat(level)),
                       label.placer=label_placer_n(n=1),skip=0) +
@@ -841,6 +878,7 @@ was placed before
 so that the contour lines would be placed on top of the fill colors.
 
 ``` r
+
 ggplot(data=tmp4,mapping=aes(x=cf,y=cm,z=n)) +
   metR::geom_contour_fill() +
   metR::geom_contour2(mapping=aes(label=after_stat(level)),
@@ -864,6 +902,7 @@ removed with `theme(legend.position="none")` because it is redundant
 with the contour labels.
 
 ``` r
+
 ggplot(data=tmp4,mapping=aes(x=cf,y=cm,z=n)) +
   metR::geom_contour_fill() +
   metR::geom_contour2(mapping=aes(label=after_stat(level)),
@@ -885,6 +924,7 @@ numbers of fish that survived to the other lengths. Make special note of
 the return to using the `tmp2long` data.frame here.
 
 ``` r
+
 ggplot(data=tmp2long,mapping=aes(x=cf,y=cm,z=n)) +
   metR::geom_contour_fill() +
   metR::geom_contour2(mapping=aes(label=after_stat(level)),
@@ -915,6 +955,7 @@ Aspects (size, color, etc.) for these items can be modified with
 [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_line(linewidth=1) +
   geom_point(size=3) +
@@ -958,6 +999,7 @@ theme but then modifying that to
 - changing the axis lines to black.
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_line(linewidth=1) +
   geom_point(size=3) +
@@ -990,6 +1032,7 @@ creates a custom theme called `theme_rFAMS_ex()` that encapsulates the
 modifications above.
 
 ``` r
+
 theme_rFAMS_ex <- function() {
   theme_bw() +
   theme(
@@ -1006,6 +1049,7 @@ theme_rFAMS_ex <- function() {
 Once this code is run then it can be applied to any graph.
 
 ``` r
+
 ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
   geom_line(linewidth=1) +
   geom_point(size=3) +
@@ -1020,6 +1064,7 @@ ggplot(data=tmp1,mapping=aes(x=cf,y=nharvest)) +
 ![](ggplot_for_rFAMS_files/figure-html/unnamed-chunk-43-1.png)
 
 ``` r
+
 ggplot(data=tmp2long,mapping=aes(x=cf,y=n,color=Length)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -1037,6 +1082,7 @@ Additional elements for a specific graph can still be changed with
 [`theme()`](https://ggplot2.tidyverse.org/reference/theme.html).
 
 ``` r
+
 ggplot(data=tmp2long,mapping=aes(x=cf,y=n,color=Length)) +
   geom_line(linewidth=1) +
   scale_x_continuous(name="Conditional Fishing Mortality (cf)",
@@ -1066,12 +1112,13 @@ accessing these two data.frames is fairly simple and is illustrated
 here.
 
 The code below is copied from this [this
-article](https://fishr-core-team.github.io/rFAMS/articles/dpmBH.html)
+article](https://fishr-core-team.github.io/rFAMS/articles/dpmBHVector.html)
 that demonstrates how to use
 [`dpmBH_MinLL()`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md).[^35]
 The results were assigned to `minLL_2` in the last line.
 
 ``` r
+
 # set number of simulation years
 simyears <- 50
 # set minimum length limit value
@@ -1085,9 +1132,9 @@ cf <- matrix(rep(c(rep(0,1), rep(0.33,(LH$tmax))), simyears),nrow=simyears,byrow
 rec <- genRecruits(method="fixed",nR=1000,simyears=simyears)
 # run the DPM model of a 400 mm minimum length limit for 40 years
 # assume this is for landlocked Striped Bass
-minLL_2 <- dpmBH_MinLL(simyears=simyears,minLL=minLL,
-                       cf=cf,cm=cm,rec=rec,lhparms=LH,matchRicker=FALSE,
-                       species="Striped Bass",group="landlocked")
+minLL_2 <- dpmBH_MinLL(simyears = simyears, minLL = minLL, cf = cf, cm = cm,
+                  recruitment_type = "vector", recv=rec,
+                  lhparms = LH, matchRicker=FALSE,species="Striped Bass",group="landlocked")
 ```
 
 The results in `minLL_2` consist of two data.frames – `sumbyAge` and
@@ -1095,6 +1142,7 @@ The results in `minLL_2` consist of two data.frames – `sumbyAge` and
 year.
 
 ``` r
+
 names(minLL_2)
 #> [1] "sumbyAge"  "sumbyYear"
 ```
@@ -1104,6 +1152,7 @@ data.frame name to `minLL_2`. For example, the first six rows of the
 `sumbyAge` data.frame are shown below.
 
 ``` r
+
 head(minLL_2$sumbyAge)
 #>   year yc age   length     weight    nstart exploitation expect_nat_death   cf
 #> 1    1  1   0   0.0000    0.00000 1000.0000    0.0000000        0.0000000 0.00
@@ -1134,6 +1183,7 @@ data.frame is isolated below and a graph of the number harvested by age
 is created.
 
 ``` r
+
 tmpX <- minLL_2$sumbyAge |>
   dplyr::filter(yc==1)
 
@@ -1175,6 +1225,7 @@ bar heights. The example below also outlines the bars in black (with
 `color=`) and fills them with a light gray (with `fill=`).
 
 ``` r
+
 ggplot(data=tmpX,mapping=aes(x=age,y=nharvest)) +
   geom_bar(stat="identity",color="black",fill="lightgray") +
   scale_x_continuous(name="Age",

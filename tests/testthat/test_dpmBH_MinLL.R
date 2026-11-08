@@ -16,11 +16,11 @@ test_that("dpmBH_MinLL() messages",{
   colnames(cm2) <- colnames(cf2) <- paste0("age_",0:lhparms$tmax)
 
   # ----- no errors
-  dpmBH_MinLL(simyears=simyears,minLL=minLL,cf=cf,cm=cm,rec=rec,
+  dpmBH_MinLL(simyears=simyears,minLL=minLL,cf=cf,cm=cm,recruitment_type = c("vector"), recv = rec,
               lhparms=lhparms,species="Striped Bass",group="landlocked") |>
     expect_no_error()
   # ..... confirming no errors even when cm/cf matrices are named
-  dpmBH_MinLL(simyears=simyears,minLL=minLL,cf=cf2,cm=cm2,rec=rec,
+  dpmBH_MinLL(simyears=simyears,minLL=minLL,cf=cf2,cm=cm2,recruitment_type = c("vector"), recv = rec,
               lhparms=lhparms,species="Striped Bass",group="landlocked") |>
     expect_no_error()
 
@@ -60,7 +60,7 @@ cm <- matrix(rep(c(rep(0,1),rep(0.18,(lhparms$tmax))),simyears),
              nrow=simyears,byrow=TRUE)
 cf <- matrix(rep(c(rep(0,1),rep(0.33,(lhparms$tmax))),simyears),
              nrow=simyears,byrow=TRUE)
-minLL1 <- dpmBH_MinLL(simyears=simyears,minLL=minLL,cf=cf,cm=cm,rec=rec,
+minLL1 <- dpmBH_MinLL(simyears=simyears,minLL=minLL,cf=cf,cm=cm,recruitment_type = c("vector"), recv = rec,
                       lhparms=lhparms,species="Striped Bass",group="landlocked")
 
 ## expectations
@@ -80,7 +80,7 @@ test_that("dpmBH_MinLL() output",{
 # ..... Use CTRL-SHIFT-C to uncomment/comment selected lines in RStudio
 # !!!!! These don't test true accuracy of results, but will detect if anything
 #       has changed since the last "thought-to-be-stable" results.
-#
+
 # tmpdir <- paste0(testthat::test_path(),"/datasnaps/")
 # dt <- format(Sys.Date(),format="%d_%b_%Y")
 # saveRDS(minLL1,paste0(tmpdir,"dpm_minLL1_",dt,".rds"))
