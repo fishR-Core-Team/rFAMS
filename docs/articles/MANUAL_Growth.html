@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@
       <h1>Growth</h1>
 
 
-      <p class="date">2026-11-08</p>
+      <p class="date">2026-11-10</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/MANUAL_Growth.qmd" class="external-link"><code>vignettes/articles/MANUAL_Growth.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -102,7 +102,7 @@
 <p>The following packages are used in this article.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/fishR-Core-Team/rFAMS/" class="external-link">rFAMS</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fishr-core-team.github.io/rFAMS/">rFAMS</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://fishr-core-team.github.io/FSA/" class="external-link">FSA</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -171,7 +171,7 @@ Figure 1: Three VBGF with <math display="inline" xmlns="http://www.w3.org/1998/
 <span><span class="co">#&gt;     }</span></span>
 <span><span class="co">#&gt;     Linf * (1 - exp(-K * (t - t0)))</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x0000013073194f90&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x0000029f0114a3b8&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:FSA&gt;</span></span></code></pre></div>
 </div>
 <p>The code in this function looks complicated but the last line before the <code>}</code> shows the right-hand-side of <a href="#eq-VonB" class="quarto-xref">Equation 1</a>. Thus, this function returns a mean length given the values of <code>t</code> (i.e., age), <code>Linf</code>, <code>K</code>, and <code>t0</code> (as shown in the top line of the function).</p>

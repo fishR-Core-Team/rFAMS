@@ -16,8 +16,8 @@
 - [Mortality matrices with the dynamic pool
   model](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_MortalityDPM.md):
 - [Weight-Length](https://fishr-core-team.github.io/rFAMS/articles/MANUAL_WeightLength.md):
-- [Spawning Potential
-  Ratio](https://fishr-core-team.github.io/rFAMS/articles/spr.md):
+- [Spawning Potential Ratio Calculations in
+  rFAMS](https://fishr-core-team.github.io/rFAMS/articles/spr.md):
 - [Stock-recruitment
   curves](https://fishr-core-team.github.io/rFAMS/articles/stock_recruitment.md):
 - [Comparing FAMS and Ricker YPR

@@ -28,7 +28,7 @@ wtrans_spr(df, SPRdat)
 
 ## Value
 
-A list of six elements
+A vector
 
 - `wtSPR` is a vector containing weighted transitional spawning
   potential ratio for each year of the simulation

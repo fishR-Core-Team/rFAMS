@@ -8,14 +8,12 @@
 #' @param MatAge A single numeric that represent the maximum age.
 #' @param percF A vector of the percent of all fish that are females at age starting at age-1.
 #' @param percFSpawn A vector of the percent of females that spawn annually starting at age-1.
-#' @param ageInterval A single numeric that represents the age interval to calculate SPR. An interval less than 1 permits calculating fecundity at finer time steps than annual.
-#'
-#' @details This function is used internally and not generally used interactively
+#' @param ageInterval A single numeric that represents the age interval to calculate SPR in the yield-per-recruit simulation. An interval less than 1 permits calculating fecundity at finer time steps than annual.
 #'
 #' @author Jason C. Doll, \email{jason.doll@fmarion.edu}
 #'
 #'
-#' @returns A named list that contains the given reproduction options that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{yprBH_SlotLL}}).
+#' @returns A named list that contains the given reproduction options that can be used directly in the yield-per-recruit and dynamic pool models (e.g., \code{\link{yprBH_SlotLL}} and \code{\link{dpmBH_MinLL}}).
 #'
 #' @examples
 #' # This example creates a list where fish mature at age-4. Leading 0's are used in

@@ -58,19 +58,17 @@ makeSPR(
 
 - ageInterval:
 
-  A single numeric that represents the age interval to calculate SPR. An
-  interval less than 1 permits calculating fecundity at finer time steps
-  than annual.
+  A single numeric that represents the age interval to calculate SPR in
+  the yield-per-recruit simulation. An interval less than 1 permits
+  calculating fecundity at finer time steps than annual.
 
 ## Value
 
 A named list that contains the given reproduction options that can be
-used directly in the yield-per-recruit calculation functions (e.g.,
-[`yprBH_SlotLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md)).
-
-## Details
-
-This function is used internally and not generally used interactively
+used directly in the yield-per-recruit and dynamic pool models (e.g.,
+[`yprBH_SlotLL`](https://fishr-core-team.github.io/rFAMS/reference/yprBH_SlotLL.md)
+and
+[`dpmBH_MinLL`](https://fishr-core-team.github.io/rFAMS/reference/dpmBH_MinLL.md)).
 
 ## Author
 

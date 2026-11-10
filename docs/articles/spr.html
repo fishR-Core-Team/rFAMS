@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Spawning Potential Ratio • rFAMS</title>
+<title>Spawning Potential Ratio Calculations in rFAMS • rFAMS</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="spr_files/libs/quarto-html/popper.min.js"></script><script src="spr_files/libs/quarto-html/tippy.umd.min.js"></script><link href="spr_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="spr_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Spawning Potential Ratio">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Spawning Potential Ratio Calculations in rFAMS">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,10 +74,10 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Spawning Potential Ratio</h1>
+      <h1>Spawning Potential Ratio Calculations in rFAMS</h1>
 
 
-      <p class="date">2026-11-08</p>
+      <p class="date">2026-11-10</p>
 
       <small class="dont-index">Source: <a href="https://github.com/fishR-Core-Team/rFAMS/blob/HEAD/vignettes/articles/spr.qmd" class="external-link"><code>vignettes/articles/spr.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -88,17 +88,279 @@
 
 
 
-    <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/fishR-Core-Team/rFAMS/" class="external-link">rFAMS</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>  <span class="co">## to make figures</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span>    <span class="co">## for filter</span></span></code></pre></div>
-</div>
-<p>This article will include details of how spawning potential ratio (SRP) is calculated in <code>rFAMS</code></p>
-
-
-
-<script id="quarto-html-after-body" type="application/javascript">
+    <section class="section level2"><h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>Spawning Potential Ratio (SPR) is the proportion of reproductive output produced by an exploited population relative to the reproductive output expected from an unfished population (Goodyear 1993). SPR provides a biological measure of the effect of fishing mortality on the reproductive capacity of a stock and is commonly used as a biological reference point in fisheries management. Once a target SPR benchmark has been selected, managers can estimate the fishing mortality rate required to achieve that benchmark. Target SPR values are often species-specific; however, a threshold of SPR = 0.40 (40%) has been adopted for several groundfish stocks in the northeastern United States (NEFSC 2008). Because SPR is directly related to the reproductive capacity of a population, it is commonly used to evaluate the risk of recruitment overfishing. Management measures such as minimum length limits, slot length limits, and harvest restrictions can be used to achieve desired SPR benchmarks by protecting sexually mature individuals and preserving spawning output.</p>
+<p>Although SPR has historically been used extensively in marine fisheries management (Cooper et al. 2013; Goethel et al. 2018; Mu et al. 2021; Willems et al. 2023; Guo et al. 2025), applications in freshwater fisheries have become increasingly common. For example, LaBrie et al. (2025) used SPR to develop harvest commendations for Blue Sucker <em>Cycleptus elongatus</em>, a species not traditionally managed as a sport fish. Similarly, Slipke, et al. (2002) proposed a target SPR of 10-20% for Channel Catfish <em>Ictalurus punctatus</em> for the Upper Mississippi River commercial fishery. Kern et al. (2020) estimated SPR for Shoal Bass <em>Micropterus cataractae</em> and concluded that the population was experiencing recruitment overfishing under existing regulations.</p>
+<p>The <strong>rFAMS</strong> package implements two related measures of spawning potential:</p>
+<ol type="1">
+<li><p><strong>Static SPR (SPR)</strong>, calculated within the yield-per-recruit (YPR) framework. This metric compares expected lifetime reproductive output under fishing mortality with expected lifetime reproductive output in an unfished population.</p></li>
+<li><p><strong>Weighted Transitional SPR (wtSPR)</strong>, calculated within the dynamic pool model. This metric measures annual spawning potential during the transition from one population state to another and accounts for changes in age structure through time.</p></li>
+</ol></section><section class="section level2"><h2 id="static-spawning-potential-ratio">Static Spawning Potential Ratio<a class="anchor" aria-label="anchor" href="#static-spawning-potential-ratio"></a>
+</h2>
+<section class="level2"><h3 id="conceptual-framework">Conceptual Framework<a class="anchor" aria-label="anchor" href="#conceptual-framework"></a>
+</h3>
+<p>The yield-per-recruit model follows a single recruit throughout its lifetime and estimates cumulative reproductive output under specified mortality schedules. Reproductive output is calculated both with and without fishing mortality. The calculation of SPR requires length at age (derived from the von Bertalanfffy growth model), fecundity at length (based on a linear or logarithmic length-fecundity model), percentage of the proportion that are female, proportion of the females that are spawning, fishing, and natural mortality.</p>
+<p>The spawning potential ratio is defined as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>P</mi><mi>R</mi><mo>=</mo><mfrac><msub><mi>P</mi><mrow><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msub><msub><mi>P</mi><mrow><mi>u</mi><mi>n</mi><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msub></mfrac></mrow><annotation encoding="application/x-tex">
+SPR=\frac{P_{fished}}{P_{unfished}}
+</annotation></semantics></math></p>
+<p>where:</p>
+<ul>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mrow><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msub><annotation encoding="application/x-tex">P_{fished}</annotation></semantics></math> is the total lifetime spawning potential under the specified fishing mortality schedule.</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>P</mi><mrow><mi>u</mi><mi>n</mi><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msub><annotation encoding="application/x-tex">P_{unfished}</annotation></semantics></math> is the total lifetime spawning potential in the absence of fishing mortality.</li>
+</ul></section><section class="level2"><h3 id="length-at-age">Length-at-Age<a class="anchor" aria-label="anchor" href="#length-at-age"></a>
+</h3>
+<p>Length at age is predicted using the von Bertalanffy Growth Function:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mi>t</mi></msub><mo>=</mo><msub><mi>L</mi><mi>∞</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mn>1</mn><mo>−</mo><msup><mi>e</mi><mrow><mi>−</mi><mi>K</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo>−</mo><msub><mi>t</mi><mn>0</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+L_t=L_{\infty}\left(1-e^{-K(t-t_0)}\right)
+</annotation></semantics></math></p>
+<p>where:</p>
+<ul>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>t</mi></msub><annotation encoding="application/x-tex">L_t</annotation></semantics></math> = expected length at age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>∞</mi></msub><annotation encoding="application/x-tex">L_{\infty}</annotation></semantics></math> = asymptotic length</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math> = Brody growth coefficient</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mn>0</mn></msub><annotation encoding="application/x-tex">t_0</annotation></semantics></math> = theoretical age at which length equals zero</li>
+</ul></section><section class="level2"><h3 id="age-specific-fecundity">Age-Specific Fecundity<a class="anchor" aria-label="anchor" href="#age-specific-fecundity"></a>
+</h3>
+<p>Age-specific fecundity is estimated from fish length using a user-specified fecundity-length relationship. Two model forms are supported.</p>
+<p>For a linear relationship:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mi>e</mi><msub><mi>c</mi><mi>t</mi></msub><mo>=</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><msub><mi>L</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex"> Fec_t=\beta_0 + \beta_1 L_t </annotation></semantics></math></p>
+<p>where:</p>
+<ul>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mi>e</mi><msub><mi>c</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">Fec_t</annotation></semantics></math> = fecundity at age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>t</mi></msub><annotation encoding="application/x-tex">L_t</annotation></semantics></math> = mean length at age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\beta_0</annotation></semantics></math> = intercept of the fecundity-length relationship</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\beta_1</annotation></semantics></math> = slope of the fecundity-length relationship</li>
+</ul>
+<p>Alternatively, fecundity can be estimated using a log-transformed relationship.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mi>e</mi><msub><mi>c</mi><mi>t</mi></msub><mo>=</mo><mi>e</mi><mi>x</mi><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>β</mi><mn>0</mn></msub><mo>+</mo><msub><mi>β</mi><mn>1</mn></msub><mi>l</mi><mi>n</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>L</mi><mi>t</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> Fec_t=exp(\beta_0 + \beta_1 ln(L_t)) </annotation></semantics></math></p>
+<p>where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>0</mn></msub><annotation encoding="application/x-tex">\beta_0</annotation></semantics></math> and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\beta_1</annotation></semantics></math> are estimated from the fitted log-linear fecundity model.</p>
+<p>Fish younger than the age at maturity are assumed to make no contribution to reproduction. Thus, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mi>e</mi><msub><mi>c</mi><mi>t</mi></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">Fec_t = 0</annotation></semantics></math> for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi><mo>&lt;</mo><msub><mi>T</mi><mrow><mi>m</mi><mi>a</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">t&lt;T_{mat}</annotation></semantics></math>.</p>
+<p>Expected reproductive output at age is then adjusted for sex ratio and spawning participation because the total number of individuals in the cohort is constant and not included in the calculation:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mi>t</mi></msub><mo>=</mo><mi>F</mi><mi>e</mi><msub><mi>c</mi><mi>t</mi></msub><mo>×</mo><mi>p</mi><msub><mi>F</mi><mi>t</mi></msub><mo>×</mo><mi>p</mi><mi>S</mi><mi>p</mi><mi>a</mi><mi>w</mi><msub><mi>n</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">
+E_t = Fec_t \times pF_t \times pSpawn_t
+</annotation></semantics></math></p>
+<p>where:</p>
+<ul>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mi>t</mi></msub><annotation encoding="application/x-tex">E_t</annotation></semantics></math> = expected egg production at age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><msub><mi>F</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">pF_t</annotation></semantics></math> = proportion female at age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>S</mi><mi>p</mi><mi>a</mi><mi>w</mi><msub><mi>n</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">pSpawn_t</annotation></semantics></math> = proportion of females that spawn at age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+</ul></section><section class="level2"><h3 id="mortality">Mortality<a class="anchor" aria-label="anchor" href="#mortality"></a>
+</h3>
+<p>Total instantaneous mortality at age is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Z</mi><mi>t</mi></msub><mo>=</mo><msub><mi>F</mi><mi>t</mi></msub><mo>+</mo><msub><mi>M</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">
+Z_t = F_t + M_t
+</annotation></semantics></math></p>
+<p>where:</p>
+<ul>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>F</mi><mi>t</mi></msub><annotation encoding="application/x-tex">F_t</annotation></semantics></math> = instantaneous fishing mortality</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>M</mi><mi>t</mi></msub><annotation encoding="application/x-tex">M_t</annotation></semantics></math> = instantaneous natural mortality</li>
+</ul>
+<p>The model allows fishing and natural mortality to vary among length intervals and management regulations.</p>
+</section><section class="level2"><h3 id="survival">Survival<a class="anchor" aria-label="anchor" href="#survival"></a>
+</h3>
+<p>Survival over a time interval <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math> in the absence of fishing is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>M</mi><mi>t</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">
+S_{noexp,t}=e^{-M_t\Delta t}
+</annotation></semantics></math></p>
+<p>and survival under fishing is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>Z</mi><mi>t</mi></msub><mi>Δ</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">
+S_{exp,t}=e^{-Z_t\Delta t}
+</annotation></semantics></math></p>
+<p>where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">\Delta t</annotation></semantics></math> is the chosen age interval.</p>
+<p>Cumulative survival to age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>S</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>t</mi></munderover><msub><mi>S</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+CS_{noexp,t}=\prod_{i=1}^{t} S_{noexp,i}
+</annotation></semantics></math></p>
+<p>for the unfished population and</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><msub><mi>S</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>t</mi></munderover><msub><mi>S</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+CS_{exp,t}=\prod_{i=1}^{t} S_{exp,i}
+</annotation></semantics></math></p>
+<p>for the fished population.</p>
+</section><section class="level2"><h3 id="spawning-potential">Spawning Potential<a class="anchor" aria-label="anchor" href="#spawning-potential"></a>
+</h3>
+<p>Age-specific spawning potential in the absence of fishing is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>E</mi><mi>t</mi></msub><mo>×</mo><mi>C</mi><msub><mi>S</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+P_{noexp,t}=E_t \times CS_{noexp,t}
+</annotation></semantics></math></p>
+<p>and age-specific spawning potential under fishing is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>E</mi><mi>t</mi></msub><mo>×</mo><mi>C</mi><msub><mi>S</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+P_{exp,t}=E_t \times CS_{exp,t}
+</annotation></semantics></math></p>
+<p>Total lifetime spawning potential is obtained by summing across ages:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>u</mi><mi>n</mi><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mi>t</mi></munder><msub><mi>P</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+P_{unfished}=\sum_t P_{noexp,t}
+</annotation></semantics></math></p>
+<p>and</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>P</mi><mrow><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mi>t</mi></munder><msub><mi>P</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+P_{fished}=\sum_t P_{exp,t}
+</annotation></semantics></math></p>
+<p>The spawning potential ratio is then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>P</mi><mi>R</mi><mo>=</mo><mfrac><msub><mi>P</mi><mrow><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msub><msub><mi>P</mi><mrow><mi>u</mi><mi>n</mi><mi>f</mi><mi>i</mi><mi>s</mi><mi>h</mi><mi>e</mi><mi>d</mi></mrow></msub></mfrac></mrow><annotation encoding="application/x-tex">
+SPR=\frac{P_{fished}}{P_{unfished}}
+</annotation></semantics></math></p>
+<p>Values range from 0 to 1.</p>
+<ul>
+<li>SPR = 1 indicates no reduction in lifetime reproductive output.</li>
+<li>SPR = 0.40 indicates that reproductive output has been reduced to 40% of unfished levels.</li>
+<li>SPR approaching 0 indicates severe depletion of spawning capacity.</li>
+</ul></section></section><section class="section level2"><h2 id="weighted-transitional-spawning-potential-ratio">Weighted Transitional Spawning Potential Ratio<a class="anchor" aria-label="anchor" href="#weighted-transitional-spawning-potential-ratio"></a>
+</h2>
+<section class="level2"><h3 id="conceptual-framework-1">Conceptual Framework<a class="anchor" aria-label="anchor" href="#conceptual-framework-1"></a>
+</h3>
+<p>The dynamic pool model explicitly tracks changes in population abundance and age structure through time. Consequently, a single equilibrium SPR is insufficient to describe spawning potential during periods when populations are transitioning toward a new equilibrium.</p>
+<p>To characterize reproductive capacity during these transition periods, rFAMS calculates a weighted transitional spawning potential ratio (wtSPR) for each simulation year. This metric compares annual egg production under the simulated fishing regime with the egg production expected if those same fish experienced only natural mortality.</p>
+</section><section class="level2"><h3 id="age-specific-fecundity-1">Age-Specific Fecundity<a class="anchor" aria-label="anchor" href="#age-specific-fecundity-1"></a>
+</h3>
+<p>Age-specific fecundity is estimated from fish length using a user-specified fecundity-length relationship in the same manner as with the static SPR. Fish younger than the age at maturity are assumed to have zero fecundity. The resulting age-specific fecundity values are combined with age-specific sex composition, spawning proportion, and survivorship to estimate annual egg production.</p>
+</section><section class="level2"><h3 id="survivorship">Survivorship<a class="anchor" aria-label="anchor" href="#survivorship"></a>
+</h3>
+<p>Cohort cumulative survivorship under natural mortality is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>t</mi></munderover><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>M</mi><mi>i</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">
+S_{noexp,t}
+=
+\prod_{i=1}^{t}
+e^{-M_i}
+</annotation></semantics></math></p>
+<p>and cumulative survivorship under total mortality is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>S</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>t</mi></munderover><msup><mi>e</mi><mrow><mi>−</mi><msub><mi>Z</mi><mi>i</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">
+S_{exp,t}
+=
+\prod_{i=1}^{t}
+e^{-Z_i}
+</annotation></semantics></math></p>
+<p>where</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Z</mi><mi>i</mi></msub><mo>=</mo><msub><mi>M</mi><mi>i</mi></msub><mo>+</mo><msub><mi>F</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">
+Z_i = M_i + F_i
+</annotation></semantics></math></p>
+</section><section class="level2"><h3 id="egg-production">Egg Production<a class="anchor" aria-label="anchor" href="#egg-production"></a>
+</h3>
+<p>Expected egg production under natural mortality is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>g</mi><mi>g</mi><msub><mi>s</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>N</mi><mrow><mn>0</mn><mo>,</mo><mi>t</mi></mrow></msub><mo>×</mo><mi>p</mi><msub><mi>F</mi><mi>t</mi></msub><mo>×</mo><mi>p</mi><mi>S</mi><mi>p</mi><mi>a</mi><mi>w</mi><msub><mi>n</mi><mi>t</mi></msub><mo>×</mo><mi>F</mi><mi>e</mi><msub><mi>c</mi><mi>t</mi></msub><mo>×</mo><msub><mi>S</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+Eggs_{noexp,t}
+=
+N_{0,t}
+\times pF_t
+\times pSpawn_t
+\times Fec_t
+\times S_{noexp,t}
+</annotation></semantics></math></p>
+<p>Expected egg production under fishing mortality is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>g</mi><mi>g</mi><msub><mi>s</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>N</mi><mrow><mn>0</mn><mo>,</mo><mi>t</mi></mrow></msub><mo>×</mo><mi>p</mi><msub><mi>F</mi><mi>t</mi></msub><mo>×</mo><mi>p</mi><mi>S</mi><mi>p</mi><mi>a</mi><mi>w</mi><msub><mi>n</mi><mi>t</mi></msub><mo>×</mo><mi>F</mi><mi>e</mi><msub><mi>c</mi><mi>t</mi></msub><mo>×</mo><msub><mi>S</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+Eggs_{exp,t}
+=
+N_{0,t}
+\times pF_t
+\times pSpawn_t
+\times Fec_t
+\times S_{exp,t}
+</annotation></semantics></math></p>
+<p>where:</p>
+<ul>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mrow><mn>0</mn><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">N_{0,t}</annotation></semantics></math> = number of fish entering age class <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mi>e</mi><msub><mi>c</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">Fec_t</annotation></semantics></math> = fecundity at age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><msub><mi>F</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">pF_t</annotation></semantics></math> = proportion female at age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mi>S</mi><mi>p</mi><mi>a</mi><mi>w</mi><msub><mi>n</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">pSpawn_t</annotation></semantics></math> = proportion of females that spawn at age <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">S_{noexp,t}</annotation></semantics></math> = cumulative survival under natural mortality</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>S</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">S_{exp,t}</annotation></semantics></math> = cumulative survival under total mortality</li>
+</ul></section><section class="level2"><h3 id="annual-weighted-transitional-spr">Annual Weighted Transitional SPR<a class="anchor" aria-label="anchor" href="#annual-weighted-transitional-spr"></a>
+</h3>
+<p>For each simulation year, egg production is summed across all age classes:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><msub><mi>E</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mi>t</mi></munder><mi>E</mi><mi>g</mi><mi>g</mi><msub><mi>s</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+TE_{noexp}
+=
+\sum_t Eggs_{noexp,t}
+</annotation></semantics></math></p>
+<p>and</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><msub><mi>E</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mi>t</mi></munder><mi>E</mi><mi>g</mi><mi>g</mi><msub><mi>s</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
+TE_{exp}
+=
+\sum_t Eggs_{exp,t}
+</annotation></semantics></math></p>
+<p>where:</p>
+<ul>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><msub><mi>E</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi></mrow></msub></mrow><annotation encoding="application/x-tex">TE_{noexp}</annotation></semantics></math> = total annual egg production expected under natural mortality only.</li>
+<li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><msub><mi>E</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi></mrow></msub></mrow><annotation encoding="application/x-tex">TE_{exp}</annotation></semantics></math> = total annual egg production under the specified fishing regime.</li>
+</ul>
+<p>The weighted transitional spawning potential ratio is then</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mi>t</mi><mi>S</mi><mi>P</mi><mi>R</mi><mo>=</mo><mfrac><mrow><mi>T</mi><msub><mi>E</mi><mrow><mi>e</mi><mi>x</mi><mi>p</mi></mrow></msub></mrow><mrow><mi>T</mi><msub><mi>E</mi><mrow><mi>n</mi><mi>o</mi><mi>e</mi><mi>x</mi><mi>p</mi></mrow></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+wtSPR=
+\frac{TE_{exp}}
+{TE_{noexp}}
+</annotation></semantics></math></p>
+<p>and is calculated separately for every simulated year.</p>
+</section></section><section class="section level2"><h2 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
+</h2>
+<p>Although both metrics quantify spawning potential relative to an unfished population, they represent different biological perspectives.</p>
+<section class="level2"><h3 id="static-spr">Static SPR<a class="anchor" aria-label="anchor" href="#static-spr"></a>
+</h3>
+<p>Static SPR is an equilibrium measure derived from the yield-per-recruit model. It represents the expected lifetime reproductive contribution of a recruit under a specified mortality schedule and management regulation.</p>
+</section><section class="level2"><h3 id="weighted-transitional-spr">Weighted Transitional SPR<a class="anchor" aria-label="anchor" href="#weighted-transitional-spr"></a>
+</h3>
+<p>Weighted transitional SPR is an annual population-level measure derived from the dynamic pool model. It reflects realized reproductive output during periods when population age structure is changing following implementation of a management action.</p>
+<p>As the population approaches a stable age distribution under constant mortality conditions, wtSPR is expected to converge toward the equilibrium SPR value estimated from the yield-per-recruit model.</p>
+</section></section><section class="section level2"><h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+</h2>
+<p>Both SPR metrics quantify the proportion of spawning output retained relative to an unfished population:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>P</mi><mi>R</mi><mspace width="0.278em"></mspace><mtext mathvariant="normal">or</mtext><mspace width="0.278em"></mspace><mi>w</mi><mi>t</mi><mi>S</mi><mi>P</mi><mi>R</mi><mo>=</mo><mfrac><mtext mathvariant="normal">Spawning Output Under Fishing</mtext><mtext mathvariant="normal">Spawning Output Without Fishing</mtext></mfrac></mrow><annotation encoding="application/x-tex">
+SPR \; \text{or} \; wtSPR
+=
+\frac{\text{Spawning Output Under Fishing}}
+{\text{Spawning Output Without Fishing}}
+</annotation></semantics></math></p>
+<p>For example, a value of 0.35 indicates that the population is expected to produce 35% of the reproductive output that would occur in the absence of fishing mortality.</p>
+<p>Static SPR estimates equilibrium reproductive potential at the recruit level, whereas weighted transitional SPR measures annual population-wide reproductive potential during transitions between population states.</p>
+</section><section class="section level2"><h2 id="important-note">Important note<a class="anchor" aria-label="anchor" href="#important-note"></a>
+</h2>
+<p>Both the static and weighted transitional SPR calculated in rFAMS do not match exactly match FAMS. Every effort was made to replicate the output, however, discrepancies between the equations used in FAMS documentation and Parkes (2001) and Goodyear (1993) produced challenges. In addition, the closed source of FAMS prohibits the authors from reviewing the exact methods that were used. We have provided a full description above on how rFAMS calculates SPR and the source code can be viewed on GitHub.</p>
+</section><section class="section level2"><h2 id="literature-cited">Literature Cited<a class="anchor" aria-label="anchor" href="#literature-cited"></a>
+</h2>
+<p>Cooper, W.T., Barbieri, L.R., Murphy, M.D., and Lowerre-Barbieri, S.K. (2013). Assessing stock reproductive potential in species with indeterminate fecundity: Effects of age truncation and size-dependent reproductive timing. Fisheries Research. 138:31-41. <a href="https://doi.org/10.1016/j.fishres.2012.05.016" class="external-link uri">https://doi.org/10.1016/j.fishres.2012.05.016</a></p>
+<p>Goethel, D.R., Smith, M.W., Cass-Calay, S.L., and Porch, C.E. (2018). Establishing stock status determination criteria for, fisheries with high discards and uncertain recruitment. North American Journal of Fisheries Management. 38(1):120-139. <a href="https://doi.org/10.1002/nafm.10007" class="external-link uri">https://doi.org/10.1002/nafm.10007</a></p>
+<p>Goodyear, C.P. (1993). Spawning stock biomass per recruit in fisheries management: foundation and current use. Pages 67-71 in S.J. Smith, J.J. Hunt, and D. Rivard, editors. Risk evaluation and biological reference points for fisheries management. Canadian Journal of Fisheries and Aquatic Sciences Special Publication 120.</p>
+<p>Guo, R., Han, Q. and Fang, Z. (2025). Stock assessment of <em>Uroteuthis edulis</em> in the East China Sea based on spawning potential ratio. Fisheries Science. 91:679–689. <a href="https://doi.org/10.1007/s12562-025-01875-5" class="external-link uri">https://doi.org/10.1007/s12562-025-01875-5</a></p>
+<p>Kern, A.I., Sammons, S.M., and Ingram, T.R. (2020). Fecundity and spawning potential ratio of shoal bass <em>Micropterus cataractae</em> in the lower Flint River, Georgia, USA. Fisheries Research. 231:105687. <a href="https://doi.org/10.1016/j.fishres.2020.105687" class="external-link uri">https://doi.org/10.1016/j.fishres.2020.105687</a></p>
+<p>LaBrie, L.A.P., Carlson, T.L., Wesner, J.S., Pasbrig, C.A., Chipps, S.R., and Schall, B.J. 2025. Reproductive characteristics and spawning potential ratio modeling of vulnerable riverine specialist in the lower unchannelized Missouri River, USA. Fisheries Research. 286:107386. <a href="https://doi.org/10.1016/j.fishres.2025.107386" class="external-link uri">https://doi.org/10.1016/j.fishres.2025.107386</a></p>
+<p>Mu, X., Zhang, C., Xu, B., Ji, Y., Xue, Y., and Ren, Y. (2021). Accounting for the fish condition in assessing the reproductivity of a marine eel to achieve fishery sustainability. Ecological Indicators. 130:108116. <a href="https://doi.org/10.1016/j.ecolind.2021.108116" class="external-link uri">https://doi.org/10.1016/j.ecolind.2021.108116</a></p>
+<p>NEFSC (Northeast Fisheries Science Center). 2008. Assessment of 19 Northeast Groundfish Stocks through 2007: Report of the 3rd Groundfish Assessment Review Meeting (GARM III), Northeast Fisheries Science Center, Woods Hole, Massachusetts, August 4–8, 2008, pg. 884, US Department of Commerce, NOAA Fisheries, Northeast Fisheries Science Center Reference Document 08-15.</p>
+<p>Parkes, G. (2001). Understanding SPR and its use in U.S. fisheries management. Report of MRAG Americas, Inc. to The Ocean Conservancy, Washington, D.C.</p>
+<p>Slipke, J.W., Martin, A.D., Pitlo, Jr., J., and Maceina, M.J. (2002). Use of the spawning potential ratio for the upper Mississippi River channel catfish fishery. North American Journal of Fisheries Management. 22(4):1295-1300. <a href="https://doi.org/10.1577/1548-8675(2002)022%3C1295:UOTSPR%3E2.0.CO;2" class="external-link uri">https://doi.org/10.1577/1548-8675(2002)022%3C1295:UOTSPR%3E2.0.CO;2</a></p>
+<p>Willems, T., Liverpool, E., and Hiwat, M. (2023). A preliminary assessment of the spawning potential ratio of five target species of the coastal gillnet fishery in Guyana and Suriname. Gulf and Caribbean Research. 34(1):29-42. <a href="https://doi.org/10.18785/gcr.3401.06" class="external-link uri">https://doi.org/10.18785/gcr.3401.06</a></p>
+</section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
@@ -181,7 +443,8 @@
       }
     }
   });
-  </script></main>
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

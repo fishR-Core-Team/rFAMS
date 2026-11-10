@@ -12,7 +12,7 @@ wtrans_spr(df, SPRdat)
 \item{SPRdat}{A named list that contains values for each \code{FLR}, \code{FLRint}, \code{FLRslope}, and \code{MatAge}. See \code{\link{makeSPR}} for definitions of these parameters.}
 }
 \value{
-A list of six elements
+A vector
 \itemize{
 \item \code{wtSPR} is a vector containing weighted transitional spawning potential ratio for each year of the simulation
 }

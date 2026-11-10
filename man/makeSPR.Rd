@@ -27,16 +27,13 @@ makeSPR(
 
 \item{percFSpawn}{A vector of the percent of females that spawn annually starting at age-1.}
 
-\item{ageInterval}{A single numeric that represents the age interval to calculate SPR. An interval less than 1 permits calculating fecundity at finer time steps than annual.}
+\item{ageInterval}{A single numeric that represents the age interval to calculate SPR in the yield-per-recruit simulation. An interval less than 1 permits calculating fecundity at finer time steps than annual.}
 }
 \value{
-A named list that contains the given reproduction options that can be used directly in the yield-per-recruit calculation functions (e.g., \code{\link{yprBH_SlotLL}}).
+A named list that contains the given reproduction options that can be used directly in the yield-per-recruit and dynamic pool models (e.g., \code{\link{yprBH_SlotLL}} and \code{\link{dpmBH_MinLL}}).
 }
 \description{
 Efficiently construct either a vector or list that contains the seven life history parameters required for Beverton-Holt yield-per-recruit analyses. The parameters can be given by the user through function arguments. Alternativvely, the von Bertalanffy parameters (\code{Linf}, \code{K}, and \code{t0}) may be extracted from an \code{nls} object created from fitting the von Bertalanffy equation to length-at-age data (object created outside this function). Similarly the log10-transformed weight-length model coefficients may be extracted from an \code{lm} object created from fitting the model to transformed weight-length data (object created outside this function). All parameter values are checked for sanity (e.g., Linf>0).
-}
-\details{
-This function is used internally and not generally used interactively
 }
 \examples{
 # This example creates a list where fish mature at age-4. Leading 0's are used in

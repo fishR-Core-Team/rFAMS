@@ -1,6 +1,13 @@
 # Changelog
 
+## rFAMS 0.0.4.9000
+
+- Fixed critical bug in weighted transitional SPR calculations
+- Added article describing SPR calculations
+
 ## rFAMS 0.0.4
+
+CRAN release: 2026-11-09
 
 - Changed output of yprBH_SlotLL() from trOver to trAbove and from
   cfOver to cfAbove.

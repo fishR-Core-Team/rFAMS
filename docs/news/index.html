@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">rFAMS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.0.4" id="rfams-004">rFAMS 0.0.4<a class="anchor" aria-label="anchor" href="#rfams-004"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.0.4.9000" id="rfams-0049000">rFAMS 0.0.4.9000<a class="anchor" aria-label="anchor" href="#rfams-0049000"></a></h2>
+<ul><li>Fixed critical bug in weighted transitional SPR calculations</li>
+<li>Added article describing SPR calculations</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.0.4" id="rfams-004">rFAMS 0.0.4<a class="anchor" aria-label="anchor" href="#rfams-004"></a></h2><p class="text-muted">CRAN release: 2026-11-09</p>
 <ul><li>Changed output of yprBH_SlotLL() from trOver to trAbove and from cfOver to cfAbove.</li>
 <li>Added static spawning potential ratio (SPR) to yield per recruit model and weighted SPR to dynamic pool model</li>
 <li>Modified dynamic pool model to allow stock recruitment model and user supplied vector of recruitment. New arguments added: <code>recruitment_type</code>=c(“vector”,“stockrecruit”),<code>stockrecruit</code>=c(“Ricker”,“BevertonHolt”,“Shepherd”), and rec is now <code>recv</code> to represent the vector of recruitment.</li>

@@ -401,9 +401,9 @@ SPR_summary
 #> # A tibble: 3 × 3
 #>   MLL    MeanSPR  SDSPR
 #>   <chr>    <dbl>  <dbl>
-#> 1 457 mm   0.286 0.0136
-#> 2 559 mm   0.402 0.0170
-#> 3 610 mm   0.573 0.0252
+#> 1 457 mm   0.286 0.0119
+#> 2 559 mm   0.402 0.0144
+#> 3 610 mm   0.572 0.0252
 
 # Violin plot with embedded boxplot and 
 # horizontal red line at desired threshold
