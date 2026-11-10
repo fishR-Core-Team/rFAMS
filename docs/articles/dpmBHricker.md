@@ -401,9 +401,9 @@ SPR_summary
 #> # A tibble: 3 × 3
 #>   MLL    MeanSPR  SDSPR
 #>   <chr>    <dbl>  <dbl>
-#> 1 457 mm   0.286 0.0119
-#> 2 559 mm   0.402 0.0144
-#> 3 610 mm   0.572 0.0252
+#> 1 457 mm   0.210 0.0104
+#> 2 559 mm   0.294 0.0116
+#> 3 610 mm   0.417 0.0160
 
 # Violin plot with embedded boxplot and 
 # horizontal red line at desired threshold
@@ -421,22 +421,23 @@ ggplot(SPR_filtered,
 ![](dpmBHricker_files/figure-html/unnamed-chunk-2-1.png)
 
 The simulations indicated that minimum length limits of 457-mm produces
-a mean weighted SPR values of 0.286 (SD = 0.012), suggesting that fish
+a mean weighted SPR values of 0.210 (SD = 0.010), suggesting that fish
 protected with this size limit contribute relatively little to overall
 spawning output. This result is consistent with the growth and maturity
 assumptions used in the model. Based on the von Bertalanffy growth
 parameters, the mean length at age 4 is 445.8 mm, and only 24% of
 females are assumed to be mature and contribute to egg production at
 that age. Therefore, many of the fish would be harvested before
-successful reproduction. In contrast, increasing the minimum length
-limit to 559 mm increased mean SPR to 0.401 (SD = 0.019), indicating
-substantially greater protection of reproductive potential. Biological
-reference points for SPR vary among species and populations; however,
-Goodyear (1996) proposed an SPR threshold of 0.30, below which
-recruitment failure becomes increasingly likely. Under this criterion,
-the 457-mm minimum length limits would result in SPR values slightly
-below the threshold, whereas the 559-mm and above minimum length limit
-would maintain SPR well above it.
+successful reproduction. Increasing the minimum length limit to 559-mm
+improved SPR to a mean of 0.294 (SD = 0.013). In contrast, increasing
+the minimum length limit to 610 mm increased mean SPR to 0.416 (SD =
+0.019), indicating substantially greater protection of reproductive
+potential. Biological reference points for SPR vary among species and
+populations; however, Goodyear (1993) proposed an SPR threshold of 0.30,
+below which recruitment failure becomes increasingly likely. Under this
+criterion, the 457 and 559-mm minimum length limits would result in SPR
+values below the threshold, whereas the 610-mm and above minimum length
+limit would maintain SPR above it.
 
 ## Literature Cited
 

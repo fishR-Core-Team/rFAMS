@@ -47,13 +47,13 @@ software products.
 #### Equilibrium Modeling
 
 1.  Initial function completed
-2.  Add spawning potential ratio
+2.  Added spawning potential ratio
 3.  Incorporate suggestions from the fisheries community.
 
 #### Dynamic Pool Modeling
 
 1.  Initial function completed
-2.  Add spawning potential ratio
+2.  Added spawning potential ratio and fixed bug from v0.0.4
 3.  Incorporate suggestions from the fisheries community.
 
 #### RShiny Development
