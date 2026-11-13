@@ -1,7 +1,7 @@
 ---
 title: "CRAN Comments"
 author: "Jason Doll"
-date: "2026-11-10"
+date: "2026-11-13"
 output: html_document
 editor_options: 
   markdown: 

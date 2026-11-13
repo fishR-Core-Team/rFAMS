@@ -1,6 +1,6 @@
 # Changelog
 
-## rFAMS 0.0.4.9000
+## rFAMS 0.0.5
 
 - Fixed critical bug in weighted transitional SPR calculations
 - Added article describing SPR calculations

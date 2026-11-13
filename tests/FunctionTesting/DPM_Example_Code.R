@@ -125,8 +125,8 @@ out1[[2]] |>
 rec <- genRecruits(method = "fixed", nR = 1000, simyears = simyears)
 LH <- makeLH(N0=1000,tmax=15,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
 minLL = 457
-cf <- seq(from = 0.0, to = 0.70, by = 0.05)
-cm <- 0.18
+# cf <- seq(from = 0.0, to = 0.70, by = 0.05)
+# cm <- 0.18
 Res_1 <- yprBH_MinLL(minLL = minLL, cf = cf, cm = cm,SPRdat = SPRdat,
                      lhparms=LH)
 

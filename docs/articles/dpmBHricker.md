@@ -399,11 +399,11 @@ SPR_summary <- SPR_filtered |>
 # View results
 SPR_summary
 #> # A tibble: 3 × 3
-#>   MLL    MeanSPR  SDSPR
-#>   <chr>    <dbl>  <dbl>
-#> 1 457 mm   0.210 0.0104
-#> 2 559 mm   0.294 0.0116
-#> 3 610 mm   0.417 0.0160
+#>   MLL    MeanSPR   SDSPR
+#>   <chr>    <dbl>   <dbl>
+#> 1 457 mm   0.210 0.00982
+#> 2 559 mm   0.294 0.0109 
+#> 3 610 mm   0.417 0.0150
 
 # Violin plot with embedded boxplot and 
 # horizontal red line at desired threshold

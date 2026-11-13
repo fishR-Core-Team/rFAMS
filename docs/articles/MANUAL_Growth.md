@@ -202,7 +202,7 @@ vbfun
 #>     }
 #>     Linf * (1 - exp(-K * (t - t0)))
 #> }
-#> <bytecode: 0x00000226cf237070>
+#> <bytecode: 0x00000173da1c0f90>
 #> <environment: namespace:FSA>
 ```
 
