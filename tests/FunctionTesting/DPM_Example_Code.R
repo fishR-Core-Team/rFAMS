@@ -124,11 +124,12 @@ out1[[2]] |>
 # Spawning potential ratio (SPR) across multiple minimum length limits ####
 rec <- genRecruits(method = "fixed", nR = 1000, simyears = simyears)
 LH <- makeLH(N0=1000,tmax=15,Linf=1349.5,K=0.111,t0=0.065,LWalpha=-5.2147,LWbeta=3.153)
-minLL = 457
-# cf <- seq(from = 0.0, to = 0.70, by = 0.05)
-# cm <- 0.18
-Res_1 <- yprBH_MinLL(minLL = minLL, cf = cf, cm = cm,SPRdat = SPRdat,
-                     lhparms=LH)
+simyears <- 100
+minLL <- 457
+cm <- matrix(rep(c(rep(0,1), rep(0.18,(LH$tmax))), simyears),nrow=simyears,byrow=TRUE)
+cf <- matrix(rep(c(rep(0,1), rep(0.33,(LH$tmax))), simyears),nrow=simyears,byrow=TRUE)
+
+
 
 SPRdat<- makeSPR(FLR = "linear", FLRint = -1057029, FLRslope = 2777.08, MatAge = 4,ageInterval=1,
                  percF=c(rep(0.50,15)), #required to be length of tmax
@@ -154,6 +155,8 @@ out610<-dpmBH_MinLL(simyears = simyears, minLL = 610, cf = cf, cm = cm,
                     recruitment_type = c("stockrecruit"), srmod = c("Ricker"),
                     a = 6.8, b = 0.0025, sigmaR = 0.2, SPRdat = SPRdat,
                     lhparms = LH, matchRicker=FALSE,species="Striped Bass",group="landlocked")
+
+mean(out610[[2]]$Total_biomass)
 
 # extract wtSPR from each simulation
 SPR_all <- bind_rows(
